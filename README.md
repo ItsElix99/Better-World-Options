@@ -5,6 +5,7 @@ This mod brings modern Minecraft features to the nostalgic Beta 1.7.3 experience
 **Features:**
 * **Hardcore Mode**: Just like in modern Minecraft, when you die, it's game over — no respawning.
 * **World Types**: Choose from different world generation types, including options that weren’t available in the original Beta 1.7.3, such as:
+
   * Default  
   * Nether
   * Skylands
