@@ -1,4 +1,4 @@
-﻿# Better-World-Options
+﻿# Better World Options
 
 This mod brings modern Minecraft features to the nostalgic Beta 1.7.3 experience by introducing **Hardcore Mode** and **World Types**. It enhances the classic gameplay while preserving the original feel of the game.
 
