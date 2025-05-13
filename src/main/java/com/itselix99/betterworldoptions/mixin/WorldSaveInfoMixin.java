@@ -1,0 +1,30 @@
+package com.itselix99.betterworldoptions.mixin;
+
+import com.itselix99.betterworldoptions.interfaces.WorldProperties;
+import net.minecraft.world.storage.WorldSaveInfo;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+
+@Mixin(WorldSaveInfo.class)
+public class WorldSaveInfoMixin implements WorldProperties {
+    @Unique private String worldType;
+    @Unique private boolean hardcore;
+
+    @Override
+    public void bwo_setWorldType(String name) {
+        this.worldType = name;
+    }
+
+    @Override
+    public String bwo_getWorldType() { return this.worldType; }
+
+    @Override
+    public void bwo_setHardcore(boolean hardcore) {
+        this.hardcore = hardcore;
+    }
+
+    @Override
+    public boolean bwo_getHardcore() {
+        return this.hardcore;
+    }
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "betterworldoptions",
+  "version": "${version}",
+
+  "name": "Better World Options",
+  "description": "Add hardcore mode and world types to babric b1.7.3",
+  "authors": [
+    "ItsElix99"
+  ],
+
+  "license": "MIT",
+  "icon": "assets/betterworldoptions/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "stationapi:event_bus": [
+    ],
+    "stationapi:event_bus_client": [
+    ],
+    "stationapi:event_bus_server": [
+    ]
+  },
+  "mixins": [
+    "betterworldoptions.mixins.json"
+  ],
+
+  "depends": {
+    "minecraft": "1.0.0-beta.7.3",
+    "stationapi": ">=2.0.0-alpha.3"
+  },
+
+  "suggests": {
+    "bhcreative": "*"
+  }
+}

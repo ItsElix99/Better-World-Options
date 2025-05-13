@@ -1,0 +1,11 @@
+selectWorld.gamemode=Game Mode:
+selectWorld.worldtype=World Type:
+selectWorld.moreWorldOptions=More World Options...
+options.difficulty.hardcore=Hardcore
+selectWorld.gamemode.survival=Survival
+selectWorld.gamemode.hardcore=Hardcore
+selectWorld.gamemode.survival.info=Search for resources, crafting and health
+selectWorld.gamemode.hardcore.info=Same as survival mode, locked at hardest difficulty, and one life only
+selectWorld.gamemode.creative.info=Unlimited resources, free flying and destroy blocks instantly
+deathScreen.deleteWorld=Delete world
+deathScreen.hardcore.info=You cannot respawn in hardcore mode!
