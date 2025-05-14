@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(WorldSaveInfo.class)
-public class WorldSaveInfoMixin implements WorldProperties {
+public class WorldSaveInfoMixin implements BWOProperties {
     @Unique private String worldType;
     @Unique private boolean hardcore;
 
