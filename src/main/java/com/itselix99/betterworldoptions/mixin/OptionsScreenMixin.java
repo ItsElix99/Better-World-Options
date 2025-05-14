@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin;
 
 
-import com.itselix99.betterworldoptions.interfaces.WorldProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
