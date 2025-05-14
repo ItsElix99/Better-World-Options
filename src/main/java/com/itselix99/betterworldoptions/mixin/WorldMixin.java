@@ -34,7 +34,7 @@ public abstract class WorldMixin implements GetDirectoryName {
     )
     private void beforeSetWorld(WorldStorage storage, String name, long seed, Dimension dimension, CallbackInfo ci) {
         if (this.newWorld) {
-            ((WorldProperties) this.properties).bwo_setWorldType(WorldSettings.getName());
+            ((BWOProperties) this.properties).bwo_setWorldType(WorldSettings.getName());
         } else {
             this.properties.setName(name);
             WorldTypeList.selectForWorldLoad(((WorldProperties) this.properties).bwo_getWorldType());
