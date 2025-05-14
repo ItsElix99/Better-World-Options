@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.mixin;
 
-import com.itselix99.betterworldoptions.interfaces.WorldProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.world.storage.WorldSaveInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
