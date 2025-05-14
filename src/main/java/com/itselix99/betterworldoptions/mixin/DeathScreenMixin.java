@@ -75,7 +75,7 @@ public class DeathScreenMixin extends Screen {
         this.fillGradient(0, 0, this.width, this.height, 1615855616, -1602211792);
         GL11.glPushMatrix();
         GL11.glScalef(2.0F, 2.0F, 2.0F);
-        boolean hardcore = ((WorldProperties) this.minecraft.world.getProperties()).bwo_getHardcore();
+        boolean hardcore = ((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore();
         this.drawCenteredTextWithShadow(this.textRenderer, "Game over!", this.width / 2 / 2, 30, 16777215);
         GL11.glPopMatrix();
         this.drawCenteredTextWithShadow(this.textRenderer, "Score: &e" + this.minecraft.player.getScore(), this.width / 2, 100, 16777215);
