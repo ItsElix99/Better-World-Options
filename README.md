@@ -21,6 +21,8 @@ This mod brings modern Minecraft features to the nostalgic Beta 1.7.3 experience
 ## Requirements
 
 ### Required
+* **Babric b1.7.3**
+* **Java 17**
 * **StationAPI** - version **2.0.0-alpha.3** or newer
 
 ### Optional
