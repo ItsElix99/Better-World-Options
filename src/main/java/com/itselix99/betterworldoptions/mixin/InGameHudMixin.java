@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.mixin;
 
-import com.itselix99.betterworldoptions.interfaces.WorldProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
