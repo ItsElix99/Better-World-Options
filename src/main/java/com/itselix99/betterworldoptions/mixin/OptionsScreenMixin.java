@@ -32,7 +32,7 @@ public class OptionsScreenMixin extends Screen {
         for(Option var6 : RENDER_OPTIONS) {
             if (!var6.isSlider()) {
                 OptionButtonWidget var7 = new OptionButtonWidget(var6.getId(), this.width / 2 - 155 + var2 % 2 * 160, this.height / 6 + 24 * (var2 >> 1), this.options.getString(var6));
-                if (var6 == Option.DIFFICULTY && this.minecraft.world != null && ((WorldProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
+                if (var6 == Option.DIFFICULTY && this.minecraft.world != null && ((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
                     var7.active = false;
                     var7.text = var1.get("options.difficulty") + ": " + var1.get("options.difficulty.hardcore");
                 }
