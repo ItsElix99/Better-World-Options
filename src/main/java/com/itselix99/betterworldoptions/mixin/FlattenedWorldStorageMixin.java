@@ -28,9 +28,9 @@ public class FlattenedWorldStorageMixin {
     )
     private void getAll(CallbackInfoReturnable<List> info, ArrayList worlds, File[] var2, int var3, int var4, File worldPath, String worldFolder, net.minecraft.world.WorldProperties data, NbtCompound worldTag, boolean requiresUpdating, String worldName) {
         WorldSaveInfo worldSaveInfo = (WorldSaveInfo)worlds.get(worlds.size() - 1);
-        String worldType = ((WorldProperties)data).bwo_getWorldType();
-        boolean isHardcore = ((WorldProperties)data).bwo_getHardcore();
-        ((WorldProperties)worldSaveInfo).bwo_setWorldType(worldType);
-        ((WorldProperties)worldSaveInfo).bwo_setHardcore(isHardcore);
+        String worldType = ((BWOProperties)data).bwo_getWorldType();
+        boolean isHardcore = ((BWOProperties)data).bwo_getHardcore();
+        ((BWOProperties)worldSaveInfo).bwo_setWorldType(worldType);
+        ((BWOProperties)worldSaveInfo).bwo_setHardcore(isHardcore);
     }
 }
