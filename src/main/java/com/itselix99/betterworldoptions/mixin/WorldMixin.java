@@ -4,7 +4,7 @@ import com.itselix99.betterworldoptions.interfaces.GetDirectoryName;
 import com.itselix99.betterworldoptions.world.WorldSettings;
 import com.itselix99.betterworldoptions.world.WorldTypeList;
 import net.minecraft.world.World;
-import com.itselix99.betterworldoptions.interfaces.WorldProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.storage.WorldStorage;
 import org.spongepowered.asm.mixin.Final;
