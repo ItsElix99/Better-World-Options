@@ -29,7 +29,7 @@ public class MinecraftMixin {
             )
     )
     private void hardcoreDifficulty(CallbackInfo ci) {
-        if (((WorldProperties) this.world.getProperties()).bwo_getHardcore()) {
+        if (((BWOProperties) this.world.getProperties()).bwo_getHardcore()) {
             this.world.difficulty = 3;
         } else {
             this.world.difficulty = this.options.difficulty;
