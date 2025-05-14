@@ -25,7 +25,7 @@ public class DeathScreenMixin extends Screen {
     public void init(CallbackInfo ci) {
         TranslationStorage translation = TranslationStorage.getInstance();
         this.buttons.clear();
-        if (((WorldProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
+        if (((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
             this.buttons.add(new ButtonWidget(1, this.width / 2 - 100, this.height / 4 + 96, translation.get("deathScreen.deleteWorld")));
         } else {
             this.buttons.add(new ButtonWidget(1, this.width / 2 - 100, this.height / 4 + 72, "Respawn"));
