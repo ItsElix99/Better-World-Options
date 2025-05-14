@@ -3,7 +3,7 @@ package com.itselix99.betterworldoptions.mixin;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import com.itselix99.betterworldoptions.interfaces.WorldProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.storage.WorldSaveInfo;
 import net.modificationstation.stationapi.impl.world.storage.FlattenedWorldStorage;
