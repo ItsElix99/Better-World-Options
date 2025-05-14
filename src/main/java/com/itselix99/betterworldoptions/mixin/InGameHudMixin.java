@@ -116,7 +116,7 @@ public class InGameHudMixin extends DrawContext {
                 }
 
                 byte var20 = 0;
-                if (((WorldProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
+                if (((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
                     var20 = 5;
                 }
 
