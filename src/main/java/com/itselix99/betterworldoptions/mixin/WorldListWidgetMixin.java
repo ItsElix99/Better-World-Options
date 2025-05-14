@@ -56,7 +56,7 @@ public class WorldListWidgetMixin {
             int offset = minecraft.textRenderer.getWidth(levelName) + 6;
             this.field_2444.drawTextWithShadow(minecraft.textRenderer, "[", x + offset, y + 1, 16777215);
             offset += minecraft.textRenderer.getWidth("[");
-            boolean isHardcore = ((WorldProperties) worldSaveInfo).bwo_getHardcore();
+            boolean isHardcore = ((BWOProperties) worldSaveInfo).bwo_getHardcore();
             String gameMode = isHardcore ? "Hardcore" : "Survival";
             int color = isHardcore ? 16711680 : '\uff00';
             this.field_2444.drawTextWithShadow(minecraft.textRenderer, gameMode, x + offset, y + 1, color);
