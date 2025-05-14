@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.interfaces;
 
-public interface WorldProperties {
+public interface BWOProperties {
     void bwo_setWorldType(String name);
     String bwo_getWorldType();
 
