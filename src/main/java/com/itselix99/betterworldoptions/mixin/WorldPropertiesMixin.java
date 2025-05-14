@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(net.minecraft.world.WorldProperties.class)
-public class WorldPropertiesMixin implements WorldProperties {
+public class WorldPropertiesMixin implements BWOProperties {
     @Unique
     private String worldType;
 
