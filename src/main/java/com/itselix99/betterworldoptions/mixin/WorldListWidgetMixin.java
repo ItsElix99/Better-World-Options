@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin;
 
 import net.fabricmc.loader.api.FabricLoader;
-import com.itselix99.betterworldoptions.interfaces.WorldProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
 import net.minecraft.client.render.Tessellator;
