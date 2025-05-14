@@ -46,7 +46,7 @@ public class WorldListWidgetMixin {
             this.field_2444.drawTextWithShadow(minecraft.textRenderer, "[", x + offset, y + 1, 16777215);
             offset += minecraft.textRenderer.getWidth("[");
             boolean isCreative = worldSaveInfo.creative_isCreative();
-            boolean isHardcore = ((WorldProperties) worldSaveInfo).bwo_getHardcore();
+            boolean isHardcore = ((BWOProperties) worldSaveInfo).bwo_getHardcore();
             String gameMode = isCreative ? "Creative" : (isHardcore ? "Hardcore" : "Survival");
             int color = isCreative ? '\uffff' : (isHardcore ? 16711680 : '\uff00');
             this.field_2444.drawTextWithShadow(minecraft.textRenderer, gameMode, x + offset, y + 1, color);
