@@ -37,7 +37,7 @@ public abstract class WorldMixin implements GetDirectoryName {
             ((BWOProperties) this.properties).bwo_setWorldType(WorldSettings.getName());
         } else {
             this.properties.setName(name);
-            WorldTypeList.selectForWorldLoad(((WorldProperties) this.properties).bwo_getWorldType());
+            WorldTypeList.selectForWorldLoad(((BWOProperties) this.properties).bwo_getWorldType());
         }
     }
 
