@@ -39,7 +39,7 @@ public class DeathScreenMixin extends Screen {
     @Inject(method = "buttonClicked", at = @At("HEAD"), cancellable = true)
     protected void buttonClicked(ButtonWidget button, CallbackInfo ci) {
         if (button.id == 1) {
-            if (this.minecraft.world != null && ((WorldProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
+            if (this.minecraft.world != null && ((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
                 WorldStorage worldStorage = ((GetDirectoryName)this.minecraft.world).bwo_getDimensionData();
                 String getDirectoryName = ((GetDirectoryName) worldStorage).bwo_getDirectoryName();
                 this.minecraft.setWorld(null, "Deleting world");
