@@ -36,7 +36,7 @@ public class WorldListWidgetMixin {
     protected void renderEntry(int i, int x, int y, int l, Tessellator arg, CallbackInfo ci, WorldSaveInfo worldSaveInfo, String levelName, String var8, long var9, String var11) {
         @Deprecated
         Minecraft minecraft = (Minecraft)FabricLoader.getInstance().getGameInstance();
-        String worldType = ((WorldProperties) worldSaveInfo).bwo_getWorldType();
+        String worldType = ((BWOProperties) worldSaveInfo).bwo_getWorldType();
         if (Objects.equals(worldType, "")) {
             worldType = "Default";
         }
