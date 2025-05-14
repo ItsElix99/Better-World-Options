@@ -50,8 +50,8 @@ public class WorldPropertiesMixin implements BWOProperties {
 
     @Inject(method = "<init>(Lnet/minecraft/world/WorldProperties;)V", at = @At("TAIL"))
     private void onCopyConstructor(net.minecraft.world.WorldProperties source, CallbackInfo ci) {
-        this.worldType = ((WorldProperties) source).bwo_getWorldType();
-        this.hardcore = ((WorldProperties) source).bwo_getHardcore();
+        this.worldType = ((BWOProperties) source).bwo_getWorldType();
+        this.hardcore = ((BWOProperties) source).bwo_getHardcore();
     }
 
     @Inject(method = "updateProperties", at = @At("TAIL"))
