@@ -67,7 +67,7 @@ public class InGameHudMixin extends DrawContext {
         this.zOffset = -90.0F;
         this.drawTexture(var6 / 2 - 91, var7 - 22, 0, 0, 182, 22);
         this.drawTexture(var6 / 2 - 91 - 1 + var11.selectedSlot * 20, var7 - 22 - 1, 0, 22, 24, 22);
-        if (((WorldProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
+        if (((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
             GL11.glBindTexture(3553, this.minecraft.textureManager.getTextureId("/assets/betterworldoptions/textures/gui/iconsWithHardcoreHearts.png"));
         } else {
             GL11.glBindTexture(3553, this.minecraft.textureManager.getTextureId("/gui/icons.png"));
