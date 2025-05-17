@@ -16,7 +16,9 @@ public class GameMenuScreenMixin extends Screen {
     @Inject(method = "buttonClicked", at = @At("TAIL"))
     protected void buttonClicked(ButtonWidget button, CallbackInfo ci) {
         if (button.id == 1) {
-            WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(0));
+            if (WorldTypeList.worldtypeList != null) {
+                WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(0));
+            }
             WorldSettings.resetHardcore();
         }
     }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorldSettings {
-    public static String name = null;
+    public static String name = "Default";
     public static Constructor<? extends ChunkSource> chunkProviderConstructor = null;
     public static boolean skyDisabled = false;
     public static Biome customBiome = null;
