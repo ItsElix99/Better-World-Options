@@ -96,6 +96,18 @@ dependencies {
         transitive false
     }
 
+    modImplementation("maven.modrinth:unitweaks:${project.unitweaks_version}-fabric,b1.7.3") {
+        transitive false
+    }
+
+    modImplementation("maven.modrinth:glass-config-api:${project.glassconfigapi_version}-fabric,b1.7.3") {
+        transitive false
+    }
+
+    modImplementation("maven.modrinth:glass-networking:${project.glassnetworking_version}-fabric,b1.7.3") {
+        transitive false
+    }
+
 }
 
 processResources {
