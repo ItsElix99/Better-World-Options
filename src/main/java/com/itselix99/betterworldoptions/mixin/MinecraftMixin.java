@@ -14,6 +14,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.lang.reflect.Constructor;
 import java.util.Objects;
 
 @Mixin(Minecraft.class)
@@ -49,7 +51,19 @@ public class MinecraftMixin {
         } else if (Objects.equals(WorldSettings.name, "Skylands") && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(1));
         } else if (Objects.equals(WorldSettings.name, "Aether") && storage.loadProperties() == null) {
-                return new World(storage, name, seed, new com.matthewperiut.aether.gen.dim.AetherDimension(2));
+            try {
+                Class<?> aether = Class.forName("com.matthewperiut.aether.gen.dim.AetherDimension");
+
+                Constructor<?> constructor = aether.getConstructor(int.class);
+                Object AetherDimension = constructor.newInstance(2);
+
+                if (AetherDimension instanceof Dimension) {
+                    return new World(storage, name, seed, (Dimension) AetherDimension);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
         } else return original.call(storage, name, seed);
     }
 }
