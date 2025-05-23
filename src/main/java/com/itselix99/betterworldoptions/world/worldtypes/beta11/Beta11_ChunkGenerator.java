@@ -189,10 +189,6 @@ public class Beta11_ChunkGenerator implements ChunkSource {
                             } else if (var14 > 0) {
                                 --var14;
                                 blocks[var18] = var16;
-                                if (var14 == 0 && var16 == Block.SAND.id) {
-                                    var14 = this.random.nextInt(4);
-                                    var16 = (byte)Block.SANDSTONE.id;
-                                }
                             }
                         }
                     }
@@ -414,13 +410,6 @@ public class Beta11_ChunkGenerator implements ChunkSource {
             (new OreFeature(Block.DIAMOND_ORE.id, 7)).generate(this.world, this.random, var47, var59, var70);
         }
 
-        for(int var36 = 0; var36 < 1; ++var36) {
-            int var48 = var4 + this.random.nextInt(16);
-            int var60 = this.random.nextInt(16) + this.random.nextInt(16);
-            int var71 = var5 + this.random.nextInt(16);
-            (new OreFeature(Block.LAPIS_ORE.id, 6)).generate(this.world, this.random, var48, var60, var71);
-        }
-
         var11 = 0.5F;
         int var37 = (int)((this.forestNoise.sample((double)var4 * var11, (double)var5 * var11) / (double)8.0F + this.random.nextDouble() * (double)4.0F + (double)4.0F) / (double)3.0F);
         int var49 = 0;
@@ -472,73 +461,11 @@ public class Beta11_ChunkGenerator implements ChunkSource {
             var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
         }
 
-        byte var62 = 0;
-        if (var6 == Biome.FOREST) {
-            var62 = 2;
-        }
-
-        if (var6 == Biome.SEASONAL_FOREST) {
-            var62 = 4;
-        }
-
-        if (var6 == Biome.TAIGA) {
-            var62 = 2;
-        }
-
-        if (var6 == Biome.PLAINS) {
-            var62 = 3;
-        }
-
-        for(int var73 = 0; var73 < var62; ++var73) {
+        for(int var73 = 0; var73 < 2; ++var73) {
             int var76 = var4 + this.random.nextInt(16) + 8;
             int var85 = this.random.nextInt(128);
             int var19 = var5 + this.random.nextInt(16) + 8;
             (new PlantPatchFeature(Block.DANDELION.id)).generate(this.world, this.random, var76, var85, var19);
-        }
-
-        byte var74 = 0;
-        if (var6 == Biome.FOREST) {
-            var74 = 2;
-        }
-
-        if (var6 == Biome.RAINFOREST) {
-            var74 = 10;
-        }
-
-        if (var6 == Biome.SEASONAL_FOREST) {
-            var74 = 2;
-        }
-
-        if (var6 == Biome.TAIGA) {
-            var74 = 1;
-        }
-
-        if (var6 == Biome.PLAINS) {
-            var74 = 10;
-        }
-
-        for(int var77 = 0; var77 < var74; ++var77) {
-            byte var86 = 1;
-            if (var6 == Biome.RAINFOREST && this.random.nextInt(3) != 0) {
-                var86 = 2;
-            }
-
-            int var97 = var4 + this.random.nextInt(16) + 8;
-            int var20 = this.random.nextInt(128);
-            int var21 = var5 + this.random.nextInt(16) + 8;
-            (new GrassPatchFeature(Block.GRASS.id, var86)).generate(this.world, this.random, var97, var20, var21);
-        }
-
-        var74 = 0;
-        if (var6 == Biome.DESERT) {
-            var74 = 2;
-        }
-
-        for(int var78 = 0; var78 < var74; ++var78) {
-            int var87 = var4 + this.random.nextInt(16) + 8;
-            int var98 = this.random.nextInt(128);
-            int var108 = var5 + this.random.nextInt(16) + 8;
-            (new DeadBushPatchFeature(Block.DEAD_BUSH.id)).generate(this.world, this.random, var87, var98, var108);
         }
 
         if (this.random.nextInt(2) == 0) {
