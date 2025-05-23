@@ -7,6 +7,7 @@ import com.itselix99.betterworldoptions.world.worldtypes.beta11.Beta11_ChunkGene
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.EarlyInfdevChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev415.Infdev415ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev420.Infdev420ChunkGenerator;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -55,7 +56,7 @@ public class WorldTypeList {
         var4.desc = "Generates flat world";
         var4.lightingMode = 1;
         var4.noSky = false;
-        var4.biome = Biome.FOREST;
+        var4.biome = null;
         var4.blockToSpawnOn = 0;
         worldtypeList.add(var4);
         WorldTypeList.WorldTypeEntry var5 = new WorldTypeList.WorldTypeEntry();
@@ -112,6 +113,21 @@ public class WorldTypeList {
         var10.biome = null;
         var10.blockToSpawnOn = 0;
         worldtypeList.add(var10);
+        if (isAetherModPresent()) {
+            WorldTypeList.WorldTypeEntry var11 = new WorldTypeList.WorldTypeEntry();
+            var11.loadedClass = OverworldChunkGenerator.class;
+            var11.name = "Aether";
+            var11.desc = "Start the world in hostile paradise";
+            var11.lightingMode = 0;
+            var11.noSky = false;
+            var11.biome = null;
+            var11.blockToSpawnOn = 0;
+            worldtypeList.add(var11);
+        }
+    }
+
+    private static boolean isAetherModPresent() {
+        return FabricLoader.getInstance().isModLoaded("aether");
     }
 
     public static void selectForWorldLoad(String worldTypeName) {

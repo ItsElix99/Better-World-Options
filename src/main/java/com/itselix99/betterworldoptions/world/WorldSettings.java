@@ -14,7 +14,7 @@ public class WorldSettings {
     public static int lightingMode = 0;
     public static int blockToSpawnOn = 0;
     public static boolean hardcore = false;
-    public static boolean beta_features = true;
+    public static boolean betaFeatures = true;
 
     private static final List<Runnable> changeListeners = new ArrayList<>();
 

@@ -1,6 +1,7 @@
 selectWorld.gamemode=Game Mode:
 selectWorld.worldtype=World Type:
 selectWorld.moreWorldOptions=More World Options...
+selectWorld.betaFeatures=Beta Features:
 options.difficulty.hardcore=Hardcore
 selectWorld.gamemode.survival=Survival
 selectWorld.gamemode.hardcore=Hardcore

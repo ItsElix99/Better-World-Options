@@ -15,6 +15,7 @@
   "environment": "*",
   "entrypoints": {
     "stationapi:event_bus": [
+      "com.itselix99.betterworldoptions.world.biomes.ClassicBiomes"
     ],
     "stationapi:event_bus_client": [
     ],

@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Unique;
 public class WorldSaveInfoMixin implements BWOProperties {
     @Unique private String worldType;
     @Unique private boolean hardcore;
+    @Unique private boolean betaFeatures;
 
     @Override
     public void bwo_setWorldType(String name) {
@@ -26,5 +27,15 @@ public class WorldSaveInfoMixin implements BWOProperties {
     @Override
     public boolean bwo_getHardcore() {
         return this.hardcore;
+    }
+
+    @Override
+    public void bwo_setBetaFeatures(boolean betaFeatures) {
+        this.betaFeatures = betaFeatures;
+    }
+
+    @Override
+    public boolean bwo_getBetaFeatures() {
+        return this.betaFeatures;
     }
 }

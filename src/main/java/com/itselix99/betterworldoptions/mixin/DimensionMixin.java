@@ -1,6 +1,8 @@
 package com.itselix99.betterworldoptions.mixin;
 
+import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.WorldSettings;
+import com.itselix99.betterworldoptions.world.biomes.ClassicBiomes;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -16,6 +18,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Objects;
+
 @Mixin(Dimension.class)
 public class DimensionMixin {
     @Shadow public BiomeSource biomeSource;
@@ -29,7 +33,18 @@ public class DimensionMixin {
     protected void initBiomeSource(CallbackInfo ci) {
         if (WorldSettings.customBiome != null) {
             this.biomeSource = new FixedBiomeSource(WorldSettings.customBiome, 1.0D, 0.5D);
-            ci.cancel();
+        } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Flat") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+            this.biomeSource = new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.5D);
+        } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Early Infdev") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+            this.biomeSource = new FixedBiomeSource(ClassicBiomes.EarlyInfdev, 1.0D, 0.5D);
+        } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Infdev 415") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+            this.biomeSource = new FixedBiomeSource(ClassicBiomes.Infdev, 1.0D, 0.5D);
+        } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Infdev 420") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+            this.biomeSource = new FixedBiomeSource(ClassicBiomes.Infdev, 1.0D, 0.5D);
+        } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Alpha 1.1.2_01") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+            this.biomeSource = new FixedBiomeSource(ClassicBiomes.Alpha, 1.0D, 0.5D);
+        } else {
+            this.biomeSource = new BiomeSource(this.world);
         }
 
         if (WorldSettings.skyDisabled) {
@@ -40,6 +55,7 @@ public class DimensionMixin {
             this.isNether = true;
             this.evaporatesWater = true;
         }
+        ci.cancel();
     }
 
     @Inject(method = "initBrightnessTable", at = @At("HEAD"), cancellable = true)

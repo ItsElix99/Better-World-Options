@@ -30,7 +30,7 @@ public class OctavePerlinNoiseSamplerInfdev415 extends NoiseSampler {
         return var5;
     }
 
-    public double[] create(double x, double y, double z) {
+    public double create(double x, double y, double z) {
         double var7 = 0.0D;
         double var9 = 1.0D;
 
@@ -39,6 +39,6 @@ public class OctavePerlinNoiseSamplerInfdev415 extends NoiseSampler {
             var9 *= 2.0D;
         }
 
-        return new double[]{var7};
+        return var7;
     }
 }

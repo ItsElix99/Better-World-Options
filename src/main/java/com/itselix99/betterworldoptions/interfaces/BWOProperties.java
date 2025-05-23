@@ -6,4 +6,7 @@ public interface BWOProperties {
 
     void bwo_setHardcore(boolean hardcore);
     boolean bwo_getHardcore();
+
+    void bwo_setBetaFeatures(boolean betaFeatures);
+    boolean bwo_getBetaFeatures();
 }
