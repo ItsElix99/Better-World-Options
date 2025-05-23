@@ -43,11 +43,13 @@ public class MinecraftMixin {
                     target = "(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;J)Lnet/minecraft/world/World;"
             )
     )
-    private World startGameInNetherOrSkylands(WorldStorage storage, String name, long seed, Operation<World> original) {
+    private World startGameInOtherDimensions(WorldStorage storage, String name, long seed, Operation<World> original) {
         if (Objects.equals(WorldSettings.name, "Nether") && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(-1));
         } else if (Objects.equals(WorldSettings.name, "Skylands") && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(1));
+        } else if (Objects.equals(WorldSettings.name, "Aether") && storage.loadProperties() == null) {
+                return new World(storage, name, seed, new com.matthewperiut.aether.gen.dim.AetherDimension(2));
         } else return original.call(storage, name, seed);
     }
 }
