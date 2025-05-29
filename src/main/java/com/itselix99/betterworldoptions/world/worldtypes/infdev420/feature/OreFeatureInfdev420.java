@@ -8,10 +8,10 @@ import net.minecraft.world.gen.feature.Feature;
 import java.util.Random;
 
 public final class OreFeatureInfdev420 extends Feature {
-    private final int minableBlockId;
+    private final int oreBlockId;
 
-    public OreFeatureInfdev420(int var1) {
-        this.minableBlockId = var1;
+    public OreFeatureInfdev420(int oreBlockId) {
+        this.oreBlockId = oreBlockId;
     }
 
     public boolean generate(World world, Random random, int x, int y, int z) {
@@ -38,7 +38,7 @@ public final class OreFeatureInfdev420 extends Feature {
                         double var37 = ((double) z + 0.5D - var22) / (var30 / 2.0D);
                         double var39 = ((double) var41 + 0.5D - var24) / (var28 / 2.0D);
                         if (var35 * var35 + var37 * var37 + var39 * var39 < 1.0D && world.getBlockId(y, z, var41) == Block.STONE.id) {
-                            world.setBlockWithoutNotifyingNeighbors(y, z, var41, this.minableBlockId);
+                            world.setBlockWithoutNotifyingNeighbors(y, z, var41, this.oreBlockId);
                         }
                     }
                 }
