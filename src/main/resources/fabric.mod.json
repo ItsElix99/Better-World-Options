@@ -15,7 +15,8 @@
   "environment": "*",
   "entrypoints": {
     "stationapi:event_bus": [
-      "com.itselix99.betterworldoptions.world.biomes.ClassicBiomes"
+      "com.itselix99.betterworldoptions.BetterWorldOptions",
+      "com.itselix99.betterworldoptions.events.TextureListener"
     ],
     "stationapi:event_bus_client": [
     ],
