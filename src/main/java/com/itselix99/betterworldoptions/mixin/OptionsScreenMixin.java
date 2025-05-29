@@ -23,7 +23,7 @@ public class OptionsScreenMixin extends Screen {
     @Shadow private static Option[] RENDER_OPTIONS;
 
     @SuppressWarnings("unchecked")
-    @Inject(method = "init", at = @At("TAIL"))
+    @Inject(method = "init", at = @At("HEAD"), cancellable = true)
     public void init(CallbackInfo ci) {
         TranslationStorage var1 = TranslationStorage.getInstance();
         this.title = var1.get("options.title");
@@ -47,5 +47,6 @@ public class OptionsScreenMixin extends Screen {
         this.buttons.add(new ButtonWidget(101, this.width / 2 - 100, this.height / 6 + 96 + 12, var1.get("options.video")));
         this.buttons.add(new ButtonWidget(100, this.width / 2 - 100, this.height / 6 + 120 + 12, var1.get("options.controls")));
         this.buttons.add(new ButtonWidget(200, this.width / 2 - 100, this.height / 6 + 168, var1.get("gui.done")));
+        ci.cancel();
     }
 }
