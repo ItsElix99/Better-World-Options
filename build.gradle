@@ -108,6 +108,10 @@ dependencies {
         transitive false
     }
 
+    modImplementation("maven.modrinth:vbe:${project.vbe_version}-fabric,b1.7.3") {
+        transitive false
+    }
+
 }
 
 processResources {
