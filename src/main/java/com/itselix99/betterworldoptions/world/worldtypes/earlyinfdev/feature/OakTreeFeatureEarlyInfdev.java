@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.feature;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
@@ -8,60 +9,58 @@ import java.util.Random;
 
 public class OakTreeFeatureEarlyInfdev extends Feature {
     public boolean generate(World world, Random random, int x, int y, int z) {
-        int var86 = x + 2;
-        int var93 = z + 2;
-        int var96 = random.nextInt(3) + 4;
-        boolean il = true;
-        if (y > 0 && y + var96 + 1 <= 128) {
-            for(int im = y; im <= y + 1 + var96; ++im) {
-                byte in = 1;
-                if (im == y) {
-                    in = 0;
+        int var6 = random.nextInt(3) + 4;
+        boolean var7 = true;
+        if (y > 0 && y + var6 + 1 <= 128) {
+            for(int var8 = y; var8 <= y + 1 + var6; ++var8) {
+                byte var9 = 1;
+                if (var8 == y) {
+                    var9 = 0;
                 }
 
-                if (im >= y + 1 + var96 - 2) {
-                    in = 2;
+                if (var8 >= y + 1 + var6 - 2) {
+                    var9 = 2;
                 }
 
-                for(int ip = var86 - in; ip <= var86 + in && il; ++ip) {
-                    for(int ir = var93 - in; ir <= var93 + in && il; ++ir) {
-                        if (im >= 0 && im < 128) {
-                            if (world.getBlockId(ip, im, ir) != 0) {
-                                il = false;
+                for(int var10 = x - var9; var10 <= x + var9 && var7; ++var10) {
+                    for(int var11 = z - var9; var11 <= z + var9 && var7; ++var11) {
+                        if (var8 >= 0 && var8 < 128) {
+                            if (world.getBlockId(var10, var8, var11) != 0) {
+                                var7 = false;
                             }
                         } else {
-                            il = false;
+                            var7 = false;
                         }
                     }
                 }
             }
 
-            if (!il) {
+            if (!var7) {
                 return false;
             } else {
-                int var98;
-                if (((var98 = world.getBlockId(var86, y - 1, var93)) == Block.GRASS_BLOCK.id || var98 == Block.DIRT.id) && y < 128 - var96 - 1) {
-                    world.setBlock(var86, y - 1, var93, Block.DIRT.id);
+                int var16;
+                if (((var16 = world.getBlockId(x, y - 1, z)) == Block.GRASS_BLOCK.id || var16 == Block.DIRT.id) && y < 128 - var6 - 1) {
+                    world.setBlockWithoutNotifyingNeighbors(x, y - 1, z, Block.DIRT.id);
 
-                    for(int io = y - 3 + var96; io <= y + var96; ++io) {
-                        int var102 = io - (y + var96);
-                        int var104 = 1 - var102 / 2;
+                    for(int var17 = y - 3 + var6; var17 <= y + var6; ++var17) {
+                        int var19 = var17 - (y + var6);
+                        int var21 = 1 - var19 / 2;
 
-                        for(int iu = var86 - var104; iu <= var86 + var104; ++iu) {
-                            int iv = iu - var86;
+                        for(int var22 = x - var21; var22 <= x + var21; ++var22) {
+                            int var13 = var22 - x;
 
-                            for(int iw = var93 - var104; iw <= var93 + var104; ++iw) {
-                                int ix = iw - var93;
-                                if ((Math.abs(iv) != var104 || Math.abs(ix) != var104 || random.nextInt(2) != 0 && var102 != 0) && !Block.BLOCKS_OPAQUE[world.getBlockId(iu, io, iw)]) {
-                                    world.setBlock(iu, io, iw, Block.LEAVES.id);
+                            for(int var14 = z - var21; var14 <= z + var21; ++var14) {
+                                int var15 = var14 - z;
+                                if ((Math.abs(var13) != var21 || Math.abs(var15) != var21 || random.nextInt(2) != 0 && var19 != 0) && !Block.BLOCKS_OPAQUE[world.getBlockId(var22, var17, var14)]) {
+                                    world.setBlockWithoutNotifyingNeighbors(var22, var17, var14, BetterWorldOptions.ALPHA_LEAVES.id);
                                 }
                             }
                         }
                     }
 
-                    for(int var101 = 0; var101 < var96; ++var101) {
-                        if (!Block.BLOCKS_OPAQUE[world.getBlockId(var86, y + var101, var93)]) {
-                            world.setBlock(var86, y + var101, var93, Block.LOG.id);
+                    for(int var18 = 0; var18 < var6; ++var18) {
+                        if (!Block.BLOCKS_OPAQUE[world.getBlockId(x, y + var18, z)]) {
+                            world.setBlockWithoutNotifyingNeighbors(x, y + var18, z, Block.LOG.id);
                         }
                     }
 
