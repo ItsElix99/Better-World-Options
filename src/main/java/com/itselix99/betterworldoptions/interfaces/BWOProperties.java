@@ -9,4 +9,7 @@ public interface BWOProperties {
 
     void bwo_setBetaFeatures(boolean betaFeatures);
     boolean bwo_getBetaFeatures();
+
+    void bwo_setSnowCovered(boolean snowCovered);
+    boolean bwo_getSnowCovered();
 }

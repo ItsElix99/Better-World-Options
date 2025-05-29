@@ -32,92 +32,103 @@ public class WorldTypeList {
         var1.biome = null;
         var1.blockToSpawnOn = Block.SAND.id;
         worldtypeList.add(var1);
+
         WorldTypeList.WorldTypeEntry var2 = new WorldTypeList.WorldTypeEntry();
         var2.loadedClass = OverworldChunkGenerator.class;
         var2.name = "Nether";
-        var2.desc = "Generates Nether world";
+        var2.desc = "Start the world in the Nether dimension";
         var2.lightingMode = 0;
         var2.noSky = false;
         var2.biome = null;
-        var2.blockToSpawnOn = 0;
+        var2.blockToSpawnOn = Block.SAND.id;
         worldtypeList.add(var2);
+
         WorldTypeList.WorldTypeEntry var3 = new WorldTypeList.WorldTypeEntry();
         var3.loadedClass = OverworldChunkGenerator.class;
         var3.name = "Skylands";
-        var3.desc = "Generates floating islands";
+        var3.desc = "Start the world on the floating islands";
         var3.lightingMode = 0;
         var3.noSky = false;
         var3.biome = null;
-        var3.blockToSpawnOn = 0;
+        var3.blockToSpawnOn = Block.GRASS_BLOCK.id;
         worldtypeList.add(var3);
+
         WorldTypeList.WorldTypeEntry var4 = new WorldTypeList.WorldTypeEntry();
         var4.loadedClass = FlatChunkGenerator.class;
         var4.name = "Flat";
-        var4.desc = "Generates flat world";
+        var4.desc = "A completely flat world, perfect for building";
         var4.lightingMode = 1;
         var4.noSky = false;
         var4.biome = null;
-        var4.blockToSpawnOn = 0;
+        var4.blockToSpawnOn = Block.GRASS_BLOCK.id;
         worldtypeList.add(var4);
+
         WorldTypeList.WorldTypeEntry var5 = new WorldTypeList.WorldTypeEntry();
         var5.loadedClass = FarlandsChunkGenerator.class;
         var5.name = "Farlands";
-        var5.desc = "Generates Farlands world";
+        var5.desc = "Explore the Farlands, where terrain gen";
+        var5.desc2 = "becomes distorced and unpredictable";
         var5.lightingMode = 0;
         var5.noSky = false;
         var5.biome = null;
-        var5.blockToSpawnOn = 0;
+        var5.blockToSpawnOn = Block.GRASS_BLOCK.id;
         worldtypeList.add(var5);
+
         WorldTypeList.WorldTypeEntry var6 = new WorldTypeList.WorldTypeEntry();
         var6.loadedClass = Beta11_ChunkGenerator.class;
         var6.name = "Beta 1.1_02";
-        var6.desc = "Generates Beta 1.1_02 world";
+        var6.desc = "Start the world with Beta 1.1_02 generation";
         var6.lightingMode = 0;
         var6.noSky = false;
         var6.biome = null;
-        var6.blockToSpawnOn = 0;
+        var6.blockToSpawnOn = Block.SAND.id;
         worldtypeList.add(var6);
+
         WorldTypeList.WorldTypeEntry var7 = new WorldTypeList.WorldTypeEntry();
         var7.loadedClass = Alpha112_ChunkGenerator.class;
         var7.name = "Alpha 1.1.2_01";
-        var7.desc = "Generates Alpha 1.1.2_01 world";
+        var7.desc = "Start the world with Alpha 1.1.2_01 generation";
         var7.lightingMode = 0;
         var7.noSky = false;
         var7.biome = null;
-        var7.blockToSpawnOn = 0;
+        var7.blockToSpawnOn = Block.GRASS_BLOCK.id;
         worldtypeList.add(var7);
+
         WorldTypeList.WorldTypeEntry var8 = new WorldTypeList.WorldTypeEntry();
         var8.loadedClass = Infdev420ChunkGenerator.class;
         var8.name = "Infdev 420";
-        var8.desc = "Generates Infdev 420 world";
+        var8.desc = "Start the world with Infdev 420 generation";
         var8.lightingMode = 0;
         var8.noSky = false;
         var8.biome = null;
-        var8.blockToSpawnOn = 0;
+        var8.blockToSpawnOn = Block.GRASS_BLOCK.id;
         worldtypeList.add(var8);
+
         WorldTypeList.WorldTypeEntry var9 = new WorldTypeList.WorldTypeEntry();
         var9.loadedClass = Infdev415ChunkGenerator.class;
         var9.name = "Infdev 415";
-        var9.desc = "Generates Infdev 415 world";
+        var9.desc = "Start the world with Infdev 415 generation";
         var9.lightingMode = 0;
         var9.noSky = false;
         var9.biome = null;
-        var9.blockToSpawnOn = 0;
+        var9.blockToSpawnOn = Block.GRASS_BLOCK.id;
         worldtypeList.add(var9);
+
         WorldTypeList.WorldTypeEntry var10 = new WorldTypeList.WorldTypeEntry();
         var10.loadedClass = EarlyInfdevChunkGenerator.class;
         var10.name = "Early Infdev";
-        var10.desc = "Generates Infdev 227-325 world";
+        var10.desc = "Start the world with Infdev 227-325 gen";
         var10.lightingMode = 0;
         var10.noSky = false;
         var10.biome = null;
-        var10.blockToSpawnOn = 0;
+        var10.blockToSpawnOn = Block.GRASS_BLOCK.id;
         worldtypeList.add(var10);
+
         if (isAetherModPresent()) {
             WorldTypeList.WorldTypeEntry var11 = new WorldTypeList.WorldTypeEntry();
             var11.loadedClass = OverworldChunkGenerator.class;
             var11.name = "Aether";
-            var11.desc = "Start the world in hostile paradise";
+            var11.desc = "Start the world in a hostile paradise";
             var11.lightingMode = 0;
             var11.noSky = false;
             var11.biome = null;

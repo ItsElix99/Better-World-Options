@@ -1,8 +1,8 @@
 package com.itselix99.betterworldoptions.mixin;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.WorldSettings;
-import com.itselix99.betterworldoptions.world.biomes.ClassicBiomes;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -36,13 +36,17 @@ public class DimensionMixin {
         } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Flat") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
             this.biomeSource = new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.5D);
         } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Early Infdev") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-            this.biomeSource = new FixedBiomeSource(ClassicBiomes.EarlyInfdev, 1.0D, 0.5D);
+            this.biomeSource = new FixedBiomeSource(BetterWorldOptions.EarlyInfdev, 1.0D, 0.5D);
         } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Infdev 415") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-            this.biomeSource = new FixedBiomeSource(ClassicBiomes.Infdev, 1.0D, 0.5D);
+            this.biomeSource = new FixedBiomeSource(BetterWorldOptions.Infdev, 1.0D, 0.5D);
         } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Infdev 420") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-            this.biomeSource = new FixedBiomeSource(ClassicBiomes.Infdev, 1.0D, 0.5D);
+            this.biomeSource = new FixedBiomeSource(BetterWorldOptions.Infdev, 1.0D, 0.5D);
         } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Alpha 1.1.2_01") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-            this.biomeSource = new FixedBiomeSource(ClassicBiomes.Alpha, 1.0D, 0.5D);
+            if (((BWOProperties) this.world.getProperties()).bwo_getSnowCovered()) {
+                this.biomeSource = new FixedBiomeSource(BetterWorldOptions.WinterAlpha, 0.0D, 0.5D);
+            } else {
+                this.biomeSource = new FixedBiomeSource(BetterWorldOptions.Alpha, 1.0D, 0.5D);
+            }
         } else {
             this.biomeSource = new BiomeSource(this.world);
         }
@@ -88,7 +92,6 @@ public class DimensionMixin {
                 e.printStackTrace();
                 cir.setReturnValue(new OverworldChunkGenerator(this.world, this.world.getSeed()));
             }
-            cir.cancel();
         }
     }
 
@@ -102,6 +105,5 @@ public class DimensionMixin {
                         Block.BLOCKS[blockId].material.isSolid());
 
         cir.setReturnValue(valid);
-        cir.cancel();
     }
 }

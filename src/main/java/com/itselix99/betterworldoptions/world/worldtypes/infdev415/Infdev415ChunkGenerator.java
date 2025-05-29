@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.world.worldtypes.infdev415;
 
 import java.util.Random;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.CustomRandomTreeFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev415.feature.LargeOakTreeFeatureInfdev415;
@@ -321,7 +322,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
             for(var6 = 0; var6 < z; ++var6) {
                 var7 = var4 + this.random.nextInt(16) + 8;
                 int var8 = x + this.random.nextInt(16) + 8;
-                var9.setScale(1.0D, 1.0D, 1.0D);
+                var9.prepare(1.0D, 1.0D, 1.0D);
                 var9.generate(this.world, this.random, var7, this.world.getTopY(var7, var8), var8);
             }
         } else {

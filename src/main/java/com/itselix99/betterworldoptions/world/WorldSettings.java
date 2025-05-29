@@ -16,6 +16,8 @@ public class WorldSettings {
     public static boolean hardcore = false;
     public static boolean betaFeatures = true;
 
+    public static boolean alphaSnowCovered = false;
+
     private static final List<Runnable> changeListeners = new ArrayList<>();
 
     public static void addChangeListener(Runnable listener) {

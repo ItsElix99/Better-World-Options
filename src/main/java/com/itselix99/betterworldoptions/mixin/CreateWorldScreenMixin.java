@@ -34,6 +34,7 @@ public class CreateWorldScreenMixin extends Screen {
     @Unique private ButtonWidget moreWorldOptions;
     @Unique private ButtonWidget worldTypeButton;
     @Unique private ButtonWidget betaFeaturesButton;
+    @Unique private ButtonWidget winterModeButton;
     @Unique private boolean creative = false;
     @Shadow private boolean creatingLevel;
     @Unique private boolean isFlat = false;
@@ -57,10 +58,14 @@ public class CreateWorldScreenMixin extends Screen {
         this.buttons.clear();
         this.buttons.add(new ButtonWidget(0, this.width / 2 - 155, this.height - 28, 150, 20, var1.get("selectWorld.create")));
         this.buttons.add(new ButtonWidget(1, this.width / 2 + 5, this.height - 28, 150, 20, var1.get("gui.cancel")));
-        this.buttons.add(this.gamemodeButton = new ButtonWidget(2, this.width / 2 - 75, 100, 150, 20, var1.get("selectWorld.gamemode")+ " "+ var1.get("title.bhcreative.selectWorld.survival")));
+        this.buttons.add(this.gamemodeButton = new ButtonWidget(2, this.width / 2 - 75, 100, 150, 20, var1.get("selectWorld.gameMode")+ " "+ var1.get("title.bhcreative.selectWorld.survival")));
         this.buttons.add(this.moreWorldOptions = new ButtonWidget(3, this.width / 2 - 75, 172, 150, 20, updateMoreOptionsButtonText()));
         this.buttons.add(this.worldTypeButton = new ButtonWidget(4, this.width / 2 - 155, 100, 150, 20, var1.get("selectWorld.worldtype")));
         this.buttons.add(this.betaFeaturesButton = new ButtonWidget(5, this.width / 2 + 5, 100, 150, 20, var1.get("selectWorld.betaFeatures")+ " " + var1.get("options.on")));
+        this.buttons.add(this.winterModeButton = new ButtonWidget(6, this.width / 2 - 75, 150, 150, 20, var1.get("selectWorld.winterMode") + " " + var1.get("options.off")));
+        if (!Objects.equals(WorldSettings.name, "Alpha 1.1.2_01")) {
+            this.winterModeButton.visible = false;
+        }
         this.worldNameField = new TextFieldWidget(this, this.textRenderer, this.width / 2 - 100, 60, 200, 20, getWorldName());
         this.worldNameField.focused = true;
         this.worldNameField.setMaxLength(32);
@@ -70,6 +75,7 @@ public class CreateWorldScreenMixin extends Screen {
         updateGamemodeButtonText();
         updateWorldTypeButtonText();
         updateBetaFeaturesButtonText();
+        updateWinterModeButtonText();
         this.moreOptions = ScreenStateCache.wasInMoreOptions;
         this.seedField.setFocused(this.moreOptions);
         this.worldNameField.setFocused(!this.moreOptions);
@@ -93,14 +99,14 @@ public class CreateWorldScreenMixin extends Screen {
     @Unique
     private void updateGamemodeButtonText() {
         TranslationStorage translation = TranslationStorage.getInstance();
-        String gamemodeLabel = translation.get("selectWorld.gamemode");
+        String gamemodeLabel = translation.get("selectWorld.gameMode");
         String text;
         if (isBHCreativeModPresent()) {
             if (!WorldSettings.hardcore && !this.creative) {
-                text = translation.get("selectWorld.gamemode.survival");
+                text = translation.get("selectWorld.gameMode.survival");
                 this.gamemodeButton.text = gamemodeLabel + " " + text;
             } else if (WorldSettings.hardcore && !this.creative) {
-                text = translation.get("selectWorld.gamemode.hardcore");
+                text = translation.get("selectWorld.gameMode.hardcore");
                 this.gamemodeButton.text = gamemodeLabel + " " + text;
             } else if (!WorldSettings.hardcore) {
                 text = translation.get("title.bhcreative.selectWorld.creative");
@@ -108,10 +114,10 @@ public class CreateWorldScreenMixin extends Screen {
             }
         } else {
             if (!WorldSettings.hardcore) {
-                text = translation.get("selectWorld.gamemode.survival");
+                text = translation.get("selectWorld.gameMode.survival");
                 this.gamemodeButton.text = gamemodeLabel + " " + text;
             } else {
-                text = translation.get("selectWorld.gamemode.hardcore");
+                text = translation.get("selectWorld.gameMode.hardcore");
                 this.gamemodeButton.text = gamemodeLabel + " " + text;
             }
         }
@@ -152,6 +158,9 @@ public class CreateWorldScreenMixin extends Screen {
             if (isFlat) {
                 isFlat = false;
                 WorldSettings.betaFeatures = true;
+            } else if (WorldSettings.betaFeatures && WorldSettings.alphaSnowCovered) {
+                WorldSettings.alphaSnowCovered = false;
+                updateWinterModeButtonText();
             }
             if (WorldSettings.betaFeatures) {
                 betaFeaturesButton.text = translation.get("selectWorld.betaFeatures")+ " " + translation.get("options.on");
@@ -159,6 +168,16 @@ public class CreateWorldScreenMixin extends Screen {
                 betaFeaturesButton.text = translation.get("selectWorld.betaFeatures")+ " " + translation.get("options.off");
             }
 
+        }
+    }
+
+    @Unique
+    private void updateWinterModeButtonText() {
+        TranslationStorage translation = TranslationStorage.getInstance();
+        if (WorldSettings.alphaSnowCovered) {
+            this.winterModeButton.text = translation.get("selectWorld.winterMode") + " " + translation.get("options.on");
+        } else {
+            this.winterModeButton.text = translation.get("selectWorld.winterMode") + " " + translation.get("options.off");
         }
     }
 
@@ -276,6 +295,16 @@ public class CreateWorldScreenMixin extends Screen {
                     WorldSettings.betaFeatures = true;
                     updateBetaFeaturesButtonText();
                 }
+            } else if (button.id == 6) {
+                if (WorldSettings.alphaSnowCovered) {
+                    WorldSettings.alphaSnowCovered = false;
+                    System.out.println(WorldSettings.alphaSnowCovered);
+                    updateWinterModeButtonText();
+                } else {
+                    WorldSettings.alphaSnowCovered = true;
+                    System.out.println(WorldSettings.alphaSnowCovered);
+                    updateWinterModeButtonText();
+                }
             }
         }
         ci.cancel();
@@ -305,21 +334,27 @@ public class CreateWorldScreenMixin extends Screen {
             this.worldTypeButton.visible = false;
             this.betaFeaturesButton.visible = false;
             this.gamemodeButton.visible = true;
+            if (Objects.equals(WorldSettings.name, "Alpha 1.1.2_01")) {
+                this.winterModeButton.visible = false;
+            }
             this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.enterName"), this.width / 2 - 100, 47, 10526880);
             this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.resultFolder") + " " + this.worldSaveName, this.width / 2 - 100, 85, 10526880);
             if (isBHCreativeModPresent()) {
                 if (Objects.equals(this.gamemodeButton.text, "Game Mode: Survival")) {
-                    this.drawCenteredTextWithShadow(this.textRenderer, var4.get("selectWorld.gamemode.survival.info"), this.width / 2, 122, 10526880);
+                    this.drawCenteredTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.survival.info"), this.width / 2, 122, 10526880);
                 } else if (Objects.equals(this.gamemodeButton.text, "Game Mode: Hardcore")) {
-                    this.drawCenteredTextWithShadow(this.textRenderer, var4.get("selectWorld.gamemode.hardcore.info"), this.width / 2, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.hardcore.info.line1"), this.width / 2 - 100, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.hardcore.info.line2"), this.width / 2 - 100, 134, 10526880);
                 } else if (Objects.equals(this.gamemodeButton.text, "Game Mode: Creative")) {
-                    this.drawCenteredTextWithShadow(this.textRenderer, var4.get("selectWorld.gamemode.creative.info"), this.width / 2, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.creative.info.line1"), this.width / 2 - 100, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.creative.info.line2"), this.width / 2 - 100, 134, 10526880);
                 }
             } else {
                 if (Objects.equals(this.gamemodeButton.text, "Game Mode: Survival")) {
-                    this.drawCenteredTextWithShadow(this.textRenderer, var4.get("selectWorld.gamemode.survival.info"), this.width / 2, 122, 10526880);
+                    this.drawCenteredTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.survival.info"), this.width / 2, 122, 10526880);
                 } else if (Objects.equals(this.gamemodeButton.text, "Game Mode: Hardcore")) {
-                    this.drawCenteredTextWithShadow(this.textRenderer, var4.get("selectWorld.gamemode.hardcore.info"), this.width / 2, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.hardcore.info.line1"), this.width / 2 - 100, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.hardcore.info.line2"), this.width / 2 - 100, 134, 10526880);
                 }
             }
             this.worldNameField.render();
@@ -327,8 +362,23 @@ public class CreateWorldScreenMixin extends Screen {
             this.worldTypeButton.visible = true;
             this.betaFeaturesButton.visible = true;
             this.gamemodeButton.visible = false;
+            if (Objects.equals(WorldSettings.name, "Alpha 1.1.2_01")) {
+                this.winterModeButton.visible = true;
+                if (WorldSettings.betaFeatures) {
+                    this.winterModeButton.active = false;
+                } else {
+                    this.winterModeButton.active = true;
+                }
+            }
             this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.enterSeed"), this.width / 2 - 100, 47, 10526880);
             this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.seedInfo"), this.width / 2 - 100, 85, 10526880);
+            if (WorldSettings.betaFeatures) {
+                this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.line1"), this.width / 2 + 5, 122, 10526880);
+                this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.line2"), this.width / 2 + 5, 134, 10526880);
+            } else {
+                this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.disabled.line1"), this.width / 2 + 5, 122, 10526880);
+                this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.disabled.line2"), this.width / 2 + 5, 134, 10526880);
+            }
             this.seedField.render();
         }
         super.render(mouseX, mouseY, delta);

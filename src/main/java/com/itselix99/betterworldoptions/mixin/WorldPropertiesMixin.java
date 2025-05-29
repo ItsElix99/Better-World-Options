@@ -9,45 +9,45 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Objects;
+
 @Mixin(net.minecraft.world.WorldProperties.class)
 public class WorldPropertiesMixin implements BWOProperties {
-    @Unique
-    private String worldType;
+    @Unique private String worldType;
+    @Unique private boolean hardcore;
+    @Unique private boolean betaFeatures;
+    @Unique private boolean snowCovered;
 
-    @Unique
-    private boolean hardcore;
-
-    @Unique
-    private boolean betaFeatures;
-
-    @Override
-    public void bwo_setWorldType(String name) {
+    @Override public void bwo_setWorldType(String name) {
         this.worldType = name;
     }
 
-    @Override
-    public String bwo_getWorldType() {
+    @Override public String bwo_getWorldType() {
         return this.worldType;
     }
 
-    @Override
-    public void bwo_setHardcore(boolean hardcore) {
+    @Override public void bwo_setHardcore(boolean hardcore) {
         this.hardcore = hardcore;
     }
 
-    @Override
-    public boolean bwo_getHardcore() {
+    @Override public boolean bwo_getHardcore() {
         return this.hardcore;
     }
 
-    @Override
-    public void bwo_setBetaFeatures(boolean betaFeatures) {
+    @Override public void bwo_setBetaFeatures(boolean betaFeatures) {
         this.betaFeatures = betaFeatures;
     }
 
-    @Override
-    public boolean bwo_getBetaFeatures() {
+    @Override public boolean bwo_getBetaFeatures() {
         return this.betaFeatures;
+    }
+
+    @Override public void bwo_setSnowCovered(boolean snowCovered) {
+            this.snowCovered = snowCovered;
+    }
+
+    @Override public boolean bwo_getSnowCovered() {
+        return this.snowCovered;
     }
 
     @Inject(method = "<init>(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("TAIL"))
@@ -55,12 +55,20 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.worldType = nbt.getString("WorldType");
         this.hardcore = nbt.getBoolean("Hardcore");
         this.betaFeatures = nbt.getBoolean("BetaFeatures");
+        if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
+            this.snowCovered = nbt.getBoolean("SnowCovered");
+        }
     }
 
     @Inject(method = "<init>(JLjava/lang/String;)V", at = @At("TAIL"))
     private void newWorld(long seed, String name, CallbackInfo ci) {
+        this.worldType = WorldSettings.name;
         this.hardcore = WorldSettings.hardcore;
         this.betaFeatures = WorldSettings.betaFeatures;
+        if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
+            this.snowCovered = WorldSettings.alphaSnowCovered;
+            System.out.println(this.snowCovered);
+        }
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/WorldProperties;)V", at = @At("TAIL"))
@@ -68,6 +76,9 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.worldType = ((BWOProperties) source).bwo_getWorldType();
         this.hardcore = ((BWOProperties) source).bwo_getHardcore();
         this.betaFeatures = ((BWOProperties) source).bwo_getBetaFeatures();
+        if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
+            this.snowCovered = ((BWOProperties) source).bwo_getSnowCovered();
+        }
     }
 
     @Inject(method = "updateProperties", at = @At("TAIL"))
@@ -75,6 +86,9 @@ public class WorldPropertiesMixin implements BWOProperties {
         nbt.putString("WorldType", worldType);
         nbt.putBoolean("Hardcore", hardcore);
         nbt.putBoolean("BetaFeatures", betaFeatures);
+        if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
+            nbt.putBoolean("SnowCovered", snowCovered);
+        }
     }
 }
 

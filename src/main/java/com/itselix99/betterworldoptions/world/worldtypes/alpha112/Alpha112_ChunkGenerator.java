@@ -3,6 +3,8 @@ package com.itselix99.betterworldoptions.world.worldtypes.alpha112;
 import java.util.Random;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.world.worldtypes.alpha112.feature.LargeOakTreeFeatureAlpha112;
+import com.itselix99.betterworldoptions.world.worldtypes.alpha112.feature.OakTreeFeatureAlpha112;
 import com.itselix99.betterworldoptions.world.worldtypes.alpha112.math.noise.OctavePerlinNoiseSamplerAlpha112;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
@@ -95,7 +97,9 @@ public class Alpha112_ChunkGenerator implements ChunkSource {
                                 double var52 = temperatures[(var9 * 4 + var41) * 16 + var10 * 4 + var50];
                                 int var51 = 0;
                                 if(var11 * 8 + var30 < var5) {
-                                    if(var52 < 0.5D && var11 * 8 + var30 >= var5 - 1 && ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+                                    if (var52 < 0.5D && var11 * 8 + var30 >= var5 - 1 && ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+                                        var51 = Block.ICE.id;
+                                    } else if (((BWOProperties) this.world.getProperties()).bwo_getSnowCovered() && var11 * 8 + var30 >= var5 - 1 && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
                                         var51 = Block.ICE.id;
                                     } else {
                                         var51 = Block.WATER.id;
@@ -424,9 +428,9 @@ public class Alpha112_ChunkGenerator implements ChunkSource {
                 ++var12;
             }
 
-            Feature var18 = new OakTreeFeature();
+            Feature var18 = new OakTreeFeatureAlpha112();
             if(this.random.nextInt(10) == 0) {
-                var18 = new LargeOakTreeFeature();
+                var18 = new LargeOakTreeFeatureAlpha112();
             }
 
             int var16;
@@ -494,14 +498,14 @@ public class Alpha112_ChunkGenerator implements ChunkSource {
                 (new SpringFeature(Block.LAVA.id)).generate(this.world, this.random, var15, var16, var17);
             }
 
-//            for(var14 = var4 + 8 + 0; var14 < var4 + 8 + 16; ++var14) {
-//                for(var15 = var5 + 8 + 0; var15 < var5 + 8 + 16; ++var15) {
-//                    var16 = this.world.getTopSolidOrLiquidBlock(var14, var15);
-//                    if(this.world.snowCovered && var16 > 0 && var16 < 128 && this.world.getBlockId(var14, var16, var15) == 0 && this.world.getBlockMaterial(var14, var16 - 1, var15).getIsSolid() && this.world.getBlockMaterial(var14, var16 - 1, var15) != Material.ice) {
-//                        this.world.setBlockWithNotify(var14, var16, var15, Block.snow.blockID);
-//                    }
-//                }
-//            }
+            for(var14 = var4 + 8; var14 < var4 + 8 + 16; ++var14) {
+                for(var15 = var5 + 8; var15 < var5 + 8 + 16; ++var15) {
+                    var16 = this.world.getTopSolidBlockY(var14, var15);
+                    if(((BWOProperties) this.world.getProperties()).bwo_getSnowCovered() && var16 > 0 && var16 < 128 && this.world.getBlockId(var14, var16, var15) == 0 && this.world.getMaterial(var14, var16 - 1, var15).isSolid() && this.world.getMaterial(var14, var16 - 1, var15) != Material.ICE) {
+                        this.world.setBlock(var14, var16, var15, Block.SNOW.id);
+                    }
+                }
+            }
 
             SandBlock.fallInstantly = false;
         } else {
