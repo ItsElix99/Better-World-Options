@@ -31,8 +31,8 @@ public class DimensionMixin {
 
     @Inject(method = "initBiomeSource", at = @At("HEAD"), cancellable = true)
     protected void initBiomeSource(CallbackInfo ci) {
-        if (WorldSettings.customBiome != null) {
-            this.biomeSource = new FixedBiomeSource(WorldSettings.customBiome, 1.0D, 0.5D);
+        if (WorldSettings.singleBiome != null) {
+            this.biomeSource = new FixedBiomeSource(WorldSettings.singleBiome, 1.0D, 0.5D);
         } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Flat") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
             this.biomeSource = new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.5D);
         } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Early Infdev") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
@@ -55,7 +55,7 @@ public class DimensionMixin {
             this.hasCeiling = true;
         }
 
-        if (WorldSettings.customBiome == Biome.HELL) {
+        if (WorldSettings.singleBiome == Biome.HELL) {
             this.isNether = true;
             this.evaporatesWater = true;
         }
@@ -84,9 +84,9 @@ public class DimensionMixin {
 
     @Inject(method = "createChunkGenerator", at = @At("HEAD"), cancellable = true)
     private void injectCreateChunkGenerator(CallbackInfoReturnable<ChunkSource> cir) {
-        if (WorldSettings.chunkProviderConstructor != null) {
+        if (WorldSettings.chunkGenerator != null) {
             try {
-                ChunkSource chunkSource = WorldSettings.chunkProviderConstructor.newInstance(this.world, this.world.getSeed());
+                ChunkSource chunkSource = WorldSettings.chunkGenerator.newInstance(this.world, this.world.getSeed());
                 cir.setReturnValue(chunkSource);
             } catch (Exception e) {
                 e.printStackTrace();

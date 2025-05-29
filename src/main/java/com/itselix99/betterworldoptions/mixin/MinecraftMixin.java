@@ -66,11 +66,11 @@ public class MinecraftMixin {
             )
     )
     private World startGameInOtherDimensions(WorldStorage storage, String name, long seed, Operation<World> original) {
-        if (Objects.equals(WorldSettings.name, "Nether") && storage.loadProperties() == null) {
+        if (Objects.equals(WorldSettings.worldTypeName, "Nether") && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(-1));
-        } else if (Objects.equals(WorldSettings.name, "Skylands") && storage.loadProperties() == null) {
+        } else if (Objects.equals(WorldSettings.worldTypeName, "Skylands") && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(1));
-        } else if (Objects.equals(WorldSettings.name, "Aether") && storage.loadProperties() == null) {
+        } else if (Objects.equals(WorldSettings.worldTypeName, "Aether") && storage.loadProperties() == null) {
             try {
                 Class<?> aether = Class.forName("com.matthewperiut.aether.gen.dim.AetherDimension");
 

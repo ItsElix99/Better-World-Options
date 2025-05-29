@@ -62,7 +62,7 @@ public class WorldPropertiesMixin implements BWOProperties {
 
     @Inject(method = "<init>(JLjava/lang/String;)V", at = @At("TAIL"))
     private void newWorld(long seed, String name, CallbackInfo ci) {
-        this.worldType = WorldSettings.name;
+        this.worldType = WorldSettings.worldTypeName;
         this.hardcore = WorldSettings.hardcore;
         this.betaFeatures = WorldSettings.betaFeatures;
         if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {

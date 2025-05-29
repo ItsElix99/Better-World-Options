@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorldSettings {
-    public static String name = "Default";
-    public static Constructor<? extends ChunkSource> chunkProviderConstructor = null;
+    public static String worldTypeName = "Default";
+    public static Constructor<? extends ChunkSource> chunkGenerator = null;
     public static boolean skyDisabled = false;
-    public static Biome customBiome = null;
+    public static Biome singleBiome = null;
     public static int lightingMode = 0;
     public static int blockToSpawnOn = 0;
     public static boolean hardcore = false;
@@ -31,12 +31,12 @@ public class WorldSettings {
     }
 
     public static String getName() {
-        return name;
+        return worldTypeName;
     }
 
     public static void setName(String newName) {
-        if (!newName.equals(name)) {
-            name = newName;
+        if (!newName.equals(worldTypeName)) {
+            worldTypeName = newName;
             notifyChange();
         }
     }

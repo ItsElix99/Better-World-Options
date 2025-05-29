@@ -63,7 +63,7 @@ public class CreateWorldScreenMixin extends Screen {
         this.buttons.add(this.worldTypeButton = new ButtonWidget(4, this.width / 2 - 155, 100, 150, 20, var1.get("selectWorld.worldtype")));
         this.buttons.add(this.betaFeaturesButton = new ButtonWidget(5, this.width / 2 + 5, 100, 150, 20, var1.get("selectWorld.betaFeatures")+ " " + var1.get("options.on")));
         this.buttons.add(this.winterModeButton = new ButtonWidget(6, this.width / 2 - 75, 150, 150, 20, var1.get("selectWorld.winterMode") + " " + var1.get("options.off")));
-        if (!Objects.equals(WorldSettings.name, "Alpha 1.1.2_01")) {
+        if (!Objects.equals(WorldSettings.worldTypeName, "Alpha 1.1.2_01")) {
             this.winterModeButton.visible = false;
         }
         this.worldNameField = new TextFieldWidget(this, this.textRenderer, this.width / 2 - 100, 60, 200, 20, getWorldName());
@@ -144,11 +144,11 @@ public class CreateWorldScreenMixin extends Screen {
     @Unique
     private void updateBetaFeaturesButtonText() {
         TranslationStorage translation = TranslationStorage.getInstance();
-        if (WorldSettings.name == null || "Default".equals(WorldSettings.name) || "Nether".equals(WorldSettings.name) || "Skylands".equals(WorldSettings.name) || "Farlands".equals(WorldSettings.name) || "Beta 1.1_02".equals(WorldSettings.name)) {
+        if (WorldSettings.worldTypeName == null || "Default".equals(WorldSettings.worldTypeName) || "Nether".equals(WorldSettings.worldTypeName) || "Skylands".equals(WorldSettings.worldTypeName) || "Farlands".equals(WorldSettings.worldTypeName) || "Beta 1.1_02".equals(WorldSettings.worldTypeName)) {
             betaFeaturesButton.active = false;
             WorldSettings.betaFeatures = true;
             betaFeaturesButton.text = translation.get("selectWorld.betaFeatures")+ " " + translation.get("options.on");
-        } else if ("Flat".equals(WorldSettings.name)) {
+        } else if ("Flat".equals(WorldSettings.worldTypeName)) {
             betaFeaturesButton.active = true;
             WorldSettings.betaFeatures = false;
             isFlat = true;
@@ -334,7 +334,7 @@ public class CreateWorldScreenMixin extends Screen {
             this.worldTypeButton.visible = false;
             this.betaFeaturesButton.visible = false;
             this.gamemodeButton.visible = true;
-            if (Objects.equals(WorldSettings.name, "Alpha 1.1.2_01")) {
+            if (Objects.equals(WorldSettings.worldTypeName, "Alpha 1.1.2_01")) {
                 this.winterModeButton.visible = false;
             }
             this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.enterName"), this.width / 2 - 100, 47, 10526880);
@@ -362,7 +362,7 @@ public class CreateWorldScreenMixin extends Screen {
             this.worldTypeButton.visible = true;
             this.betaFeaturesButton.visible = true;
             this.gamemodeButton.visible = false;
-            if (Objects.equals(WorldSettings.name, "Alpha 1.1.2_01")) {
+            if (Objects.equals(WorldSettings.worldTypeName, "Alpha 1.1.2_01")) {
                 this.winterModeButton.visible = true;
                 if (WorldSettings.betaFeatures) {
                     this.winterModeButton.active = false;
