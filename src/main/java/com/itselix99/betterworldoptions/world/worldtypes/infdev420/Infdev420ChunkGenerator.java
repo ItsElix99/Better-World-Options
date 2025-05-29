@@ -307,7 +307,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
             for(var6 = 0; var6 < z; ++var6) {
                 var7 = var4 + this.random.nextInt(16) + 8;
                 int var8 = x + this.random.nextInt(16) + 8;
-                var9.setScale(1.0D, 1.0D, 1.0D);
+                var9.prepare(1.0D, 1.0D, 1.0D);
                 var9.generate(this.world, this.random, var7, this.world.getTopY(var7, var8), var8);
             }
         } else {

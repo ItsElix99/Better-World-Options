@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.CustomRandomTreeFeature;
-import com.itselix99.betterworldoptions.world.biomes.ClassicBiomes;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.LargeOakTreeFeature;
@@ -18,11 +18,11 @@ public class BiomeMixin implements CustomRandomTreeFeature {
 
     @Inject(method = "getSkyColor", at = @At("HEAD"), cancellable = true)
     public void getSkyColor(float par1, CallbackInfoReturnable<Integer> cir) {
-        if (this.equals(ClassicBiomes.EarlyInfdev)) {
+        if (this.equals(BetterWorldOptions.EarlyInfdev)) {
             cir.setReturnValue(200);
-        } else if (this.equals(ClassicBiomes.Infdev)) {
+        } else if (this.equals(BetterWorldOptions.Infdev)) {
             cir.setReturnValue(10079487);
-        } else if (this.equals(ClassicBiomes.Alpha)) {
+        } else if (this.equals(BetterWorldOptions.Alpha)) {
             cir.setReturnValue(8961023);
         }
     }

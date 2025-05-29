@@ -5,7 +5,10 @@ import com.itselix99.betterworldoptions.world.WorldSettings;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.world.FoliageColors;
+import net.minecraft.client.color.world.GrassColors;
 import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.storage.WorldStorage;
@@ -22,6 +25,23 @@ import java.util.Objects;
 public class MinecraftMixin {
     @Shadow public World world;
     @Shadow public GameOptions options;
+    @Shadow public TextureManager textureManager;
+
+    @Inject(method = "tick", at = @At(value = "TAIL"))
+    private void setGrassColor(CallbackInfo ci) {
+        if (this.world != null) {
+            String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
+            boolean betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
+
+            if ((worldType.equals("Alpha 1.1.2_01") || worldType.equals("Infdev 420") || worldType.equals("Infdev 415") || worldType.equals("Early Infdev")) && !betaFeatures) {
+                GrassColors.setColorMap(this.textureManager.getColors("/assets/betterworldoptions/stationapi/textures/misc/grasscolor.png"));
+                FoliageColors.setColorMap(this.textureManager.getColors("/assets/betterworldoptions/stationapi/textures/misc/foliagecolor.png"));
+            } else {
+                GrassColors.setColorMap(this.textureManager.getColors("/misc/grasscolor.png"));
+                FoliageColors.setColorMap(this.textureManager.getColors("/misc/foliagecolor.png"));
+            }
+        }
+    }
 
     @Inject(
             method = "tick",
