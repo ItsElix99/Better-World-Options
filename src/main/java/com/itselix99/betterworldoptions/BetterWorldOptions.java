@@ -78,7 +78,7 @@ public class BetterWorldOptions {
                 .passiveEntity(WolfEntity.class, 2)
                 .waterEntity(SquidEntity.class, 10)
                 .build();
-        WinterAlpha = BiomeBuilder.start("Alpha")
+        WinterAlpha = BiomeBuilder.start("Winter Alpha")
                 .fogColor(12638463)
                 .snow(true)
                 .hostileEntity(SpiderEntity.class, 10)

@@ -50,11 +50,11 @@ public class DeathScreenMixin extends Screen {
                 if (!(WorldTypeList.worldtypeList == null)) {
                     WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(0));
                 }
-                WorldSettings.resetHardcore();
+                WorldSettings.resetBooleans();
             } else {
                 this.minecraft.player.respawn();
                 this.minecraft.setScreen(null);
-                WorldSettings.resetHardcore();
+                WorldSettings.resetBooleans();
             }
         }
 
@@ -64,7 +64,7 @@ public class DeathScreenMixin extends Screen {
             if (!(WorldTypeList.worldtypeList == null)) {
                 WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(0));
             }
-            WorldSettings.resetHardcore();
+            WorldSettings.resetBooleans();
         }
         ci.cancel();
     }

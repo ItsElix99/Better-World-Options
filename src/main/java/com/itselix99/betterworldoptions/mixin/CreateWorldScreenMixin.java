@@ -144,14 +144,14 @@ public class CreateWorldScreenMixin extends Screen {
     @Unique
     private void updateBetaFeaturesButtonText() {
         TranslationStorage translation = TranslationStorage.getInstance();
-        if (WorldSettings.worldTypeName == null || "Default".equals(WorldSettings.worldTypeName) || "Nether".equals(WorldSettings.worldTypeName) || "Skylands".equals(WorldSettings.worldTypeName) || "Farlands".equals(WorldSettings.worldTypeName) || "Beta 1.1_02".equals(WorldSettings.worldTypeName)) {
+        if (WorldSettings.worldTypeName == null || "Default".equals(WorldSettings.worldTypeName) || "Nether".equals(WorldSettings.worldTypeName) || "Skylands".equals(WorldSettings.worldTypeName) || "Farlands".equals(WorldSettings.worldTypeName) || "Beta 1.1_02".equals(WorldSettings.worldTypeName) || "Aether".equals(WorldSettings.worldTypeName)) {
             betaFeaturesButton.active = false;
             WorldSettings.betaFeatures = true;
             betaFeaturesButton.text = translation.get("selectWorld.betaFeatures")+ " " + translation.get("options.on");
-        } else if ("Flat".equals(WorldSettings.worldTypeName)) {
+        } else if ("Flat".equals(WorldSettings.worldTypeName) && !isFlat) {
+            isFlat = true;
             betaFeaturesButton.active = true;
             WorldSettings.betaFeatures = false;
-            isFlat = true;
             betaFeaturesButton.text = translation.get("selectWorld.betaFeatures")+ " " + translation.get("options.off");
         } else {
             betaFeaturesButton.active = true;
@@ -252,7 +252,7 @@ public class CreateWorldScreenMixin extends Screen {
                 if (!(WorldTypeList.worldtypeList == null)) {
                     WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(0));
                 }
-                WorldSettings.resetHardcore();
+                WorldSettings.resetBooleans();
             } else if (button.id == 2) {
                 if (isBHCreativeModPresent()) {
                     if (Objects.equals(this.gamemodeButton.text, "Game Mode: Survival")) {
@@ -298,11 +298,9 @@ public class CreateWorldScreenMixin extends Screen {
             } else if (button.id == 6) {
                 if (WorldSettings.alphaSnowCovered) {
                     WorldSettings.alphaSnowCovered = false;
-                    System.out.println(WorldSettings.alphaSnowCovered);
                     updateWinterModeButtonText();
                 } else {
                     WorldSettings.alphaSnowCovered = true;
-                    System.out.println(WorldSettings.alphaSnowCovered);
                     updateWinterModeButtonText();
                 }
             }

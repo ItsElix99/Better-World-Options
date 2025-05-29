@@ -19,7 +19,7 @@ public class GameMenuScreenMixin extends Screen {
             if (WorldTypeList.worldtypeList != null) {
                 WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(0));
             }
-            WorldSettings.resetHardcore();
+            WorldSettings.resetBooleans();
         }
     }
 }

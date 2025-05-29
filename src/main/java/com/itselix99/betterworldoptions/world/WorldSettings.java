@@ -41,9 +41,12 @@ public class WorldSettings {
         }
     }
 
-    public static void resetHardcore() {
+    public static void resetBooleans() {
         if (hardcore) {
             hardcore = false;
+        }
+        if (alphaSnowCovered) {
+            alphaSnowCovered = false;
         }
     }
 }
