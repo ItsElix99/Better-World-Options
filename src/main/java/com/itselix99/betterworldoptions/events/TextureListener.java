@@ -19,6 +19,13 @@ public class TextureListener {
     public static int alphaLeaves;
     public static int alphaTallGrass;
     public static int alphaFern;
+    public static int alphaDiamondBlockBottom;
+    public static int alphaDiamondBlockSide;
+    public static int alphaGoldBlockBottom;
+    public static int alphaGoldBlockSide;
+    public static int alphaIronBlockBottom;
+    public static int alphaIronBlockSide;
+    public static int alphaCobblestone;
 
     @EventListener
     public void registerTextures(TextureRegisterEvent event) {
@@ -29,5 +36,12 @@ public class TextureListener {
         alphaLeaves = terrainAtlas.addTexture(Identifier.of(MOD_ID, "block/alpha_leaves")).index;
         alphaTallGrass = terrainAtlas.addTexture(Identifier.of(MOD_ID, "block/alpha_tallgrass")).index;
         alphaFern = terrainAtlas.addTexture(Identifier.of(MOD_ID, "block/alpha_fern")).index;
+        alphaDiamondBlockBottom = terrainAtlas.addTexture(Identifier.of(MOD_ID, "block/diamond_block_bottom")).index;
+        alphaDiamondBlockSide = terrainAtlas.addTexture(Identifier.of(MOD_ID, "block/diamond_block_side")).index;
+        alphaGoldBlockBottom = terrainAtlas.addTexture(Identifier.of(MOD_ID, "block/gold_block_bottom")).index;
+        alphaGoldBlockSide = terrainAtlas.addTexture(Identifier.of(MOD_ID, "block/gold_block_side")).index;
+        alphaIronBlockBottom = terrainAtlas.addTexture(Identifier.of(MOD_ID, "block/iron_block_bottom")).index;
+        alphaIronBlockSide = terrainAtlas.addTexture(Identifier.of(MOD_ID, "block/iron_block_side")).index;
+        alphaCobblestone = terrainAtlas.addTexture(Identifier.of(MOD_ID, "block/alpha_cobblestone")).index;
     }
 }
