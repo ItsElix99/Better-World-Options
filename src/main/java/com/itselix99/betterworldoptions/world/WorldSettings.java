@@ -18,6 +18,8 @@ public class WorldSettings {
 
     public static boolean alphaSnowCovered = false;
 
+    public static boolean isBetaFeatures = true;
+
     private static final List<Runnable> changeListeners = new ArrayList<>();
 
     public static void addChangeListener(Runnable listener) {
@@ -47,6 +49,9 @@ public class WorldSettings {
         }
         if (alphaSnowCovered) {
             alphaSnowCovered = false;
+        }
+        if (!isBetaFeatures) {
+            isBetaFeatures = true;
         }
     }
 }
