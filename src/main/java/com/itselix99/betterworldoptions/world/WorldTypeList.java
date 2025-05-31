@@ -161,8 +161,8 @@ public class WorldTypeList {
             WorldSettings.setName(worldType.name);
             WorldSettings.chunkGenerator = worldType.loadedClass.getConstructor(World.class, long.class);
             WorldSettings.skyDisabled = worldType.noSky;
-            WorldSettings.lightingMode= worldType.lightingMode;
-            WorldSettings.singleBiome= worldType.biome;
+            WorldSettings.lightingMode = worldType.lightingMode;
+            WorldSettings.singleBiome = worldType.biome;
             WorldSettings.blockToSpawnOn = worldType.blockToSpawnOn;
         } catch (NoSuchMethodException var2) {
             System.out.println(worldType.loadedClass.getName() + " must have a public constructor that takes (World, long)");
