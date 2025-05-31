@@ -14,7 +14,7 @@ public class CreativeListener {
 
     @EventListener
     public void onTabInit(TabRegistryEvent event) {
-        BWOBlocks = new SimpleTab(MOD_ID.id("bwo"), new ItemStack(BetterWorldOptions.ALPHA_LEAVES)); // Making tab
+        BWOBlocks = new SimpleTab(MOD_ID.id("bwo"), new ItemStack(BetterWorldOptions.ALPHA_LEAVES));
         event.register(BWOBlocks);
 
         BWOBlocks.addItem(new ItemStack(BetterWorldOptions.ALPHA_LEAVES));
