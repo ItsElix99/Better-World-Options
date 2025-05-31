@@ -18,3 +18,4 @@ selectWorld.betaFeatures.info.disabled.line2=version terrain features
 deathScreen.deleteWorld=Delete world
 deathScreen.hardcore.info=You cannot respawn in hardcore mode!
 tile.betterworldoptions.alpha_leaves.name=Alpha Leaves
+tab.betterworldoptions.bwo.name=Better World Options
