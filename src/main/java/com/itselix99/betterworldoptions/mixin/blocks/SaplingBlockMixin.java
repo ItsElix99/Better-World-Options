@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.mixin;
+package com.itselix99.betterworldoptions.mixin.blocks;
 
 import java.util.Objects;
 import java.util.Random;

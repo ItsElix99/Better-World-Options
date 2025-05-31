@@ -1,7 +1,8 @@
-package com.itselix99.betterworldoptions.mixin;
+package com.itselix99.betterworldoptions.mixin.blocks;
 
 import com.itselix99.betterworldoptions.events.TextureListener;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.world.WorldSettings;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,11 +12,11 @@ import net.minecraft.block.GrassBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.BlockView;
+import net.modificationstation.stationapi.api.client.block.StationRendererBlock;
+import net.modificationstation.stationapi.api.client.texture.atlas.Atlas;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
-
-import java.util.Objects;
 
 @Mixin(GrassBlock.class)
 public class GrassBlockMixin extends Block {
@@ -23,13 +24,9 @@ public class GrassBlockMixin extends Block {
         super(id, material);
     }
 
-    /**
-     * @author ItsElix99
-     * @reason Add alpha grass textures
-     */
     @Environment(EnvType.CLIENT)
-    @Overwrite
-    public int getTextureId(BlockView blockView, int x, int y, int z, int side) {
+    @ModifyReturnValue(method = "getTextureId", at = @At("RETURN"))
+    public int getTextureId(int original, BlockView blockView, int x, int y, int z, int side) {
         @Deprecated Minecraft minecraft = (Minecraft) FabricLoader.getInstance().getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
@@ -53,14 +50,7 @@ public class GrassBlockMixin extends Block {
                 return var6 != Material.SNOW_LAYER && var6 != Material.SNOW_BLOCK ? TextureListener.alphaGrassBlockSide : 68;
             }
         } else {
-            if (side == 1) {
-                return 0;
-            } else if (side == 0) {
-                return 2;
-            } else {
-                Material var6 = blockView.getMaterial(x, y + 1, z);
-                return var6 != Material.SNOW_LAYER && var6 != Material.SNOW_BLOCK ? 3 : 68;
-            }
+            return original;
         }
     }
 

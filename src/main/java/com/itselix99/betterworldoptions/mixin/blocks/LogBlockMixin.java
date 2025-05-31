@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.mixin;
+package com.itselix99.betterworldoptions.mixin.blocks;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.fabricmc.loader.api.FabricLoader;

@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.mixin;
+package com.itselix99.betterworldoptions.mixin.world;
 
 import com.itselix99.betterworldoptions.interfaces.GetDirectoryName;
 import com.itselix99.betterworldoptions.world.WorldSettings;

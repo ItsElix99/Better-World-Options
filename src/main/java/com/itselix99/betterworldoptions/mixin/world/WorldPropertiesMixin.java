@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.mixin;
+package com.itselix99.betterworldoptions.mixin.world;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.WorldSettings;
@@ -55,6 +55,7 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.worldType = nbt.getString("WorldType");
         this.hardcore = nbt.getBoolean("Hardcore");
         this.betaFeatures = nbt.getBoolean("BetaFeatures");
+        WorldSettings.isBetaFeatures = this.betaFeatures;
         if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
             this.snowCovered = nbt.getBoolean("SnowCovered");
         }
@@ -65,9 +66,9 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.worldType = WorldSettings.worldTypeName;
         this.hardcore = WorldSettings.hardcore;
         this.betaFeatures = WorldSettings.betaFeatures;
+        WorldSettings.isBetaFeatures = this.betaFeatures;
         if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
             this.snowCovered = WorldSettings.alphaSnowCovered;
-            System.out.println(this.snowCovered);
         }
     }
 
@@ -76,6 +77,7 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.worldType = ((BWOProperties) source).bwo_getWorldType();
         this.hardcore = ((BWOProperties) source).bwo_getHardcore();
         this.betaFeatures = ((BWOProperties) source).bwo_getBetaFeatures();
+        WorldSettings.isBetaFeatures = this.betaFeatures;
         if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
             this.snowCovered = ((BWOProperties) source).bwo_getSnowCovered();
         }

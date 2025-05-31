@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.mixin;
+package com.itselix99.betterworldoptions.mixin.blocks;
 
 import com.itselix99.betterworldoptions.events.TextureListener;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
@@ -31,7 +31,7 @@ public class TallPlantBlockMixin extends PlantBlock {
             } else if (meta == 2) {
                 return TextureListener.alphaFern;
             } else {
-                return meta == 0 ? this.textureId + 16 : TextureListener.alphaTallGrass;
+                return meta == 0 ? TextureListener.alphaFern : TextureListener.alphaTallGrass;
             }
         } else {
             if (meta == 1) {

@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.mixin;
+package com.itselix99.betterworldoptions.mixin.world;
 
 import java.io.File;
 import java.util.ArrayList;

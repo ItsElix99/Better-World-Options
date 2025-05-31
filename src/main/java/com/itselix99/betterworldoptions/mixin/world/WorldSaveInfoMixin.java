@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.mixin;
+package com.itselix99.betterworldoptions.mixin.world;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.world.storage.WorldSaveInfo;
