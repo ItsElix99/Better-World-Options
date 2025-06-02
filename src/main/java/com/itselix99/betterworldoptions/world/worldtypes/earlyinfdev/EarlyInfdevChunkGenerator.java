@@ -6,6 +6,7 @@ import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.CustomRandomTreeFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.carver.EarlyInfdevCaveWorldCarver;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.feature.OakTreeFeatureEarlyInfdev;
+import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.feature.OreFeatureEarlyInfdev;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.math.noise.OctavePerlinNoiseSamplerEarlyInfdev;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
@@ -174,28 +175,28 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                 int var5 = var4 + this.random.nextInt(16);
                 int var6 = this.random.nextInt(128);
                 int var7 = x + this.random.nextInt(16);
-                (new OreFeature(Block.COAL_ORE.id, 16)).generate(this.world, this.random, var5, var6, var7);
+                (new OreFeatureEarlyInfdev(Block.COAL_ORE.id)).generate(this.world, this.random, var5, var6, var7);
             }
 
             for(int var62 = 0; var62 < 10; ++var62) {
                 int var5 = var4 + this.random.nextInt(16);
                 int var6 = this.random.nextInt(64);
                 int var7 = x + this.random.nextInt(16);
-                (new OreFeature(Block.IRON_ORE.id, 8)).generate(this.world, this.random, var5, var6, var7);
+                (new OreFeatureEarlyInfdev(Block.IRON_ORE.id)).generate(this.world, this.random, var5, var6, var7);
             }
 
             if (this.random.nextInt(2) == 0) {
                 z = var4 + this.random.nextInt(16);
                 int var5 = this.random.nextInt(32);
                 int var6 = x + this.random.nextInt(16);
-                (new OreFeature(Block.GOLD_ORE.id, 8)).generate(this.world, this.random, z, var5, var6);
+                (new OreFeatureEarlyInfdev(Block.GOLD_ORE.id)).generate(this.world, this.random, z, var5, var6);
             }
 
             if (this.random.nextInt(8) == 0) {
                 z = var4 + this.random.nextInt(16);
                 int var5 = this.random.nextInt(16);
                 int var6 = x + this.random.nextInt(16);
-                (new OreFeature(Block.DIAMOND_ORE.id, 7)).generate(this.world, this.random, z, var5, var6);
+                (new OreFeatureEarlyInfdev(Block.DIAMOND_ORE.id)).generate(this.world, this.random, z, var5, var6);
             }
 
             z = (int)this.forestNoise.sample((double)var4 * (double)0.0625F, (double)x * (double)0.0625F) << 3;
