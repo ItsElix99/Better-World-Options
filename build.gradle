@@ -112,6 +112,10 @@ dependencies {
         transitive false
     }
 
+    modImplementation("maven.modrinth:translated-legacy:${project.translatedlegacy_version}-fabric,b1.7.3") {
+        transitive false
+    }
+
 }
 
 processResources {
