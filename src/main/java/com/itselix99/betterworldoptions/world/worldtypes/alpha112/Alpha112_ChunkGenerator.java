@@ -225,7 +225,7 @@ public class Alpha112_ChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte[-Short.MIN_VALUE];
+        byte[] var3 = new byte['耀'];
         Chunk var4 = new Chunk(this.world, var3, chunkX, chunkZ);
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
