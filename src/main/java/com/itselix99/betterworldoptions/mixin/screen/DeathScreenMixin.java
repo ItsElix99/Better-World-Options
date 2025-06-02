@@ -21,13 +21,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(DeathScreen.class)
 public class DeathScreenMixin extends Screen {
 
-    /**
-     * @author ItsElix99
-     * @reason Add delete world button
-     */
     @SuppressWarnings("unchecked")
-    @Overwrite
-    public void init() {
+    @Inject(method = "init", at = @At("TAIL"))
+    public void init(CallbackInfo ci) {
         TranslationStorage translation = TranslationStorage.getInstance();
         this.buttons.clear();
         if (((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
