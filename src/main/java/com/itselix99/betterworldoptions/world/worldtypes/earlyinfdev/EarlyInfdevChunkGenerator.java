@@ -4,7 +4,7 @@ import java.util.Random;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.CustomRandomTreeFeature;
-import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.feature.CaveFeatureEarlyInfdev;
+import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.carver.EarlyInfdevCaveWorldCarver;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.feature.OakTreeFeatureEarlyInfdev;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.math.noise.OctavePerlinNoiseSamplerEarlyInfdev;
 import net.minecraft.block.Block;
@@ -33,6 +33,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
     public final OctavePerlinNoiseSamplerEarlyInfdev forestNoise;
     private final World world;
     private final Generator cave = new CaveWorldCarver();
+    private final Generator caveEarlyInfdev = new EarlyInfdevCaveWorldCarver();
     private Biome[] biomes;
     private double[] temperatures;
 
@@ -41,6 +42,8 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         this.random = new Random(seed);
         if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
             ((CaveGenBaseImpl)cave).stationapi_setWorld(world);
+        } else {
+            ((CaveGenBaseImpl)caveEarlyInfdev).stationapi_setWorld(world);
         }
         this.noiseGen1 = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 16);
         this.noiseGen2 = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 16);
@@ -148,6 +151,8 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         this.buildTerrain(chunkX, chunkZ, var3, var5, var6);
         if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()){
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
+        } else {
+            this.caveEarlyInfdev.place(this, this.world, chunkX, chunkZ, var3);
         }
         FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var4.blocks);
@@ -164,20 +169,6 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             this.random.setSeed((long)x * 318279123L + (long)z * 919871212L);
             int var4 = x << 4;
             x = z << 4;
-
-            CaveFeatureEarlyInfdev var50 = new CaveFeatureEarlyInfdev();
-
-            for(int var60 = 0; var60 < 128; var60 += 16) {
-                int i4 = (int)(this.forestNoise.create((double)var4 * (double)0.0625F, (double)var60 * (double)0.0625F * (double)4.0F, (double)x * (double)0.0625F) + (double)(128 - var60) / (double)64.0F);
-                for(int var64 = 0; var64 < i4; ++var64) {
-                    int var5 = var4 + this.random.nextInt(16);
-                    int var6 = var60 + this.random.nextInt(16);
-                    int var7 = x + this.random.nextInt(16);
-                    var50.prepare(1.0F, 1.0F, 1.0F);
-                    var50.generate(this.world, this.random, var5, var6, var7);
-                }
-            }
-
 
             for(int var61 = 0; var61 < 20; ++var61) {
                 int var5 = var4 + this.random.nextInt(16);
