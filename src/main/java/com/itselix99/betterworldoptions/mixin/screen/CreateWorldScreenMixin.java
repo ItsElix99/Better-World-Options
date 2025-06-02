@@ -23,12 +23,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Objects;
 import java.util.Random;
 
-@Mixin(CreateWorldScreen.class)
+@Mixin(value = CreateWorldScreen.class, priority = 1500)
 public class CreateWorldScreenMixin extends Screen {
-    @Unique final Screen parent;
-    @Unique TextFieldWidget worldNameField;
-    @Unique TextFieldWidget seedField;
-    @Unique private String worldSaveName;
+    @Shadow private final Screen parent;
+    @Shadow private TextFieldWidget worldNameField;
+    @Shadow private TextFieldWidget seedField;
+    @Shadow private String worldSaveName;
     @Unique boolean moreOptions;
     @Unique private ButtonWidget gamemodeButton;
     @Unique private ButtonWidget moreWorldOptions;
@@ -50,9 +50,8 @@ public class CreateWorldScreenMixin extends Screen {
     }
 
     @SuppressWarnings("unchecked")
-    @Inject(method = "init", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "init", at = @At("TAIL"))
     public void init(CallbackInfo ci) {
-        ci.cancel();
         TranslationStorage var1 = TranslationStorage.getInstance();
         Keyboard.enableRepeatEvents(true);
         this.buttons.clear();
@@ -244,11 +243,13 @@ public class CreateWorldScreenMixin extends Screen {
                 ScreenStateCache.lastEnteredSeed = null;
                 ScreenStateCache.lastEnteredWorldName = null;
                 ScreenStateCache.wasInMoreOptions = false;
+                ScreenStateCache.lastWorldType = 0;
             } else if (button.id == 1) {
-                this.minecraft.setScreen(new SelectWorldScreen(this.parent));
+                this.minecraft.setScreen(this.parent);
                 ScreenStateCache.lastEnteredSeed = null;
                 ScreenStateCache.lastEnteredWorldName = null;
                 ScreenStateCache.wasInMoreOptions = false;
+                ScreenStateCache.lastWorldType = 0;
                 if (!(WorldTypeList.worldtypeList == null)) {
                     WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(0));
                 }
@@ -316,11 +317,11 @@ public class CreateWorldScreenMixin extends Screen {
 
         if (character == '\r') {
             this.buttonClicked((ButtonWidget)this.buttons.get(0));
-            ci.cancel();
         }
 
         ((ButtonWidget)this.buttons.get(0)).active = !this.worldNameField.getText().isEmpty();
         this.getSaveDirectoryNames();
+        ci.cancel();
     }
 
     @Inject(method = "render", at = @At("TAIL"))

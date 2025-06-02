@@ -13,6 +13,7 @@ import net.minecraft.world.storage.WorldStorage;
 import net.minecraft.world.storage.WorldStorageSource;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -20,9 +21,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(DeathScreen.class)
 public class DeathScreenMixin extends Screen {
 
+    /**
+     * @author ItsElix99
+     * @reason Add delete world button
+     */
     @SuppressWarnings("unchecked")
-    @Inject(method = "init", at = @At("TAIL"))
-    public void init(CallbackInfo ci) {
+    @Overwrite
+    public void init() {
         TranslationStorage translation = TranslationStorage.getInstance();
         this.buttons.clear();
         if (((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
@@ -72,13 +77,7 @@ public class DeathScreenMixin extends Screen {
     @Inject(method = "render", at = @At("TAIL"))
     public void render(int mouseX, int mouseY, float delta, CallbackInfo ci) {
         TranslationStorage translation = TranslationStorage.getInstance();
-        this.fillGradient(0, 0, this.width, this.height, 1615855616, -1602211792);
-        GL11.glPushMatrix();
-        GL11.glScalef(2.0F, 2.0F, 2.0F);
         boolean hardcore = ((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore();
-        this.drawCenteredTextWithShadow(this.textRenderer, "Game over!", this.width / 2 / 2, 30, 16777215);
-        GL11.glPopMatrix();
-        this.drawCenteredTextWithShadow(this.textRenderer, "Score: &e" + this.minecraft.player.getScore(), this.width / 2, 100, 16777215);
         if (hardcore) {
             this.drawCenteredTextWithShadow(this.textRenderer, translation.get("deathScreen.hardcore.info"), this.width / 2, 144, 16777215);
         }

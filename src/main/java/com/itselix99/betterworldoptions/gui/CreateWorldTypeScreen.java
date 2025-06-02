@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 public class CreateWorldTypeScreen extends Screen {
     protected Screen parentScreen;
     protected String screenTitle = "Select World Type";
-    public int selectedWorldType = 0;
     private CreateWorldTypeSlot createWorldTypeSlot;
     private ButtonWidget buttonSelect;
     public Minecraft mc;
@@ -32,7 +31,7 @@ public class CreateWorldTypeScreen extends Screen {
     protected void buttonClicked(ButtonWidget button) {
         if (button.active && button.visible) {
             if (button.id == 0) {
-                WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(this.selectedWorldType));
+                WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(ScreenStateCache.lastWorldType));
                 this.mc.setScreen(this.parentScreen);
             } else {
                 TranslationStorage var1 = TranslationStorage.getInstance();
@@ -50,11 +49,7 @@ public class CreateWorldTypeScreen extends Screen {
     }
 
     public static void onElementSelected(CreateWorldTypeScreen var0, int var1) {
-        var0.selectedWorldType = var1;
-    }
-
-    public static int getSelectedWorldType(CreateWorldTypeScreen var0) {
-        return var0.selectedWorldType;
+        ScreenStateCache.lastWorldType = var1;
     }
 
     public static ButtonWidget getSelectButton(CreateWorldTypeScreen var0) {

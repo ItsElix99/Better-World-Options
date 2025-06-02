@@ -22,17 +22,13 @@ public class CreateWorldTypeSlot extends EntryListWidget {
     protected void entryClicked(int var1, boolean var2) {
         TranslationStorage translation = TranslationStorage.getInstance();
         CreateWorldTypeScreen.onElementSelected(this.parentGui, var1);
-        boolean var3 = CreateWorldTypeScreen.getSelectedWorldType(this.parentGui) >= 0 && CreateWorldTypeScreen.getSelectedWorldType(this.parentGui) < this.getEntryCount();
         CreateWorldTypeScreen.getSelectButton(this.parentGui).text = translation.get("gui.done");
-        if(var2 && var3) {
-            WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(var1));
-        }
-
+        WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(var1));
     }
 
     @Override
     protected boolean isSelectedEntry(int var1) {
-        return var1 == CreateWorldTypeScreen.getSelectedWorldType(this.parentGui);
+        return ScreenStateCache.lastWorldType == var1;
     }
 
     @Override
