@@ -116,6 +116,14 @@ dependencies {
         transitive false
     }
 
+    modImplementation("maven.modrinth:betterf3-stationapi:${project.betterf3_version}-fabric,b1.7.3") {
+        transitive false
+    }
+
+    modImplementation("maven.modrinth:gameruleplease:${project.gameruleplease_version}-fabric,b1.7.3") {
+        transitive false
+    }
+
 }
 
 processResources {
