@@ -4,53 +4,45 @@ package com.itselix99.betterworldoptions.mixin.screen;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.OptionButtonWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
 import net.minecraft.client.resource.language.TranslationStorage;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.List;
 
 @Mixin(OptionsScreen.class)
 public class OptionsScreenMixin extends Screen {
-    @Shadow protected String title = "Options";
-    @Shadow private GameOptions options;
-    @Shadow private static Option[] RENDER_OPTIONS;
+    @Unique private OptionButtonWidget difficultyButton;
 
-    /**
-     * @author ItsElix99
-     * @reason Disabled the difficulty button when in hardcore mode
-     */
-    @SuppressWarnings("unchecked")
-    @Overwrite
-    public void init() {
-        TranslationStorage var1 = TranslationStorage.getInstance();
-        this.title = var1.get("options.title");
-        int var2 = 0;
-
-        for(Option var6 : RENDER_OPTIONS) {
-            if (!var6.isSlider()) {
-                OptionButtonWidget var7 = new OptionButtonWidget(var6.getId(), this.width / 2 - 155 + var2 % 2 * 160, this.height / 6 + 24 * (var2 >> 1), this.options.getString(var6));
-                if (var6 == Option.DIFFICULTY && this.minecraft.world != null && ((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
-                    var7.active = false;
-                    var7.text = var1.get("options.difficulty") + ": " + var1.get("options.difficulty.hardcore");
-                }
-                this.buttons.add(var7);
-            } else {
-                this.buttons.add(new SliderWidget(var6.getId(), this.width / 2 - 155 + var2 % 2 * 160, this.height / 6 + 24 * (var2 >> 1), var6, this.options.getString(var6), this.options.getFloat(var6)));
+    @Redirect(
+            method = "init",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/util/List;add(Ljava/lang/Object;)Z"
+            )
+    )
+    private boolean getDifficultyButton(List<Object> buttons, Object widget) {
+        if (widget instanceof OptionButtonWidget button) {
+            if (button.getOption() == Option.DIFFICULTY) {
+                this.difficultyButton = button;
             }
-
-            ++var2;
         }
 
-        this.buttons.add(new ButtonWidget(101, this.width / 2 - 100, this.height / 6 + 96 + 12, var1.get("options.video")));
-        this.buttons.add(new ButtonWidget(100, this.width / 2 - 100, this.height / 6 + 120 + 12, var1.get("options.controls")));
-        this.buttons.add(new ButtonWidget(200, this.width / 2 - 100, this.height / 6 + 168, var1.get("gui.done")));
+        return buttons.add(widget);
+    }
+
+    @Inject(method = "init", at = @At("TAIL"))
+    private void disableDifficultyButton(CallbackInfo ci) {
+        TranslationStorage var1 = TranslationStorage.getInstance();
+        if (this.minecraft.world != null && ((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
+            difficultyButton.active = false;
+            difficultyButton.text = var1.get("options.difficulty") + ": " + var1.get("options.difficulty.hardcore");
+        }
     }
 }

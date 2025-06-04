@@ -2,28 +2,29 @@ package com.itselix99.betterworldoptions.mixin.biomes;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.CustomRandomTreeFeature;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.LargeOakTreeFeature;
 import net.minecraft.world.gen.feature.OakTreeFeature;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Random;
 
 @Mixin(Biome.class)
 public class BiomeMixin implements CustomRandomTreeFeature {
 
-    @Inject(method = "getSkyColor", at = @At("HEAD"), cancellable = true)
-    public void getSkyColor(float par1, CallbackInfoReturnable<Integer> cir) {
+    @ModifyReturnValue(method = "getSkyColor", at = @At("RETURN"))
+    public int getSkyColor(int original) {
         if (this.equals(BetterWorldOptions.EarlyInfdev)) {
-            cir.setReturnValue(200);
+            return 200;
         } else if (this.equals(BetterWorldOptions.Infdev)) {
-            cir.setReturnValue(10079487);
+            return 10079487;
         } else if (this.equals(BetterWorldOptions.Alpha)) {
-            cir.setReturnValue(8961023);
+            return 8961023;
+        } else {
+            return original;
         }
     }
 

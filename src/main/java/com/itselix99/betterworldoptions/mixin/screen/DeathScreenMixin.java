@@ -11,35 +11,26 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.TranslationStorage;
 import net.minecraft.world.storage.WorldStorage;
 import net.minecraft.world.storage.WorldStorageSource;
-import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(DeathScreen.class)
 public class DeathScreenMixin extends Screen {
+    @Unique private ButtonWidget deleteWorldButton;
 
     @SuppressWarnings("unchecked")
     @Inject(method = "init", at = @At("TAIL"))
     public void init(CallbackInfo ci) {
         TranslationStorage translation = TranslationStorage.getInstance();
-        this.buttons.clear();
-        if (((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
-            this.buttons.add(new ButtonWidget(1, this.width / 2 - 100, this.height / 4 + 96, translation.get("deathScreen.deleteWorld")));
-        } else {
-            this.buttons.add(new ButtonWidget(1, this.width / 2 - 100, this.height / 4 + 72, "Respawn"));
-            this.buttons.add(new ButtonWidget(2, this.width / 2 - 100, this.height / 4 + 96, "Title menu"));
-            if (this.minecraft.session == null) {
-                ((ButtonWidget)this.buttons.get(1)).active = false;
-            }
-        }
+        this.buttons.add(this.deleteWorldButton = new ButtonWidget(3, this.width / 2 - 100, this.height / 4 + 96, translation.get("deathScreen.deleteWorld")));
     }
 
-    @Inject(method = "buttonClicked", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "buttonClicked", at = @At("TAIL"))
     protected void buttonClicked(ButtonWidget button, CallbackInfo ci) {
-        if (button.id == 1) {
+        if (button.id == 3) {
             if (this.minecraft.world != null && ((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
                 WorldStorage worldStorage = ((GetDirectoryName)this.minecraft.world).bwo_getDimensionData();
                 String getDirectoryName = ((GetDirectoryName) worldStorage).bwo_getDirectoryName();
@@ -52,22 +43,8 @@ public class DeathScreenMixin extends Screen {
                     WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(0));
                 }
                 WorldSettings.resetBooleans();
-            } else {
-                this.minecraft.player.respawn();
-                this.minecraft.setScreen(null);
-                WorldSettings.resetBooleans();
             }
         }
-
-        if (button.id == 2) {
-            this.minecraft.setWorld(null);
-            this.minecraft.setScreen(new TitleScreen());
-            if (!(WorldTypeList.worldtypeList == null)) {
-                WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(0));
-            }
-            WorldSettings.resetBooleans();
-        }
-        ci.cancel();
     }
 
     @Inject(method = "render", at = @At("TAIL"))
@@ -75,7 +52,14 @@ public class DeathScreenMixin extends Screen {
         TranslationStorage translation = TranslationStorage.getInstance();
         boolean hardcore = ((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore();
         if (hardcore) {
+            ((ButtonWidget) this.buttons.get(0)).active = false;
+            ((ButtonWidget) this.buttons.get(0)).visible = false;
+            ((ButtonWidget) this.buttons.get(1)).active = false;
+            ((ButtonWidget) this.buttons.get(1)).visible = false;
             this.drawCenteredTextWithShadow(this.textRenderer, translation.get("deathScreen.hardcore.info"), this.width / 2, 144, 16777215);
+        } else {
+            this.deleteWorldButton.active = false;
+            this.deleteWorldButton.visible = false;
         }
         super.render(mouseX, mouseY, delta);
     }

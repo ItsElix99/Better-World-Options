@@ -3,21 +3,21 @@ package com.itselix99.betterworldoptions.mixin;
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.WorldSettings;
-import net.minecraft.block.Block;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.dimension.Dimension;
-import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 @Mixin(Dimension.class)
@@ -26,7 +26,6 @@ public class DimensionMixin {
     @Shadow public boolean isNether;
     @Shadow public boolean evaporatesWater;
     @Shadow public boolean hasCeiling;
-    @Shadow public float[] lightLevelToLuminance;
     @Shadow public World world;
 
     @Inject(method = "initBiomeSource", at = @At("HEAD"), cancellable = true)
@@ -40,6 +39,8 @@ public class DimensionMixin {
         } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Infdev 415") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
             this.biomeSource = new FixedBiomeSource(BetterWorldOptions.Infdev, 1.0D, 0.5D);
         } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Infdev 420") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+            this.biomeSource = new FixedBiomeSource(BetterWorldOptions.Infdev, 1.0D, 0.5D);
+        } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Infdev 611") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
             this.biomeSource = new FixedBiomeSource(BetterWorldOptions.Infdev, 1.0D, 0.5D);
         } else if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Alpha 1.1.2_01") && !((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
             if (((BWOProperties) this.world.getProperties()).bwo_getSnowCovered()) {
@@ -62,48 +63,34 @@ public class DimensionMixin {
         ci.cancel();
     }
 
-    @Inject(method = "initBrightnessTable", at = @At("HEAD"), cancellable = true)
-    private void injectBrightnessTable(CallbackInfo ci) {
-        if (this.lightLevelToLuminance == null) {
-            this.lightLevelToLuminance = new float[16];
-        }
-
-        float ambientLight;
+    @ModifyVariable(
+            method = "initBrightnessTable",
+            at = @At("LOAD"),
+            ordinal = 0
+    )
+    private float modifyBrightnessBase(float original) {
         if (WorldSettings.lightingMode == 1) {
-            ambientLight = 0.1F;
-        } else {
-            ambientLight = 0.05F;
+            return 0.1F;
         }
-
-        for (int i = 0; i <= 15; ++i) {
-            float brightness = 1.0F - (float)i / 15.0F;
-            this.lightLevelToLuminance[i] = (1.0F - brightness) / (brightness * 3.0F + 1.0F) * (1.0F - ambientLight) + ambientLight;
-        }
-        ci.cancel();
+        return original;
     }
 
-    @Inject(method = "createChunkGenerator", at = @At("HEAD"), cancellable = true)
-    private void injectCreateChunkGenerator(CallbackInfoReturnable<ChunkSource> cir) {
+    @ModifyReturnValue(method = "createChunkGenerator", at = @At("RETURN"))
+    public ChunkSource createChunkGenerator(ChunkSource original) throws InvocationTargetException, InstantiationException, IllegalAccessException {
         if (WorldSettings.chunkGenerator != null) {
-            try {
-                ChunkSource chunkSource = WorldSettings.chunkGenerator.newInstance(this.world, this.world.getSeed());
-                cir.setReturnValue(chunkSource);
-            } catch (Exception e) {
-                e.printStackTrace();
-                cir.setReturnValue(new OverworldChunkGenerator(this.world, this.world.getSeed()));
-            }
+            return WorldSettings.chunkGenerator.newInstance(this.world, this.world.getSeed());
+        } else {
+            return original;
         }
     }
 
-    @Inject(method = "isValidSpawnPoint", at = @At("HEAD"), cancellable = true)
-    private void injectIsValidSpawnPoint(int x, int z, CallbackInfoReturnable<Boolean> cir) {
-        int blockId = this.world.getSpawnBlockId(x, z);
-
-        boolean valid = (blockId != Block.BEDROCK.id && blockId != 0) &&
-                (WorldSettings.blockToSpawnOn <= 0 ||
-                        blockId == WorldSettings.blockToSpawnOn ||
-                        Block.BLOCKS[blockId].material.isSolid());
-
-        cir.setReturnValue(valid);
+    @ModifyReturnValue(method = "isValidSpawnPoint", at = @At("RETURN"))
+    private boolean injectIsValidSpawnPoint(boolean original, int x, int z) {
+        int var3 = this.world.getSpawnBlockId(x, z);
+        if (WorldSettings.blockToSpawnOn != 0) {
+            return var3 == WorldSettings.blockToSpawnOn;
+        } else {
+            return original;
+        }
     }
 }

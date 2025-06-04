@@ -12,13 +12,13 @@ import com.itselix99.betterworldoptions.world.worldtypes.infdev420.feature.Large
 import net.minecraft.block.PlantBlock;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.BirchTreeFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.LargeOakTreeFeature;
 import net.minecraft.world.gen.feature.OakTreeFeature;
-import net.minecraft.world.gen.feature.SpruceTreeFeature;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SaplingBlock.class)
 public class SaplingBlockMixin extends PlantBlock {
@@ -27,55 +27,58 @@ public class SaplingBlockMixin extends PlantBlock {
         super(id, textureId);
     }
 
-    /**
-     * @author ItsElix99
-     * @reason World type trees
-     */
-    @Overwrite
-    public void generate(World world, int x, int y, int z, Random random) {
+    @Inject(
+            method = "generate",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/gen/feature/OakTreeFeature;<init>()V",
+                    ordinal = 0
+            ),
+            cancellable = true
+    )
+    public void generate(World world, int x, int y, int z, Random random, CallbackInfo ci) {
         int var6 = world.getBlockMeta(x, y, z) & 3;
-        world.setBlockWithoutNotifyingNeighbors(x, y, z, 0);
-        Feature var7 = null;
-        if (var6 == 1) {
-            var7 = new SpruceTreeFeature();
-        } else if (var6 == 2) {
-            var7 = new BirchTreeFeature();
-        }else {
-            if (Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Alpha 1.1.2_01")) {
-                if (!((BWOProperties) world.getProperties()).bwo_getBetaFeatures()) {
-                    var7 = new OakTreeFeatureAlpha112();
-                    if (random.nextInt(10) == 0) {
-                        var7 = new LargeOakTreeFeatureAlpha112();
-                    }
-                } else {
-                    var7 = new OakTreeFeature();
-                    if (random.nextInt(10) == 0) {
-                        var7 = new LargeOakTreeFeature();
-                    }
+        Feature var7;
+        if (Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Alpha 1.1.2_01")) {
+            if (!((BWOProperties) world.getProperties()).bwo_getBetaFeatures()) {
+                var7 = new OakTreeFeatureAlpha112();
+                if (random.nextInt(10) == 0) {
+                    var7 = new LargeOakTreeFeatureAlpha112();
                 }
-            } else if (Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Infdev 415")) {
-                if (!((BWOProperties) world.getProperties()).bwo_getBetaFeatures()) {
-                    var7 = new LargeOakTreeFeatureInfdev415();
-                } else {
+            } else {
+                var7 = new OakTreeFeature();
+                if (random.nextInt(10) == 0) {
                     var7 = new LargeOakTreeFeature();
                 }
-            } else if (Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Infdev 420")) {
-                if (!((BWOProperties) world.getProperties()).bwo_getBetaFeatures()) {
-                    var7 = new LargeOakTreeFeatureInfdev420();
-                } else {
-                    var7 = new LargeOakTreeFeature();
-                }
-            } else if (Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Early Infdev")) {
-                if (!((BWOProperties) world.getProperties()).bwo_getBetaFeatures()) {
-                    var7 = new OakTreeFeatureEarlyInfdev();
-                } else {
-                    var7 = new OakTreeFeature();
-                }
+            }
+        } else if (Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Infdev 415")) {
+            if (!((BWOProperties) world.getProperties()).bwo_getBetaFeatures()) {
+                var7 = new LargeOakTreeFeatureInfdev415();
+            } else {
+                var7 = new LargeOakTreeFeature();
+            }
+        } else if (Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Infdev 420")) {
+            if (!((BWOProperties) world.getProperties()).bwo_getBetaFeatures()) {
+                var7 = new LargeOakTreeFeatureInfdev420();
+            } else {
+                var7 = new LargeOakTreeFeature();
+            }
+        } else if (Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Early Infdev")) {
+            if (!((BWOProperties) world.getProperties()).bwo_getBetaFeatures()) {
+                var7 = new OakTreeFeatureEarlyInfdev();
+            } else {
+                var7 = new OakTreeFeature();
+            }
+        } else {
+            var7 = new OakTreeFeature();
+            if (random.nextInt(10) == 0) {
+                var7 = new LargeOakTreeFeature();
             }
         }
 
         if (!var7.generate(world, random, x, y, z)) {
             world.setBlockWithoutNotifyingNeighbors(x, y, z, this.id, var6);
         }
+        ci.cancel();
     }
 }

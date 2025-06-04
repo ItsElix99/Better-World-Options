@@ -5,26 +5,27 @@ import net.fabricmc.loader.api.FabricLoader;
 import com.itselix99.betterworldoptions.gui.CreateWorldTypeScreen;
 import com.itselix99.betterworldoptions.gui.ScreenStateCache;
 import com.itselix99.betterworldoptions.world.WorldSettings;
-import net.minecraft.client.SingleplayerInteractionManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.gui.screen.world.SelectWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.TranslationStorage;
 import net.minecraft.util.CharacterUtils;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldStorageSource;
-import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import java.util.Objects;
-import java.util.Random;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-@Mixin(value = CreateWorldScreen.class, priority = 1500)
-public class CreateWorldScreenMixin extends Screen {
+import java.util.List;
+import java.util.Objects;
+
+@Mixin(value = CreateWorldScreen.class, priority = 1100)
+public abstract class CreateWorldScreenMixin extends Screen {
     @Shadow private final Screen parent;
     @Shadow private TextFieldWidget worldNameField;
     @Shadow private TextFieldWidget seedField;
@@ -36,40 +37,73 @@ public class CreateWorldScreenMixin extends Screen {
     @Unique private ButtonWidget betaFeaturesButton;
     @Unique private ButtonWidget winterModeButton;
     @Unique private boolean creative = false;
-    @Shadow private boolean creatingLevel;
     @Unique private boolean isFlat = false;
 
     public CreateWorldScreenMixin(Screen parent) {
         this.parent = parent;
     }
 
-    @Override
-    public void tick() {
-        this.worldNameField.tick();
-        this.seedField.tick();
+    @Redirect(
+                method = "init",
+                at = @At(
+                        value = "INVOKE",
+                        target = "Ljava/util/List;add(Ljava/lang/Object;)Z"
+                )
+    )
+    private boolean modifyButton(List<Object> buttons, Object widget) {
+        if (widget instanceof ButtonWidget button) {
+             if (button.id == 0) {
+                ButtonWidget customButton = new ButtonWidget(button.id, this.width / 2 - 155, this.height - 28, 150, 20, button.text);
+                return buttons.add(customButton);
+            } else if (button.id == 1) {
+                ButtonWidget customButton = new ButtonWidget(button.id, this.width / 2 + 5, this.height - 28, 150, 20, button.text);
+                return buttons.add(customButton);
+            }
+        }
+        return buttons.add(widget);
+    }
+
+    @ModifyArgs(
+            method = "init",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;<init>(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/client/font/TextRenderer;IIIILjava/lang/String;)V",
+                    ordinal = 0
+            )
+    )
+    private void modifyWorldField(Args args) {
+        args.set(6,getWorldName());
+    }
+
+    @ModifyArgs(
+            method = "init",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;<init>(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/client/font/TextRenderer;IIIILjava/lang/String;)V",
+                    ordinal = 1
+            )
+    )
+    private void modifySeedField(Args args) {
+        args.set(3, 60);
+        args.set(6,getSeed());
     }
 
     @SuppressWarnings("unchecked")
     @Inject(method = "init", at = @At("TAIL"))
     public void init(CallbackInfo ci) {
         TranslationStorage var1 = TranslationStorage.getInstance();
-        Keyboard.enableRepeatEvents(true);
-        this.buttons.clear();
-        this.buttons.add(new ButtonWidget(0, this.width / 2 - 155, this.height - 28, 150, 20, var1.get("selectWorld.create")));
-        this.buttons.add(new ButtonWidget(1, this.width / 2 + 5, this.height - 28, 150, 20, var1.get("gui.cancel")));
-        this.buttons.add(this.gamemodeButton = new ButtonWidget(2, this.width / 2 - 75, 100, 150, 20, var1.get("selectWorld.gameMode")+ " "+ var1.get("title.bhcreative.selectWorld.survival")));
-        this.buttons.add(this.moreWorldOptions = new ButtonWidget(3, this.width / 2 - 75, 172, 150, 20, updateMoreOptionsButtonText()));
-        this.buttons.add(this.worldTypeButton = new ButtonWidget(4, this.width / 2 - 155, 100, 150, 20, var1.get("selectWorld.worldtype")));
-        this.buttons.add(this.betaFeaturesButton = new ButtonWidget(5, this.width / 2 + 5, 100, 150, 20, var1.get("selectWorld.betaFeatures")+ " " + var1.get("options.on")));
-        this.buttons.add(this.winterModeButton = new ButtonWidget(6, this.width / 2 - 75, 150, 150, 20, var1.get("selectWorld.winterMode") + " " + var1.get("options.off")));
+        if (isBHCreativeModPresent()) {
+            this.buttons.remove(1);
+        }
+
+        this.buttons.add(this.gamemodeButton = new ButtonWidget(3, this.width / 2 - 75, 100, 150, 20, var1.get("selectWorld.gameMode")+ " "+ var1.get("title.bhcreative.selectWorld.survival")));
+        this.buttons.add(this.moreWorldOptions = new ButtonWidget(4, this.width / 2 - 75, 172, 150, 20, updateMoreOptionsButtonText()));
+        this.buttons.add(this.worldTypeButton = new ButtonWidget(5, this.width / 2 - 155, 100, 150, 20, var1.get("selectWorld.worldtype")));
+        this.buttons.add(this.betaFeaturesButton = new ButtonWidget(6, this.width / 2 + 5, 100, 150, 20, var1.get("selectWorld.betaFeatures")+ " " + var1.get("options.on")));
+        this.buttons.add(this.winterModeButton = new ButtonWidget(7, this.width / 2 - 75, 150, 150, 20, var1.get("selectWorld.winterMode") + " " + var1.get("options.off")));
         if (!Objects.equals(WorldSettings.worldTypeName, "Alpha 1.1.2_01")) {
             this.winterModeButton.visible = false;
         }
-        this.worldNameField = new TextFieldWidget(this, this.textRenderer, this.width / 2 - 100, 60, 200, 20, getWorldName());
-        this.worldNameField.focused = true;
-        this.worldNameField.setMaxLength(32);
-        this.seedField = new TextFieldWidget(this, this.textRenderer, this.width / 2 - 100, 60, 200, 20, getSeed());
-        this.getSaveDirectoryNames();
         WorldSettings.addChangeListener(this::updateWorldTypeButtonText);
         updateGamemodeButtonText();
         updateWorldTypeButtonText();
@@ -78,6 +112,13 @@ public class CreateWorldScreenMixin extends Screen {
         this.moreOptions = ScreenStateCache.wasInMoreOptions;
         this.seedField.setFocused(this.moreOptions);
         this.worldNameField.setFocused(!this.moreOptions);
+    }
+
+    @Inject(method = "init", at = @At("TAIL"))
+    private void fixCancelButtonY(CallbackInfo ci) {
+        if (isBHCreativeModPresent()) {
+            ((ButtonWidget) this.buttons.get(1)).y = this.height - 28;
+        }
     }
 
     @Unique
@@ -187,7 +228,7 @@ public class CreateWorldScreenMixin extends Screen {
     }
 
 
-    @Unique
+    @Shadow
     private void getSaveDirectoryNames() {
         this.worldSaveName = this.worldNameField.getText().trim();
 
@@ -211,29 +252,10 @@ public class CreateWorldScreenMixin extends Screen {
         return worldName;
     }
 
-    @Inject(method = "buttonClicked", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "buttonClicked", at = @At("TAIL"))
     protected void buttonClicked(ButtonWidget button, CallbackInfo ci) {
         if (button.active && button.visible) {
             if (button.id == 0) {
-                this.minecraft.setScreen(null);
-                if (this.creatingLevel) return;
-
-                this.creatingLevel = true;
-
-                long seed = new Random().nextLong();
-                String seedText = this.seedField.getText();
-                if (!MathHelper.isNullOrEmpty(seedText)) {
-                    try {
-                        seed = Long.parseLong(seedText);
-                    } catch (NumberFormatException e) {
-                        seed = seedText.hashCode();
-                    }
-                }
-
-                this.minecraft.interactionManager = new SingleplayerInteractionManager(this.minecraft);
-                this.minecraft.startGame(this.worldSaveName, this.worldNameField.getText(), seed);
-                this.minecraft.setScreen(null);
-
                 if (isBHCreativeModPresent()) {
                     if (minecraft.player != null) {
                         minecraft.player.creative_setCreative(this.creative);
@@ -245,7 +267,6 @@ public class CreateWorldScreenMixin extends Screen {
                 ScreenStateCache.wasInMoreOptions = false;
                 ScreenStateCache.lastWorldType = 0;
             } else if (button.id == 1) {
-                this.minecraft.setScreen(this.parent);
                 ScreenStateCache.lastEnteredSeed = null;
                 ScreenStateCache.lastEnteredWorldName = null;
                 ScreenStateCache.wasInMoreOptions = false;
@@ -254,7 +275,7 @@ public class CreateWorldScreenMixin extends Screen {
                     WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(0));
                 }
                 WorldSettings.resetBooleans();
-            } else if (button.id == 2) {
+            } else if (button.id == 3) {
                 if (isBHCreativeModPresent()) {
                     if (Objects.equals(this.gamemodeButton.text, "Game Mode: Survival")) {
                         WorldSettings.hardcore = true;
@@ -276,19 +297,19 @@ public class CreateWorldScreenMixin extends Screen {
                         updateGamemodeButtonText();
                     }
                 }
-            } else if (button.id == 3) {
+            } else if (button.id == 4) {
                 TranslationStorage translation = TranslationStorage.getInstance();
                 this.moreOptions = !this.moreOptions;
                 this.moreWorldOptions.text = this.moreOptions ? translation.get("gui.done") : translation.get("selectWorld.moreWorldOptions");
                 this.seedField.setFocused(this.moreOptions);
                 this.worldNameField.setFocused(!this.moreOptions);
-            } else if (button.id == 4) {
+            } else if (button.id == 5) {
                 ScreenStateCache.lastEnteredSeed = this.seedField.getText();
                 ScreenStateCache.lastEnteredWorldName = this.worldNameField.getText();
                 ScreenStateCache.wasInMoreOptions = this.moreOptions;
 
                 this.minecraft.setScreen(new CreateWorldTypeScreen(this));
-            } else if (button.id == 5) {
+            } else if (button.id == 6) {
                 if (WorldSettings.betaFeatures) {
                     WorldSettings.betaFeatures = false;
                     updateBetaFeaturesButtonText();
@@ -296,7 +317,7 @@ public class CreateWorldScreenMixin extends Screen {
                     WorldSettings.betaFeatures = true;
                     updateBetaFeaturesButtonText();
                 }
-            } else if (button.id == 6) {
+            } else if (button.id == 7) {
                 if (WorldSettings.alphaSnowCovered) {
                     WorldSettings.alphaSnowCovered = false;
                     updateWinterModeButtonText();
@@ -306,9 +327,7 @@ public class CreateWorldScreenMixin extends Screen {
                 }
             }
         }
-        ci.cancel();
     }
-
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     private void keyPressed(char character, int keyCode, CallbackInfo ci) {
@@ -324,7 +343,7 @@ public class CreateWorldScreenMixin extends Screen {
         ci.cancel();
     }
 
-    @Inject(method = "render", at = @At("TAIL"))
+    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     public void render(int mouseX, int mouseY, float delta, CallbackInfo ci) {
         TranslationStorage var4 = TranslationStorage.getInstance();
         this.renderBackground();
@@ -381,5 +400,6 @@ public class CreateWorldScreenMixin extends Screen {
             this.seedField.render();
         }
         super.render(mouseX, mouseY, delta);
+        ci.cancel();
     }
 }
