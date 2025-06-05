@@ -2,6 +2,8 @@ package com.itselix99.betterworldoptions.mixin.screen;
 
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.widget.OptionButtonWidget;
@@ -20,21 +22,20 @@ import java.util.List;
 public class OptionsScreenMixin extends Screen {
     @Unique private OptionButtonWidget difficultyButton;
 
-    @Redirect(
+    @WrapOperation(
             method = "init",
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/util/List;add(Ljava/lang/Object;)Z"
             )
     )
-    private boolean getDifficultyButton(List<Object> buttons, Object widget) {
+    private boolean getDifficultyButton(List<Object> buttons, Object widget, Operation<Boolean> original) {
         if (widget instanceof OptionButtonWidget button) {
             if (button.getOption() == Option.DIFFICULTY) {
                 this.difficultyButton = button;
             }
         }
-
-        return buttons.add(widget);
+        return original.call(buttons, widget);
     }
 
     @Inject(method = "init", at = @At("TAIL"))

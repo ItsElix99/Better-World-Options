@@ -1,23 +1,22 @@
 package com.itselix99.betterworldoptions.mixin.screen;
 
 import com.itselix99.betterworldoptions.world.WorldTypeList;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.fabricmc.loader.api.FabricLoader;
 import com.itselix99.betterworldoptions.gui.CreateWorldTypeScreen;
 import com.itselix99.betterworldoptions.gui.ScreenStateCache;
 import com.itselix99.betterworldoptions.world.WorldSettings;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.TranslationStorage;
-import net.minecraft.util.CharacterUtils;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.storage.WorldStorageSource;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
@@ -43,24 +42,24 @@ public abstract class CreateWorldScreenMixin extends Screen {
         this.parent = parent;
     }
 
-    @Redirect(
-                method = "init",
-                at = @At(
-                        value = "INVOKE",
-                        target = "Ljava/util/List;add(Ljava/lang/Object;)Z"
-                )
+    @WrapOperation(
+            method = "init",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/util/List;add(Ljava/lang/Object;)Z"
+            )
     )
-    private boolean modifyButton(List<Object> buttons, Object widget) {
+    private boolean wrapAddButton(List<Object> buttons, Object widget, Operation<Boolean> original) {
         if (widget instanceof ButtonWidget button) {
-             if (button.id == 0) {
+            if (button.id == 0) {
                 ButtonWidget customButton = new ButtonWidget(button.id, this.width / 2 - 155, this.height - 28, 150, 20, button.text);
-                return buttons.add(customButton);
+                return original.call(buttons, customButton);
             } else if (button.id == 1) {
                 ButtonWidget customButton = new ButtonWidget(button.id, this.width / 2 + 5, this.height - 28, 150, 20, button.text);
-                return buttons.add(customButton);
+                return original.call(buttons, customButton);
             }
         }
-        return buttons.add(widget);
+        return original.call(buttons, widget);
     }
 
     @ModifyArgs(
@@ -71,7 +70,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
                     ordinal = 0
             )
     )
-    private void modifyWorldField(Args args) {
+    private void modifyWorldNameField(Args args) {
         args.set(6,getWorldName());
     }
 
@@ -227,31 +226,6 @@ public abstract class CreateWorldScreenMixin extends Screen {
         return FabricLoader.getInstance().isModLoaded("bhcreative");
     }
 
-
-    @Shadow
-    private void getSaveDirectoryNames() {
-        this.worldSaveName = this.worldNameField.getText().trim();
-
-        for(char var4 : CharacterUtils.INVALID_CHARS_WORLD_NAME) {
-            this.worldSaveName = this.worldSaveName.replace(var4, '_');
-        }
-
-        if (MathHelper.isNullOrEmpty(this.worldSaveName)) {
-            this.worldSaveName = "World";
-        }
-
-        this.worldSaveName = getWorldSaveName(this.minecraft.getWorldStorageSource(), this.worldSaveName);
-    }
-
-    @Shadow
-    public static String getWorldSaveName(WorldStorageSource storageSource, String worldName) {
-        while(storageSource.method_1004(worldName) != null) {
-            worldName = worldName + "-";
-        }
-
-        return worldName;
-    }
-
     @Inject(method = "buttonClicked", at = @At("TAIL"))
     protected void buttonClicked(ButtonWidget button, CallbackInfo ci) {
         if (button.active && button.visible) {
@@ -329,25 +303,116 @@ public abstract class CreateWorldScreenMixin extends Screen {
         }
     }
 
-    @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
-    private void keyPressed(char character, int keyCode, CallbackInfo ci) {
+    @WrapOperation(
+            method = "keyPressed",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;keyPressed(CI)V"
+            )
+    )
+    private void keyPressed(TextFieldWidget instance, char character, int keyCode, Operation<Void> original) {
         TextFieldWidget activeField = this.moreOptions ? this.seedField : this.worldNameField;
-        activeField.keyPressed(character, keyCode);
-
-        if (character == '\r') {
-            this.buttonClicked((ButtonWidget)this.buttons.get(0));
-        }
-
-        ((ButtonWidget)this.buttons.get(0)).active = !this.worldNameField.getText().isEmpty();
-        this.getSaveDirectoryNames();
-        ci.cancel();
+        original.call(activeField, character, keyCode);
     }
 
-    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;drawCenteredTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"
+            )
+    )
+    private void createWorldText(CreateWorldScreen instance, TextRenderer textRenderer, String text, int centerX, int y, int color, Operation<Void> original) {
+        original.call(instance, textRenderer, text, centerX, 20, color);
+    }
+
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V",
+                    ordinal = 0
+            )
+    )
+    private void enterNameText(CreateWorldScreen instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Void> original) {
+        if(!this.moreOptions) {
+            original.call(instance, textRenderer, text, x, y, color);
+        }
+    }
+
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V",
+                    ordinal = 1
+            )
+    )
+    private void resultFolderText(CreateWorldScreen instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Void> original) {
+        if(!this.moreOptions) {
+            original.call(instance, textRenderer, text, x, y, color);
+        }
+    }
+
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V",
+                    ordinal = 2
+            )
+    )
+    private void enterSeedText(CreateWorldScreen instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Void> original) {
+        if(this.moreOptions) {
+            original.call(instance, textRenderer, text, x, 47, color);
+        }
+    }
+
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V",
+                    ordinal = 3
+            )
+    )
+    private void seedInfoText(CreateWorldScreen instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Void> original) {
+        if(this.moreOptions) {
+            original.call(instance, textRenderer, text, x, 85, color);
+        }
+    }
+
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;render()V",
+                    ordinal = 0
+            )
+    )
+    private void worldNameFieldRender(TextFieldWidget instance, Operation<Void> original) {
+        if(!this.moreOptions) {
+            original.call(instance);
+        }
+    }
+
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;render()V",
+                    ordinal = 1
+            )
+    )
+    private void seedFieldRender(TextFieldWidget instance, Operation<Void> original) {
+        if(this.moreOptions) {
+            original.call(instance);
+        }
+    }
+
+    @Inject(method = "render", at = @At("TAIL"))
     public void render(int mouseX, int mouseY, float delta, CallbackInfo ci) {
         TranslationStorage var4 = TranslationStorage.getInstance();
-        this.renderBackground();
-        this.drawCenteredTextWithShadow(this.textRenderer, var4.get("selectWorld.create"), this.width / 2, 20, 16777215);
         if(!this.moreOptions) {
             this.worldTypeButton.visible = false;
             this.betaFeaturesButton.visible = false;
@@ -355,8 +420,6 @@ public abstract class CreateWorldScreenMixin extends Screen {
             if (Objects.equals(WorldSettings.worldTypeName, "Alpha 1.1.2_01")) {
                 this.winterModeButton.visible = false;
             }
-            this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.enterName"), this.width / 2 - 100, 47, 10526880);
-            this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.resultFolder") + " " + this.worldSaveName, this.width / 2 - 100, 85, 10526880);
             if (isBHCreativeModPresent()) {
                 if (Objects.equals(this.gamemodeButton.text, "Game Mode: Survival")) {
                     this.drawCenteredTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.survival.info"), this.width / 2, 122, 10526880);
@@ -375,7 +438,6 @@ public abstract class CreateWorldScreenMixin extends Screen {
                     this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.hardcore.info.line2"), this.width / 2 - 100, 134, 10526880);
                 }
             }
-            this.worldNameField.render();
         } else {
             this.worldTypeButton.visible = true;
             this.betaFeaturesButton.visible = true;
@@ -388,8 +450,6 @@ public abstract class CreateWorldScreenMixin extends Screen {
                     this.winterModeButton.active = true;
                 }
             }
-            this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.enterSeed"), this.width / 2 - 100, 47, 10526880);
-            this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.seedInfo"), this.width / 2 - 100, 85, 10526880);
             if (WorldSettings.betaFeatures) {
                 this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.line1"), this.width / 2 + 5, 122, 10526880);
                 this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.line2"), this.width / 2 + 5, 134, 10526880);
@@ -397,9 +457,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.disabled.line1"), this.width / 2 + 5, 122, 10526880);
                 this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.disabled.line2"), this.width / 2 + 5, 134, 10526880);
             }
-            this.seedField.render();
         }
         super.render(mouseX, mouseY, delta);
-        ci.cancel();
     }
 }

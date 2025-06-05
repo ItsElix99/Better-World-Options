@@ -1,6 +1,8 @@
 package com.itselix99.betterworldoptions.mixin.screen;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -15,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class InGameHudMixin extends DrawContext {
     @Shadow private Minecraft minecraft;
 
-    @Redirect(
+    @WrapOperation(
             method = "render",
             at = @At(
                     value = "INVOKE",
@@ -23,11 +25,12 @@ public class InGameHudMixin extends DrawContext {
                     ordinal = 1
             )
     )
-    private void render(int target, int texture) {
+    private void renderHardcoreHearts(int target, int texture, Operation<Void> original) {
         if (((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
-            GL11.glBindTexture(target, this.minecraft.textureManager.getTextureId("/assets/betterworldoptions/stationapi/textures/gui/iconsWithHardcoreHearts.png"));
+            int hardcoreHearts = this.minecraft.textureManager.getTextureId("/assets/betterworldoptions/stationapi/textures/gui/iconsWithHardcoreHearts.png");
+            original.call(target, hardcoreHearts);
         } else {
-            GL11.glBindTexture(target, texture);
+            original.call(target, texture);
         }
     }
 }
