@@ -59,6 +59,22 @@ public class MinecraftMixin {
     }
 
     @WrapOperation(
+            method = "respawnPlayer",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/dimension/Dimension;hasWorldSpawn()Z"
+            )
+    )
+    private boolean respawnPlayerInOtherDimensions(Dimension instance, Operation<Boolean> original) {
+        String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
+        if (Objects.equals(worldType, "Aether")) {
+            return true;
+        } else {
+            return original.call(instance);
+        }
+    }
+
+    @WrapOperation(
             method = "startGame",
             at = @At(
                     value = "NEW",

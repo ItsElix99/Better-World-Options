@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.mixin;
+package com.itselix99.betterworldoptions.mixin.dimensions;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
