@@ -4,7 +4,8 @@
   "package": "com.itselix99.betterworldoptions.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "DimensionMixin",
+    "dimensions.DimensionMixin",
+    "dimensions.NetherDimensionMixin",
     "biomes.BiomeMixin",
     "biomes.ForestBiomeMixin",
     "biomes.RainforestBiomeMixin",
@@ -26,6 +27,7 @@
   ],
   "client": [
     "MinecraftMixin",
+    "player.ClientPlayerEntityMixin",
     "screen.CreateWorldScreenMixin",
     "screen.DeathScreenMixin",
     "screen.GameMenuScreenMixin",
