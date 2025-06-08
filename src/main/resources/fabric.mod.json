@@ -9,6 +9,12 @@
     "ItsElix99"
   ],
 
+  "contact": {
+    "homepage": "https://github.com/ItsElix99/Better-World-Options/",
+    "sources": "https://github.com/ItsElix99/Better-World-Options/",
+    "issues": "https://github.com/ItsElix99/Better-World-Options/issues"
+  },
+
   "license": "MIT",
   "icon": "assets/betterworldoptions/icon.png",
 
