@@ -67,7 +67,7 @@ public class WorldTypeList {
         var5.loadedClass = FarlandsChunkGenerator.class;
         var5.name = "Farlands";
         var5.desc = "Explore the Farlands, where terrain gen";
-        var5.desc2 = "becomes distorced and unpredictable";
+        var5.desc2 = "becomes distorted and unpredictable";
         var5.lightingMode = 0;
         var5.noSky = false;
         var5.biome = null;
