@@ -1,57 +1,252 @@
 package com.itselix99.betterworldoptions.world;
 
+import net.minecraft.block.Block;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkSource;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class WorldSettings {
-    public static String worldTypeName = "Default";
-    public static Constructor<? extends ChunkSource> chunkGenerator = null;
-    public static boolean skyDisabled = false;
-    public static Biome singleBiome = null;
-    public static int lightingMode = 0;
-    public static int blockToSpawnOn = 0;
-    public static boolean hardcore = false;
-    public static boolean betaFeatures = true;
+    public static class World {
+        private static Constructor<? extends ChunkSource> CHUNK_GENERATOR = null;
+        private static String DISPLAY_WORLD_TYPE_NAME = "Default";
+        private static String WORLD_TYPE_NAME = "Default";
+        private static String LIGHTING_MODE = "Overworld";
+        private static boolean SKY_DISABLED = false;
+        private static Biome SINGLE_BIOME = null;
+        private static int BLOCK_TO_SPAWN_ON = Block.SAND.id;
 
-    public static boolean alphaSnowCovered = false;
+        public static void setChunkGenerator(Constructor<? extends ChunkSource> chunkGenerator) {
+            CHUNK_GENERATOR = chunkGenerator;
+        }
 
-    public static boolean isBetaFeatures = true;
+        public static void setDisplayWorldTypeName(String displayWorldTypeName) {
+            DISPLAY_WORLD_TYPE_NAME = displayWorldTypeName;
+        }
 
-    private static final List<Runnable> changeListeners = new ArrayList<>();
+        public static void setWorldTypeName(String worldTypeName) {
+            WORLD_TYPE_NAME = worldTypeName;
+        }
 
-    public static void addChangeListener(Runnable listener) {
-        changeListeners.add(listener);
-    }
+        public static void setLightingMode(String lightingMode) {
+            LIGHTING_MODE = lightingMode;
+        }
 
-    private static void notifyChange() {
-        for (Runnable listener : changeListeners) {
-            listener.run();
+        public static void setSingleBiome(Biome singleBiome) {
+            SINGLE_BIOME = singleBiome;
+        }
+
+        public static void setSkyDisabled(boolean skyDisabled) {
+            SKY_DISABLED = skyDisabled;
+        }
+
+        public static void setBlockToSpawnOn(int blockToSpawnOn) {
+            BLOCK_TO_SPAWN_ON = blockToSpawnOn;
+        }
+
+        public static Constructor<? extends ChunkSource> getChunkGenerator() {
+            return CHUNK_GENERATOR;
+        }
+
+        public static String getDisplayWorldTypeName() {
+            return DISPLAY_WORLD_TYPE_NAME;
+        }
+
+        public static String getWorldTypeName() {
+            return WORLD_TYPE_NAME;
+        }
+
+        public static String getLightingMode() {
+            return LIGHTING_MODE;
+        }
+
+        public static boolean isSkyDisabled() {
+            return SKY_DISABLED;
+        }
+
+        public static Biome getSingleBiome() {
+            return SINGLE_BIOME;
+        }
+
+        public static int getBlockToSpawnOn() {
+            return BLOCK_TO_SPAWN_ON;
         }
     }
 
-    public static String getName() {
-        return worldTypeName;
+    public static class GameMode {
+        private static boolean HARDCORE = false;
+        private static boolean BETA_FEATURES = true;
+        private static boolean BETA_TEXTURES_TEXTURES = true;
+
+        private static final Set<String> NON_BETA_FEATURES_WORLD_TYPES = Set.of(
+                "Default", "Nether", "Skylands", "Farlands", "Beta 1.1_02", "Aether"
+        );
+
+        private static final Set<String> BETA_FEATURES_WORLD_TYPES = Set.of(
+                "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "Indev 223"
+        );
+
+        public static void setHardcore(boolean hardcore) {
+            HARDCORE = hardcore;
+        }
+
+        public static void setBetaFeatures(boolean betaFeatures) {
+            BETA_FEATURES = betaFeatures;
+        }
+
+        public static void setBetaTexturesTextures(boolean betaTexturesTextures) {
+            BETA_TEXTURES_TEXTURES = betaTexturesTextures;
+        }
+
+        public static boolean isHardcore() {
+            return HARDCORE;
+        }
+
+        public static boolean isBetaFeatures() {
+            return BETA_FEATURES;
+        }
+
+        public static boolean isBetaTexturesTextures() {
+            return BETA_TEXTURES_TEXTURES;
+        }
+
+        public static boolean getNonBetaFeaturesWorldTypes() {
+            return NON_BETA_FEATURES_WORLD_TYPES.contains(WorldSettings.World.getWorldTypeName());
+        }
+
+        public static boolean isBetaFeaturesWorldTypes(String worldType) {
+            return BETA_FEATURES_WORLD_TYPES.contains(worldType);
+        }
     }
 
-    public static void setName(String newName) {
-        if (!newName.equals(worldTypeName)) {
-            worldTypeName = newName;
-            notifyChange();
+    public static class AlphaWorld {
+        private static boolean SNOW_COVERED = false;
+
+        public static void setSnowCovered(boolean snowCovered) {
+            SNOW_COVERED = snowCovered;
+        }
+
+        public static boolean isSnowCovered() {
+            return SNOW_COVERED;
         }
     }
 
-    public static void resetBooleans() {
-        if (hardcore) {
-            hardcore = false;
+    public static class IndevWorld {
+        private static String INDEV_WORLD_TYPE = "Island";
+        private static String SHAPE = "Square";
+        private static String SIZE = "Normal";
+        private static String THEME = "Normal";
+        private static String BETA_THEME = "All Biomes";
+        private static boolean INDEV_DIMENSIONS = false;
+        private static boolean GENERATE_INDEV_HOUSE = true;
+        private static boolean INFINITE = false;
+
+        public static void setIndevWorldType(String indevWorldType) {
+            INDEV_WORLD_TYPE = indevWorldType;
         }
-        if (alphaSnowCovered) {
-            alphaSnowCovered = false;
+
+        public static void setShape(String shape) {
+            SHAPE = shape;
         }
-        if (!isBetaFeatures) {
-            isBetaFeatures = true;
+
+        public static void setSize(String size) {
+            SIZE = size;
         }
+
+        public static void setTheme(String theme) {
+            THEME = theme;
+        }
+
+        public static void setBetaTheme(String betaTheme) {
+            BETA_THEME = betaTheme;
+        }
+
+        public static void setIndevDimensions(boolean indevDimensions) {
+            INDEV_DIMENSIONS = indevDimensions;
+        }
+
+        public static void setGenerateIndevHouse(boolean generateIndevHouse) {
+            GENERATE_INDEV_HOUSE = generateIndevHouse;
+        }
+
+        public static void setInfinite(boolean infinite) {
+            INFINITE = infinite;
+        }
+
+        public static String getIndevWorldType() {
+            return INDEV_WORLD_TYPE;
+        }
+
+        public static String getShape() {
+            return SHAPE;
+        }
+
+        public static String getSize() {
+            return SIZE;
+        }
+
+        public static String getSizeInNumber() {
+            if (Objects.equals(getShape(), "Long")) {
+                if (Objects.equals(getSize(), "Small")) {
+                    return "256x64";
+                } else if (Objects.equals(getSize(), "Normal")) {
+                    return "512x128";
+                } else if (Objects.equals(getSize(), "Huge")) {
+                    return "1024x256";
+                } else if (Objects.equals(getSize(), "Very Huge")) {
+                    return "2048x512";
+                } else {
+                    return "";
+                }
+            } else {
+                if (Objects.equals(getSize(), "Small")) {
+                    return "128x128";
+                } else if (Objects.equals(getSize(), "Normal")) {
+                    return "256x256";
+                } else if (Objects.equals(getSize(), "Huge")) {
+                    return "512x512";
+                } else if (Objects.equals(getSize(), "Very Huge")) {
+                    return "1024x1024";
+                } else {
+                    return "";
+                }
+            }
+        }
+
+        public static String getTheme() {
+            return THEME;
+        }
+
+        public static String getBetaTheme() {
+            return BETA_THEME;
+        }
+
+        public static boolean isIndevDimensions() {
+            return INDEV_DIMENSIONS;
+        }
+
+        public static boolean isGenerateIndevHouse() {
+            return GENERATE_INDEV_HOUSE;
+        }
+
+        public static boolean isInfinite() {
+            return INFINITE;
+        }
+    }
+
+    public static void resetSettings() {
+        World.setChunkGenerator(null);
+        World.setDisplayWorldTypeName("Default");
+        World.setWorldTypeName("Default");
+        World.setLightingMode("Overworld");
+        World.setSkyDisabled(false);
+        World.setSingleBiome(null);
+        World.setBlockToSpawnOn(Block.SAND.id);
+
+        GameMode.setHardcore(false);
+        GameMode.setBetaFeatures(true);
+
+        AlphaWorld.setSnowCovered(false);
     }
 }

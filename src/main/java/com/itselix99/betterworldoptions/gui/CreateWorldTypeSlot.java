@@ -23,7 +23,11 @@ public class CreateWorldTypeSlot extends EntryListWidget {
         TranslationStorage translation = TranslationStorage.getInstance();
         CreateWorldTypeScreen.onElementSelected(this.parentGui, var1);
         CreateWorldTypeScreen.getSelectButton(this.parentGui).text = translation.get("gui.done");
-        WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(var1));
+        try {
+            WorldTypeList.setWorldType(WorldTypeList.getList().get(var1));
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -44,13 +48,13 @@ public class CreateWorldTypeSlot extends EntryListWidget {
     @Override
     protected void renderEntry(int var1, int var2, int var3, int var4, Tessellator var5) {
         WorldTypeList.WorldTypeEntry var6 = WorldTypeList.getList().get(var1);
-        this.parentGui.drawTextWithShadow(this.parentGui.mc.textRenderer, var6.name, var2 + 2, var3 + 1, 16777215);
-        if(var6.desc != null) {
-            this.parentGui.drawTextWithShadow(this.parentGui.mc.textRenderer, var6.desc, var2 + 2, var3 + 12, 8421504);
+        this.parentGui.drawTextWithShadow(this.parentGui.mc.textRenderer, var6.DISPLAY_NAME, var2 + 2, var3 + 1, 16777215);
+        if(var6.DESCRIPTION != null) {
+            this.parentGui.drawTextWithShadow(this.parentGui.mc.textRenderer, var6.DESCRIPTION, var2 + 2, var3 + 12, 8421504);
         }
 
-        if(var6.desc2 != null) {
-            this.parentGui.drawTextWithShadow(this.parentGui.mc.textRenderer, var6.desc2, var2 + 2, var3 + 12 + 10, 8421504);
+        if(var6.DESCRIPTION_2 != null) {
+            this.parentGui.drawTextWithShadow(this.parentGui.mc.textRenderer, var6.DESCRIPTION_2, var2 + 2, var3 + 12 + 10, 8421504);
         }
 
     }

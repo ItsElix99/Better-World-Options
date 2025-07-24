@@ -31,7 +31,7 @@ public class GrassBlockMixin extends Block {
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
 
-        if ((worldType.equals("Alpha 1.1.2_01") || worldType.equals("Infdev 420") || worldType.equals("Infdev 415") || worldType.equals("Early Infdev")) && !betaFeatures) {
+        if (WorldSettings.GameMode.isBetaFeaturesWorldTypes(worldType) && !betaFeatures && !WorldSettings.GameMode.isBetaTexturesTextures()) {
             if (side == 1) {
                 return TextureListener.alphaGrassBlockTop;
             } else if (side == 0) {
@@ -52,18 +52,5 @@ public class GrassBlockMixin extends Block {
         } else {
             return original;
         }
-    }
-
-    @Environment(EnvType.CLIENT)
-    @ModifyReturnValue(method = "getColorMultiplier", at = @At("RETURN"))
-    public int getColorMultiplier(int original, BlockView blockView, int x, int y, int z) {
-        @Deprecated Minecraft minecraft = (Minecraft) FabricLoader.getInstance().getGameInstance();
-        String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
-        boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
-
-        if ((worldType.equals("Alpha 1.1.2_01") || worldType.equals("Infdev 420") || worldType.equals("Infdev 415") || worldType.equals("Early Infdev")) && !betaFeatures) {
-            return 16777215;
-        }
-        return original;
     }
 }

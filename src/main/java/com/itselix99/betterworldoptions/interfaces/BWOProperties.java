@@ -2,14 +2,20 @@ package com.itselix99.betterworldoptions.interfaces;
 
 public interface BWOProperties {
     void bwo_setWorldType(String name);
-    String bwo_getWorldType();
-
     void bwo_setHardcore(boolean hardcore);
-    boolean bwo_getHardcore();
 
-    void bwo_setBetaFeatures(boolean betaFeatures);
+    String bwo_getWorldType();
+    boolean bwo_getHardcore();
     boolean bwo_getBetaFeatures();
 
-    void bwo_setSnowCovered(boolean snowCovered);
     boolean bwo_getSnowCovered();
+
+    String bwo_getIndevWorldType();
+    String bwo_getShape();
+    String bwo_getSize();
+    String bwo_getBetaTheme();
+    String bwo_getTheme();
+    boolean bwo_isIndevDimensions();
+    boolean bwo_isGenerateIndevHouse();
+    boolean bwo_isInfinite();
 }

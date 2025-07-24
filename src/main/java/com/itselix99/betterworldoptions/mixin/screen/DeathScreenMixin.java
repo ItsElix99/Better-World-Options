@@ -3,7 +3,6 @@ package com.itselix99.betterworldoptions.mixin.screen;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.GetDirectoryName;
 import com.itselix99.betterworldoptions.world.WorldSettings;
-import com.itselix99.betterworldoptions.world.WorldTypeList;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -39,10 +38,7 @@ public class DeathScreenMixin extends Screen {
                 getSave.flush();
                 getSave.delete(getDirectoryName);
                 this.minecraft.setScreen(new TitleScreen());
-                if (!(WorldTypeList.worldtypeList == null)) {
-                    WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(0));
-                }
-                WorldSettings.resetBooleans();
+                WorldSettings.resetSettings();
             }
         }
     }

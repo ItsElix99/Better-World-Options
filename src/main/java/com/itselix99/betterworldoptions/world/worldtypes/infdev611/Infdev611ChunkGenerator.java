@@ -1,11 +1,11 @@
-package com.itselix99.betterworldoptions.world.worldtypes.infdev415;
-
-import java.util.Random;
+package com.itselix99.betterworldoptions.world.worldtypes.infdev611;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.CustomRandomTreeFeature;
-import com.itselix99.betterworldoptions.world.worldtypes.infdev415.feature.OreFeatureInfdev415;
-import com.itselix99.betterworldoptions.world.worldtypes.infdev415.math.noise.OctavePerlinNoiseSamplerInfdev415;
+import com.itselix99.betterworldoptions.world.worldtypes.infdev611.feature.OreFeatureInfdev611;
+import com.itselix99.betterworldoptions.world.worldtypes.infdev611.math.noise.OctavePerlinNoiseSamplerInfdev611;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
 import net.minecraft.block.material.Material;
@@ -20,95 +20,168 @@ import net.minecraft.world.gen.feature.*;
 import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
-public class Infdev415ChunkGenerator implements ChunkSource {
+import java.util.Random;
+
+public class Infdev611ChunkGenerator implements ChunkSource {
     private final Random random;
-    private final OctavePerlinNoiseSamplerInfdev415 noiseGen1;
-    private final OctavePerlinNoiseSamplerInfdev415 noiseGen2;
-    private final OctavePerlinNoiseSamplerInfdev415 noiseGen3;
-    private final OctavePerlinNoiseSamplerInfdev415 noiseGen4;
-    private final OctavePerlinNoiseSamplerInfdev415 noiseGen5;
-    private final OctavePerlinNoiseSamplerInfdev415 forestNoise;
+    private final OctavePerlinNoiseSamplerInfdev611 minLimitPerlinNoise;
+    private final OctavePerlinNoiseSamplerInfdev611 maxLimitPerlinNoise;
+    private final OctavePerlinNoiseSamplerInfdev611 perlinNoise1;
+    private final OctavePerlinNoiseSamplerInfdev611 perlinNoise2;
+    private final OctavePerlinNoiseSamplerInfdev611 perlinNoise3;
+    private final OctavePerlinNoiseSamplerInfdev611 scaleNoise;
+    private final OctavePerlinNoiseSamplerInfdev611 depthNoise;
+    private final OctavePerlinNoiseSamplerInfdev611 forestNoise;
     private final World world;
     private final Generator cave = new CaveWorldCarver();
+    private double[] heightMap;
+    private double[] perlinNoiseBuffer;
+    private double[] minLimitPerlinNoiseBuffer;
+    private double[] maxLimitPerlinNoiseBuffer;
+    private double[] scaleNoiseBuffer;
+    private double[] depthNoiseBuffer;
     private double[] temperatures;
     private Biome[] biomes;
 
-    public Infdev415ChunkGenerator(World world, long seed) {
+    public Infdev611ChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
         new Random(seed);
         if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
             ((CaveGenBaseImpl)cave).stationapi_setWorld(world);
         }
-        this.noiseGen1 = new OctavePerlinNoiseSamplerInfdev415(this.random, 16);
-        this.noiseGen2 = new OctavePerlinNoiseSamplerInfdev415(this.random, 16);
-        this.noiseGen3 = new OctavePerlinNoiseSamplerInfdev415(this.random, 8);
-        this.noiseGen4 = new OctavePerlinNoiseSamplerInfdev415(this.random, 4);
-        this.noiseGen5 = new OctavePerlinNoiseSamplerInfdev415(this.random, 4);
-        new OctavePerlinNoiseSamplerInfdev415(this.random, 5);
-        this.forestNoise = new OctavePerlinNoiseSamplerInfdev415(this.random, 5);
+        this.minLimitPerlinNoise = new OctavePerlinNoiseSamplerInfdev611(this.random, 16);
+        this.maxLimitPerlinNoise = new OctavePerlinNoiseSamplerInfdev611(this.random, 16);
+        this.perlinNoise1 = new OctavePerlinNoiseSamplerInfdev611(this.random, 8);
+        this.perlinNoise2 = new OctavePerlinNoiseSamplerInfdev611(this.random, 4);
+        this.perlinNoise3 = new OctavePerlinNoiseSamplerInfdev611(this.random, 4);
+        this.scaleNoise = new OctavePerlinNoiseSamplerInfdev611(this.random, 10);
+        this.depthNoise = new OctavePerlinNoiseSamplerInfdev611(this.random, 16);
+        this.forestNoise = new OctavePerlinNoiseSamplerInfdev611(this.random, 8);
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, double[] temperatures) {
-        int var5;
-        int var6;
-        double var50;
-        for(var5 = 0; var5 < 4; ++var5) {
-            for(var6 = 0; var6 < 4; ++var6) {
-                double[][] var7 = new double[33][4];
-                int var8 = (chunkX << 2) + var5;
-                int var9 = (chunkZ << 2) + var6;
+        int var10003 = chunkX << 2;
+        int var10005 = chunkZ << 2;
+        int var7 = var10005;
+        int m11 = var10003;
+        double[] var6 = this.heightMap;
+        Infdev611ChunkGenerator var81 = this;
+        if (var6 == null) {
+            var6 = new double[425];
+        }
 
-                for(int var10 = 0; var10 < var7.length; ++var10) {
-                    var7[var10][0] = this.generateHeightMap(var8, var10, var9);
-                    var7[var10][1] = this.generateHeightMap(var8, var10, var9 + 1);
-                    var7[var10][2] = this.generateHeightMap(var8 + 1, var10, var9);
-                    var7[var10][3] = this.generateHeightMap(var8 + 1, var10, var9 + 1);
+        this.scaleNoiseBuffer = this.scaleNoise.create(this.scaleNoiseBuffer, m11, 0, var7, 5, 1, 5, (double)1.0F, (double)0.0F, (double)1.0F);
+        this.depthNoiseBuffer = this.depthNoise.create(this.depthNoiseBuffer, m11, 0, var7, 5, 1, 5, (double)100.0F, (double)0.0F, (double)100.0F);
+        this.perlinNoiseBuffer = this.perlinNoise1.create(this.perlinNoiseBuffer, m11, 0, var7, 5, 17, 5, 8.555150000000001, 4.277575000000001, 8.555150000000001);
+        this.minLimitPerlinNoiseBuffer = this.minLimitPerlinNoise.create(this.minLimitPerlinNoiseBuffer, m11, 0, var7, 5, 17, 5, 684.412, 684.412, 684.412);
+        this.maxLimitPerlinNoiseBuffer = this.maxLimitPerlinNoise.create(this.maxLimitPerlinNoiseBuffer, m11, 0, var7, 5, 17, 5, 684.412, 684.412, 684.412);
+        m11 = 0;
+        var7 = 0;
+
+        for(int var8 = 0; var8 < 5; ++var8) {
+            for(int var9 = 0; var9 < 5; ++var9) {
+                double var10;
+                if ((var10 = (var81.scaleNoiseBuffer[var7] + (double)256.0F) / (double)512.0F) > (double)1.0F) {
+                    var10 = (double)1.0F;
                 }
 
-                for(var8 = 0; var8 < 32; ++var8) {
-                    var50 = var7[var8][0];
-                    double var11 = var7[var8][1];
-                    double var13 = var7[var8][2];
-                    double var15 = var7[var8][3];
-                    double var17 = var7[var8 + 1][0];
-                    double var19 = var7[var8 + 1][1];
-                    double var21 = var7[var8 + 1][2];
-                    double var23 = var7[var8 + 1][3];
+                double var11;
+                if ((var11 = var81.depthNoiseBuffer[var7] / (double)8000.0F) < (double)0.0F) {
+                    var11 = -var11;
+                }
 
-                    for(int var25 = 0; var25 < 4; ++var25) {
-                        double var26 = (double)var25 / 4.0D;
-                        double var28 = var50 + (var17 - var50) * var26;
-                        double var30 = var11 + (var19 - var11) * var26;
-                        double var32 = var13 + (var21 - var13) * var26;
-                        double var34 = var15 + (var23 - var15) * var26;
+                if ((var11 = var11 * (double)3.0F - (double)3.0F) < (double)0.0F) {
+                    if ((var11 = var11 / (double)2.0F) < (double)-1.0F) {
+                        var11 = (double)-1.0F;
+                    }
 
-                        for(int var55 = 0; var55 < 4; ++var55) {
-                            double var37 = (double)var55 / 4.0D;
-                            double var39 = var28 + (var32 - var28) * var37;
-                            double var41 = var30 + (var34 - var30) * var37;
-                            int var27 = var55 + (var5 << 2) << 11 | (var6 << 2) << 7 | (var8 << 2) + var25;
+                    var11 /= 1.4;
+                    var10 = (double)0.0F;
+                } else {
+                    if (var11 > (double)1.0F) {
+                        var11 = (double)1.0F;
+                    }
 
-                            for(int var36 = 0; var36 < 4; ++var36) {
-                                double var45 = (double)var36 / 4.0D;
-                                double var47 = var39 + (var41 - var39) * var45;
-                                double var53 = temperatures[(var5 * 4 + var55) * 16 + var6 * 4 + var36];
-                                int var56 = 0;
-                                if((var8 << 2) + var25 < 64) {
-                                    if (var53 < (double)0.5F && var8 * 8 + var25 >= 63 && ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-                                        var56 = Block.ICE.id;
+                    var11 /= (double)6.0F;
+                }
+
+                var10 += (double)0.5F;
+                var11 = var11 * (double)17.0F / (double)16.0F;
+                double var12 = (double)8.5F + var11 * (double)4.0F;
+                ++var7;
+
+                for(int var13 = 0; var13 < 17; ++var13) {
+                    double var14;
+                    if ((var14 = ((double)var13 - var12) * (double)12.0F / var10) < (double)0.0F) {
+                        var14 *= (double)4.0F;
+                    }
+
+                    double var15 = var81.minLimitPerlinNoiseBuffer[m11] / (double)512.0F;
+                    double var16 = var81.maxLimitPerlinNoiseBuffer[m11] / (double)512.0F;
+                    double var17;
+                    double var18;
+                    if ((var18 = (var81.perlinNoiseBuffer[m11] / (double)10.0F + (double)1.0F) / (double)2.0F) < (double)0.0F) {
+                        var17 = var15;
+                    } else if (var18 > (double)1.0F) {
+                        var17 = var16;
+                    } else {
+                        var17 = var15 + (var16 - var15) * var18;
+                    }
+
+                    var17 -= var14;
+                    var6[m11] = var17;
+                    ++m11;
+                }
+            }
+        }
+
+        this.heightMap = var6;
+
+        for(int var19 = 0; var19 < 4; ++var19) {
+            for(int var20 = 0; var20 < 4; ++var20) {
+                for(int var87 = 0; var87 < 16; ++var87) {
+                    double var90 = this.heightMap[(var19 * 5 + var20) * 17 + var87];
+                    double var92 = this.heightMap[(var19 * 5 + var20 + 1) * 17 + var87];
+                    double var21 = this.heightMap[((var19 + 1) * 5 + var20) * 17 + var87];
+                    double var22 = this.heightMap[((var19 + 1) * 5 + var20 + 1) * 17 + var87];
+                    double var23 = this.heightMap[(var19 * 5 + var20) * 17 + var87 + 1];
+                    double var24 = this.heightMap[(var19 * 5 + var20 + 1) * 17 + var87 + 1];
+                    double var25 = this.heightMap[((var19 + 1) * 5 + var20) * 17 + var87 + 1];
+                    double var26 = this.heightMap[((var19 + 1) * 5 + var20 + 1) * 17 + var87 + 1];
+
+                    for(int var27 = 0; var27 < 8; ++var27) {
+                        double var28 = (double)var27 / (double)8.0F;
+                        double var29 = var90 + (var23 - var90) * var28;
+                        double var30 = var92 + (var24 - var92) * var28;
+                        double var31 = var21 + (var25 - var21) * var28;
+                        double var32 = var22 + (var26 - var22) * var28;
+
+                        for(int var33 = 0; var33 < 4; ++var33) {
+                            double var34 = (double)var33 / (double)4.0F;
+                            double var35 = var29 + (var31 - var29) * var34;
+                            double var36 = var30 + (var32 - var30) * var34;
+                            int var37 = var33 + (var19 << 2) << 11 | 0 + (var20 << 2) << 7 | (var87 << 3) + var27;
+
+                            for(int var38 = 0; var38 < 4; ++var38) {
+                                double var39 = (double)var38 / (double)4.0F;
+                                double var40 = var35 + (var36 - var35) * var39;
+                                double var53 = temperatures[(var19 * 4 + var33) * 16 + var20 * 4 + var38];
+                                int var41 = 0;
+                                if ((var87 << 3) + var27 < 64) {
+                                    if (var53 < (double)0.5F && var87 * 8 + var27 >= 63 && ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+                                        var41 = Block.ICE.id;
                                     } else {
-                                        var56 = Block.WATER.id;
+                                        var41 = Block.WATER.id;
                                     }
-
                                 }
 
-                                if(var47 > 0.0D) {
-                                    var56 = Block.STONE.id;
+                                if (var40 > (double)0.0F) {
+                                    var41 = Block.STONE.id;
                                 }
 
-                                blocks[var27] = (byte)var56;
-                                var27 += 128;
+                                blocks[var37] = (byte)var41;
+                                var37 += 128;
                             }
                         }
                     }
@@ -116,81 +189,81 @@ public class Infdev415ChunkGenerator implements ChunkSource {
             }
         }
 
-        for(var5 = 0; var5 < 16; ++var5) {
-            for(var6 = 0; var6 < 16; ++var6) {
-                double var49 = (chunkX << 4) + var5;
-                var50 = (chunkZ << 4) + var6;
-                Biome var55 = biomes[var5 + var6 * 16];
-                boolean var51 = this.noiseGen4.create(var49 * (1.0 / 32.0), var50 * (1.0 / 32.0), 0.0) + this.random.nextDouble() * 0.2D > 0.0;
-                boolean var14 = this.noiseGen4.create(var50 * (1.0 / 32.0), 109.0134D, var49 * (1.0 / 32.0)) + this.random.nextDouble() * 0.2D > 0.0;
-                int var52 = (int)(this.noiseGen5.sample(var49 * (1.0D / 32.0D) * 2.0D, var50 * (1.0D / 32.0D) * 2.0D) / 3.0D + 3.0D + this.random.nextDouble() * 0.25D);
-                int var16 = var5 << 11 | var6 << 7 | 127;
-                int var53 = -1;
-                int var18;
-                int var54;
+        for(int var83 = 0; var83 < 16; ++var83) {
+            for(int var42 = 0; var42 < 16; ++var42) {
+                double var88 = (double)((chunkX << 4) + var83);
+                double var91 = (double)((chunkZ << 4) + var42);
+                Biome var82 = biomes[var83 + var42 * 16];
+                boolean var43 = this.perlinNoise2.create(var88 * (double)0.03125F, var91 * (double)0.03125F, (double)0.0F) + this.random.nextDouble() * 0.2 > (double)0.0F;
+                boolean var44 = this.perlinNoise2.create(var91 * (double)0.03125F, 109.0134, var88 * (double)0.03125F) + this.random.nextDouble() * 0.2 > (double)3.0F;
+                int var45 = (int)(this.perlinNoise3.sample(var88 * (double)0.03125F * (double)2.0F, var91 * (double)0.03125F * (double)2.0F) / (double)3.0F + (double)3.0F + this.random.nextDouble() * (double)0.25F);
+                int var46 = var83 << 11 | var42 << 7 | 127;
+                int var47 = -1;
+                int var48;
+                int var49;
 
                 if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-                    var18 = var55.topBlockId;
-                    var54 = var55.soilBlockId;
+                    var48 = var82.topBlockId;
+                    var49 = var82.soilBlockId;
                 } else {
-                    var18 = Block.GRASS_BLOCK.id;
-                    var54 = Block.DIRT.id;
+                    var48 = Block.GRASS_BLOCK.id;
+                    var49 = Block.DIRT.id;
                 }
 
-                for(int var20 = 127; var20 >= 0; --var20) {
-                    if(blocks[var16] == 0) {
-                        var53 = -1;
-                    } else if(blocks[var16] == Block.STONE.id) {
-                        if(var53 == -1) {
-                            if(var52 <= 0) {
-                                var18 = 0;
-                                var54 = (byte)Block.STONE.id;
-                            } else if(var20 >= 60 && var20 <= 65) {
+                for(int var50 = 127; var50 >= 0; --var50) {
+                    if (blocks[var46] == 0) {
+                        var47 = -1;
+                    } else if (blocks[var46] == Block.STONE.id) {
+                        if (var47 == -1) {
+                            if (var45 <= 0) {
+                                var48 = 0;
+                                var49 = (byte)Block.STONE.id;
+                            } else if (var50 >= 60 && var50 <= 65) {
                                 if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-                                    var18 = var55.topBlockId;
-                                    var54 = var55.soilBlockId;
+                                    var48 = var82.topBlockId;
+                                    var49 = var82.soilBlockId;
                                 } else {
-                                    var18 = Block.GRASS_BLOCK.id;
-                                    var54 = Block.DIRT.id;
+                                    var48 = Block.GRASS_BLOCK.id;
+                                    var49 = Block.DIRT.id;
                                 }
-                                if(var14) {
-                                    var18 = 0;
-                                }
-
-                                if(var14) {
-                                    var54 = Block.GRAVEL.id;
+                                if (var44) {
+                                    var48 = 0;
                                 }
 
-                                if(var51) {
-                                    var18 = Block.SAND.id;
+                                if (var44) {
+                                    var49 = Block.GRAVEL.id;
                                 }
 
-                                if(var51) {
-                                    var54 = Block.SAND.id;
+                                if (var43) {
+                                    var48 = Block.SAND.id;
+                                }
+
+                                if (var43) {
+                                    var49 = Block.SAND.id;
                                 }
                             }
 
-                            if(var20 < 64 && var18 == 0) {
-                                var18 = Block.WATER.id;
+                            if (var50 < 64 && var48 == 0) {
+                                var48 = Block.WATER.id;
                             }
 
-                            var53 = var52;
-                            if(var20 >= 63) {
-                                blocks[var16] = (byte)var18;
+                            var47 = var45;
+                            if (var50 >= 63) {
+                                blocks[var46] = (byte)var48;
                             } else {
-                                blocks[var16] = (byte)var54;
+                                blocks[var46] = (byte)var49;
                             }
-                        } else if(var53 > 0) {
-                            --var53;
-                            blocks[var16] = (byte)var54;
-                            if (var53 == 0 && var54 == Block.SAND.id && ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-                                var53 = this.random.nextInt(4);
-                                var54 = (byte)Block.SANDSTONE.id;
+                        } else if (var47 > 0) {
+                            --var47;
+                            blocks[var46] = (byte)var49;
+                            if (var47 == 0 && var49 == Block.SAND.id && ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+                                var47 = this.random.nextInt(4);
+                                var49 = (byte)Block.SANDSTONE.id;
                             }
                         }
                     }
 
-                    --var16;
+                    --var46;
                 }
             }
         }
@@ -216,63 +289,6 @@ public class Infdev415ChunkGenerator implements ChunkSource {
         return flattenedChunk;
     }
 
-
-    private double generateHeightMap(double var1, double var3, double var5) {
-        double var7 = var3 * 4.0D - 64.0D;
-        if(var7 < 0.0D) {
-            var7 *= 3.0D;
-        }
-
-        double var9 = this.noiseGen3.create(var1 * 684.412D / 80.0D, var3 * 684.412D / 400.0D, var5 * 684.412D / 80.0D) / 2.0D;
-        double var11;
-        double var13;
-        if(var9 < -1.0D) {
-            var11 = this.noiseGen1.create(var1 * 684.412D, var3 * 984.412D, var5 * 684.412D) / 512.0D;
-            var13 = var11 - var7;
-            if(var13 < -10.0D) {
-                var13 = -10.0D;
-            }
-
-            if(var13 > 10.0D) {
-                var13 = 10.0D;
-            }
-        } else if(var9 > 1.0D) {
-            var11 = this.noiseGen2.create(var1 * 684.412D, var3 * 984.412D, var5 * 684.412D) / 512.0D;
-            var13 = var11 - var7;
-            if(var13 < -10.0D) {
-                var13 = -10.0D;
-            }
-
-            if(var13 > 10.0D) {
-                var13 = 10.0D;
-            }
-        } else {
-            double var15 = this.noiseGen1.create(var1 * 684.412D, var3 * 984.412D, var5 * 684.412D) / 512.0D - var7;
-            double var17 = this.noiseGen2.create(var1 * 684.412D, var3 * 984.412D, var5 * 684.412D) / 512.0D - var7;
-            if(var15 < -10.0D) {
-                var15 = -10.0D;
-            }
-
-            if(var15 > 10.0D) {
-                var15 = 10.0D;
-            }
-
-            if(var17 < -10.0D) {
-                var17 = -10.0D;
-            }
-
-            if(var17 > 10.0D) {
-                var17 = 10.0D;
-            }
-
-            double var19 = (var9 + 1.0D) / 2.0D;
-            var11 = var15 + (var17 - var15) * var19;
-            var13 = var11;
-        }
-
-        return var13;
-    }
-
     public boolean isChunkLoaded(int x, int z) {
         return true;
     }
@@ -280,48 +296,50 @@ public class Infdev415ChunkGenerator implements ChunkSource {
     public void decorate(ChunkSource source, int x, int z) {
         if (!((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
             this.random.setSeed((long)x * 318279123L + (long)z * 919871212L);
-            int var4 = x << 4;
+            int var8 = x << 4;
             x = z << 4;
 
-            int var5;
-            int var6;
-            int var7;
-            for(z = 0; z < 20; ++z) {
-                var5 = var4 + this.random.nextInt(16);
-                var6 = this.random.nextInt(128);
-                var7 = x + this.random.nextInt(16);
-                (new OreFeatureInfdev415(Block.COAL_ORE.id)).generate(this.world, this.random, var5, var6, var7);
+            for(int var10 = 0; var10 < 20; ++var10) {
+                int i = var8 + this.random.nextInt(16);
+                int m = this.random.nextInt(128);
+                int r = x + this.random.nextInt(16);
+                (new OreFeatureInfdev611(Block.COAL_ORE.id)).generate(this.world, this.random, i, m, r);
             }
 
-            for(z = 0; z < 10; ++z) {
-                var5 = var4 + this.random.nextInt(16);
-                var6 = this.random.nextInt(64);
-                var7 = x + this.random.nextInt(16);
-                (new OreFeatureInfdev415(Block.IRON_ORE.id)).generate(this.world, this.random, var5, var6, var7);
+            for(int var11 = 0; var11 < 10; ++var11) {
+                int j = var8 + this.random.nextInt(16);
+                int n = this.random.nextInt(64);
+                int s = x + this.random.nextInt(16);
+                (new OreFeatureInfdev611(Block.IRON_ORE.id)).generate(this.world, this.random, j, n, s);
             }
 
-            if(this.random.nextInt(2) == 0) {
-                z = var4 + this.random.nextInt(16);
-                var5 = this.random.nextInt(32);
-                var6 = x + this.random.nextInt(16);
-                (new OreFeatureInfdev415(Block.GOLD_ORE.id)).generate(this.world, this.random, z, var5, var6);
+            if (this.random.nextInt(2) == 0) {
+                z = var8 + this.random.nextInt(16);
+                int k = this.random.nextInt(32);
+                int o = x + this.random.nextInt(16);
+                (new OreFeatureInfdev611(Block.GOLD_ORE.id)).generate(this.world, this.random, z, k, o);
             }
 
-            if(this.random.nextInt(8) == 0) {
-                z = var4 + this.random.nextInt(16);
-                var5 = this.random.nextInt(16);
-                var6 = x + this.random.nextInt(16);
-                (new OreFeatureInfdev415(Block.DIAMOND_ORE.id)).generate(this.world, this.random, z, var5, var6);
+            if (this.random.nextInt(8) == 0) {
+                z = var8 + this.random.nextInt(16);
+                int l = this.random.nextInt(16);
+                int p = x + this.random.nextInt(16);
+                (new OreFeatureInfdev611(Block.DIAMOND_ORE.id)).generate(this.world, this.random, z, l, p);
             }
 
-            z = (int) this.forestNoise.sample((double)var4 * 0.25D, (double)x * 0.25D) << 3;
-            LargeOakTreeFeature var9 = new LargeOakTreeFeature();
+            if ((z = (int)(this.forestNoise.sample((double)var8 * (double)0.5F, (double)x * (double)0.5F) / (double)8.0F + this.random.nextDouble() * (double)4.0F + (double)4.0F)) < 0) {
+                z = 0;
+            }
 
-            for(var6 = 0; var6 < z; ++var6) {
-                var7 = var4 + this.random.nextInt(16) + 8;
-                int var8 = x + this.random.nextInt(16) + 8;
-                var9.prepare(1.0D, 1.0D, 1.0D);
-                var9.generate(this.world, this.random, var7, this.world.getTopY(var7, var8), var8);
+            OakTreeFeature treeFeature = new OakTreeFeature();
+            if (this.random.nextInt(10) == 0) {
+                ++z;
+            }
+
+            for(int q = 0; q < z; ++q) {
+                int t = var8 + this.random.nextInt(16) + 8;
+                int u = x + this.random.nextInt(16) + 8;
+                ((Feature)treeFeature).generate(this.world, this.random, t, this.world.getTopY(t, u), u);
             }
         } else {
             SandBlock.fallInstantly = true;
@@ -418,7 +436,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                 (new OreFeature(Block.LAPIS_ORE.id, 6)).generate(this.world, this.random, var48, var60, var71);
             }
 
-            int var37 = (int) this.forestNoise.sample((double) var4 * 0.25D, (double) x * 0.25D) << 3;
+            int var37 = (int) (this.forestNoise.sample((double)var4 * (double)0.5F, (double)x * (double)0.5F) / (double)8.0F + this.random.nextDouble() * (double)4.0F + (double)4.0F);
             int var49 = 0;
             if (this.random.nextInt(10) == 0) {
                 ++var49;
@@ -455,7 +473,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
             for (int var61 = 0; var61 < var49; ++var61) {
                 int var72 = var4 + this.random.nextInt(16) + 8;
                 int var17 = x + this.random.nextInt(16) + 8;
-                Feature var18 = ((CustomRandomTreeFeature) var6).bwo_getRandomTreeFeatureInfdev(this.random);
+                Feature var18 = ((CustomRandomTreeFeature) var6).bwo_getRandomTreeFeatureEarlyInfdev(this.random);
                 var18.prepare(1.0F, 1.0F, 1.0F);
                 var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
             }
@@ -619,6 +637,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
         return true;
     }
 
+    @Environment(EnvType.CLIENT)
     public String getDebugInfo() {
         return "RandomLevelSource";
     }

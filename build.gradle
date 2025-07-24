@@ -124,6 +124,10 @@ dependencies {
         transitive false
     }
 
+    modImplementation("maven.modrinth:skylands-portal:${project.skylands_portal_version}-fabric,b1.7.3") {
+        transitive false
+    }
+
 }
 
 processResources {

@@ -24,25 +24,10 @@ public abstract class FurnaceBlockMixin extends BlockWithEntity {
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
     public int getTexture(int original, int side) {
         if (side == 1) {
-            if (!WorldSettings.isBetaFeatures) {
+            if (!WorldSettings.GameMode.isBetaTexturesTextures()) {
                 return 1;
             } else {
                 return this.textureId + 17;
-            }
-        }
-        return original;
-    }
-
-    @Environment(EnvType.CLIENT)
-    @ModifyReturnValue(method = "getTextureId", at = @At("RETURN"))
-    public int getTextureId(int original, BlockView blockView, int x, int y, int z, int side) {
-        @Deprecated Minecraft minecraft = (Minecraft) FabricLoader.getInstance().getGameInstance();
-        String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
-        boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
-
-        if ((worldType.equals("Alpha 1.1.2_01") || worldType.equals("Infdev 420") || worldType.equals("Infdev 415") || worldType.equals("Early Infdev")) && !betaFeatures) {
-            if (side == 1) {
-                return 1;
             }
         }
         return original;

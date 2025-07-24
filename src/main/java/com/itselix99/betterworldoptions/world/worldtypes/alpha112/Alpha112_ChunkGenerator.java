@@ -3,8 +3,6 @@ package com.itselix99.betterworldoptions.world.worldtypes.alpha112;
 import java.util.Random;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.world.worldtypes.alpha112.feature.LargeOakTreeFeatureAlpha112;
-import com.itselix99.betterworldoptions.world.worldtypes.alpha112.feature.OakTreeFeatureAlpha112;
 import com.itselix99.betterworldoptions.world.worldtypes.alpha112.math.noise.OctavePerlinNoiseSamplerAlpha112;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
@@ -428,9 +426,9 @@ public class Alpha112_ChunkGenerator implements ChunkSource {
                 ++var12;
             }
 
-            Feature var18 = new OakTreeFeatureAlpha112();
+            Feature var18 = new OakTreeFeature();
             if(this.random.nextInt(10) == 0) {
-                var18 = new LargeOakTreeFeatureAlpha112();
+                var18 = new LargeOakTreeFeature();
             }
 
             int var16;
