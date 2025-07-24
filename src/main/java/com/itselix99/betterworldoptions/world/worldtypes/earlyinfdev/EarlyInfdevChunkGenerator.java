@@ -5,7 +5,6 @@ import java.util.Random;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.CustomRandomTreeFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.carver.EarlyInfdevCaveWorldCarver;
-import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.feature.OakTreeFeatureEarlyInfdev;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.feature.OreFeatureEarlyInfdev;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.math.noise.OctavePerlinNoiseSamplerEarlyInfdev;
 import net.minecraft.block.Block;
@@ -200,7 +199,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             }
 
             z = (int)this.forestNoise.sample((double)var4 * (double)0.0625F, (double)x * (double)0.0625F) << 3;
-            OakTreeFeatureEarlyInfdev var9 = new OakTreeFeatureEarlyInfdev();
+            OakTreeFeature var9 = new OakTreeFeature();
 
             for(int var63 = 0; var63 < z; ++var63) {
                 int var75 = var4 + this.random.nextInt(16);

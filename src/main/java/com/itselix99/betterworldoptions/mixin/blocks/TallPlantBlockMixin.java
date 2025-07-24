@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.mixin.blocks;
 
 import com.itselix99.betterworldoptions.events.TextureListener;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.world.WorldSettings;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.PlantBlock;
@@ -23,7 +24,7 @@ public class TallPlantBlockMixin extends PlantBlock {
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
 
-        if ((worldType.equals("Alpha 1.1.2_01") || worldType.equals("Infdev 420") || worldType.equals("Infdev 415") || worldType.equals("Early Infdev")) && !betaFeatures) {
+        if (WorldSettings.GameMode.isBetaFeaturesWorldTypes(worldType) && !betaFeatures && !WorldSettings.GameMode.isBetaTexturesTextures()) {
             if (meta == 1) {
                 return TextureListener.alphaTallGrass;
             } else if (meta == 2) {

@@ -17,7 +17,7 @@ public class OreStorageBlockMixin extends Block {
 
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
     public int getTexture(int original, int side) {
-        if (!WorldSettings.isBetaFeatures) {
+        if (!WorldSettings.GameMode.isBetaTexturesTextures()) {
             if (side == 1) {
                 return this.textureId;
             } else if (side == 0) {

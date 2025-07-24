@@ -17,7 +17,7 @@ public abstract class BlockMixin {
 
     @ModifyReturnValue(method = "getTexture*", at = @At("RETURN"))
     public int getTexture(int original, int side) {
-        if (!WorldSettings.isBetaFeatures) {
+        if (!WorldSettings.GameMode.isBetaTexturesTextures()) {
             if (this.id == 4) {
                 return TextureListener.alphaCobblestone;
             } else {

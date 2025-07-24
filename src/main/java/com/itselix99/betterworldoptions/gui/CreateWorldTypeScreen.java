@@ -31,7 +31,11 @@ public class CreateWorldTypeScreen extends Screen {
     protected void buttonClicked(ButtonWidget button) {
         if (button.active && button.visible) {
             if (button.id == 0) {
-                WorldTypeList.selectWorldType(WorldTypeList.worldtypeList.get(ScreenStateCache.lastWorldType));
+                try {
+                    WorldTypeList.setWorldType(WorldTypeList.getList().get(ScreenStateCache.lastWorldType));
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
                 this.mc.setScreen(this.parentScreen);
             } else {
                 TranslationStorage var1 = TranslationStorage.getInstance();

@@ -3,6 +3,8 @@ package com.itselix99.betterworldoptions.mixin.biomes;
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.CustomRandomTreeFeature;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.LargeOakTreeFeature;
@@ -15,12 +17,19 @@ import java.util.Random;
 @Mixin(Biome.class)
 public class BiomeMixin implements CustomRandomTreeFeature {
 
+    @Environment(EnvType.CLIENT)
     @ModifyReturnValue(method = "getSkyColor", at = @At("RETURN"))
     public int getSkyColor(int original) {
         if (this.equals(BetterWorldOptions.EarlyInfdev)) {
             return 200;
-        } else if (this.equals(BetterWorldOptions.Infdev)) {
+        } else if (this.equals(BetterWorldOptions.Infdev) || this.equals(BetterWorldOptions.IndevNormal)) {
             return 10079487;
+        } else if (this.equals(BetterWorldOptions.IndevHell)) {
+            return 1049600;
+        } else if (this.equals(BetterWorldOptions.IndevParadise)) {
+            return 13033215;
+        } else if (this.equals(BetterWorldOptions.IndevWoods)) {
+            return 7699847;
         } else if (this.equals(BetterWorldOptions.Alpha)) {
             return 8961023;
         } else {

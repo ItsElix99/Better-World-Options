@@ -1,7 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.infdev420;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.world.worldtypes.infdev420.feature.LargeOakTreeFeatureInfdev420;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev420.feature.OreFeatureInfdev420;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev420.math.noise.OctavePerlinNoiseSamplerInfdev420;
 import net.fabricmc.api.EnvType;
@@ -299,7 +298,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
                 z = 0;
             }
 
-            LargeOakTreeFeatureInfdev420 var9 = new LargeOakTreeFeatureInfdev420();
+            LargeOakTreeFeature var9 = new LargeOakTreeFeature();
             if(this.random.nextInt(100) == 0) {
                 ++z;
             }
