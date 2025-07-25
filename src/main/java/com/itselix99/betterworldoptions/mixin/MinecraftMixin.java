@@ -9,30 +9,24 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.world.FoliageColors;
 import net.minecraft.client.color.world.GrassColors;
-import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.texture.TextureManager;
-import net.minecraft.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.storage.WorldStorage;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.lang.reflect.Constructor;
 import java.util.Objects;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
     @Shadow public World world;
-    @Shadow public GameOptions options;
     @Shadow public TextureManager textureManager;
-
-    @Shadow public ClientPlayerEntity player;
 
     @Inject(method = "tick", at = @At(value = "TAIL"))
     private void setGrassColor(CallbackInfo ci) {
@@ -40,7 +34,7 @@ public class MinecraftMixin {
             String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
             boolean betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
 
-            if (WorldSettings.GameMode.isBetaFeaturesWorldTypes(worldType) && !betaFeatures && !WorldSettings.GameMode.isBetaTexturesTextures()) {
+            if (WorldSettings.GameMode.isBetaFeaturesWorldTypes(worldType) && !betaFeatures && !WorldSettings.GameMode.isBetaFeaturesTextures()) {
                 GrassColors.setColorMap(this.textureManager.getColors("/assets/betterworldoptions/stationapi/textures/misc/grasscolor.png"));
                 FoliageColors.setColorMap(this.textureManager.getColors("/assets/betterworldoptions/stationapi/textures/misc/foliagecolor.png"));
             } else {
@@ -50,19 +44,19 @@ public class MinecraftMixin {
         }
     }
 
-    @Inject(
+    @WrapOperation(
             method = "tick",
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/world/World;difficulty:I",
-                    ordinal = 0
+                    opcode = Opcodes.PUTFIELD
             )
     )
-    private void hardcoreDifficulty(CallbackInfo ci) {
+    private void hardcoreDifficulty(World instance, int difficulty, Operation<Void> original) {
         if (((BWOProperties) this.world.getProperties()).bwo_getHardcore()) {
-            this.world.difficulty = 3;
+            original.call(instance, 3);
         } else {
-            this.world.difficulty = this.options.difficulty;
+            original.call(instance, difficulty);
         }
     }
 
@@ -96,10 +90,11 @@ public class MinecraftMixin {
 
     @Inject(method = "setWorld(Lnet/minecraft/world/World;Ljava/lang/String;Lnet/minecraft/entity/player/PlayerEntity;)V", at = @At("TAIL"))
     private void dimensionBetaFeaturesTextures(World world, String message, PlayerEntity player, CallbackInfo ci) {
-        if (world != null) {
-            WorldSettings.GameMode.setBetaTexturesTextures(!(world.dimension.id == 0) && !((BWOProperties) world.getProperties()).bwo_getBetaFeatures());
+        if (world != null && !(world.dimension.id == 0 && !((BWOProperties) world.getProperties()).bwo_getBetaFeatures())) {
+            WorldSettings.GameMode.setBetaFeaturesTextures(true);
+        } else {
+            WorldSettings.GameMode.setBetaFeaturesTextures(false);
         }
-
     }
 
     @WrapOperation(

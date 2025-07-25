@@ -2,8 +2,8 @@ package com.itselix99.betterworldoptions.world.worldtypes.indev223;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.IndevFeatures;
-import com.itselix99.betterworldoptions.world.worldtypes.indev223.math.noise.Distort;
-import com.itselix99.betterworldoptions.world.worldtypes.indev223.math.noise.OctavePerlinNoiseSamplerIndev223;
+import com.itselix99.betterworldoptions.world.worldtypes.indev223.util.math.noise.Distort;
+import com.itselix99.betterworldoptions.world.worldtypes.indev223.util.math.noise.OctavePerlinNoiseSamplerIndev223;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;

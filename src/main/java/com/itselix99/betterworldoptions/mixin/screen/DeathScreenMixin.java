@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.screen;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.interfaces.GetDirectoryName;
+import com.itselix99.betterworldoptions.interfaces.BWOGetDirectoryName;
 import com.itselix99.betterworldoptions.world.WorldSettings;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -31,8 +31,8 @@ public class DeathScreenMixin extends Screen {
     protected void buttonClicked(ButtonWidget button, CallbackInfo ci) {
         if (button.id == 3) {
             if (this.minecraft.world != null && ((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
-                WorldStorage worldStorage = ((GetDirectoryName)this.minecraft.world).bwo_getDimensionData();
-                String getDirectoryName = ((GetDirectoryName) worldStorage).bwo_getDirectoryName();
+                WorldStorage worldStorage = ((BWOGetDirectoryName)this.minecraft.world).bwo_getDimensionData();
+                String getDirectoryName = ((BWOGetDirectoryName) worldStorage).bwo_getDirectoryName();
                 this.minecraft.setWorld(null, "Deleting world");
                 WorldStorageSource getSave = this.minecraft.getWorldStorageSource();
                 getSave.flush();

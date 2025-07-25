@@ -26,13 +26,18 @@ public class FlatChunkGenerator implements ChunkSource {
     private double[] temperatures;
     private Biome[] biomes;
 
+    private final boolean betaFeatures;
+
     public FlatChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
+
         if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
             ((CaveGenBaseImpl)cave).stationapi_setWorld(world);
         }
+
         this.forestNoise = new OctavePerlinNoiseSampler(this.random, 8);
+        this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
     }
 
     public void buildTerrain(byte[] blocks) {
@@ -66,7 +71,6 @@ public class FlatChunkGenerator implements ChunkSource {
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
         byte[] var3 = new byte['耀'];
-        Chunk var4 = new Chunk(this.world, var3, chunkX, chunkZ);
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(var3);
@@ -74,7 +78,7 @@ public class FlatChunkGenerator implements ChunkSource {
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
         FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);
-        flattenedChunk.fromLegacy(var4.blocks);
+        flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
         return flattenedChunk;
     }
@@ -84,8 +88,17 @@ public class FlatChunkGenerator implements ChunkSource {
     }
 
     public void decorate(ChunkSource source, int x, int z) {
-        if (!((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+        if (!this.betaFeatures) {
+            for (int var1 = 0; var1 < 16; var1++) {
+                int worldX = x * 16 + var1;
 
+                for (int var2 = 0; var2 < 16; var2++) {
+                    int worldZ = z * 16 + var2;
+                    if (worldX < 0 || worldX >= 16 || worldZ < 0 || worldZ >= 16) {
+                        return;
+                    }
+                }
+            }
         } else {
             SandBlock.fallInstantly = true;
             int var4 = x * 16;

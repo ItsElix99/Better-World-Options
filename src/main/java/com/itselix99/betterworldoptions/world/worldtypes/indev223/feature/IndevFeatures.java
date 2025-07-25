@@ -1,14 +1,13 @@
 package com.itselix99.betterworldoptions.world.worldtypes.indev223.feature;
 
-import com.itselix99.betterworldoptions.world.worldtypes.indev223.math.MathHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.PlantBlock;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.*;
 
 public class IndevFeatures {
-
     public static void placeSpawnBuilding(World world) {
         int var1 = world.getProperties().getSpawnX();
         int var2 = world.getProperties().getSpawnY();

@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.events.TextureListener;
+import com.itselix99.betterworldoptions.event.TextureListener;
 import com.itselix99.betterworldoptions.world.WorldSettings;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.block.Block;
@@ -17,7 +17,7 @@ public class OreStorageBlockMixin extends Block {
 
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
     public int getTexture(int original, int side) {
-        if (!WorldSettings.GameMode.isBetaTexturesTextures()) {
+        if (!WorldSettings.GameMode.isBetaFeaturesTextures()) {
             if (side == 1) {
                 return this.textureId;
             } else if (side == 0) {

@@ -3,8 +3,8 @@ package com.itselix99.betterworldoptions.world;
 import com.itselix99.betterworldoptions.compat.CompatMods;
 import com.itselix99.betterworldoptions.world.worldtypes.FarlandsChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.FlatChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.alpha112.Alpha112_ChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.beta11.Beta11_ChunkGenerator;
+import com.itselix99.betterworldoptions.world.worldtypes.alpha.AlphaChunkGenerator;
+import com.itselix99.betterworldoptions.world.worldtypes.EarlyBetaChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.EarlyInfdevChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.Indev223ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev415.Infdev415ChunkGenerator;
@@ -80,7 +80,7 @@ public class WorldTypeList {
         WORLD_TYPE_LIST.add(Farlands);
 
         WorldTypeEntry EarlyBeta = new WorldTypeEntry();
-        EarlyBeta.OVERWORLD_CHUNK_GENERATOR = Beta11_ChunkGenerator.class;
+        EarlyBeta.OVERWORLD_CHUNK_GENERATOR = EarlyBetaChunkGenerator.class;
         EarlyBeta.DISPLAY_NAME = "Beta 1.1_02";
         EarlyBeta.NAME = EarlyBeta.DISPLAY_NAME;
         EarlyBeta.DESCRIPTION = "Start the world with Beta 1.1_02 generation";
@@ -91,7 +91,7 @@ public class WorldTypeList {
         WORLD_TYPE_LIST.add(EarlyBeta);
 
         WorldTypeEntry Alpha = new WorldTypeEntry();
-        Alpha.OVERWORLD_CHUNK_GENERATOR = Alpha112_ChunkGenerator.class;
+        Alpha.OVERWORLD_CHUNK_GENERATOR = AlphaChunkGenerator.class;
         Alpha.DISPLAY_NAME = "Alpha 1.1.2_01";
         Alpha.NAME = Alpha.DISPLAY_NAME;
         Alpha.DESCRIPTION = "Start the world with Alpha 1.1.2_01 generation";

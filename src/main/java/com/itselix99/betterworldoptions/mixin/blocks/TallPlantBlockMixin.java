@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.events.TextureListener;
+import com.itselix99.betterworldoptions.event.TextureListener;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.WorldSettings;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -9,7 +9,6 @@ import net.minecraft.block.PlantBlock;
 import net.minecraft.block.TallPlantBlock;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(TallPlantBlock.class)
@@ -24,7 +23,7 @@ public class TallPlantBlockMixin extends PlantBlock {
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
 
-        if (WorldSettings.GameMode.isBetaFeaturesWorldTypes(worldType) && !betaFeatures && !WorldSettings.GameMode.isBetaTexturesTextures()) {
+        if (WorldSettings.GameMode.isBetaFeaturesWorldTypes(worldType) && !betaFeatures && !WorldSettings.GameMode.isBetaFeaturesTextures()) {
             if (meta == 1) {
                 return TextureListener.alphaTallGrass;
             } else if (meta == 2) {

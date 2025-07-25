@@ -77,7 +77,7 @@ public class WorldSettings {
     public static class GameMode {
         private static boolean HARDCORE = false;
         private static boolean BETA_FEATURES = true;
-        private static boolean BETA_TEXTURES_TEXTURES = true;
+        private static boolean BETA_FEATURES_TEXTURES = true;
 
         private static final Set<String> NON_BETA_FEATURES_WORLD_TYPES = Set.of(
                 "Default", "Nether", "Skylands", "Farlands", "Beta 1.1_02", "Aether"
@@ -95,8 +95,8 @@ public class WorldSettings {
             BETA_FEATURES = betaFeatures;
         }
 
-        public static void setBetaTexturesTextures(boolean betaTexturesTextures) {
-            BETA_TEXTURES_TEXTURES = betaTexturesTextures;
+        public static void setBetaFeaturesTextures(boolean betaFeaturesTextures) {
+            BETA_FEATURES_TEXTURES = betaFeaturesTextures;
         }
 
         public static boolean isHardcore() {
@@ -107,8 +107,8 @@ public class WorldSettings {
             return BETA_FEATURES;
         }
 
-        public static boolean isBetaTexturesTextures() {
-            return BETA_TEXTURES_TEXTURES;
+        public static boolean isBetaFeaturesTextures() {
+            return BETA_FEATURES_TEXTURES;
         }
 
         public static boolean getNonBetaFeaturesWorldTypes() {

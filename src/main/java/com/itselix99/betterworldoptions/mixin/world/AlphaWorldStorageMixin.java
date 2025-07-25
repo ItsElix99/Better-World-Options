@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
-import com.itselix99.betterworldoptions.interfaces.GetDirectoryName;
+import com.itselix99.betterworldoptions.interfaces.BWOGetDirectoryName;
 import net.minecraft.world.storage.AlphaWorldStorage;
 import net.minecraft.world.storage.WorldStorage;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.io.File;
 
 @Mixin(AlphaWorldStorage.class)
-public abstract class AlphaWorldStorageMixin implements WorldStorage, GetDirectoryName {
+public abstract class AlphaWorldStorageMixin implements WorldStorage, BWOGetDirectoryName {
     @Unique private String dirName;
 
     @Inject(method = "<init>",

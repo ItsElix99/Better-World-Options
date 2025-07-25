@@ -1,11 +1,11 @@
 package com.itselix99.betterworldoptions.mixin.screen;
 
 import com.itselix99.betterworldoptions.compat.CompatMods;
-import com.itselix99.betterworldoptions.gui.IndevOptionsScreen;
+import com.itselix99.betterworldoptions.gui.screen.IndevOptionsScreen;
 import com.itselix99.betterworldoptions.gui.UpdateButtonText;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.itselix99.betterworldoptions.gui.CreateWorldTypeScreen;
+import com.itselix99.betterworldoptions.gui.screen.CreateWorldTypeScreen;
 import com.itselix99.betterworldoptions.gui.ScreenStateCache;
 import com.itselix99.betterworldoptions.world.WorldSettings;
 import net.minecraft.client.font.TextRenderer;

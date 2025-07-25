@@ -22,14 +22,13 @@
   "entrypoints": {
     "stationapi:event_bus": [
       "com.itselix99.betterworldoptions.BetterWorldOptions",
-      "com.itselix99.betterworldoptions.events.TextureListener"
+      "com.itselix99.betterworldoptions.event.TextureListener"
     ],
     "stationapi:event_bus_client": [
     ],
     "stationapi:event_bus_server": [
     ],
     "bhcreative:event_bus": [
-      "com.itselix99.betterworldoptions.events.CreativeListener"
     ]
   },
   "mixins": [

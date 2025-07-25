@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.biomes;
 
-import com.itselix99.betterworldoptions.interfaces.CustomRandomTreeFeature;
+import com.itselix99.betterworldoptions.interfaces.BWOCustomRandomTreeFeature;
 import net.minecraft.world.biome.RainforestBiome;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.LargeOakTreeFeature;
@@ -10,7 +10,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import java.util.Random;
 
 @Mixin(RainforestBiome.class)
-public class RainforestBiomeMixin extends BiomeMixin implements CustomRandomTreeFeature {
+public class RainforestBiomeMixin extends BiomeMixin implements BWOCustomRandomTreeFeature {
+
+    @Override
+    public Feature bwo_getRandomTreeFeatureInfdev611(Random random) {
+        return new OakTreeFeature();
+    }
 
     @Override
     public Feature bwo_getRandomTreeFeatureInfdev(Random random) {

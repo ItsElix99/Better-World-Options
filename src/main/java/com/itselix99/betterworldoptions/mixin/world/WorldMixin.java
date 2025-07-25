@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
-import com.itselix99.betterworldoptions.interfaces.GetDirectoryName;
+import com.itselix99.betterworldoptions.interfaces.BWOGetDirectoryName;
 import com.itselix99.betterworldoptions.world.WorldSettings;
 import com.itselix99.betterworldoptions.world.WorldTypeList;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -8,7 +8,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.world.WorldProperties;
@@ -17,13 +16,12 @@ import net.minecraft.world.storage.WorldStorage;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Random;
 
 @Mixin(World.class)
-public abstract class WorldMixin implements GetDirectoryName {
+public abstract class WorldMixin implements BWOGetDirectoryName {
     @Shadow public Random random;
     @Shadow public boolean newWorld;
     @Shadow protected WorldProperties properties;

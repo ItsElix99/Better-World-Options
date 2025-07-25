@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions;
 
-import com.itselix99.betterworldoptions.blocks.AlphaLeavesBlock;
-import com.itselix99.betterworldoptions.events.TextureListener;
+import com.itselix99.betterworldoptions.block.AlphaLeavesBlock;
+import com.itselix99.betterworldoptions.event.TextureListener;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.block.Block;
 import net.minecraft.entity.mob.*;

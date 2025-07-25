@@ -79,7 +79,7 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.worldType = nbt.getString("WorldType");
         this.hardcore = nbt.getBoolean("Hardcore");
         this.betaFeatures = nbt.getBoolean("BetaFeatures");
-        WorldSettings.GameMode.setBetaTexturesTextures(this.betaFeatures);
+        WorldSettings.GameMode.setBetaFeaturesTextures(this.betaFeatures);
 
         if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
             this.snowCovered = nbt.getBoolean("SnowCovered");
@@ -107,7 +107,7 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.worldType = WorldSettings.World.getWorldTypeName();
         this.hardcore = WorldSettings.GameMode.isHardcore();
         this.betaFeatures = WorldSettings.GameMode.isBetaFeatures();
-        WorldSettings.GameMode.setBetaTexturesTextures(this.betaFeatures);
+        WorldSettings.GameMode.setBetaFeaturesTextures(this.betaFeatures);
 
         if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
             this.snowCovered = WorldSettings.AlphaWorld.isSnowCovered();

@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.events.TextureListener;
+import com.itselix99.betterworldoptions.event.TextureListener;
 import com.itselix99.betterworldoptions.world.WorldSettings;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.block.Block;
@@ -17,7 +17,7 @@ public abstract class BlockMixin {
 
     @ModifyReturnValue(method = "getTexture*", at = @At("RETURN"))
     public int getTexture(int original, int side) {
-        if (!WorldSettings.GameMode.isBetaTexturesTextures()) {
+        if (!WorldSettings.GameMode.isBetaFeaturesTextures()) {
             if (this.id == 4) {
                 return TextureListener.alphaCobblestone;
             } else {
