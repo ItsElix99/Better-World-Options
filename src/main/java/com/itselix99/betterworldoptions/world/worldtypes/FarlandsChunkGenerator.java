@@ -1,6 +1,8 @@
 package com.itselix99.betterworldoptions.world.worldtypes;
 
 import java.util.Random;
+import com.itselix99.betterworldoptions.BWOConfig;
+import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
 import net.minecraft.block.material.Material;
@@ -24,6 +26,7 @@ import net.minecraft.world.gen.feature.PlantPatchFeature;
 import net.minecraft.world.gen.feature.PumpkinPatchFeature;
 import net.minecraft.world.gen.feature.SpringFeature;
 import net.minecraft.world.gen.feature.SugarCanePatchFeature;
+import net.modificationstation.stationapi.api.util.math.MathHelper;
 import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
@@ -39,6 +42,7 @@ public class FarlandsChunkGenerator implements ChunkSource {
     public OctavePerlinNoiseSampler forestNoise;
     private final World world;
     private final Generator cave = new CaveWorldCarver();
+    private final Generator ravine = new RavineWorldCarver();
     private double[] heightMap;
     private double[] sandBuffer = new double[256];
     private double[] gravelBuffer = new double[256];
@@ -75,13 +79,14 @@ public class FarlandsChunkGenerator implements ChunkSource {
         byte var6 = 4;
         byte var7 = 64;
         int var8 = var6 + 1;
-        byte var9 = 17;
+        int vertical = BWOConfig.WORLD_CONFIG.worldHeightLimit / 8;
+        byte var9 = (byte) (vertical + 1);
         int var10 = var6 + 1;
         this.heightMap = this.generateHeightMap(this.heightMap, chunkX * var6, chunkZ * var6, var8, var9, var10);
 
         for(int var11 = 0; var11 < var6; ++var11) {
             for(int var12 = 0; var12 < var6; ++var12) {
-                for(int var13 = 0; var13 < 16; ++var13) {
+                for(int var13 = 0; var13 < vertical; ++var13) {
                     double var14 = 0.125F;
                     double var16 = this.heightMap[((var11) * var10 + var12) * var9 + var13];
                     double var18 = this.heightMap[((var11) * var10 + var12 + 1) * var9 + var13];
@@ -100,8 +105,10 @@ public class FarlandsChunkGenerator implements ChunkSource {
                         double var41 = (var22 - var18) * var33;
 
                         for(int var43 = 0; var43 < 4; ++var43) {
-                            int var44 = var43 + var11 * 4 << 11 | var12 * 4 << 7 | var13 * 8 + var32;
-                            short var45 = 128;
+                            int shiftY = MathHelper.ceilLog2(BWOConfig.WORLD_CONFIG.worldHeightLimit);
+                            int shiftXZ = shiftY + 4;
+                            int var44 = var43 + var11 * 4 << shiftXZ | var12 * 4 << shiftY | var13 * 8 + var32;
+                            int var45 = BWOConfig.WORLD_CONFIG.worldHeightLimit;
                             double var46 = 0.25F;
                             double var48 = var35;
                             double var50 = (var37 - var35) * var46;
@@ -159,8 +166,8 @@ public class FarlandsChunkGenerator implements ChunkSource {
                 byte var15 = var10.topBlockId;
                 byte var16 = var10.soilBlockId;
 
-                for(int var17 = 127; var17 >= 0; --var17) {
-                    int var18 = (var9 * 16 + var8) * 128 + var17;
+                for(int var17 = BWOConfig.WORLD_CONFIG.worldHeightLimit - 1; var17 >= 0; --var17) {
+                    int var18 = (var9 * 16 + var8) * BWOConfig.WORLD_CONFIG.worldHeightLimit + var17;
                     if (var17 <= this.random.nextInt(5)) {
                         blocks[var18] = (byte)Block.BEDROCK.id;
                     } else {
@@ -224,13 +231,18 @@ public class FarlandsChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte['耀'];
+        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit * 16];
         Chunk var4 = new Chunk(this.world, var3, chunkX, chunkZ);
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, var5);
         this.buildSurfaces(chunkX, chunkZ, var3, this.biomes);
         this.cave.place(this, this.world, chunkX, chunkZ, var3);
+
+        if (BWOConfig.WORLD_CONFIG.ravineGeneration) {
+            this.ravine.place(this, this.world, chunkX, chunkZ, var3);
+        }
+
         FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var4.blocks);
         flattenedChunk.populateHeightMap();
@@ -300,8 +312,8 @@ public class FarlandsChunkGenerator implements ChunkSource {
                 }
 
                 var27 += 0.5F;
-                var29 = var29 * (double)sizeY / (double)16.0F;
-                double var31 = (double)sizeY / (double)2.0F + var29 * (double)4.0F;
+                var29 = var29 * (double)17 / (double)16.0F;
+                double var31 = (double)17 / (double)2.0F + var29 * (double)4.0F;
                 ++var15;
 
                 for(int var33 = 0; var33 < sizeY; ++var33) {

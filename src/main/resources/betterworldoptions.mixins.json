@@ -19,6 +19,7 @@
     "dimensions.NetherDimensionMixin",
     "world.AlphaWorldStorageMixin",
     "world.FlattenedWorldStorageMixin",
+    "world.OverworldChunkGeneratorMixin",
     "world.WorldMixin",
     "world.WorldPropertiesMixin"
   ],

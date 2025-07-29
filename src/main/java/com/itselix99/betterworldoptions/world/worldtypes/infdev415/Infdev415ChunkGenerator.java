@@ -2,8 +2,11 @@ package com.itselix99.betterworldoptions.world.worldtypes.infdev415;
 
 import java.util.Random;
 
+import com.itselix99.betterworldoptions.BWOConfig;
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOCustomRandomTreeFeature;
+import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.feature.OldOreFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev415.util.math.noise.OctavePerlinNoiseSamplerInfdev415;
 import net.minecraft.block.Block;
@@ -17,6 +20,7 @@ import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.gen.Generator;
 import net.minecraft.world.gen.carver.CaveWorldCarver;
 import net.minecraft.world.gen.feature.*;
+import net.modificationstation.stationapi.api.util.math.MathHelper;
 import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
@@ -30,6 +34,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
     private final OctavePerlinNoiseSamplerInfdev415 forestNoise;
     private final World world;
     private final Generator cave = new CaveWorldCarver();
+    private final Generator ravine = new RavineWorldCarver();
     private double[] temperatures;
     private Biome[] biomes;
 
@@ -93,7 +98,9 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                             double var37 = (double)var55 / 4.0D;
                             double var39 = var28 + (var32 - var28) * var37;
                             double var41 = var30 + (var34 - var30) * var37;
-                            int var27 = var55 + (var5 << 2) << 11 | (var6 << 2) << 7 | (var8 << 2) + var25;
+                            int shiftY = MathHelper.ceilLog2(BWOConfig.WORLD_CONFIG.worldHeightLimit);
+                            int shiftXZ = shiftY + 4;
+                            int var27 = var55 + (var5 << 2) << shiftXZ | (var6 << 2) << shiftY | (var8 << 2) + var25;
 
                             for(int var36 = 0; var36 < 4; ++var36) {
                                 double var45 = (double)var36 / 4.0D;
@@ -114,7 +121,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                                 }
 
                                 blocks[var27] = (byte)var56;
-                                var27 += 128;
+                                var27 += BWOConfig.WORLD_CONFIG.worldHeightLimit;
                             }
                         }
                     }
@@ -142,8 +149,8 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                     var54 = Block.DIRT.id;
                 }
 
-                for(int var20 = 127; var20 >= 0; --var20) {
-                    int var16 = (var6 * 16 + var5) * 128 + var20;
+                for(int var20 = BWOConfig.WORLD_CONFIG.worldHeightLimit - 1; var20 >= 0; --var20) {
+                    int var16 = (var6 * 16 + var5) * BWOConfig.WORLD_CONFIG.worldHeightLimit + var20;
                     if(blocks[var16] == 0) {
                         var53 = -1;
                     } else if(blocks[var16] == Block.STONE.id) {
@@ -208,13 +215,19 @@ public class Infdev415ChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte['耀'];
+        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var5);
 
         if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
+        }
+
+        if (BWOConfig.WORLD_CONFIG.ravineGeneration) {
+            if (this.betaFeatures || BWOConfig.WORLD_CONFIG.allowGenWithBetaFeaturesOff) {
+                this.ravine.place(this, this.world, chunkX, chunkZ, var3);
+            }
         }
 
         FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);

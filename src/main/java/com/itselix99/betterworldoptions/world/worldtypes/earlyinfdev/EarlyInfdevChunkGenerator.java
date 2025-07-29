@@ -2,8 +2,10 @@ package com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev;
 
 import java.util.Random;
 
+import com.itselix99.betterworldoptions.BWOConfig;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOCustomRandomTreeFeature;
+import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.feature.OldOreFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.carver.CaveWorldCarverEarlyInfdev;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.util.math.noise.OctavePerlinNoiseSamplerEarlyInfdev;
@@ -34,6 +36,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
     private final World world;
     private final Generator cave = new CaveWorldCarver();
     private final Generator caveEarlyInfdev = new CaveWorldCarverEarlyInfdev();
+    private final Generator ravine = new RavineWorldCarver();
     private Biome[] biomes;
     private double[] temperatures;
 
@@ -83,7 +86,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                     }
                 }
 
-                for (int var14 = 0; var14 < 128; ++var14) {
+                for (int var14 = 0; var14 < BWOConfig.WORLD_CONFIG.worldHeightLimit; ++var14) {
                     int i = (var6 - chunkX) * 16 + var7 - chunkZ;
                     double var18 = temperatures[i];
                     double var19 = downfall[i];
@@ -125,12 +128,12 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                     }
 
                     this.brickRandom.setSeed(var8 + var9 * 13871L);
-                    int var16 = (var8 << 10) + 128 + this.brickRandom.nextInt(512);
-                    int var17 = (var9 << 10) + 128 + this.brickRandom.nextInt(512);
+                    int var16 = (var8 << 10) + BWOConfig.WORLD_CONFIG.worldHeightLimit + this.brickRandom.nextInt(512);
+                    int var17 = (var9 << 10) + BWOConfig.WORLD_CONFIG.worldHeightLimit + this.brickRandom.nextInt(512);
                     var16 = Math.abs(var6 - var16);
                     var17 = Math.abs(var7 - var17);
                     if (var17 > var16) var16 = var17;
-                    var16 = 127 - var16;
+                    var16 = (BWOConfig.WORLD_CONFIG.worldHeightLimit - 1) - var16;
                     if (var16 < var13) var16 = var13;
                     if (var14 <= var16 && (var15 == 0 || var15 == Block.WATER.id)) {
                         var15 = Block.BRICKS.id;
@@ -149,7 +152,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte['耀'];
+        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
         double[] var6 = this.world.method_1781().downfallMap;
@@ -159,6 +162,12 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         } else {
             this.caveEarlyInfdev.place(this, this.world, chunkX, chunkZ, var3);
+        }
+
+        if (BWOConfig.WORLD_CONFIG.ravineGeneration) {
+            if (this.betaFeatures || BWOConfig.WORLD_CONFIG.allowGenWithBetaFeaturesOff) {
+                this.ravine.place(this, this.world, chunkX, chunkZ, var3);
+            }
         }
 
         FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);

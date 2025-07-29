@@ -28,6 +28,9 @@
     ],
     "stationapi:event_bus_server": [
     ],
+    "gcapi3": [
+      "com.itselix99.betterworldoptions.BWOConfig"
+    ],
     "bhcreative:event_bus": [
     ]
   },

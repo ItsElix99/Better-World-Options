@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.carver;
 
+import com.itselix99.betterworldoptions.BWOConfig;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -27,7 +28,7 @@ public class CaveWorldCarverEarlyInfdev extends Generator {
 
         var1.setSeed(var11);
 
-        final int yMax = 128;
+        final int yMax = BWOConfig.WORLD_CONFIG.worldHeightLimit;
 
         for (int i = 0; i <= 16; ++i) {
             double t = i / 16.0;
@@ -59,7 +60,7 @@ public class CaveWorldCarverEarlyInfdev extends Generator {
 
                         double distSq = dx * dx + dy * dy + dz * dz;
                         if (distSq < flatnessThreshold) {
-                            int index = (localX * 16 + localZ) * 128 + y;
+                            int index = (localX * 16 + localZ) * BWOConfig.WORLD_CONFIG.worldHeightLimit + y;
                             byte block = blocks[index];
                             if (block == Block.WATER.id || block == Block.FLOWING_WATER.id) {
                                 return;
@@ -102,7 +103,7 @@ public class CaveWorldCarverEarlyInfdev extends Generator {
 
                         double distSq = dx * dx + dy * dy + dz * dz;
                         if (distSq < flatnessThreshold) {
-                            int index = (localX * 16 + localZ) * 128 + y;
+                            int index = (localX * 16 + localZ) * BWOConfig.WORLD_CONFIG.worldHeightLimit + y;
                             byte block = blocks[index];
                             if (block == Block.STONE.id || block == Block.DIRT.id || block == Block.GRASS_BLOCK.id) {
                                 blocks[index] = 0;

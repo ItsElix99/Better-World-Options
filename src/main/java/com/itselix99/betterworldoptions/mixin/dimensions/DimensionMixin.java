@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.dimensions;
 
+import com.itselix99.betterworldoptions.BWOConfig;
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.WorldSettings;
@@ -11,19 +12,17 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.dimension.Dimension;
+import net.modificationstation.stationapi.api.world.dimension.StationDimension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Objects;
 
 @Mixin(Dimension.class)
-public class DimensionMixin {
+public class DimensionMixin implements StationDimension {
     @Shadow public BiomeSource biomeSource;
     @Shadow public boolean isNether;
     @Shadow public boolean evaporatesWater;
@@ -131,5 +130,10 @@ public class DimensionMixin {
         } else {
             return original;
         }
+    }
+
+    @Override
+    public int getHeight() {
+        return BWOConfig.WORLD_CONFIG.worldHeightLimit;
     }
 }

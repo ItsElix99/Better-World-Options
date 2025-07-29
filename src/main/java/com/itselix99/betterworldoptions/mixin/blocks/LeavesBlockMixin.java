@@ -3,6 +3,7 @@ package com.itselix99.betterworldoptions.mixin.blocks;
 import com.itselix99.betterworldoptions.event.TextureListener;
 import com.itselix99.betterworldoptions.world.WorldSettings;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.minecraft.block.Block;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.TransparentBlock;
 import net.minecraft.block.material.Material;
@@ -18,8 +19,13 @@ public class LeavesBlockMixin extends TransparentBlock {
 
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
     public int getTexture(int original, int side, int meta) {
-        if (!WorldSettings.GameMode.isBetaFeaturesTextures() && meta == 0) {
-            return TextureListener.alphaLeaves;
+        if (!WorldSettings.GameMode.isBetaFeaturesTextures() && !((meta & 1) == 1 || (meta & 2) == 2)) {
+            if (this.renderSides) {
+                return TextureListener.alphaLeaves;
+            } else {
+                return Block.OBSIDIAN.textureId;
+            }
+
         } else {
             return original;
         }

@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.indev223.feature;
 
+import com.itselix99.betterworldoptions.BWOConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.PlantBlock;
 import net.minecraft.util.math.MathHelper;
@@ -49,7 +50,7 @@ public class IndevFeatures {
             int y = random.nextInt(128);
             int z = random.nextInt(16);
 
-            int index = (x * 16 + z) * 128 + y;
+            int index = (x * 16 + z) * BWOConfig.WORLD_CONFIG.worldHeightLimit + y;
 
             if (blocks[index] == 0) {
                 long lakeSize = placeLake(x, y, z, 0, Block.WATER.id, blocks);
@@ -77,7 +78,7 @@ public class IndevFeatures {
                     Math.min(random.nextInt(maxLakeY), random.nextInt(maxLakeY))
             );
 
-            int index = (x * 16 + z) * 128 + y;
+            int index = (x * 16 + z) * BWOConfig.WORLD_CONFIG.worldHeightLimit + y;
 
             if (blocks[index] == 0) {
                 long lakeSize = placeLake(x, y, z, 0, Block.WATER.id, blocks);
@@ -93,7 +94,7 @@ public class IndevFeatures {
 
     public static long placeLake(int startX, int startY, int startZ, int matchId, int liquidId, byte[] blocks) {
         final int sizeX = 16;
-        final int sizeY = 128;
+        final int sizeY = BWOConfig.WORLD_CONFIG.worldHeightLimit;
         final int sizeZ = 16;
         final int MAX_FILL = 640;
 

@@ -78,7 +78,6 @@ public abstract class WorldMixin implements BWOGetDirectoryName {
                 }
 
                 var2 = random.nextInt(64, 67);
-                System.out.println(var2);
                 if (!generateIndevHouse && this.dimension.isValidSpawnPoint(var1, var3) || this.isValidSpawnArea(var1, var2, var3)) {
                     isValidSpawnArea = true;
                 }
@@ -173,7 +172,6 @@ public abstract class WorldMixin implements BWOGetDirectoryName {
             at = @At("RETURN")
     )
     private int modifySkylight(int original) {
-        System.out.println(original);
         String worldType = ((BWOProperties) this.getProperties()).bwo_getWorldType();
         String indevTheme = ((BWOProperties) this.getProperties()).bwo_getTheme();
         boolean betaFeatures = ((BWOProperties) this.getProperties()).bwo_getBetaFeatures();
@@ -208,12 +206,16 @@ public abstract class WorldMixin implements BWOGetDirectoryName {
         boolean betaFeatures = ((BWOProperties) world.getProperties()).bwo_getBetaFeatures();
 
         if (worldType.equals("Indev 223") && !betaFeatures) {
-            if (indevTheme.equals("Hell")) {
-                return 2164736;
-            } else if (indevTheme.equals("Paradise")) {
-                return 15658751;
-            } else if (indevTheme.equals("Woods")) {
-                return 5069403;
+            switch (indevTheme) {
+                case "Hell" -> {
+                    return 2164736;
+                }
+                case "Paradise" -> {
+                    return 15658751;
+                }
+                case "Woods" -> {
+                    return 5069403;
+                }
             }
         }
 

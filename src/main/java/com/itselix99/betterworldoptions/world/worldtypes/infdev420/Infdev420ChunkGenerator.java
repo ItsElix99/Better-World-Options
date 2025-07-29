@@ -1,6 +1,8 @@
 package com.itselix99.betterworldoptions.world.worldtypes.infdev420;
 
+import com.itselix99.betterworldoptions.BWOConfig;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.feature.OldOreFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev420.util.math.noise.OctavePerlinNoiseSamplerInfdev420;
 import net.fabricmc.api.EnvType;
@@ -17,6 +19,7 @@ import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.gen.Generator;
 import net.minecraft.world.gen.carver.CaveWorldCarver;
 import net.minecraft.world.gen.feature.*;
+import net.modificationstation.stationapi.api.util.math.MathHelper;
 import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
@@ -32,6 +35,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
     private final OctavePerlinNoiseSamplerInfdev420 forestNoise;
     private final World world;
     private final Generator cave = new CaveWorldCarver();
+    private final Generator ravine = new RavineWorldCarver();
     private double[] noiseArray;
     private double[] noise3;
     private double[] noise1;
@@ -47,7 +51,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
         new Random(seed);
 
         if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-            ((CaveGenBaseImpl)cave).stationapi_setWorld(world);
+            ((CaveGenBaseImpl) cave).stationapi_setWorld(world);
         }
 
         this.noiseGen1 = new OctavePerlinNoiseSamplerInfdev420(this.random, 16);
@@ -67,18 +71,20 @@ public class Infdev420ChunkGenerator implements ChunkSource {
         int var7 = var10003;
         double[] var6 = this.noiseArray;
         Infdev420ChunkGenerator var71 = this;
+        int vertical = BWOConfig.WORLD_CONFIG.worldHeightLimit / 8;
+
         if(var6 == null) {
-            var6 = new double[425];
+            var6 = new double[5 * 5 * (vertical + 1)];
         }
 
-        this.noise3 = this.noiseGen3.create(this.noise3, var7, 0, var8, 5, 17, 5, 8.555150000000001D, 4.277575000000001D, 8.555150000000001D);
-        this.noise1 = this.noiseGen1.create(this.noise1, var7, 0, var8, 5, 17, 5, 684.412D, 684.412D, 684.412D);
-        this.noise2 = this.noiseGen2.create(this.noise2, var7, 0, var8, 5, 17, 5, 684.412D, 684.412D, 684.412D);
+        this.noise3 = this.noiseGen3.create(this.noise3, var7, 0, var8, 5, vertical + 1, 5, 8.555150000000001D, 4.277575000000001D, 8.555150000000001D);
+        this.noise1 = this.noiseGen1.create(this.noise1, var7, 0, var8, 5, vertical + 1, 5, 684.412D, 684.412D, 684.412D);
+        this.noise2 = this.noiseGen2.create(this.noise2, var7, 0, var8, 5, vertical + 1, 5, 684.412D, 684.412D, 684.412D);
         var7 = 0;
 
         for(var8 = 0; var8 < 5; ++var8) {
             for(int var9 = 0; var9 < 5; ++var9) {
-                for(int var10 = 0; var10 < 17; ++var10) {
+                for(int var10 = 0; var10 < vertical + 1; ++var10) {
                     double var63 = ((double)var10 - 8.5D) * 12.0D;
                     if(var63 < 0.0D) {
                         var63 *= 2.0D;
@@ -109,15 +115,15 @@ public class Infdev420ChunkGenerator implements ChunkSource {
         int var73;
         for(var72 = 0; var72 < 4; ++var72) {
             for(var73 = 0; var73 < 4; ++var73) {
-                for(var7 = 0; var7 < 16; ++var7) {
-                    double var75 = this.noiseArray[(var72 * 5 + var73) * 17 + var7];
-                    double var77 = this.noiseArray[(var72 * 5 + var73 + 1) * 17 + var7];
-                    double var12 = this.noiseArray[((var72 + 1) * 5 + var73) * 17 + var7];
-                    double var14 = this.noiseArray[((var72 + 1) * 5 + var73 + 1) * 17 + var7];
-                    double var16 = this.noiseArray[(var72 * 5 + var73) * 17 + var7 + 1];
-                    double var18 = this.noiseArray[(var72 * 5 + var73 + 1) * 17 + var7 + 1];
-                    double var20 = this.noiseArray[((var72 + 1) * 5 + var73) * 17 + var7 + 1];
-                    double var22 = this.noiseArray[((var72 + 1) * 5 + var73 + 1) * 17 + var7 + 1];
+                for(var7 = 0; var7 < vertical; ++var7) {
+                    double var75 = this.noiseArray[(var72 * 5 + var73) * (vertical + 1) + var7];
+                    double var77 = this.noiseArray[(var72 * 5 + var73 + 1) * (vertical + 1) + var7];
+                    double var12 = this.noiseArray[((var72 + 1) * 5 + var73) * (vertical + 1) + var7];
+                    double var14 = this.noiseArray[((var72 + 1) * 5 + var73 + 1) * (vertical + 1) + var7];
+                    double var16 = this.noiseArray[(var72 * 5 + var73) * (vertical + 1) + var7 + 1];
+                    double var18 = this.noiseArray[(var72 * 5 + var73 + 1) * (vertical + 1) + var7 + 1];
+                    double var20 = this.noiseArray[((var72 + 1) * 5 + var73) * (vertical + 1) + var7 + 1];
+                    double var22 = this.noiseArray[((var72 + 1) * 5 + var73 + 1) * (vertical + 1) + var7 + 1];
 
                     for(int var24 = 0; var24 < 8; ++var24) {
                         double var25 = (double)var24 / 8.0D;
@@ -130,7 +136,10 @@ public class Infdev420ChunkGenerator implements ChunkSource {
                             double var36 = (double)var82 / 4.0D;
                             double var38 = var27 + (var31 - var27) * var36;
                             double var40 = var29 + (var33 - var29) * var36;
-                            int var26 = var82 + (var72 << 2) << 11 | (var73 << 2) << 7 | (var7 << 3) + var24;
+
+                            int shiftY = MathHelper.ceilLog2(BWOConfig.WORLD_CONFIG.worldHeightLimit);
+                            int shiftXZ = shiftY + 4;
+                            int var26 = var82 + (var72 << 2) << shiftXZ | (var73 << 2) << shiftY | (var7 << 3) + var24;
 
                             for(int var35 = 0; var35 < 4; ++var35) {
                                 double var44 = (double)var35 / 4.0D;
@@ -150,7 +159,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
                                 }
 
                                 blocks[var26] = (byte)var83;
-                                var26 += 128;
+                                var26 += BWOConfig.WORLD_CONFIG.worldHeightLimit;
                             }
                         }
                     }
@@ -178,8 +187,8 @@ public class Infdev420ChunkGenerator implements ChunkSource {
                     var19 = Block.DIRT.id;
                 }
 
-                for(int var81 = 127; var81 >= 0; --var81) {
-                    int var79 = (var73 * 16 + var72) * 128 + var81;
+                for(int var81 = BWOConfig.WORLD_CONFIG.worldHeightLimit - 1; var81 >= 0; --var81) {
+                    int var79 = (var73 * 16 + var72) * BWOConfig.WORLD_CONFIG.worldHeightLimit + var81;
                     if(blocks[var79] == 0) {
                         var17 = -1;
                     } else if(blocks[var79] == Block.STONE.id) {
@@ -244,13 +253,19 @@ public class Infdev420ChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte['耀'];
+        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var5);
 
         if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
+        }
+
+        if (BWOConfig.WORLD_CONFIG.ravineGeneration) {
+            if (this.betaFeatures || BWOConfig.WORLD_CONFIG.allowGenWithBetaFeaturesOff) {
+                this.ravine.place(this, this.world, chunkX, chunkZ, var3);
+            }
         }
 
         FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);
