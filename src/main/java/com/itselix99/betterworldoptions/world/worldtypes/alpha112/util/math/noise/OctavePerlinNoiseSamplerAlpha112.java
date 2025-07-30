@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.world.worldtypes.alpha.util.math.noise;
+package com.itselix99.betterworldoptions.world.worldtypes.alpha112.util.math.noise;
 
 import net.minecraft.util.math.noise.NoiseSampler;
 

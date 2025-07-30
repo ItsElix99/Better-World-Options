@@ -30,18 +30,15 @@ public class SaplingBlockMixin extends PlantBlock {
             )
     )
     private boolean wrapFeatureGenerate(Feature originalFeature, World world, Random random, int x, int y, int z, Operation<Boolean> original) {
-        Feature var7;
-        if (Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Alpha 1.1.2_01")) {
-            var7 = new OakTreeFeature();
-            if (random.nextInt(10) == 0) {
+        Feature var7 = originalFeature;
+        String worldType = ((BWOProperties) world.getProperties()).bwo_getWorldType();
+
+        if (var7 instanceof OakTreeFeature || var7 instanceof LargeOakTreeFeature) {
+            if (worldType.equals("Infdev 420") || worldType.equals("Infdev 415")) {
                 var7 = new LargeOakTreeFeature();
+            } else if (worldType.equals("Infdev 611") || worldType.equals("Early Infdev") || worldType.equals("Indev 223")) {
+                var7 = new OakTreeFeature();
             }
-        } else if (Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Infdev 415") || Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Infdev 420")) {
-            var7 = new LargeOakTreeFeature();
-        } else if (Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Early Infdev") || Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Infdev 611")) {
-            var7 = new OakTreeFeature();
-        } else {
-            var7 = originalFeature;
         }
 
         return original.call(var7, world, random, x, y, z);

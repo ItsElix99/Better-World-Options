@@ -1,11 +1,11 @@
-package com.itselix99.betterworldoptions.world.worldtypes.alpha;
+package com.itselix99.betterworldoptions.world.worldtypes.alpha112;
 
 import java.util.Random;
 
 import com.itselix99.betterworldoptions.BWOConfig;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
-import com.itselix99.betterworldoptions.world.worldtypes.alpha.util.math.noise.OctavePerlinNoiseSamplerAlpha112;
+import com.itselix99.betterworldoptions.world.worldtypes.alpha112.util.math.noise.OctavePerlinNoiseSamplerAlpha112;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
 import net.minecraft.block.material.Material;
@@ -21,7 +21,7 @@ import net.modificationstation.stationapi.api.util.math.MathHelper;
 import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
-public class AlphaChunkGenerator implements ChunkSource {
+public class Alpha112ChunkGenerator implements ChunkSource {
     private final Random random;
     private final OctavePerlinNoiseSamplerAlpha112 minLimitPerlinNoise;
     private final OctavePerlinNoiseSamplerAlpha112 maxLimitPerlinNoise;
@@ -49,7 +49,7 @@ public class AlphaChunkGenerator implements ChunkSource {
     private final boolean betaFeatures;
     private final boolean snowCovered;
 
-    public AlphaChunkGenerator(World world, long seed) {
+    public Alpha112ChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
         ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);

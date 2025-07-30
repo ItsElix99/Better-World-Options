@@ -80,7 +80,7 @@ public class WorldSettings {
         private static boolean BETA_FEATURES_TEXTURES = true;
 
         private static final Set<String> NON_BETA_FEATURES_WORLD_TYPES = Set.of(
-                "Default", "Nether", "Skylands", "Farlands", "Beta 1.1_02", "Aether"
+                "Default", "Nether", "Skylands", "Farlands", "Alpha 1.2.0", "Aether"
         );
 
         private static final Set<String> BETA_FEATURES_WORLD_TYPES = Set.of(

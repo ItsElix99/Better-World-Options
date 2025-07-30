@@ -21,7 +21,7 @@ import net.modificationstation.stationapi.api.util.math.MathHelper;
 import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
-public class EarlyBetaChunkGenerator implements ChunkSource {
+public class Alpha120ChunkGenerator implements ChunkSource {
     private final Random random;
     private final OctavePerlinNoiseSampler minLimitPerlinNoise;
     private final OctavePerlinNoiseSampler maxLimitPerlinNoise;
@@ -46,10 +46,10 @@ public class EarlyBetaChunkGenerator implements ChunkSource {
     double[] depthNoiseBuffer;
     private double[] temperatures;
 
-    public EarlyBetaChunkGenerator(World world, long seed) {
+    public Alpha120ChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
-        ((CaveGenBaseImpl)cave).stationapi_setWorld(world);
+        ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         this.minLimitPerlinNoise = new OctavePerlinNoiseSampler(this.random, 16);
         this.maxLimitPerlinNoise = new OctavePerlinNoiseSampler(this.random, 16);
         this.perlinNoise1 = new OctavePerlinNoiseSampler(this.random, 8);
@@ -61,26 +61,29 @@ public class EarlyBetaChunkGenerator implements ChunkSource {
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, double[] temperatures) {
-        byte var6 = 4;
-        byte var7 = 64;
+        int var6 = 4;
+        int var7 = 64;
         int var8 = var6 + 1;
         int vertical = BWOConfig.WORLD_CONFIG.worldHeightLimit / 8;
-        byte var9 = (byte) (vertical + 1);
+        int var9 = vertical + 1;
         int var10 = var6 + 1;
-        this.heightMap = this.generateHeightMap(this.heightMap, chunkX * var6, 0, chunkZ * var6, var8, var9, var10);
+        this.heightMap = this.generateHeightMap(this.heightMap, chunkX * var6, chunkZ * var6, var8, var9, var10);
 
         for(int var11 = 0; var11 < var6; ++var11) {
             for(int var12 = 0; var12 < var6; ++var12) {
                 for(int var13 = 0; var13 < vertical; ++var13) {
                     double var14 = 0.125F;
+                    int var100 = ((var11) * var10 + var12 + 1) * var9;
+                    int var101 = ((var11 + 1) * var10 + var12) * var9;
+                    int var102 = ((var11 + 1) * var10 + var12 + 1) * var9;
                     double var16 = this.heightMap[((var11) * var10 + var12) * var9 + var13];
-                    double var18 = this.heightMap[((var11) * var10 + var12 + 1) * var9 + var13];
-                    double var20 = this.heightMap[((var11 + 1) * var10 + var12) * var9 + var13];
-                    double var22 = this.heightMap[((var11 + 1) * var10 + var12 + 1) * var9 + var13];
+                    double var18 = this.heightMap[var100 + var13];
+                    double var20 = this.heightMap[var101 + var13];
+                    double var22 = this.heightMap[var102 + var13];
                     double var24 = (this.heightMap[((var11) * var10 + var12) * var9 + var13 + 1] - var16) * var14;
-                    double var26 = (this.heightMap[((var11) * var10 + var12 + 1) * var9 + var13 + 1] - var18) * var14;
-                    double var28 = (this.heightMap[((var11 + 1) * var10 + var12) * var9 + var13 + 1] - var20) * var14;
-                    double var30 = (this.heightMap[((var11 + 1) * var10 + var12 + 1) * var9 + var13 + 1] - var22) * var14;
+                    double var26 = (this.heightMap[var100 + var13 + 1] - var18) * var14;
+                    double var28 = (this.heightMap[var101 + var13 + 1] - var20) * var14;
+                    double var30 = (this.heightMap[var102 + var13 + 1] - var22) * var14;
 
                     for(int var32 = 0; var32 < 8; ++var32) {
                         double var33 = 0.25F;
@@ -134,28 +137,28 @@ public class EarlyBetaChunkGenerator implements ChunkSource {
     }
 
     public void buildSurfaces(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes) {
-        byte var5 = 64;
+        int var5 = 64;
         double var6 = 0.03125F;
         this.sandBuffer = this.perlinNoise2.create(this.sandBuffer, chunkX * 16, chunkZ * 16, 0.0F, 16, 16, 1, var6, var6, 1.0F);
-        this.gravelBuffer = this.perlinNoise2.create(this.gravelBuffer, chunkX * 16, 109.0134, chunkZ * 16, 16, 1, 16, var6, 1.0F, var6);
+        this.gravelBuffer = this.perlinNoise2.create(this.gravelBuffer, chunkZ * 16, 109.0134, chunkX * 16, 16, 1, 16, var6, 1.0F, var6);
         this.depthBuffer = this.perlinNoise3.create(this.depthBuffer, chunkX * 16, chunkZ * 16, 0.0F, 16, 16, 1, var6 * (double)2.0F, var6 * (double)2.0F, var6 * (double)2.0F);
 
         for(int var8 = 0; var8 < 16; ++var8) {
             for(int var9 = 0; var9 < 16; ++var9) {
-                Biome var10 = biomes[var8 + var9 * 16];
-                boolean var11 = this.sandBuffer[var8 + var9 * 16] + this.random.nextDouble() * 0.2 > (double)0.0F;
-                boolean var12 = this.gravelBuffer[var8 + var9 * 16] + this.random.nextDouble() * 0.2 > (double)3.0F;
+                Biome var10 = biomes[var8 * 16 + var9];
+                int var11 = this.sandBuffer[var8 + var9 * 16] + this.random.nextDouble() * 0.2 > (double)0.0F ? 1 : 0;
+                int var12 = this.gravelBuffer[var8 + var9 * 16] + this.random.nextDouble() * 0.2 > (double)3.0F ? 1 : 0;
                 int var13 = (int)(this.depthBuffer[var8 + var9 * 16] / (double)3.0F + (double)3.0F + this.random.nextDouble() * (double)0.25F);
                 int var14 = -1;
-                byte var15 = var10.topBlockId;
-                byte var16 = var10.soilBlockId;
+                int var15 = var10.topBlockId;
+                int var16 = var10.soilBlockId;
 
                 for(int var17 = BWOConfig.WORLD_CONFIG.worldHeightLimit - 1; var17 >= 0; --var17) {
-                    int var18 = (var9 * 16 + var8) * BWOConfig.WORLD_CONFIG.worldHeightLimit + var17;
+                    int var18 = (var8 * 16 + var9) * BWOConfig.WORLD_CONFIG.worldHeightLimit + var17;
                     if (var17 <= this.random.nextInt(5)) {
                         blocks[var18] = (byte)Block.BEDROCK.id;
                     } else {
-                        byte var19 = blocks[var18];
+                        int var19 = blocks[var18];
                         if (var19 == 0) {
                             var14 = -1;
                         } else if (var19 == Block.STONE.id) {
@@ -166,19 +169,19 @@ public class EarlyBetaChunkGenerator implements ChunkSource {
                                 } else if (var17 >= var5 - 4 && var17 <= var5 + 1) {
                                     var15 = var10.topBlockId;
                                     var16 = var10.soilBlockId;
-                                    if (var12) {
+                                    if (var12 != 0) {
                                         var15 = 0;
                                     }
 
-                                    if (var12) {
+                                    if (var12 != 0) {
                                         var16 = (byte)Block.GRAVEL.id;
                                     }
 
-                                    if (var11) {
+                                    if (var11 != 0) {
                                         var15 = (byte)Block.SAND.id;
                                     }
 
-                                    if (var11) {
+                                    if (var11 != 0) {
                                         var16 = (byte)Block.SAND.id;
                                     }
                                 }
@@ -189,13 +192,13 @@ public class EarlyBetaChunkGenerator implements ChunkSource {
 
                                 var14 = var13;
                                 if (var17 >= var5 - 1) {
-                                    blocks[var18] = var15;
+                                    blocks[var18] = (byte)var15;
                                 } else {
-                                    blocks[var18] = var16;
+                                    blocks[var18] = (byte)var16;
                                 }
                             } else if (var14 > 0) {
                                 --var14;
-                                blocks[var18] = var16;
+                                blocks[var18] = (byte)var16;
                             }
                         }
                     }
@@ -228,7 +231,7 @@ public class EarlyBetaChunkGenerator implements ChunkSource {
         return flattenedChunk;
     }
 
-    private double[] generateHeightMap(double[] heightMap, int x, int y, int z, int sizeX, int sizeY, int sizeZ) {
+    private double[] generateHeightMap(double[] heightMap, int x, int z, int sizeX, int sizeY, int sizeZ) {
         if (heightMap == null) {
             heightMap = new double[sizeX * sizeY * sizeZ];
         }
@@ -239,9 +242,9 @@ public class EarlyBetaChunkGenerator implements ChunkSource {
         double[] var13 = this.world.method_1781().downfallMap;
         this.scaleNoiseBuffer = this.floatingIslandScale.create(this.scaleNoiseBuffer, x, z, sizeX, sizeZ, 1.121, 1.121, 0.5F);
         this.depthNoiseBuffer = this.floatingIslandNoise.create(this.depthNoiseBuffer, x, z, sizeX, sizeZ, 200.0F, 200.0F, 0.5F);
-        this.perlinNoiseBuffer = this.perlinNoise1.create(this.perlinNoiseBuffer, x, y, z, sizeX, sizeY, sizeZ, var8 / (double)80.0F, var10 / (double)160.0F, var8 / (double)80.0F);
-        this.minLimitPerlinNoiseBuffer = this.minLimitPerlinNoise.create(this.minLimitPerlinNoiseBuffer, x, y, z, sizeX, sizeY, sizeZ, var8, var10, var8);
-        this.maxLimitPerlinNoiseBuffer = this.maxLimitPerlinNoise.create(this.maxLimitPerlinNoiseBuffer, x, y, z, sizeX, sizeY, sizeZ, var8, var10, var8);
+        this.perlinNoiseBuffer = this.perlinNoise1.create(this.perlinNoiseBuffer, x, 0, z, sizeX, sizeY, sizeZ, var8 / (double)80.0F, var10 / (double)160.0F, var8 / (double)80.0F);
+        this.minLimitPerlinNoiseBuffer = this.minLimitPerlinNoise.create(this.minLimitPerlinNoiseBuffer, x, 0, z, sizeX, sizeY, sizeZ, var8, var10, var8);
+        this.maxLimitPerlinNoiseBuffer = this.maxLimitPerlinNoise.create(this.maxLimitPerlinNoiseBuffer, x, 0, z, sizeX, sizeY, sizeZ, var8, var10, var8);
         int var14 = 0;
         int var15 = 0;
         int var16 = 16 / sizeX;
@@ -342,21 +345,6 @@ public class EarlyBetaChunkGenerator implements ChunkSource {
         long var9 = this.random.nextLong() / 2L * 2L + 1L;
         this.random.setSeed((long)x * var7 + (long)z * var9 ^ this.world.getSeed());
         double var11;
-        if (this.random.nextInt(4) == 0) {
-            int var13 = var4 + this.random.nextInt(16) + 8;
-            int var14 = this.random.nextInt(128);
-            int var15 = var5 + this.random.nextInt(16) + 8;
-            (new LakeFeature(Block.WATER.id)).generate(this.world, this.random, var13, var14, var15);
-        }
-
-        if (this.random.nextInt(8) == 0) {
-            int var26 = var4 + this.random.nextInt(16) + 8;
-            int var38 = this.random.nextInt(this.random.nextInt(120) + 8);
-            int var50 = var5 + this.random.nextInt(16) + 8;
-            if (var38 < 64 || this.random.nextInt(10) == 0) {
-                (new LakeFeature(Block.LAVA.id)).generate(this.world, this.random, var26, var38, var50);
-            }
-        }
 
         for(int var27 = 0; var27 < 8; ++var27) {
             int var39 = var4 + this.random.nextInt(16) + 8;
@@ -456,20 +444,20 @@ public class EarlyBetaChunkGenerator implements ChunkSource {
             var49 -= 20;
         }
 
-        Feature var18 = new OakTreeFeature();
-        if(this.random.nextInt(10) == 0) {
-            var18 = new LargeOakTreeFeature();
+        Feature feature = new OakTreeFeature();
+        if (this.random.nextInt(10) == 0) {
+            feature = new LargeOakTreeFeature();
         }
 
-        if(var6 == Biome.RAINFOREST && this.random.nextInt(3) == 0) {
-            var18 = new LargeOakTreeFeature();
+        if (var6 == Biome.RAINFOREST && this.random.nextInt(3) == 0) {
+            feature = new LargeOakTreeFeature();
         }
 
         for(int var61 = 0; var61 < var49; ++var61) {
             int var72 = var4 + this.random.nextInt(16) + 8;
             int var17 = var5 + this.random.nextInt(16) + 8;
-            var18.prepare(1.0F, 1.0F, 1.0F);
-            var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
+            feature.prepare(1.0F, 1.0F, 1.0F);
+            feature.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
         }
 
         for(int var73 = 0; var73 < 2; ++var73) {
@@ -548,7 +536,7 @@ public class EarlyBetaChunkGenerator implements ChunkSource {
                 int var117 = var107 - (var5 + 8);
                 int var22 = this.world.getTopSolidBlockY(var96, var107);
                 double var23 = this.temperatures[var113 * 16 + var117] - (double)(var22 - 64) / (double)64.0F * 0.3;
-                if (var23 < (double)0.5F && var22 > 0 && var22 < 128 && this.world.isAir(var96, var22, var107) && this.world.getMaterial(var96, var22 - 1, var107).blocksMovement() && this.world.getMaterial(var96, var22 - 1, var107) != Material.ICE) {
+                if (var23 < (double)0.5F && var22 > 0 && var22 < 128 && this.world.getBlockId(var96, var22, var107) == 0 && this.world.getMaterial(var96, var22 - 1, var107).blocksMovement() && this.world.getMaterial(var96, var22 - 1, var107) != Material.ICE) {
                     this.world.setBlock(var96, var22, var107, Block.SNOW.id);
                 }
             }

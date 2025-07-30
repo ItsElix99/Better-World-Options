@@ -37,7 +37,7 @@ public class GrassBlockMixin extends Block {
                 Material var6 = blockView.getMaterial(x, y + 1, z);
                 return var6 != Material.SNOW_LAYER && var6 != Material.SNOW_BLOCK ? TextureListener.alphaGrassBlockSide : 68;
             }
-        } else if(worldType.equals("Beta 1.1_02")) {
+        } else if(worldType.equals("Alpha 1.2.0")) {
             if (side == 1) {
                 return 0;
             } else if (side == 0) {
