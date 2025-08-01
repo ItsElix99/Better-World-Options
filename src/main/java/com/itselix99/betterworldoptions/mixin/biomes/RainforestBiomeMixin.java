@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import java.util.Random;
 
 @Mixin(RainforestBiome.class)
-public class RainforestBiomeMixin extends BiomeMixin implements BWOCustomRandomTreeFeature {
+public abstract class RainforestBiomeMixin extends BiomeMixin implements BWOCustomRandomTreeFeature {
 
     @Override
     public Feature bwo_getRandomTreeFeatureInfdev611(Random random) {

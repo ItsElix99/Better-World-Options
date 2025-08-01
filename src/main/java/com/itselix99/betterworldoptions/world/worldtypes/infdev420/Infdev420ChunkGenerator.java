@@ -51,7 +51,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
         new Random(seed);
 
         if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-            ((CaveGenBaseImpl) cave).stationapi_setWorld(world);
+            ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         }
 
         this.noiseGen1 = new OctavePerlinNoiseSamplerInfdev420(this.random, 16);
@@ -268,7 +268,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
             }
         }
 
-        FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);
+        FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
         return flattenedChunk;

@@ -5,8 +5,8 @@ import net.minecraft.util.math.noise.NoiseSampler;
 import java.util.Random;
 
 public final class OctavePerlinNoiseSamplerInfdev611 extends NoiseSampler {
-    private PerlinNoiseSamplerInfdev611[] octaveSamplers;
-    private int octaves;
+    private final PerlinNoiseSamplerInfdev611[] octaveSamplers;
+    private final int octaves;
 
     public OctavePerlinNoiseSamplerInfdev611(Random random, int i) {
         this.octaves = i;

@@ -6,6 +6,8 @@ import com.itselix99.betterworldoptions.BWOConfig;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.worldtypes.alpha112.util.math.noise.OctavePerlinNoiseSamplerAlpha112;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
 import net.minecraft.block.material.Material;
@@ -52,7 +54,9 @@ public class Alpha112ChunkGenerator implements ChunkSource {
     public Alpha112ChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
+
         ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
+
         this.minLimitPerlinNoise = new OctavePerlinNoiseSamplerAlpha112(this.random, 16);
         this.maxLimitPerlinNoise = new OctavePerlinNoiseSamplerAlpha112(this.random, 16);
         this.perlinNoise1 = new OctavePerlinNoiseSamplerAlpha112(this.random, 8);
@@ -73,20 +77,23 @@ public class Alpha112ChunkGenerator implements ChunkSource {
         int vertical = BWOConfig.WORLD_CONFIG.worldHeightLimit / 8;
         byte var7 = (byte) (vertical + 1);
         int var8 = var4 + 1;
-        this.heightMap = this.generateHeightMap(this.heightMap, chunkX * var4, 0, chunkZ * var4, var6, var7, var8);
+        this.heightMap = this.generateHeightMap(this.heightMap, chunkX * var4, chunkZ * var4, var6, var7, var8);
 
         for(int var9 = 0; var9 < var4; ++var9) {
             for(int var10 = 0; var10 < var4; ++var10) {
                 for(int var11 = 0; var11 < vertical; ++var11) {
                     double var12 = 0.125D;
+                    int var100 = ((var9) * var8 + var10 + 1) * var7;
+                    int var101 = ((var9 + 1) * var8 + var10) * var7;
+                    int var102 = ((var9 + 1) * var8 + var10 + 1) * var7;
                     double var14 = this.heightMap[((var9) * var8 + var10) * var7 + var11];
-                    double var16 = this.heightMap[((var9) * var8 + var10 + 1) * var7 + var11];
-                    double var18 = this.heightMap[((var9 + 1) * var8 + var10) * var7 + var11];
-                    double var20 = this.heightMap[((var9 + 1) * var8 + var10 + 1) * var7 + var11];
+                    double var16 = this.heightMap[var100 + var11];
+                    double var18 = this.heightMap[var101 + var11];
+                    double var20 = this.heightMap[var102 + var11];
                     double var22 = (this.heightMap[((var9) * var8 + var10) * var7 + var11 + 1] - var14) * var12;
-                    double var24 = (this.heightMap[((var9) * var8 + var10 + 1) * var7 + var11 + 1] - var16) * var12;
-                    double var26 = (this.heightMap[((var9 + 1) * var8 + var10) * var7 + var11 + 1] - var18) * var12;
-                    double var28 = (this.heightMap[((var9 + 1) * var8 + var10 + 1) * var7 + var11 + 1] - var20) * var12;
+                    double var24 = (this.heightMap[var100 + var11 + 1] - var16) * var12;
+                    double var26 = (this.heightMap[var101 + var11 + 1] - var18) * var12;
+                    double var28 = (this.heightMap[var102 + var11 + 1] - var20) * var12;
 
                     for(int var30 = 0; var30 < 8; ++var30) {
                         double var31 = 0.25D;
@@ -249,24 +256,24 @@ public class Alpha112ChunkGenerator implements ChunkSource {
             }
         }
 
-        FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);
+        FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
         return flattenedChunk;
     }
 
-    private double[] generateHeightMap(double[] heightMap, int x, int y, int z, int sizeX, int sizeY, int sizeZ) {
+    private double[] generateHeightMap(double[] heightMap, int x, int z, int sizeX, int sizeY, int sizeZ) {
         if(heightMap == null) {
             heightMap = new double[sizeX * sizeY * sizeZ];
         }
 
         double var8 = 684.412D;
         double var10 = 684.412D;
-        this.scaleNoiseBuffer = this.floatingIslandScale.create(this.scaleNoiseBuffer, x, y, z, sizeX, 1, sizeZ, 1.0D, 0.0D, 1.0D);
-        this.depthNoiseBuffer = this.floatingIslandNoise.create(this.depthNoiseBuffer, x, y, z, sizeX, 1, sizeZ, 100.0D, 0.0D, 100.0D);
-        this.perlinNoiseBuffer = this.perlinNoise1.create(this.perlinNoiseBuffer, x, y, z, sizeX, sizeY, sizeZ, var8 / 80.0D, var10 / 160.0D, var8 / 80.0D);
-        this.minLimitPerlinNoiseBuffer = this.minLimitPerlinNoise.create(this.minLimitPerlinNoiseBuffer, x, y, z, sizeX, sizeY, sizeZ, var8, var10, var8);
-        this.maxLimitPerlinNoiseBuffer = this.maxLimitPerlinNoise.create(this.maxLimitPerlinNoiseBuffer, x, y, z, sizeX, sizeY, sizeZ, var8, var10, var8);
+        this.scaleNoiseBuffer = this.floatingIslandScale.create(this.scaleNoiseBuffer, x, 0, z, sizeX, 1, sizeZ, 1.0D, 0.0D, 1.0D);
+        this.depthNoiseBuffer = this.floatingIslandNoise.create(this.depthNoiseBuffer, x, 0, z, sizeX, 1, sizeZ, 100.0D, 0.0D, 100.0D);
+        this.perlinNoiseBuffer = this.perlinNoise1.create(this.perlinNoiseBuffer, x, 0, z, sizeX, sizeY, sizeZ, var8 / 80.0D, var10 / 160.0D, var8 / 80.0D);
+        this.minLimitPerlinNoiseBuffer = this.minLimitPerlinNoise.create(this.minLimitPerlinNoiseBuffer, x, 0, z, sizeX, sizeY, sizeZ, var8, var10, var8);
+        this.maxLimitPerlinNoiseBuffer = this.maxLimitPerlinNoise.create(this.maxLimitPerlinNoiseBuffer, x, 0, z, sizeX, sizeY, sizeZ, var8, var10, var8);
         int var12 = 0;
         int var13 = 0;
 
@@ -824,6 +831,7 @@ public class Alpha112ChunkGenerator implements ChunkSource {
         return true;
     }
 
+    @Environment(EnvType.CLIENT)
     public String getDebugInfo() {
         return "RandomLevelSource";
     }

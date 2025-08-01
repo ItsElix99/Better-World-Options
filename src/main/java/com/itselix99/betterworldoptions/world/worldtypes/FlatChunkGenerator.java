@@ -3,6 +3,8 @@ package com.itselix99.betterworldoptions.world.worldtypes;
 import com.itselix99.betterworldoptions.BWOConfig;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
 import net.minecraft.block.material.Material;
@@ -34,13 +36,13 @@ public class FlatChunkGenerator implements ChunkSource {
     public FlatChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
+        this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
 
-        if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-            ((CaveGenBaseImpl)cave).stationapi_setWorld(world);
+        if (this.betaFeatures) {
+            ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         }
 
         this.forestNoise = new OctavePerlinNoiseSampler(this.random, 8);
-        this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
     }
 
     public void buildTerrain(byte[] blocks) {
@@ -87,7 +89,7 @@ public class FlatChunkGenerator implements ChunkSource {
             }
         }
 
-        FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);
+        FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
         return flattenedChunk;
@@ -408,6 +410,7 @@ public class FlatChunkGenerator implements ChunkSource {
         return true;
     }
 
+    @Environment(EnvType.CLIENT)
     public String getDebugInfo() {
         return "RandomLevelSource";
     }

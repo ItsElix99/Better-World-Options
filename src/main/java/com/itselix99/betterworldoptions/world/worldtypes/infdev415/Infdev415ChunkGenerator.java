@@ -3,12 +3,13 @@ package com.itselix99.betterworldoptions.world.worldtypes.infdev415;
 import java.util.Random;
 
 import com.itselix99.betterworldoptions.BWOConfig;
-import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOCustomRandomTreeFeature;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.feature.OldOreFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev415.util.math.noise.OctavePerlinNoiseSamplerInfdev415;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
 import net.minecraft.block.material.Material;
@@ -46,7 +47,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
         new Random(seed);
 
         if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-            ((CaveGenBaseImpl)cave).stationapi_setWorld(world);
+            ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         }
 
         this.noiseGen1 = new OctavePerlinNoiseSamplerInfdev415(this.random, 16);
@@ -230,7 +231,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
             }
         }
 
-        FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);
+        FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
         return flattenedChunk;
@@ -642,6 +643,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
         return true;
     }
 
+    @Environment(EnvType.CLIENT)
     public String getDebugInfo() {
         return "RandomLevelSource";
     }

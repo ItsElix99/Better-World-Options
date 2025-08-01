@@ -13,8 +13,8 @@ public class RavineWorldCarver extends Generator {
 
     protected void carveRavine(long seed, int chunkX, int chunkZ, byte[] blocks, double x5, double y6, double z7, float baseWidth, float yaw, float pitch, int tunnel, int tunnelCount, double widthHeightRatio) {
         Random random = new Random(seed);
-        double var1 = (double)(chunkX * 16 + 8);
-        double var2 = (double)(chunkZ * 16 + 8);
+        double var1 = chunkX * 16 + 8;
+        double var2 = chunkZ * 16 + 8;
         float var3 = 0.0F;
         float var4 = 0.0F;
         if (tunnelCount <= 0) {
@@ -40,9 +40,9 @@ public class RavineWorldCarver extends Generator {
                     var10 *= (double)random.nextFloat() * (double)0.25F + (double)0.75F;
                     float var11 = MathHelper.cos(pitch);
                     float var12 = MathHelper.sin(pitch);
-                    x5 += (double)(MathHelper.cos(yaw) * var11);
-                    y6 += (double)var12;
-                    z7 += (double)(MathHelper.sin(yaw) * var11);
+                    x5 += MathHelper.cos(yaw) * var11;
+                    y6 += var12;
+                    z7 += MathHelper.sin(yaw) * var11;
                     pitch *= 0.7F;
                     pitch += var4 * 0.05F;
                     yaw += var3 * 0.05F;
@@ -53,8 +53,8 @@ public class RavineWorldCarver extends Generator {
                     if (var6 != 0 || random.nextInt(4) != 0) {
                         double var13 = x5 - var1;
                         double var14 = z7 - var2;
-                        double var15 = (double)(tunnelCount - tunnel);
-                        double var16 = (double)(baseWidth + 2.0F + 16.0F);
+                        double var15 = tunnelCount - tunnel;
+                        double var16 = baseWidth + 2.0F + 16.0F;
                         if (var13 * var13 + var14 * var14 - var15 * var15 > var16 * var16) {
                             return;
                         }
@@ -170,16 +170,16 @@ public class RavineWorldCarver extends Generator {
 
     protected void place(World world, int startChunkX, int startChunkZ, int chunkX, int chunkZ, byte[] blocks) {
         if (this.random.nextInt(50) == 0) {
-            double var1 = (double)(startChunkX * 16 + this.random.nextInt(16));
-            double var2 = (double)(this.random.nextInt(this.random.nextInt(40) + 8) + 20);
-            double var3 = (double)(startChunkZ * 16 + this.random.nextInt(16));
+            double var1 = startChunkX * 16 + this.random.nextInt(16);
+            double var2 = this.random.nextInt(this.random.nextInt(40) + 8) + 20;
+            double var3 = startChunkZ * 16 + this.random.nextInt(16);
             int var4 = 1;
 
             for(int var5 = 0; var5 < var4; ++var5) {
                 float var6 = this.random.nextFloat() * (float)Math.PI * 2.0F;
                 float var7 = (this.random.nextFloat() - 0.5F) * 2.0F / 8.0F;
                 float var8 = (this.random.nextFloat() * 2.0F + this.random.nextFloat()) * 2.0F;
-                this.carveRavine(this.random.nextLong(), chunkX, chunkZ, blocks, var1, var2, var3, var8, var6, var7, 0, 0, (double)3.0F);
+                this.carveRavine(this.random.nextLong(), chunkX, chunkZ, blocks, var1, var2, var3, var8, var6, var7, 0, 0, 3.0F);
             }
 
         }

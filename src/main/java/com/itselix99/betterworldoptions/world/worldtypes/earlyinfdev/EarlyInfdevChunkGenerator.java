@@ -9,6 +9,8 @@ import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.feature.OldOreFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.carver.CaveWorldCarverEarlyInfdev;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.util.math.noise.OctavePerlinNoiseSamplerEarlyInfdev;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
 import net.minecraft.block.material.Material;
@@ -48,8 +50,6 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
 
         if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
-        } else {
-            ((CaveGenBaseImpl) this.caveEarlyInfdev).stationapi_setWorld(world);
         }
 
         this.noiseGen1 = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 16);
@@ -170,7 +170,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             }
         }
 
-        FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);
+        FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
         return flattenedChunk;
@@ -522,6 +522,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         return true;
     }
 
+    @Environment(EnvType.CLIENT)
     public String getDebugInfo() {
         return "RandomLevelSource";
     }

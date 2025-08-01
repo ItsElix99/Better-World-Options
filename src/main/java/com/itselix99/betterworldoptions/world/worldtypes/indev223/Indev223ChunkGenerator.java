@@ -98,7 +98,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
 
         if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
-            ((CaveGenBaseImpl)cave).stationapi_setWorld(world);
+            ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         }
     }
 
@@ -129,7 +129,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                     if (indevWorldType.equals("Island")) {
                         double radius = Math.sqrt(nx * nx + nz * nz) * 1.2;
                         double falloff = noiseGen2.create(worldX * 0.05, worldZ * 0.05) / 4.0 + 1.0;
-                        radius = Math.min(Math.max(Math.max(Math.abs(nx), Math.abs(nz)), Math.min(radius, falloff)), 1.0);
+                        radius = Math.min(Math.max(distance, Math.min(radius, falloff)), 1.0);
                         radius *= radius;
                         h = h * (1.0 - radius) - radius * 10.0 + 5.0;
                         if (h < 0.0) h -= h * h * 0.2;
@@ -455,7 +455,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
         if (!this.betaFeatures) {
             IndevFeatures.placeUndergroundLakes(this.random, var3);
-            IndevFeatures.placeLakes(this.random, var3, this.indevTheme);
+            //IndevFeatures.placeLakes(this.random, var3, this.indevTheme);
 
             IndevFeatures.placeOre(this.random, Block.COAL_ORE.id, 1000, 10, (128 << 2) / 5, var3);
             IndevFeatures.placeOre(this.random, Block.IRON_ORE.id, 800, 8, 128 * 3 / 5, var3);
@@ -463,7 +463,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
             IndevFeatures.placeOre(this.random, Block.DIAMOND_ORE.id, 800, 2, 128 / 5, var3);
         }
 
-        FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);
+        FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
         return flattenedChunk;
@@ -529,7 +529,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
             long var7 = this.random.nextLong() / 2L * 2L + 1L;
             long var9 = this.random.nextLong() / 2L * 2L + 1L;
             this.random.setSeed((long)x * var7 + (long)z * var9 ^ this.world.getSeed());
-            double var11 = (double)0.25F;
+            double var11;
             if (this.random.nextInt(4) == 0) {
                 int var13 = var4 + this.random.nextInt(16) + 8;
                 int var14 = this.random.nextInt(128);
@@ -616,7 +616,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                 (new OreFeature(Block.LAPIS_ORE.id, 6)).generate(this.world, this.random, var48, var60, var71);
             }
 
-            var11 = (double)0.5F;
+            var11 = 0.5F;
             int var37 = (int)((this.noiseGen6.create((double)var4 * var11, (double)var5 * var11) / (double)8.0F + this.random.nextDouble() * (double)4.0F + (double)4.0F) / (double)3.0F);
             int var49 = 0;
             if (this.random.nextInt(10) == 0) {
@@ -655,7 +655,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                 int var72 = var4 + this.random.nextInt(16) + 8;
                 int var17 = var5 + this.random.nextInt(16) + 8;
                 Feature var18 = var6.getRandomTreeFeature(this.random);
-                var18.prepare((double)1.0F, (double)1.0F, (double)1.0F);
+                var18.prepare(1.0F, 1.0F, 1.0F);
                 var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
             }
 

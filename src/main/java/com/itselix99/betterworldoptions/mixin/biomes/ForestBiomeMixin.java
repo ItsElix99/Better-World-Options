@@ -7,6 +7,7 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.LargeOakTreeFeature;
 import net.minecraft.world.gen.feature.OakTreeFeature;
 import org.spongepowered.asm.mixin.Mixin;
+
 import java.util.Random;
 
 @Mixin(ForestBiome.class)
@@ -35,6 +36,15 @@ public class ForestBiomeMixin extends BiomeMixin implements BWOCustomRandomTreeF
             return new BirchTreeFeature();
         } else {
             return new OakTreeFeature();
+        }
+    }
+
+    @Override
+    public Feature bwo_getRandomTreeFeatureMCPE(Random random) {
+        if (random.nextInt(5) == 0) {
+            return new OakTreeFeature();
+        } else {
+            return super.bwo_getRandomTreeFeatureMCPE(random);
         }
     }
 }

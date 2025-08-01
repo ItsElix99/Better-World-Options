@@ -43,13 +43,13 @@ public final class PerlinNoiseSamplerIndev223 extends NoiseSamplerIndev223 {
     }
 
     public double create(double x, double y) {
-        double f = (double) 0.0F;
+        double f;
         double e = y;
         int var2 = MathHelper.floor(x) & 255;
         int var23 = MathHelper.floor(y) & 255;
         int var4 = MathHelper.floor((double) 0.0F) & 255;
         double d = x - (double) MathHelper.floor(x);
-        e -= (double) MathHelper.floor(e);
+        e -= MathHelper.floor(e);
         f = (double) 0.0F - (double) MathHelper.floor((double) 0.0F);
         double g = smootherstep(d);
         double h = smootherstep(e);

@@ -22,7 +22,7 @@ public class CreateWorldTypeScreen extends Screen {
     @SuppressWarnings("unchecked")
     @Override
     public void init() {
-        this.mc = minecraft;
+        this.mc = this.minecraft;
         TranslationStorage translation = TranslationStorage.getInstance();
         this.worldTypeListWidget = new WorldTypeListWidget(this);
         this.worldTypeListWidget.registerButtons(this.buttons, 4, 5);

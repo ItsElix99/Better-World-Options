@@ -3,6 +3,8 @@ package com.itselix99.betterworldoptions.world.worldtypes;
 import java.util.Random;
 import com.itselix99.betterworldoptions.BWOConfig;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
 import net.minecraft.block.material.Material;
@@ -58,7 +60,9 @@ public class FarlandsChunkGenerator implements ChunkSource {
     public FarlandsChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
-        ((CaveGenBaseImpl)cave).stationapi_setWorld(world);
+
+        ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
+
         this.minLimitPerlinNoise = new OctavePerlinNoiseSampler(this.random, 16);
         this.maxLimitPerlinNoise = new OctavePerlinNoiseSampler(this.random, 16);
         this.perlinNoise1 = new OctavePerlinNoiseSampler(this.random, 8);
@@ -88,14 +92,17 @@ public class FarlandsChunkGenerator implements ChunkSource {
             for(int var12 = 0; var12 < var6; ++var12) {
                 for(int var13 = 0; var13 < vertical; ++var13) {
                     double var14 = 0.125F;
+                    int var100 = ((var11) * var10 + var12 + 1) * var9;
+                    int var101 = ((var11 + 1) * var10 + var12) * var9;
+                    int var102 = ((var11 + 1) * var10 + var12 + 1) * var9;
                     double var16 = this.heightMap[((var11) * var10 + var12) * var9 + var13];
-                    double var18 = this.heightMap[((var11) * var10 + var12 + 1) * var9 + var13];
-                    double var20 = this.heightMap[((var11 + 1) * var10 + var12) * var9 + var13];
-                    double var22 = this.heightMap[((var11 + 1) * var10 + var12 + 1) * var9 + var13];
+                    double var18 = this.heightMap[var100 + var13];
+                    double var20 = this.heightMap[var101 + var13];
+                    double var22 = this.heightMap[var102 + var13];
                     double var24 = (this.heightMap[((var11) * var10 + var12) * var9 + var13 + 1] - var16) * var14;
-                    double var26 = (this.heightMap[((var11) * var10 + var12 + 1) * var9 + var13 + 1] - var18) * var14;
-                    double var28 = (this.heightMap[((var11 + 1) * var10 + var12) * var9 + var13 + 1] - var20) * var14;
-                    double var30 = (this.heightMap[((var11 + 1) * var10 + var12 + 1) * var9 + var13 + 1] - var22) * var14;
+                    double var26 = (this.heightMap[var100 + var13 + 1] - var18) * var14;
+                    double var28 = (this.heightMap[var101 + var13 + 1] - var20) * var14;
+                    double var30 = (this.heightMap[var102 + var13 + 1] - var22) * var14;
 
                     for(int var32 = 0; var32 < 8; ++var32) {
                         double var33 = 0.25F;
@@ -243,7 +250,7 @@ public class FarlandsChunkGenerator implements ChunkSource {
             this.ravine.place(this, this.world, chunkX, chunkZ, var3);
         }
 
-        FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);
+        FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var4.blocks);
         flattenedChunk.populateHeightMap();
         return flattenedChunk;
@@ -651,6 +658,7 @@ public class FarlandsChunkGenerator implements ChunkSource {
         return true;
     }
 
+    @Environment(EnvType.CLIENT)
     public String getDebugInfo() {
         return "RandomLevelSource";
     }

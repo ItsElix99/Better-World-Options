@@ -246,7 +246,17 @@ public class WorldSettings {
 
         GameMode.setHardcore(false);
         GameMode.setBetaFeatures(true);
+        GameMode.setBetaFeaturesTextures(true);
 
         AlphaWorld.setSnowCovered(false);
+
+        IndevWorld.setIndevWorldType("Normal");
+        IndevWorld.setShape("Square");
+        IndevWorld.setSize("Normal");
+        IndevWorld.setTheme("Normal");
+        IndevWorld.setBetaTheme("All Biomes");
+        IndevWorld.setIndevDimensions(false);
+        IndevWorld.setGenerateIndevHouse(true);
+        IndevWorld.setInfinite(false);
     }
 }

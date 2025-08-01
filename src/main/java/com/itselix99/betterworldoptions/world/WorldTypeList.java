@@ -10,6 +10,7 @@ import com.itselix99.betterworldoptions.world.worldtypes.indev223.Indev223ChunkG
 import com.itselix99.betterworldoptions.world.worldtypes.infdev415.Infdev415ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev420.Infdev420ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev611.Infdev611ChunkGenerator;
+import com.itselix99.betterworldoptions.world.worldtypes.mcpe.MCPEChunkGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -27,6 +28,7 @@ public class WorldTypeList {
         Default.OVERWORLD_CHUNK_GENERATOR = OverworldChunkGenerator.class;
         Default.DISPLAY_NAME = "Default";
         Default.NAME = Default.DISPLAY_NAME;
+        Default.ICON = "/assets/betterworldoptions/gui/default.png";
         Default.DESCRIPTION = "Minecraft's default world generator";
         Default.LIGHTING_MODE = "Overworld";
         Default.SKY_DISABLED = false;
@@ -38,7 +40,9 @@ public class WorldTypeList {
         Nether.OVERWORLD_CHUNK_GENERATOR = OverworldChunkGenerator.class;
         Nether.DISPLAY_NAME = "Nether";
         Nether.NAME = Nether.DISPLAY_NAME;
-        Nether.DESCRIPTION = "Start the world in the Nether dimension";
+        Nether.ICON = "/assets/betterworldoptions/gui/nether.png";
+        Nether.DESCRIPTION = "Start the world in the Nether";
+        Nether.DESCRIPTION_2 = "dimension";
         Nether.LIGHTING_MODE = "Overworld";
         Nether.SKY_DISABLED = false;
         Nether.BIOME = null;
@@ -49,7 +53,9 @@ public class WorldTypeList {
         Skylands.OVERWORLD_CHUNK_GENERATOR = OverworldChunkGenerator.class;
         Skylands.DISPLAY_NAME = "Skylands";
         Skylands.NAME = Skylands.DISPLAY_NAME;
-        Skylands.DESCRIPTION = "Start the world on the floating islands";
+        Skylands.ICON = "/assets/betterworldoptions/gui/skylands.png";
+        Skylands.DESCRIPTION = "Start the world on the floating";
+        Skylands.DESCRIPTION_2 = "islands";
         Skylands.LIGHTING_MODE = "Overworld";
         Skylands.SKY_DISABLED = false;
         Skylands.BIOME = null;
@@ -60,7 +66,9 @@ public class WorldTypeList {
         Flat.OVERWORLD_CHUNK_GENERATOR = FlatChunkGenerator.class;
         Flat.DISPLAY_NAME = "Flat";
         Flat.NAME = Flat.DISPLAY_NAME;
-        Flat.DESCRIPTION = "A completely flat world, perfect for building";
+        Flat.ICON = "/assets/betterworldoptions/gui/flat.png";
+        Flat.DESCRIPTION = "A completely flat world, perfect for";
+        Flat.DESCRIPTION_2 = "building";
         Flat.LIGHTING_MODE = "Overworld";
         Flat.SKY_DISABLED = false;
         Flat.BIOME = null;
@@ -71,8 +79,9 @@ public class WorldTypeList {
         Farlands.OVERWORLD_CHUNK_GENERATOR = FarlandsChunkGenerator.class;
         Farlands.DISPLAY_NAME = "Farlands";
         Farlands.NAME = Farlands.DISPLAY_NAME;
-        Farlands.DESCRIPTION = "Explore the Farlands, where terrain gen";
-        Farlands.DESCRIPTION_2 = "becomes distorted and unpredictable";
+        Farlands.ICON = "/assets/betterworldoptions/gui/farlands.png";
+        Farlands.DESCRIPTION = "Explore the Farlands, where terrain";
+        Farlands.DESCRIPTION_2 = "generation becomes distorted";
         Farlands.LIGHTING_MODE = "Overworld";
         Farlands.SKY_DISABLED = false;
         Farlands.BIOME = null;
@@ -83,7 +92,9 @@ public class WorldTypeList {
         Alpha120.OVERWORLD_CHUNK_GENERATOR = Alpha120ChunkGenerator.class;
         Alpha120.DISPLAY_NAME = "Alpha 1.2.0";
         Alpha120.NAME = Alpha120.DISPLAY_NAME;
-        Alpha120.DESCRIPTION = "Start the world with Alpha 1.2.0 generation";
+        Alpha120.ICON = "pack.png";
+        Alpha120.DESCRIPTION = "Start the world with Alpha 1.2.0";
+        Alpha120.DESCRIPTION_2 = "generation";
         Alpha120.LIGHTING_MODE = "Overworld";
         Alpha120.SKY_DISABLED = false;
         Alpha120.BIOME = null;
@@ -94,7 +105,9 @@ public class WorldTypeList {
         Alpha112.OVERWORLD_CHUNK_GENERATOR = Alpha112ChunkGenerator.class;
         Alpha112.DISPLAY_NAME = "Alpha 1.1.2_01";
         Alpha112.NAME = Alpha112.DISPLAY_NAME;
-        Alpha112.DESCRIPTION = "Start the world with Alpha 1.1.2_01 generation";
+        Alpha112.ICON = "/assets/betterworldoptions/gui/alpha_1.1.2_01.png";
+        Alpha112.DESCRIPTION = "Start the world with Alpha 1.1.2_01";
+        Alpha112.DESCRIPTION_2 = "generation";
         Alpha112.LIGHTING_MODE = "Overworld";
         Alpha112.SKY_DISABLED = false;
         Alpha112.BIOME = null;
@@ -105,7 +118,9 @@ public class WorldTypeList {
         Infdev611.OVERWORLD_CHUNK_GENERATOR = Infdev611ChunkGenerator.class;
         Infdev611.DISPLAY_NAME = "Infdev 20100611";
         Infdev611.NAME = "Infdev 611";
-        Infdev611.DESCRIPTION = "Start the world with Infdev 611 generation";
+        Infdev611.ICON = "/assets/betterworldoptions/gui/infdev_20100611.png";
+        Infdev611.DESCRIPTION = "Start the world with Infdev 611";
+        Infdev611.DESCRIPTION_2 = "generation";
         Infdev611.LIGHTING_MODE = "Overworld";
         Infdev611.SKY_DISABLED = false;
         Infdev611.BIOME = null;
@@ -116,7 +131,9 @@ public class WorldTypeList {
         Infdev420.OVERWORLD_CHUNK_GENERATOR = Infdev420ChunkGenerator.class;
         Infdev420.DISPLAY_NAME = "Infdev 20100420";
         Infdev420.NAME = "Infdev 420";
-        Infdev420.DESCRIPTION = "Start the world with Infdev 420 generation";
+        Infdev420.ICON = "/assets/betterworldoptions/gui/infdev_20100420.png";
+        Infdev420.DESCRIPTION = "Start the world with Infdev 420";
+        Infdev420.DESCRIPTION_2 = "generation";
         Infdev420.LIGHTING_MODE = "Overworld";
         Infdev420.SKY_DISABLED = false;
         Infdev420.BIOME = null;
@@ -127,7 +144,9 @@ public class WorldTypeList {
         Infdev415.OVERWORLD_CHUNK_GENERATOR = Infdev415ChunkGenerator.class;
         Infdev415.DISPLAY_NAME = "Infdev 20100415";
         Infdev415.NAME = "Infdev 415";
-        Infdev415.DESCRIPTION = "Start the world with Infdev 415 generation";
+        Infdev415.ICON = "/assets/betterworldoptions/gui/infdev_20100415.png";
+        Infdev415.DESCRIPTION = "Start the world with Infdev 415";
+        Infdev415.DESCRIPTION_2 = "generation";
         Infdev415.LIGHTING_MODE = "Overworld";
         Infdev415.SKY_DISABLED = false;
         Infdev415.BIOME = null;
@@ -138,7 +157,9 @@ public class WorldTypeList {
         EarlyInfdev.OVERWORLD_CHUNK_GENERATOR = EarlyInfdevChunkGenerator.class;
         EarlyInfdev.DISPLAY_NAME = "Early Infdev";
         EarlyInfdev.NAME = EarlyInfdev.DISPLAY_NAME;
-        EarlyInfdev.DESCRIPTION = "Start the world with Infdev 227-325 gen";
+        EarlyInfdev.ICON = "/assets/betterworldoptions/gui/early_infdev.png";
+        EarlyInfdev.DESCRIPTION = "Start the world with Infdev 227-325";
+        EarlyInfdev.DESCRIPTION_2 = "generation";
         EarlyInfdev.LIGHTING_MODE = "Overworld";
         EarlyInfdev.SKY_DISABLED = false;
         EarlyInfdev.BIOME = null;
@@ -149,18 +170,34 @@ public class WorldTypeList {
         Indev223.OVERWORLD_CHUNK_GENERATOR = Indev223ChunkGenerator.class;
         Indev223.DISPLAY_NAME = "Indev 20100223";
         Indev223.NAME = "Indev 223";
-        Indev223.DESCRIPTION = "Start the world with Indev 223 generation";
+        Indev223.ICON = "/assets/betterworldoptions/gui/indev_20100223.png";
+        Indev223.DESCRIPTION = "Start the world with Indev 223";
+        Indev223.DESCRIPTION_2 = "generation";
         Indev223.LIGHTING_MODE = "Overworld";
         Indev223.SKY_DISABLED = false;
         Indev223.BIOME = null;
         Indev223.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
         WORLD_TYPE_LIST.add(Indev223);
 
+        WorldTypeEntry MCPE = new WorldTypeEntry();
+        MCPE.OVERWORLD_CHUNK_GENERATOR = MCPEChunkGenerator.class;
+        MCPE.DISPLAY_NAME = "MCPE";
+        MCPE.NAME = MCPE.DISPLAY_NAME;
+        MCPE.ICON = "/assets/betterworldoptions/gui/mcpe.png";
+        MCPE.DESCRIPTION = "Start the world with MCPE 0.1.0-0.8.1";
+        MCPE.DESCRIPTION_2 = "generation";
+        MCPE.LIGHTING_MODE = "Overworld";
+        MCPE.SKY_DISABLED = false;
+        MCPE.BIOME = null;
+        MCPE.BLOCK_TO_SPAWN_ON = Block.SAND.id;
+        WORLD_TYPE_LIST.add(MCPE);
+
         if (CompatMods.AetherLoaded()) {
             WorldTypeEntry Aether = new WorldTypeEntry();
             Aether.OVERWORLD_CHUNK_GENERATOR = OverworldChunkGenerator.class;
             Aether.DISPLAY_NAME = "Aether";
             Aether.NAME = Aether.DISPLAY_NAME;
+            Aether.ICON = "/assets/betterworldoptions/gui/aether.png";
             Aether.DESCRIPTION = "Start the world in a hostile paradise";
             Aether.LIGHTING_MODE = "Overworld";
             Aether.SKY_DISABLED = false;
@@ -200,6 +237,7 @@ public class WorldTypeList {
         public Class<? extends ChunkSource> SKYLANDS_CHUNK_GENERATOR;
         public String DISPLAY_NAME;
         public String NAME;
+        public String ICON;
         public String DESCRIPTION;
         public String DESCRIPTION_2;
         public String LIGHTING_MODE;

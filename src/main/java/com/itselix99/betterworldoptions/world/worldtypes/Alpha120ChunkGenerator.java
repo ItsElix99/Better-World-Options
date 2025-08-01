@@ -49,7 +49,9 @@ public class Alpha120ChunkGenerator implements ChunkSource {
     public Alpha120ChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
+
         ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
+
         this.minLimitPerlinNoise = new OctavePerlinNoiseSampler(this.random, 16);
         this.maxLimitPerlinNoise = new OctavePerlinNoiseSampler(this.random, 16);
         this.perlinNoise1 = new OctavePerlinNoiseSampler(this.random, 8);
@@ -214,7 +216,7 @@ public class Alpha120ChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte['耀'];
+        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, var5);
@@ -225,7 +227,7 @@ public class Alpha120ChunkGenerator implements ChunkSource {
             this.ravine.place(this, this.world, chunkX, chunkZ, var3);
         }
 
-        FlattenedChunk flattenedChunk = new FlattenedChunk(world, chunkX, chunkZ);
+        FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
         return flattenedChunk;

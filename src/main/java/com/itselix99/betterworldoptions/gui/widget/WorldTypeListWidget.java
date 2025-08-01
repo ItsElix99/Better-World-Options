@@ -3,15 +3,19 @@ package com.itselix99.betterworldoptions.gui.widget;
 import com.itselix99.betterworldoptions.gui.ScreenStateCache;
 import com.itselix99.betterworldoptions.gui.screen.CreateWorldTypeScreen;
 import com.itselix99.betterworldoptions.world.WorldTypeList;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.resource.language.TranslationStorage;
+import org.lwjgl.opengl.GL11;
 
 public class WorldTypeListWidget extends EntryListWidget {
-    final CreateWorldTypeScreen parentGui;
+    private final Minecraft minecraft;
+    private final CreateWorldTypeScreen parentGui;
 
     public WorldTypeListWidget(CreateWorldTypeScreen var1) {
         super(var1.mc, var1.width, var1.height, 32, var1.height - 64, 36);
+        this.minecraft = var1.mc;
         this.parentGui = var1;
     }
 
@@ -48,15 +52,29 @@ public class WorldTypeListWidget extends EntryListWidget {
     }
 
     @Override
-    protected void renderEntry(int var1, int var2, int var3, int var4, Tessellator var5) {
-        WorldTypeList.WorldTypeEntry var6 = WorldTypeList.getList().get(var1);
-        this.parentGui.drawTextWithShadow(this.parentGui.mc.textRenderer, var6.DISPLAY_NAME, var2 + 2, var3 + 1, 16777215);
+    protected void renderEntry(int index, int x, int y, int i, Tessellator tessellator) {
+        WorldTypeList.WorldTypeEntry var6 = WorldTypeList.getList().get(index);
+        if (var6.ICON != null) {
+            GL11.glBindTexture(3553, this.minecraft.textureManager.getTextureId(var6.ICON));
+        } else {
+            GL11.glBindTexture(3553, this.minecraft.textureManager.getTextureId("/gui/unknown_pack.png"));
+        }
+
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        tessellator.startQuads();
+        tessellator.color(16777215);
+        tessellator.vertex(x, y + i, 0.0F, 0.0F, 1.0F);
+        tessellator.vertex(x + 32, y + i, 0.0F, 1.0F, 1.0F);
+        tessellator.vertex(x + 32, y, 0.0F, 1.0F, 0.0F);
+        tessellator.vertex(x, y, 0.0F, 0.0F, 0.0F);
+        tessellator.draw();
+        this.parentGui.drawTextWithShadow(this.parentGui.mc.textRenderer, var6.DISPLAY_NAME, x + 32 + 2, y + 1, 16777215);
         if(var6.DESCRIPTION != null) {
-            this.parentGui.drawTextWithShadow(this.parentGui.mc.textRenderer, var6.DESCRIPTION, var2 + 2, var3 + 12, 8421504);
+            this.parentGui.drawTextWithShadow(this.parentGui.mc.textRenderer, var6.DESCRIPTION, x + 32 + 2, y + 12, 8421504);
         }
 
         if(var6.DESCRIPTION_2 != null) {
-            this.parentGui.drawTextWithShadow(this.parentGui.mc.textRenderer, var6.DESCRIPTION_2, var2 + 2, var3 + 12 + 10, 8421504);
+            this.parentGui.drawTextWithShadow(this.parentGui.mc.textRenderer, var6.DESCRIPTION_2, x + 32 + 2, y + 12 + 10, 8421504);
         }
 
     }

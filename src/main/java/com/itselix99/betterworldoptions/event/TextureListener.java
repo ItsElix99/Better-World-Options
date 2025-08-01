@@ -11,6 +11,7 @@ public class TextureListener {
     public static int alphaGrassBlockTop;
     public static int alphaGrassBlockSide;
     public static int alphaLeaves;
+    public static int alphaLeavesOpaque;
     public static int alphaTallGrass;
     public static int alphaFern;
     public static int alphaDiamondBlockBottom;
@@ -28,6 +29,7 @@ public class TextureListener {
         alphaGrassBlockTop = terrainAtlas.addTexture(NAMESPACE.id("block/alpha_grass_block_top")).index;
         alphaGrassBlockSide = terrainAtlas.addTexture(NAMESPACE.id("block/alpha_grass_block_side")).index;
         alphaLeaves = terrainAtlas.addTexture(NAMESPACE.id("block/alpha_leaves")).index;
+        alphaLeavesOpaque = terrainAtlas.addTexture(NAMESPACE.id("block/alpha_leaves_opaque")).index;
         alphaTallGrass = terrainAtlas.addTexture(NAMESPACE.id("block/alpha_tallgrass")).index;
         alphaFern = terrainAtlas.addTexture(NAMESPACE.id("block/alpha_fern")).index;
         alphaDiamondBlockBottom = terrainAtlas.addTexture(NAMESPACE.id("block/diamond_block_bottom")).index;

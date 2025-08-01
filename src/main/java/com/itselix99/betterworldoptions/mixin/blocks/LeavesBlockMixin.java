@@ -23,7 +23,7 @@ public class LeavesBlockMixin extends TransparentBlock {
             if (this.renderSides) {
                 return TextureListener.alphaLeaves;
             } else {
-                return Block.OBSIDIAN.textureId;
+                return TextureListener.alphaLeavesOpaque;
             }
 
         } else {

@@ -8,4 +8,5 @@ public interface BWOCustomRandomTreeFeature {
     Feature bwo_getRandomTreeFeatureInfdev611(Random random);
     Feature bwo_getRandomTreeFeatureInfdev(Random random);
     Feature bwo_getRandomTreeFeatureEarlyInfdev(Random random);
+    Feature bwo_getRandomTreeFeatureMCPE(Random random);
 }
