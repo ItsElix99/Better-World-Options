@@ -42,7 +42,7 @@ public class ForestBiomeMixin extends BiomeMixin implements BWOCustomRandomTreeF
     @Override
     public Feature bwo_getRandomTreeFeatureMCPE(Random random) {
         if (random.nextInt(5) == 0) {
-            return new OakTreeFeature();
+            return new BirchTreeFeature();
         } else {
             return super.bwo_getRandomTreeFeatureMCPE(random);
         }

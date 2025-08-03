@@ -77,7 +77,6 @@ public class WorldSettings {
     public static class GameMode {
         private static boolean HARDCORE = false;
         private static boolean BETA_FEATURES = true;
-        private static boolean BETA_FEATURES_TEXTURES = true;
 
         private static final Set<String> NON_BETA_FEATURES_WORLD_TYPES = Set.of(
                 "Default", "Nether", "Skylands", "Farlands", "Alpha 1.2.0", "Aether"
@@ -95,20 +94,12 @@ public class WorldSettings {
             BETA_FEATURES = betaFeatures;
         }
 
-        public static void setBetaFeaturesTextures(boolean betaFeaturesTextures) {
-            BETA_FEATURES_TEXTURES = betaFeaturesTextures;
-        }
-
         public static boolean isHardcore() {
             return HARDCORE;
         }
 
         public static boolean isBetaFeatures() {
             return BETA_FEATURES;
-        }
-
-        public static boolean isBetaFeaturesTextures() {
-            return BETA_FEATURES_TEXTURES;
         }
 
         public static boolean getNonBetaFeaturesWorldTypes() {
@@ -235,6 +226,27 @@ public class WorldSettings {
         }
     }
 
+    public static class Textures {
+        private static boolean BETA_FEATURES_TEXTURES = true;
+        private static boolean IS_MCPE = false;
+
+        public static void setBetaFeaturesTextures(boolean betaFeaturesTextures) {
+            BETA_FEATURES_TEXTURES = betaFeaturesTextures;
+        }
+
+        public static boolean isBetaFeaturesTextures() {
+            return BETA_FEATURES_TEXTURES;
+        }
+
+        public static boolean isMcpe() {
+            return IS_MCPE;
+        }
+
+        public static void setMcpe(boolean mcpe) {
+            IS_MCPE = mcpe;
+        }
+    }
+
     public static void resetSettings() {
         World.setChunkGenerator(null);
         World.setDisplayWorldTypeName("Default");
@@ -246,7 +258,8 @@ public class WorldSettings {
 
         GameMode.setHardcore(false);
         GameMode.setBetaFeatures(true);
-        GameMode.setBetaFeaturesTextures(true);
+        Textures.setBetaFeaturesTextures(true);
+        Textures.setMcpe(false);
 
         AlphaWorld.setSnowCovered(false);
 

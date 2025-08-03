@@ -5,13 +5,13 @@ import com.itselix99.betterworldoptions.interfaces.BWOCustomRandomTreeFeature;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.util.MTRandom;
+import com.itselix99.betterworldoptions.world.worldtypes.mcpe.util.math.noise.OctavePerlinNoiseSamplerMCPE;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.screen.LoadingDisplay;
-import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -27,14 +27,14 @@ import java.util.Random;
 
 public class MCPEChunkGenerator implements ChunkSource {
     private final Random random;
-    private final OctavePerlinNoiseSampler minLimitPerlinNoise;
-    private final OctavePerlinNoiseSampler maxLimitPerlinNoise;
-    private final OctavePerlinNoiseSampler perlinNoise1;
-    private final OctavePerlinNoiseSampler perlinNoise2;
-    private final OctavePerlinNoiseSampler perlinNoise3;
-    public OctavePerlinNoiseSampler floatingIslandScale;
-    public OctavePerlinNoiseSampler floatingIslandNoise;
-    public OctavePerlinNoiseSampler forestNoise;
+    private final OctavePerlinNoiseSamplerMCPE minLimitPerlinNoise;
+    private final OctavePerlinNoiseSamplerMCPE maxLimitPerlinNoise;
+    private final OctavePerlinNoiseSamplerMCPE perlinNoise1;
+    private final OctavePerlinNoiseSamplerMCPE perlinNoise2;
+    private final OctavePerlinNoiseSamplerMCPE perlinNoise3;
+    public OctavePerlinNoiseSamplerMCPE floatingIslandScale;
+    public OctavePerlinNoiseSamplerMCPE floatingIslandNoise;
+    public OctavePerlinNoiseSamplerMCPE forestNoise;
     private final World world;
     private double[] heightMap;
     private double[] sandBuffer = new double[256];
@@ -61,14 +61,14 @@ public class MCPEChunkGenerator implements ChunkSource {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         }
 
-        this.minLimitPerlinNoise = new OctavePerlinNoiseSampler(this.random, 16);
-        this.maxLimitPerlinNoise = new OctavePerlinNoiseSampler(this.random, 16);
-        this.perlinNoise1 = new OctavePerlinNoiseSampler(this.random, 8);
-        this.perlinNoise2 = new OctavePerlinNoiseSampler(this.random, 4);
-        this.perlinNoise3 = new OctavePerlinNoiseSampler(this.random, 4);
-        this.floatingIslandScale = new OctavePerlinNoiseSampler(this.random, 10);
-        this.floatingIslandNoise = new OctavePerlinNoiseSampler(this.random, 16);
-        this.forestNoise = new OctavePerlinNoiseSampler(this.random, 8);
+        this.minLimitPerlinNoise = new OctavePerlinNoiseSamplerMCPE(this.random, 16);
+        this.maxLimitPerlinNoise = new OctavePerlinNoiseSamplerMCPE(this.random, 16);
+        this.perlinNoise1 = new OctavePerlinNoiseSamplerMCPE(this.random, 8);
+        this.perlinNoise2 = new OctavePerlinNoiseSamplerMCPE(this.random, 4);
+        this.perlinNoise3 = new OctavePerlinNoiseSamplerMCPE(this.random, 4);
+        this.floatingIslandScale = new OctavePerlinNoiseSamplerMCPE(this.random, 10);
+        this.floatingIslandNoise = new OctavePerlinNoiseSamplerMCPE(this.random, 16);
+        this.forestNoise = new OctavePerlinNoiseSamplerMCPE(this.random, 8);
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, double[] temperatures) {

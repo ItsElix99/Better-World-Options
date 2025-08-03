@@ -28,7 +28,7 @@ public class GrassBlockMixin extends Block {
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
 
-        if (WorldSettings.GameMode.isBetaFeaturesWorldTypes(worldType) && !betaFeatures && !WorldSettings.GameMode.isBetaFeaturesTextures()) {
+        if (WorldSettings.GameMode.isBetaFeaturesWorldTypes(worldType) && !betaFeatures) {
             if (side == 1) {
                 return TextureListener.alphaGrassBlockTop;
             } else if (side == 0) {
@@ -37,7 +37,7 @@ public class GrassBlockMixin extends Block {
                 Material var6 = blockView.getMaterial(x, y + 1, z);
                 return var6 != Material.SNOW_LAYER && var6 != Material.SNOW_BLOCK ? TextureListener.alphaGrassBlockSide : 68;
             }
-        } else if(worldType.equals("Alpha 1.2.0")) {
+        } else if(worldType.equals("Alpha 1.2.0") || worldType.equals("MCPE")) {
             if (side == 1) {
                 return 0;
             } else if (side == 0) {

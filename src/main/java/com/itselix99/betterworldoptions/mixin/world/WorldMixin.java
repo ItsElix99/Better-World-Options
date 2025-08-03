@@ -84,6 +84,8 @@ public abstract class WorldMixin implements BWOGetDirectoryName {
             }
 
             original.call(instance, var1, var2 + 1, var3);
+        } else if (worldType.equals("MCPE")) {
+            original.call(instance, 128, 64, 128);
         } else {
             original.call(instance, x, y, z);
         }

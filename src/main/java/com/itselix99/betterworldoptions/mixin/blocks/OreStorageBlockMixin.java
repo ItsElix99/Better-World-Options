@@ -17,9 +17,17 @@ public class OreStorageBlockMixin extends Block {
 
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
     public int getTexture(int original, int side) {
-        if (!WorldSettings.GameMode.isBetaFeaturesTextures()) {
+        if (!WorldSettings.Textures.isBetaFeaturesTextures() && !WorldSettings.Textures.isMcpe()) {
             if (side == 1) {
-                return this.textureId;
+                if (this.id == 57) {
+                    return TextureListener.alphaDiamondBlock;
+                } else if (this.id == 41) {
+                    return TextureListener.alphaGoldBlock;
+                } else if (this.id == 42) {
+                    return TextureListener.alphaIronBlock;
+                } else {
+                    return this.textureId;
+                }
             } else if (side == 0) {
                 if (this.id == 57) {
                     return TextureListener.alphaDiamondBlockBottom;

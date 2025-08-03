@@ -4,6 +4,7 @@
   "package": "com.itselix99.betterworldoptions.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "biomes.BiomeColorsMixin",
     "biomes.BiomeMixin",
     "biomes.BiomeSourceMixin",
     "biomes.ForestBiomeMixin",

@@ -23,7 +23,7 @@ public class TallPlantBlockMixin extends PlantBlock {
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
 
-        if (WorldSettings.GameMode.isBetaFeaturesWorldTypes(worldType) && !betaFeatures && !WorldSettings.GameMode.isBetaFeaturesTextures()) {
+        if (WorldSettings.GameMode.isBetaFeaturesWorldTypes(worldType) && !betaFeatures && !WorldSettings.Textures.isMcpe()) {
             if (meta == 1) {
                 return TextureListener.alphaTallGrass;
             } else if (meta == 2) {

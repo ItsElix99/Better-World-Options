@@ -17,9 +17,13 @@ public abstract class BlockMixin {
 
     @ModifyReturnValue(method = "getTexture*", at = @At("RETURN"))
     public int getTexture(int original, int side) {
-        if (!WorldSettings.GameMode.isBetaFeaturesTextures()) {
+        if (!WorldSettings.Textures.isBetaFeaturesTextures()) {
             if (this.id == 4) {
                 return TextureListener.alphaCobblestone;
+            } else if (this.id == 38 && WorldSettings.Textures.isMcpe()) {
+                return TextureListener.mcpeRose;
+            } else if (this.id == 79 && WorldSettings.Textures.isMcpe()) {
+                return TextureListener.mcpeIceBlock;
             } else {
                 return original;
             }

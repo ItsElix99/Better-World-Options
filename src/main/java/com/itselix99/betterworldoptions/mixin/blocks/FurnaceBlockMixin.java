@@ -18,7 +18,7 @@ public abstract class FurnaceBlockMixin extends BlockWithEntity {
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
     public int getTexture(int original, int side) {
         if (side == 1) {
-            if (!WorldSettings.GameMode.isBetaFeaturesTextures()) {
+            if (!WorldSettings.Textures.isBetaFeaturesTextures() && !WorldSettings.Textures.isMcpe()) {
                 return 1;
             } else {
                 return this.textureId + 17;
