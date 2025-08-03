@@ -99,7 +99,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                             double var37 = (double)var55 / 4.0D;
                             double var39 = var28 + (var32 - var28) * var37;
                             double var41 = var30 + (var34 - var30) * var37;
-                            int shiftY = MathHelper.ceilLog2(BWOConfig.WORLD_CONFIG.worldHeightLimit);
+                            int shiftY = MathHelper.ceilLog2(BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue());
                             int shiftXZ = shiftY + 4;
                             int var27 = var55 + (var5 << 2) << shiftXZ | (var6 << 2) << shiftY | (var8 << 2) + var25;
 
@@ -122,7 +122,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                                 }
 
                                 blocks[var27] = (byte)var56;
-                                var27 += BWOConfig.WORLD_CONFIG.worldHeightLimit;
+                                var27 += BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue();
                             }
                         }
                     }
@@ -150,8 +150,8 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                     var54 = Block.DIRT.id;
                 }
 
-                for(int var20 = BWOConfig.WORLD_CONFIG.worldHeightLimit - 1; var20 >= 0; --var20) {
-                    int var16 = (var6 * 16 + var5) * BWOConfig.WORLD_CONFIG.worldHeightLimit + var20;
+                for(int var20 = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() - 1; var20 >= 0; --var20) {
+                    int var16 = (var6 * 16 + var5) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + var20;
                     if(blocks[var16] == 0) {
                         var53 = -1;
                     } else if(blocks[var16] == Block.STONE.id) {
@@ -216,7 +216,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit * 16];
+        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var5);

@@ -83,7 +83,7 @@ public class FarlandsChunkGenerator implements ChunkSource {
         byte var6 = 4;
         byte var7 = 64;
         int var8 = var6 + 1;
-        int vertical = BWOConfig.WORLD_CONFIG.worldHeightLimit / 8;
+        int vertical = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() / 8;
         byte var9 = (byte) (vertical + 1);
         int var10 = var6 + 1;
         this.heightMap = this.generateHeightMap(this.heightMap, chunkX * var6, chunkZ * var6, var8, var9, var10);
@@ -112,10 +112,10 @@ public class FarlandsChunkGenerator implements ChunkSource {
                         double var41 = (var22 - var18) * var33;
 
                         for(int var43 = 0; var43 < 4; ++var43) {
-                            int shiftY = MathHelper.ceilLog2(BWOConfig.WORLD_CONFIG.worldHeightLimit);
+                            int shiftY = MathHelper.ceilLog2(BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue());
                             int shiftXZ = shiftY + 4;
                             int var44 = var43 + var11 * 4 << shiftXZ | var12 * 4 << shiftY | var13 * 8 + var32;
-                            int var45 = BWOConfig.WORLD_CONFIG.worldHeightLimit;
+                            int var45 = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue();
                             double var46 = 0.25F;
                             double var48 = var35;
                             double var50 = (var37 - var35) * var46;
@@ -173,8 +173,8 @@ public class FarlandsChunkGenerator implements ChunkSource {
                 byte var15 = var10.topBlockId;
                 byte var16 = var10.soilBlockId;
 
-                for(int var17 = BWOConfig.WORLD_CONFIG.worldHeightLimit - 1; var17 >= 0; --var17) {
-                    int var18 = (var9 * 16 + var8) * BWOConfig.WORLD_CONFIG.worldHeightLimit + var17;
+                for(int var17 = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() - 1; var17 >= 0; --var17) {
+                    int var18 = (var9 * 16 + var8) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + var17;
                     if (var17 <= this.random.nextInt(5)) {
                         blocks[var18] = (byte)Block.BEDROCK.id;
                     } else {
@@ -238,7 +238,7 @@ public class FarlandsChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit * 16];
+        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() * 16];
         Chunk var4 = new Chunk(this.world, var3, chunkX, chunkZ);
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;

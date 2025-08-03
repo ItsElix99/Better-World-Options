@@ -48,7 +48,7 @@ public class FlatChunkGenerator implements ChunkSource {
     public void buildTerrain(byte[] blocks) {
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
-                for (int y = 0; y < BWOConfig.WORLD_CONFIG.worldHeightLimit; ++y) {
+                for (int y = 0; y < BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue(); ++y) {
                     int blockId;
 
                     if (y == 0) {
@@ -62,7 +62,7 @@ public class FlatChunkGenerator implements ChunkSource {
                     } else
                         blockId = 0;
 
-                    int index = (x * 16 + z) * BWOConfig.WORLD_CONFIG.worldHeightLimit + y;
+                    int index = (x * 16 + z) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + y;
                     blocks[index] = (byte) blockId;
                 }
             }
@@ -75,7 +75,7 @@ public class FlatChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit * 16];
+        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         this.buildTerrain(var3);
 

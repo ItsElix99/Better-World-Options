@@ -76,7 +76,7 @@ public class Infdev611ChunkGenerator implements ChunkSource {
         int m11 = var10003;
         double[] var6 = this.heightMap;
         Infdev611ChunkGenerator var81 = this;
-        int vertical = BWOConfig.WORLD_CONFIG.worldHeightLimit / 8;
+        int vertical = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() / 8;
 
         if (var6 == null) {
             var6 = new double[5 * 5 * (vertical + 1)];
@@ -172,7 +172,7 @@ public class Infdev611ChunkGenerator implements ChunkSource {
                             double var34 = (double)var33 / (double)4.0F;
                             double var35 = var29 + (var31 - var29) * var34;
                             double var36 = var30 + (var32 - var30) * var34;
-                            int shiftY = MathHelper.ceilLog2(BWOConfig.WORLD_CONFIG.worldHeightLimit);
+                            int shiftY = MathHelper.ceilLog2(BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue());
                             int shiftXZ = shiftY + 4;
                             int var37 = var33 + (var19 << 2) << shiftXZ | (var20 << 2) << shiftY | (var87 << 3) + var27;
 
@@ -194,7 +194,7 @@ public class Infdev611ChunkGenerator implements ChunkSource {
                                 }
 
                                 blocks[var37] = (byte)var41;
-                                var37 += BWOConfig.WORLD_CONFIG.worldHeightLimit;
+                                var37 += BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue();
                             }
                         }
                     }
@@ -222,8 +222,8 @@ public class Infdev611ChunkGenerator implements ChunkSource {
                     var49 = Block.DIRT.id;
                 }
 
-                for(int var50 = BWOConfig.WORLD_CONFIG.worldHeightLimit - 1; var50 >= 0; --var50) {
-                    int var46 = (var42 * 16 + var83) * BWOConfig.WORLD_CONFIG.worldHeightLimit + var50;
+                for(int var50 = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() - 1; var50 >= 0; --var50) {
+                    int var46 = (var42 * 16 + var83) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + var50;
                     if (blocks[var46] == 0) {
                         var47 = -1;
                     } else if (blocks[var46] == Block.STONE.id) {
@@ -288,7 +288,7 @@ public class Infdev611ChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit * 16];
+        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var5);

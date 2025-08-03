@@ -134,6 +134,6 @@ public class DimensionMixin implements StationDimension {
 
     @Override
     public int getHeight() {
-        return BWOConfig.WORLD_CONFIG.worldHeightLimit;
+        return BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue();
     }
 }

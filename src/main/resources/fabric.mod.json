@@ -31,6 +31,10 @@
     "gcapi3": [
       "com.itselix99.betterworldoptions.BWOConfig"
     ],
+    "gcapi3:factory_provider": [
+      "com.itselix99.betterworldoptions.config.WalkingAnimConfigEnumFactories",
+      "com.itselix99.betterworldoptions.config.WorldHeightConfigEnumFactories"
+    ],
     "bhcreative:event_bus": [
     ]
   },

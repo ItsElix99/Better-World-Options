@@ -29,6 +29,7 @@
   ],
   "client": [
     "MinecraftMixin",
+    "player.BipedEntityModelMixin",
     "player.ClientPlayerEntityMixin",
     "screen.CreateWorldScreenMixin",
     "screen.DeathScreenMixin",

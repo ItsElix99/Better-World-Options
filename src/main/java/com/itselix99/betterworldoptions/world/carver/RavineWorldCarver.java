@@ -32,7 +32,7 @@ public class RavineWorldCarver extends Generator {
         int var8 = 0;
 
         while(true) {
-            if (var8 >= BWOConfig.WORLD_CONFIG.worldHeightLimit) {
+            if (var8 >= BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue()) {
                 for(; tunnel < tunnelCount; ++tunnel) {
                     double var9 = (double)1.5F + (double)(MathHelper.sin((float)tunnel * (float)Math.PI / (float)tunnelCount) * baseWidth * 1.0F);
                     double var10 = var9 * widthHeightRatio;
@@ -78,8 +78,8 @@ public class RavineWorldCarver extends Generator {
                                 var19 = 1;
                             }
 
-                            if (var20 > BWOConfig.WORLD_CONFIG.worldHeightLimit - 8) {
-                                var20 = BWOConfig.WORLD_CONFIG.worldHeightLimit - 8;
+                            if (var20 > BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() - 8) {
+                                var20 = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() - 8;
                             }
 
                             if (var21 < 0) {
@@ -96,9 +96,9 @@ public class RavineWorldCarver extends Generator {
                                 for(int var25 = var21; var23 == 0 && var25 < var22; ++var25) {
                                     for(int var26 = var20 + 1; var23 == 0 && var26 >= var19 - 1; --var26) {
                                         int var10000 = var24 * 16 + var25;
-                                        int var27 = var10000 * BWOConfig.WORLD_CONFIG.worldHeightLimit + var26;
+                                        int var27 = var10000 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + var26;
                                         if (var26 >= 0) {
-                                            if (var26 < BWOConfig.WORLD_CONFIG.worldHeightLimit) {
+                                            if (var26 < BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue()) {
                                                 if (blocks[var27] == Block.FLOWING_WATER.id || blocks[var27] == Block.WATER.id) {
                                                     var23 = 1;
                                                 }
@@ -119,7 +119,7 @@ public class RavineWorldCarver extends Generator {
                                     for(int var30 = var21; var30 < var22; ++var30) {
                                         double var31 = ((double)(var30 + chunkZ * 16) + (double)0.5F - z7) / var9;
                                         int var32 = var28 * 16 + var30;
-                                        int var33 = var32 * BWOConfig.WORLD_CONFIG.worldHeightLimit + var20;
+                                        int var33 = var32 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + var20;
                                         int var34 = 0;
                                         if (var29 * var29 + var31 * var31 < (double)1.0F) {
                                             for(int var35 = var20 - 1; var35 >= var19; --var35) {
