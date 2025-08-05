@@ -30,7 +30,7 @@ public class DeathScreenMixin extends Screen {
     @Inject(method = "buttonClicked", at = @At("TAIL"))
     protected void buttonClicked(ButtonWidget button, CallbackInfo ci) {
         if (button.id == 3) {
-            if (this.minecraft.world != null && ((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
+            if (this.minecraft.world != null && ((BWOProperties) this.minecraft.world.getProperties()).bwo_isHardcore()) {
                 WorldStorage worldStorage = ((BWOGetDirectoryName)this.minecraft.world).bwo_getDimensionData();
                 String getDirectoryName = ((BWOGetDirectoryName) worldStorage).bwo_getDirectoryName();
                 this.minecraft.setWorld(null, "Deleting world");
@@ -46,7 +46,7 @@ public class DeathScreenMixin extends Screen {
     @Inject(method = "render", at = @At("TAIL"))
     public void render(int mouseX, int mouseY, float delta, CallbackInfo ci) {
         TranslationStorage translation = TranslationStorage.getInstance();
-        boolean hardcore = ((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore();
+        boolean hardcore = ((BWOProperties) this.minecraft.world.getProperties()).bwo_isHardcore();
         if (hardcore) {
             ((ButtonWidget) this.buttons.get(0)).active = false;
             ((ButtonWidget) this.buttons.get(0)).visible = false;

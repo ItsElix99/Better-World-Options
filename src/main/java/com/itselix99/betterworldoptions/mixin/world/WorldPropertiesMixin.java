@@ -16,17 +16,14 @@ public class WorldPropertiesMixin implements BWOProperties {
     @Unique private String worldType;
     @Unique private boolean hardcore;
     @Unique private boolean betaFeatures;
-
-    @Unique private boolean snowCovered;
+    @Unique private String theme;
+    @Unique private String singleBiome;
 
     @Unique private String indevWorldType;
     @Unique private String shape;
     @Unique private String size;
-    @Unique private String theme;
-    @Unique private String betaTheme;
-    @Unique private boolean indevDimesions;
     @Unique private boolean generateIndevHouse;
-    @Unique private boolean infinite;
+    @Unique private boolean infiniteWorld;
 
     @Override public void bwo_setWorldType(String name) {
         this.worldType = name;
@@ -38,15 +35,18 @@ public class WorldPropertiesMixin implements BWOProperties {
     @Override public void bwo_setHardcore(boolean hardcore) {
         this.hardcore = hardcore;
     }
-    @Override public boolean bwo_getHardcore() {
+    @Override public boolean bwo_isHardcore() {
         return this.hardcore;
     }
+
     @Override public boolean bwo_getBetaFeatures() {
         return this.betaFeatures;
     }
-
-    @Override public boolean bwo_getSnowCovered() {
-        return this.snowCovered;
+    @Override public String bwo_getSingleBiome() {
+        return this.singleBiome;
+    }
+    @Override public String bwo_getTheme() {
+        return this.theme;
     }
 
     @Override public String bwo_getIndevWorldType() {
@@ -58,20 +58,11 @@ public class WorldPropertiesMixin implements BWOProperties {
     @Override public String bwo_getSize() {
         return this.size;
     }
-    @Override public String bwo_getBetaTheme() {
-        return this.betaTheme;
-    }
-    @Override public String bwo_getTheme() {
-        return this.theme;
-    }
-    @Override public boolean bwo_isIndevDimensions() {
-        return this.indevDimesions;
-    }
     @Override public boolean bwo_isGenerateIndevHouse() {
         return this.generateIndevHouse;
     }
-    @Override public boolean bwo_isInfinite() {
-        return this.infinite;
+    @Override public boolean bwo_isInfiniteWorld() {
+        return this.infiniteWorld;
     }
 
     @Inject(method = "<init>(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("TAIL"))
@@ -79,40 +70,38 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.worldType = nbt.getString("WorldType");
         this.hardcore = nbt.getBoolean("Hardcore");
         this.betaFeatures = nbt.getBoolean("BetaFeatures");
+        this.singleBiome = nbt.getString("SingleBiome");
+        this.theme = nbt.getString("Theme");
+
         WorldSettings.Textures.setBetaFeaturesTextures(this.betaFeatures);
 
         if (!bwo_getBetaFeatures() && bwo_getWorldType().equals("MCPE")) {
             WorldSettings.Textures.setMcpe(true);
         } else {
             WorldSettings.Textures.setMcpe(false);
-        }
-
-        if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
-            this.snowCovered = nbt.getBoolean("SnowCovered");
         }
 
         if (Objects.equals(bwo_getWorldType(), "Indev 223")) {
             this.indevWorldType = nbt.getString("IndevWorldType");
             this.shape = nbt.getString("Shape");
             this.size = nbt.getString("Size");
-
-            if (this.betaFeatures) {
-                this.betaTheme = nbt.getString("BetaTheme");
-            } else {
-                this.theme = nbt.getString("Theme");
-            }
-
-            this.indevDimesions = nbt.getBoolean("IndevDimensions");
             this.generateIndevHouse = nbt.getBoolean("GenerateIndevHouse");
-            this.infinite = nbt.getBoolean("Infinite");
+            this.infiniteWorld = nbt.getBoolean("InfiniteWorld");
         }
     }
 
     @Inject(method = "<init>(JLjava/lang/String;)V", at = @At("TAIL"))
     private void newWorld(long seed, String name, CallbackInfo ci) {
         this.worldType = WorldSettings.World.getWorldTypeName();
-        this.hardcore = WorldSettings.GameMode.isHardcore();
+
+        if (WorldSettings.GameMode.getGameMode().equals("Hardcore")) {
+            this.hardcore = true;
+        }
+
         this.betaFeatures = WorldSettings.GameMode.isBetaFeatures();
+        this.singleBiome = WorldSettings.World.getSingleBiome() == null ? "All Biomes" : WorldSettings.World.getSingleBiome().name;
+        this.theme = WorldSettings.World.getTheme();
+
         WorldSettings.Textures.setBetaFeaturesTextures(this.betaFeatures);
 
         if (!bwo_getBetaFeatures() && bwo_getWorldType().equals("MCPE")) {
@@ -121,51 +110,29 @@ public class WorldPropertiesMixin implements BWOProperties {
             WorldSettings.Textures.setMcpe(false);
         }
 
-        if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
-            this.snowCovered = WorldSettings.AlphaWorld.isSnowCovered();
-        }
-
         if (Objects.equals(bwo_getWorldType(), "Indev 223")) {
             this.indevWorldType = WorldSettings.IndevWorld.getIndevWorldType();
             this.shape = WorldSettings.IndevWorld.getShape();
             this.size = WorldSettings.IndevWorld.getSize();
-
-            if (this.betaFeatures) {
-                this.betaTheme = WorldSettings.IndevWorld.getBetaTheme();
-            } else {
-                this.theme = WorldSettings.IndevWorld.getTheme();
-            }
-
-            this.indevDimesions = WorldSettings.IndevWorld.isIndevDimensions();
             this.generateIndevHouse = WorldSettings.IndevWorld.isGenerateIndevHouse();
-            this.infinite = WorldSettings.IndevWorld.isInfinite();
+            this.infiniteWorld = WorldSettings.IndevWorld.isInfiniteWorld();
         }
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/WorldProperties;)V", at = @At("TAIL"))
     private void onCopyConstructor(net.minecraft.world.WorldProperties source, CallbackInfo ci) {
         this.worldType = ((BWOProperties) source).bwo_getWorldType();
-        this.hardcore = ((BWOProperties) source).bwo_getHardcore();
+        this.hardcore = ((BWOProperties) source).bwo_isHardcore();
         this.betaFeatures = ((BWOProperties) source).bwo_getBetaFeatures();
-
-        if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
-            this.snowCovered = ((BWOProperties) source).bwo_getSnowCovered();
-        }
+        this.singleBiome = ((BWOProperties) source).bwo_getSingleBiome();
+        this.theme = ((BWOProperties) source).bwo_getTheme();
 
         if (Objects.equals(bwo_getWorldType(), "Indev 223")) {
             this.indevWorldType = ((BWOProperties) source).bwo_getIndevWorldType();
             this.shape = ((BWOProperties) source).bwo_getShape();
             this.size = ((BWOProperties) source).bwo_getSize();
-
-            if (this.betaFeatures) {
-                this.betaTheme = ((BWOProperties) source).bwo_getBetaTheme();
-            } else {
-                this.theme = ((BWOProperties) source).bwo_getTheme();
-            }
-
-            this.indevDimesions = ((BWOProperties) source).bwo_isIndevDimensions();
             this.generateIndevHouse = ((BWOProperties) source).bwo_isGenerateIndevHouse();
-            this.infinite = ((BWOProperties) source).bwo_isInfinite();
+            this.infiniteWorld = ((BWOProperties) source).bwo_isInfiniteWorld();
         }
     }
 
@@ -174,25 +141,15 @@ public class WorldPropertiesMixin implements BWOProperties {
         nbt.putString("WorldType", this.worldType);
         nbt.putBoolean("Hardcore", this.hardcore);
         nbt.putBoolean("BetaFeatures", this.betaFeatures);
-
-        if (Objects.equals(bwo_getWorldType(), "Alpha 1.1.2_01")) {
-            nbt.putBoolean("SnowCovered", this.snowCovered);
-        }
+        nbt.putString("SingleBiome", this.singleBiome);
+        nbt.putString("Theme", this.theme);
 
         if (Objects.equals(bwo_getWorldType(), "Indev 223")) {
             nbt.putString("IndevWorldType", this.indevWorldType);
             nbt.putString("Shape", this.shape);
             nbt.putString("Size", this.size);
-
-            if (this.betaFeatures) {
-                nbt.putString("BetaTheme", this.betaTheme);
-            } else {
-                nbt.putString("Theme", this.theme);
-            }
-
-            nbt.putBoolean("IndevDimensions", this.indevDimesions);
             nbt.putBoolean("GenerateIndevHouse", this.generateIndevHouse);
-            nbt.putBoolean("Infinite", this.infinite);
+            nbt.putBoolean("InfiniteWorld", this.infiniteWorld);
         }
     }
 }

@@ -41,7 +41,7 @@ public class WorldListWidgetMixin {
         }
 
         if (isBHCreativeModPresent()) {
-            boolean isHardcore = ((BWOProperties) worldSaveInfo).bwo_getHardcore();
+            boolean isHardcore = ((BWOProperties) worldSaveInfo).bwo_isHardcore();
             if (isHardcore) {
                 int offset = minecraft.textRenderer.getWidth(worldName) + 60;
                 this.field_2444.drawTextWithShadow(minecraft.textRenderer, "Hardcore", x + offset, y + 1, 16711680);
@@ -50,7 +50,7 @@ public class WorldListWidgetMixin {
             int offset = minecraft.textRenderer.getWidth(worldName) + 6;
             this.field_2444.drawTextWithShadow(minecraft.textRenderer, "[", x + offset, y + 1, 16777215);
             offset += minecraft.textRenderer.getWidth("[");
-            boolean isHardcore = ((BWOProperties) worldSaveInfo).bwo_getHardcore();
+            boolean isHardcore = ((BWOProperties) worldSaveInfo).bwo_isHardcore();
             String gameMode = isHardcore ? "Hardcore" : "Survival";
             int color = isHardcore ? 16711680 : '\uff00';
             this.field_2444.drawTextWithShadow(minecraft.textRenderer, gameMode, x + offset, y + 1, color);

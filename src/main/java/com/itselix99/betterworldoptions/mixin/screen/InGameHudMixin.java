@@ -6,11 +6,9 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
-import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 
 @Mixin(InGameHud.class)
@@ -26,7 +24,7 @@ public class InGameHudMixin extends DrawContext {
             )
     )
     private void renderHardcoreHearts(int target, int texture, Operation<Void> original) {
-        if (((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
+        if (((BWOProperties) this.minecraft.world.getProperties()).bwo_isHardcore()) {
             int hardcoreHearts = this.minecraft.textureManager.getTextureId("/assets/betterworldoptions/stationapi/textures/gui/iconsWithHardcoreHearts.png");
             original.call(target, hardcoreHearts);
         } else {

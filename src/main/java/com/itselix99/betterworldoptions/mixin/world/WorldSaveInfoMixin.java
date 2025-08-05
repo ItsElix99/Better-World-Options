@@ -20,7 +20,7 @@ public abstract class WorldSaveInfoMixin implements BWOProperties {
         this.hardcore = hardcore;
     }
 
-    @Override public boolean bwo_getHardcore() {
+    @Override public boolean bwo_isHardcore() {
         return this.hardcore;
     }
 

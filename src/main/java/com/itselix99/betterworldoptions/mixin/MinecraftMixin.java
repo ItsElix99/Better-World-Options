@@ -33,7 +33,7 @@ public class MinecraftMixin {
             )
     )
     private void hardcoreDifficulty(World world, int difficulty, Operation<Void> original) {
-        if (((BWOProperties) world.getProperties()).bwo_getHardcore()) {
+        if (((BWOProperties) world.getProperties()).bwo_isHardcore()) {
             original.call(world, 3);
         } else {
             original.call(world, difficulty);

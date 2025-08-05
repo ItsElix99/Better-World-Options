@@ -45,7 +45,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
     private final boolean betaFeatures;
     private final String indevTheme;
     private final String betaTheme;
-    private final boolean infinite;
+    private final boolean infiniteWorld;
 
     private int WORLD_SIZE_X;
     private int WORLD_SIZE_Z;
@@ -66,8 +66,8 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
         this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
         this.indevTheme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
-        this.betaTheme = ((BWOProperties) this.world.getProperties()).bwo_getBetaTheme();
-        this.infinite = ((BWOProperties) this.world.getProperties()).bwo_isInfinite();
+        this.betaTheme = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
+        this.infiniteWorld = ((BWOProperties) this.world.getProperties()).bwo_isInfiniteWorld();
 
         String indevWorldSize = ((BWOProperties) this.world.getProperties()).bwo_getSize();
         if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getShape(), "Long")) {
@@ -134,7 +134,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                         h = h * (1.0 - radius) - radius * 10.0 + 5.0;
                         if (h < 0.0) h -= h * h * 0.2;
                     } else {
-                        if (distance > 1.0 && !this.infinite) {
+                        if (distance > 1.0 && !this.infiniteWorld) {
                             h = 0;
                         } else {
                             if (h < 0.0) {
@@ -160,7 +160,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                     double ePower = this.distortB.create(worldX << 1, worldZ << 1) / 8.0;
                     int sharp = this.distortC.create(worldX << 1, worldZ << 1) > 0.0 ? 1 : 0;
 
-                    if (distance > 1.0 && !this.infinite) {
+                    if (distance > 1.0 && !this.infiniteWorld) {
                         heightMap[x + z * 16] = 0;
                     } else {
                         if (ePower > 2.0) {
@@ -212,7 +212,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                     int index = (x * 16 + z) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + y;
                     int blockId = 0;
 
-                    if (distance > 1.0 && !this.infinite) {
+                    if (distance > 1.0 && !this.infiniteWorld) {
                         if (!indevWorldType.equals("Island") && !indevWorldType.equals("Floating")) {
                             if (y == 64) {
                                 blockId = Block.GRASS_BLOCK.id;
@@ -443,7 +443,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
         double centerZ = ((double)(chunkZ * 16 + 15) / (WORLD_SIZE_Z - 1) - 0.5) * 2.0;
         double distance = Math.max(Math.abs(centerX), Math.abs(centerZ));
 
-        if (this.betaFeatures && (distance <= 1.0 || this.infinite)){
+        if (this.betaFeatures && (distance <= 1.0 || this.infiniteWorld)){
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
 
@@ -482,7 +482,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                 int worldZ = z * 16 + var2;
                 double nz = ((double) worldZ / (WORLD_SIZE_Z - 1) - 0.5) * 2.0;
                 double distance = Math.max(Math.abs(nx), Math.abs(nz));
-                if (distance >= 1.0 && !this.infinite) {
+                if (distance >= 1.0 && !this.infiniteWorld) {
                     return;
                 }
             }
@@ -493,23 +493,23 @@ public class Indev223ChunkGenerator implements ChunkSource {
             int var4 = x << 4;
             int var5 = z << 4;
 
-            if (!this.infinite || this.random.nextInt(4) == 0) {
+            if (!this.infiniteWorld || this.random.nextInt(4) == 0) {
                 IndevFeatures.placePlant(this.world, this.random, Block.DANDELION, this.indevTheme.equals("Paradise") ? 1000 : 100, var4, var5);
             }
 
-            if (!this.infinite || this.random.nextInt(4) == 0) {
+            if (!this.infiniteWorld || this.random.nextInt(4) == 0) {
                 IndevFeatures.placePlant(this.world, this.random, Block.ROSE, this.indevTheme.equals("Paradise") ? 1000 : 100, var4, var5);
             }
 
-            if (!this.infinite || this.random.nextInt(8) == 0) {
+            if (!this.infiniteWorld || this.random.nextInt(8) == 0) {
                 IndevFeatures.placePlant(this.world, this.random, Block.BROWN_MUSHROOM, 50, var4, var5);
             }
 
-            if (!this.infinite || this.random.nextInt(8) == 0) {
+            if (!this.infiniteWorld || this.random.nextInt(8) == 0) {
                 IndevFeatures.placePlant(this.world, this.random, Block.RED_MUSHROOM, 50, var4, var5);
             }
 
-            int var10 = this.indevTheme.equals("Woods") ? (this.infinite ? 40 : 50) : 6;
+            int var10 = this.indevTheme.equals("Woods") ? (this.infiniteWorld ? 40 : 50) : 6;
             OakTreeFeature var9 = new OakTreeFeature();
 
 

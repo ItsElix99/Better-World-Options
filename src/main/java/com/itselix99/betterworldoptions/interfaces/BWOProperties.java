@@ -5,17 +5,14 @@ public interface BWOProperties {
     void bwo_setHardcore(boolean hardcore);
 
     String bwo_getWorldType();
-    boolean bwo_getHardcore();
+    boolean bwo_isHardcore();
     boolean bwo_getBetaFeatures();
-
-    boolean bwo_getSnowCovered();
+    String bwo_getSingleBiome();
+    String bwo_getTheme();
 
     String bwo_getIndevWorldType();
     String bwo_getShape();
     String bwo_getSize();
-    String bwo_getBetaTheme();
-    String bwo_getTheme();
-    boolean bwo_isIndevDimensions();
     boolean bwo_isGenerateIndevHouse();
-    boolean bwo_isInfinite();
+    boolean bwo_isInfiniteWorld();
 }

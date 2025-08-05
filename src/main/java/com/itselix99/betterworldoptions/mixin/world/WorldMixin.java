@@ -60,7 +60,7 @@ public abstract class WorldMixin implements BWOGetDirectoryName {
     private void initializeSpawnPointIndev(WorldProperties instance, int x, int y, int z, Operation<Void> original) {
         String worldType = ((BWOProperties) instance).bwo_getWorldType();
         boolean generateIndevHouse = ((BWOProperties) instance).bwo_isGenerateIndevHouse();
-        boolean infinite = ((BWOProperties) instance).bwo_isInfinite();
+        boolean infinite = ((BWOProperties) instance).bwo_isInfiniteWorld();
 
         if (worldType.equals("Indev 223")) {
             boolean isValidSpawnArea = false;

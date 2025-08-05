@@ -31,7 +31,6 @@ public class WorldTypeList {
         Default.ICON = "/assets/betterworldoptions/gui/default.png";
         Default.DESCRIPTION = "Minecraft's default world generator";
         Default.LIGHTING_MODE = "Overworld";
-        Default.SKY_DISABLED = false;
         Default.BIOME = null;
         Default.BLOCK_TO_SPAWN_ON = Block.SAND.id;
         WORLD_TYPE_LIST.add(Default);
@@ -44,7 +43,6 @@ public class WorldTypeList {
         Nether.DESCRIPTION = "Start the world in the Nether";
         Nether.DESCRIPTION_2 = "dimension";
         Nether.LIGHTING_MODE = "Overworld";
-        Nether.SKY_DISABLED = false;
         Nether.BIOME = null;
         Nether.BLOCK_TO_SPAWN_ON = Block.SAND.id;
         WORLD_TYPE_LIST.add(Nether);
@@ -57,7 +55,6 @@ public class WorldTypeList {
         Skylands.DESCRIPTION = "Start the world on the floating";
         Skylands.DESCRIPTION_2 = "islands";
         Skylands.LIGHTING_MODE = "Overworld";
-        Skylands.SKY_DISABLED = false;
         Skylands.BIOME = null;
         Skylands.BLOCK_TO_SPAWN_ON = Block.SAND.id;
         WORLD_TYPE_LIST.add(Skylands);
@@ -70,7 +67,6 @@ public class WorldTypeList {
         Flat.DESCRIPTION = "A completely flat world, perfect for";
         Flat.DESCRIPTION_2 = "building";
         Flat.LIGHTING_MODE = "Overworld";
-        Flat.SKY_DISABLED = false;
         Flat.BIOME = null;
         Flat.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
         WORLD_TYPE_LIST.add(Flat);
@@ -83,7 +79,6 @@ public class WorldTypeList {
         Farlands.DESCRIPTION = "Explore the Farlands, where terrain";
         Farlands.DESCRIPTION_2 = "generation becomes distorted";
         Farlands.LIGHTING_MODE = "Overworld";
-        Farlands.SKY_DISABLED = false;
         Farlands.BIOME = null;
         Farlands.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
         WORLD_TYPE_LIST.add(Farlands);
@@ -96,7 +91,6 @@ public class WorldTypeList {
         Alpha120.DESCRIPTION = "Start the world with Alpha 1.2.0";
         Alpha120.DESCRIPTION_2 = "generation";
         Alpha120.LIGHTING_MODE = "Overworld";
-        Alpha120.SKY_DISABLED = false;
         Alpha120.BIOME = null;
         Alpha120.BLOCK_TO_SPAWN_ON = Block.SAND.id;
         WORLD_TYPE_LIST.add(Alpha120);
@@ -109,7 +103,6 @@ public class WorldTypeList {
         Alpha112.DESCRIPTION = "Start the world with Alpha 1.1.2_01";
         Alpha112.DESCRIPTION_2 = "generation";
         Alpha112.LIGHTING_MODE = "Overworld";
-        Alpha112.SKY_DISABLED = false;
         Alpha112.BIOME = null;
         Alpha112.BLOCK_TO_SPAWN_ON = Block.SAND.id;
         WORLD_TYPE_LIST.add(Alpha112);
@@ -122,7 +115,6 @@ public class WorldTypeList {
         Infdev611.DESCRIPTION = "Start the world with Infdev 611";
         Infdev611.DESCRIPTION_2 = "generation";
         Infdev611.LIGHTING_MODE = "Overworld";
-        Infdev611.SKY_DISABLED = false;
         Infdev611.BIOME = null;
         Infdev611.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
         WORLD_TYPE_LIST.add(Infdev611);
@@ -135,7 +127,6 @@ public class WorldTypeList {
         Infdev420.DESCRIPTION = "Start the world with Infdev 420";
         Infdev420.DESCRIPTION_2 = "generation";
         Infdev420.LIGHTING_MODE = "Overworld";
-        Infdev420.SKY_DISABLED = false;
         Infdev420.BIOME = null;
         Infdev420.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
         WORLD_TYPE_LIST.add(Infdev420);
@@ -148,7 +139,6 @@ public class WorldTypeList {
         Infdev415.DESCRIPTION = "Start the world with Infdev 415";
         Infdev415.DESCRIPTION_2 = "generation";
         Infdev415.LIGHTING_MODE = "Overworld";
-        Infdev415.SKY_DISABLED = false;
         Infdev415.BIOME = null;
         Infdev415.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
         WORLD_TYPE_LIST.add(Infdev415);
@@ -161,7 +151,6 @@ public class WorldTypeList {
         EarlyInfdev.DESCRIPTION = "Start the world with Infdev 227-325";
         EarlyInfdev.DESCRIPTION_2 = "generation";
         EarlyInfdev.LIGHTING_MODE = "Overworld";
-        EarlyInfdev.SKY_DISABLED = false;
         EarlyInfdev.BIOME = null;
         EarlyInfdev.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
         WORLD_TYPE_LIST.add(EarlyInfdev);
@@ -174,7 +163,6 @@ public class WorldTypeList {
         Indev223.DESCRIPTION = "Start the world with Indev 223";
         Indev223.DESCRIPTION_2 = "generation";
         Indev223.LIGHTING_MODE = "Overworld";
-        Indev223.SKY_DISABLED = false;
         Indev223.BIOME = null;
         Indev223.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
         WORLD_TYPE_LIST.add(Indev223);
@@ -187,7 +175,6 @@ public class WorldTypeList {
         MCPE.DESCRIPTION = "Start the world with MCPE 0.1.0-0.8.1";
         MCPE.DESCRIPTION_2 = "generation";
         MCPE.LIGHTING_MODE = "Overworld";
-        MCPE.SKY_DISABLED = false;
         MCPE.BIOME = null;
         MCPE.BLOCK_TO_SPAWN_ON = Block.SAND.id;
         WORLD_TYPE_LIST.add(MCPE);
@@ -200,7 +187,6 @@ public class WorldTypeList {
             Aether.ICON = "/assets/betterworldoptions/gui/aether.png";
             Aether.DESCRIPTION = "Start the world in a hostile paradise";
             Aether.LIGHTING_MODE = "Overworld";
-            Aether.SKY_DISABLED = false;
             Aether.BIOME = null;
             Aether.BLOCK_TO_SPAWN_ON = 0;
             WORLD_TYPE_LIST.add(Aether);
@@ -222,7 +208,6 @@ public class WorldTypeList {
         WorldSettings.World.setDisplayWorldTypeName(worldType.DISPLAY_NAME);
         WorldSettings.World.setWorldTypeName(worldType.NAME);
         WorldSettings.World.setLightingMode(worldType.LIGHTING_MODE);
-        WorldSettings.World.setSkyDisabled(worldType.SKY_DISABLED);
         WorldSettings.World.setSingleBiome(worldType.BIOME);
         WorldSettings.World.setBlockToSpawnOn(worldType.BLOCK_TO_SPAWN_ON);
     }
@@ -241,7 +226,6 @@ public class WorldTypeList {
         public String DESCRIPTION;
         public String DESCRIPTION_2;
         public String LIGHTING_MODE;
-        public boolean SKY_DISABLED;
         public Biome BIOME;
         public int BLOCK_TO_SPAWN_ON;
     }

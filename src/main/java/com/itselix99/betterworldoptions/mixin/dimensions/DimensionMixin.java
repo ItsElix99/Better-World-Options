@@ -26,23 +26,19 @@ public class DimensionMixin implements StationDimension {
     @Shadow public BiomeSource biomeSource;
     @Shadow public boolean isNether;
     @Shadow public boolean evaporatesWater;
-    @Shadow public boolean hasCeiling;
     @Shadow public World world;
 
     @Inject(method = "initBiomeSource", at = @At("HEAD"), cancellable = true)
     protected void initBiomeSource(CallbackInfo ci) {
         String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        String indevTheme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
-        String betaTheme = ((BWOProperties) this.world.getProperties()).bwo_getBetaTheme();
         boolean betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
-        boolean snowCovered = ((BWOProperties) this.world.getProperties()).bwo_getSnowCovered();
+        String theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
+        String singleBiome = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
 
-        if (WorldSettings.World.getSingleBiome() != null) {
-            this.biomeSource = new FixedBiomeSource(WorldSettings.World.getSingleBiome(), 1.0D, 0.5D);
-        } else if (worldType.equals("Flat") && !betaFeatures) {
+        if (worldType.equals("Flat") && !betaFeatures) {
             this.biomeSource = new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.5D);
         } else if (worldType.equals("Alpha 1.1.2_01") && !betaFeatures) {
-            if (snowCovered) {
+            if (theme.equals("Winter")) {
                 this.biomeSource = new FixedBiomeSource(BetterWorldOptions.WinterAlpha, 0.0D, 0.5D);
             } else {
                 this.biomeSource = new FixedBiomeSource(BetterWorldOptions.Alpha, 1.0D, 0.5D);
@@ -57,14 +53,14 @@ public class DimensionMixin implements StationDimension {
             this.biomeSource = new FixedBiomeSource(BetterWorldOptions.EarlyInfdev, 1.0D, 0.5D);
         } else if (worldType.equals("Indev 223")) {
             if (!betaFeatures) {
-                switch (indevTheme) {
+                switch (theme) {
                     case "Hell" -> this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevHell, 1.0D, 0.0D);
                     case "Normal" -> this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevNormal, 1.0D, 0.5D);
                     case "Paradise" -> this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevParadise, 1.0D, 0.5D);
                     case "Woods" -> this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevWoods, 1.0D, 0.5D);
                 }
             } else {
-                switch (betaTheme) {
+                switch (singleBiome) {
                     case "Rainforest" -> this.biomeSource = new FixedBiomeSource(Biome.RAINFOREST, 1.0D, 1.0D);
                     case "Swampland" -> this.biomeSource = new FixedBiomeSource(Biome.SWAMPLAND, 0.6D, 0.6D);
                     case "Seasonal Forest" -> this.biomeSource = new FixedBiomeSource(Biome.SEASONAL_FOREST, 1.0D, 0.8D);
@@ -76,15 +72,14 @@ public class DimensionMixin implements StationDimension {
                     case "Plains" -> this.biomeSource = new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
                     case "Ice Desert" -> this.biomeSource = new FixedBiomeSource(Biome.ICE_DESERT, 0.0D, 0.1D);
                     case "Tundra" -> this.biomeSource = new FixedBiomeSource(Biome.TUNDRA, 0.0D, 1.0D);
-                    case "Hell" -> this.biomeSource = new FixedBiomeSource(Biome.HELL, 1.0D, 0.0D);
                     case "All Biomes" -> this.biomeSource = new BiomeSource(this.world);
                 }
             }
+        } else if (!singleBiome.equals("All Biomes")) {
+            this.biomeSource = new FixedBiomeSource(WorldSettings.World.getSingleBiome(), 0.0D, 0.5D);
         } else {
             this.biomeSource = new BiomeSource(this.world);
         }
-
-        this.hasCeiling = WorldSettings.World.isSkyDisabled();
 
         if (WorldSettings.World.getSingleBiome() == Biome.HELL) {
             this.isNether = true;
@@ -108,7 +103,7 @@ public class DimensionMixin implements StationDimension {
 
         String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
         String indevTheme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
-        String betaTheme = ((BWOProperties) this.world.getProperties()).bwo_getBetaTheme();
+        String betaTheme = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
         boolean betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
 
         if (WorldSettings.World.getBlockToSpawnOn() != 0) {

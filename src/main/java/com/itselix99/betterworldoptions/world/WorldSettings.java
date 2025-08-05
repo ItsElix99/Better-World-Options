@@ -13,8 +13,8 @@ public class WorldSettings {
         private static String DISPLAY_WORLD_TYPE_NAME = "Default";
         private static String WORLD_TYPE_NAME = "Default";
         private static String LIGHTING_MODE = "Overworld";
-        private static boolean SKY_DISABLED = false;
         private static Biome SINGLE_BIOME = null;
+        private static String THEME = "Normal";
         private static int BLOCK_TO_SPAWN_ON = Block.SAND.id;
 
         public static void setChunkGenerator(Constructor<? extends ChunkSource> chunkGenerator) {
@@ -37,8 +37,8 @@ public class WorldSettings {
             SINGLE_BIOME = singleBiome;
         }
 
-        public static void setSkyDisabled(boolean skyDisabled) {
-            SKY_DISABLED = skyDisabled;
+        public static void setTheme(String theme) {
+            THEME = theme;
         }
 
         public static void setBlockToSpawnOn(int blockToSpawnOn) {
@@ -61,12 +61,12 @@ public class WorldSettings {
             return LIGHTING_MODE;
         }
 
-        public static boolean isSkyDisabled() {
-            return SKY_DISABLED;
-        }
-
         public static Biome getSingleBiome() {
             return SINGLE_BIOME;
+        }
+
+        public static String getTheme() {
+            return THEME;
         }
 
         public static int getBlockToSpawnOn() {
@@ -75,7 +75,7 @@ public class WorldSettings {
     }
 
     public static class GameMode {
-        private static boolean HARDCORE = false;
+        private static String GAMEMODE = "Survival";
         private static boolean BETA_FEATURES = true;
 
         private static final Set<String> NON_BETA_FEATURES_WORLD_TYPES = Set.of(
@@ -86,16 +86,16 @@ public class WorldSettings {
                 "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "Indev 223"
         );
 
-        public static void setHardcore(boolean hardcore) {
-            HARDCORE = hardcore;
+        public static void setGameMode(String gameMode) {
+            GAMEMODE = gameMode;
         }
 
         public static void setBetaFeatures(boolean betaFeatures) {
             BETA_FEATURES = betaFeatures;
         }
 
-        public static boolean isHardcore() {
-            return HARDCORE;
+        public static String getGameMode() {
+            return GAMEMODE;
         }
 
         public static boolean isBetaFeatures() {
@@ -111,27 +111,12 @@ public class WorldSettings {
         }
     }
 
-    public static class AlphaWorld {
-        private static boolean SNOW_COVERED = false;
-
-        public static void setSnowCovered(boolean snowCovered) {
-            SNOW_COVERED = snowCovered;
-        }
-
-        public static boolean isSnowCovered() {
-            return SNOW_COVERED;
-        }
-    }
-
     public static class IndevWorld {
         private static String INDEV_WORLD_TYPE = "Island";
         private static String SHAPE = "Square";
         private static String SIZE = "Normal";
-        private static String THEME = "Normal";
-        private static String BETA_THEME = "All Biomes";
-        private static boolean INDEV_DIMENSIONS = false;
         private static boolean GENERATE_INDEV_HOUSE = true;
-        private static boolean INFINITE = false;
+        private static boolean INFINITE_WORLD = false;
 
         public static void setIndevWorldType(String indevWorldType) {
             INDEV_WORLD_TYPE = indevWorldType;
@@ -145,24 +130,12 @@ public class WorldSettings {
             SIZE = size;
         }
 
-        public static void setTheme(String theme) {
-            THEME = theme;
-        }
-
-        public static void setBetaTheme(String betaTheme) {
-            BETA_THEME = betaTheme;
-        }
-
-        public static void setIndevDimensions(boolean indevDimensions) {
-            INDEV_DIMENSIONS = indevDimensions;
-        }
-
         public static void setGenerateIndevHouse(boolean generateIndevHouse) {
             GENERATE_INDEV_HOUSE = generateIndevHouse;
         }
 
-        public static void setInfinite(boolean infinite) {
-            INFINITE = infinite;
+        public static void setInfiniteWorld(boolean infiniteWorld) {
+            INFINITE_WORLD = infiniteWorld;
         }
 
         public static String getIndevWorldType() {
@@ -205,24 +178,12 @@ public class WorldSettings {
             }
         }
 
-        public static String getTheme() {
-            return THEME;
-        }
-
-        public static String getBetaTheme() {
-            return BETA_THEME;
-        }
-
-        public static boolean isIndevDimensions() {
-            return INDEV_DIMENSIONS;
-        }
-
         public static boolean isGenerateIndevHouse() {
             return GENERATE_INDEV_HOUSE;
         }
 
-        public static boolean isInfinite() {
-            return INFINITE;
+        public static boolean isInfiniteWorld() {
+            return INFINITE_WORLD;
         }
     }
 
@@ -252,24 +213,19 @@ public class WorldSettings {
         World.setDisplayWorldTypeName("Default");
         World.setWorldTypeName("Default");
         World.setLightingMode("Overworld");
-        World.setSkyDisabled(false);
         World.setSingleBiome(null);
+        World.setTheme("Normal");
         World.setBlockToSpawnOn(Block.SAND.id);
 
-        GameMode.setHardcore(false);
+        GameMode.setGameMode("Survival");
         GameMode.setBetaFeatures(true);
         Textures.setBetaFeaturesTextures(true);
         Textures.setMcpe(false);
 
-        AlphaWorld.setSnowCovered(false);
-
         IndevWorld.setIndevWorldType("Normal");
         IndevWorld.setShape("Square");
         IndevWorld.setSize("Normal");
-        IndevWorld.setTheme("Normal");
-        IndevWorld.setBetaTheme("All Biomes");
-        IndevWorld.setIndevDimensions(false);
         IndevWorld.setGenerateIndevHouse(true);
-        IndevWorld.setInfinite(false);
+        IndevWorld.setInfiniteWorld(false);
     }
 }

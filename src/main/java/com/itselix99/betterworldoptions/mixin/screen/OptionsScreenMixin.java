@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
@@ -41,7 +40,7 @@ public class OptionsScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void disableDifficultyButton(CallbackInfo ci) {
         TranslationStorage var1 = TranslationStorage.getInstance();
-        if (this.minecraft.world != null && ((BWOProperties) this.minecraft.world.getProperties()).bwo_getHardcore()) {
+        if (this.minecraft.world != null && ((BWOProperties) this.minecraft.world.getProperties()).bwo_isHardcore()) {
             difficultyButton.active = false;
             difficultyButton.text = var1.get("options.difficulty") + ": " + var1.get("options.difficulty.hardcore");
         }
