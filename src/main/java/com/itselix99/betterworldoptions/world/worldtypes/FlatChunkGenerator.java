@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.world.worldtypes;
 
 import com.itselix99.betterworldoptions.BWOConfig;
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import net.fabricmc.api.EnvType;
@@ -32,11 +33,15 @@ public class FlatChunkGenerator implements ChunkSource {
     private Biome[] biomes;
 
     private final boolean betaFeatures;
+    private final String theme;
 
     public FlatChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
         this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
+        this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
+
+        ((BWOBiome) this.world).bwo_setSnow(this.theme.equals("Winter"));
 
         if (this.betaFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
@@ -45,20 +50,25 @@ public class FlatChunkGenerator implements ChunkSource {
         this.forestNoise = new OctavePerlinNoiseSampler(this.random, 8);
     }
 
-    public void buildTerrain(byte[] blocks) {
+    public void buildTerrain(byte[] blocks, Biome[] biomes) {
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
                 for (int y = 0; y < BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue(); ++y) {
                     int blockId;
+                    Biome var1 = biomes[x + z * 16];
 
                     if (y == 0) {
                         blockId = Block.BEDROCK.id;
                     } else if (y <= 60) {
                         blockId = Block.STONE.id;
+
+                        if (y >= 58 && var1 == Biome.DESERT || var1 == Biome.ICE_DESERT) {
+                            blockId = Block.SANDSTONE.id;
+                        }
                     } else if (y <= 63) {
-                        blockId = Block.DIRT.id;
+                        blockId = var1.soilBlockId;
                     } else if (y == 64) {
-                        blockId = Block.GRASS_BLOCK.id;
+                        blockId = this.theme.equals("Hell") ? (byte) (var1.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var1.topBlockId) : var1.topBlockId;
                     } else
                         blockId = 0;
 
@@ -77,9 +87,9 @@ public class FlatChunkGenerator implements ChunkSource {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
         byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
-        this.buildTerrain(var3);
+        this.buildTerrain(var3, this.biomes);
 
-        if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+        if (this.betaFeatures) {
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
 
@@ -125,7 +135,7 @@ public class FlatChunkGenerator implements ChunkSource {
                 int var13 = var4 + this.random.nextInt(16) + 8;
                 int var14 = this.random.nextInt(128);
                 int var15 = var5 + this.random.nextInt(16) + 8;
-                (new LakeFeature(Block.WATER.id)).generate(this.world, this.random, var13, var14, var15);
+                (new LakeFeature(this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id)).generate(this.world, this.random, var13, var14, var15);
             }
 
             if (this.random.nextInt(8) == 0) {
@@ -231,15 +241,33 @@ public class FlatChunkGenerator implements ChunkSource {
             }
 
             if (var6 == Biome.DESERT) {
-                var49 -= 20;
+                if (this.theme.equals("Woods")) {
+                    var49 += var37 + 5;
+                } else {
+                    var49 -= 20;
+                }
             }
 
             if (var6 == Biome.TUNDRA) {
-                var49 -= 20;
+                if (this.theme.equals("Woods")) {
+                    var49 += var37 + 5;
+                } else {
+                    var49 -= 20;
+                }
             }
 
             if (var6 == Biome.PLAINS) {
-                var49 -= 20;
+                if (this.theme.equals("Woods")) {
+                    var49 += var37 + 5;
+                } else {
+                    var49 -= 20;
+                }
+            }
+
+            if (var6 == Biome.SWAMPLAND || var6 == Biome.SHRUBLAND || var6 == Biome.SAVANNA) {
+                if (this.theme.equals("Woods")) {
+                    var49 += var37 + 5;
+                }
             }
 
             for(int var61 = 0; var61 < var49; ++var61) {
@@ -250,7 +278,7 @@ public class FlatChunkGenerator implements ChunkSource {
                 var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
             }
 
-            byte var62 = 0;
+            byte var62 = (byte) (this.theme.equals("Paradise") ? 8 : 0);
             if (var6 == Biome.FOREST) {
                 var62 = 2;
             }
@@ -319,11 +347,20 @@ public class FlatChunkGenerator implements ChunkSource {
                 (new DeadBushPatchFeature(Block.DEAD_BUSH.id)).generate(this.world, this.random, var87, var98, var108);
             }
 
-            if (this.random.nextInt(2) == 0) {
-                int var79 = var4 + this.random.nextInt(16) + 8;
-                int var88 = this.random.nextInt(128);
-                int var99 = var5 + this.random.nextInt(16) + 8;
-                (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var79, var88, var99);
+            if (this.theme.equals("Paradise")) {
+                for (int var120 = 0; var120 < var62; var120++) {
+                    int var79 = var4 + this.random.nextInt(16) + 8;
+                    int var88 = this.random.nextInt(128);
+                    int var99 = var5 + this.random.nextInt(16) + 8;
+                    (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var79, var88, var99);
+                }
+            } else {
+                if (this.random.nextInt(2) == 0) {
+                    int var79 = var4 + this.random.nextInt(16) + 8;
+                    int var88 = this.random.nextInt(128);
+                    int var99 = var5 + this.random.nextInt(16) + 8;
+                    (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var79, var88, var99);
+                }
             }
 
             if (this.random.nextInt(4) == 0) {
@@ -370,7 +407,7 @@ public class FlatChunkGenerator implements ChunkSource {
                 int var105 = var4 + this.random.nextInt(16) + 8;
                 int var111 = this.random.nextInt(this.random.nextInt(120) + 8);
                 int var115 = var5 + this.random.nextInt(16) + 8;
-                (new SpringFeature(Block.FLOWING_WATER.id)).generate(this.world, this.random, var105, var111, var115);
+                (new SpringFeature(this.theme.equals("Hell") ? Block.FLOWING_LAVA.id : Block.FLOWING_WATER.id)).generate(this.world, this.random, var105, var111, var115);
             }
 
             for(int var95 = 0; var95 < 20; ++var95) {
@@ -388,7 +425,8 @@ public class FlatChunkGenerator implements ChunkSource {
                     int var117 = var107 - (var5 + 8);
                     int var22 = this.world.getTopSolidBlockY(var96, var107);
                     double var23 = this.temperatures[var113 * 16 + var117] - (double)(var22 - 64) / (double)64.0F * 0.3;
-                    if (var23 < (double)0.5F && var22 > 0 && var22 < 128 && this.world.isAir(var96, var22, var107) && this.world.getMaterial(var96, var22 - 1, var107).blocksMovement() && this.world.getMaterial(var96, var22 - 1, var107) != Material.ICE) {
+                    float temp = this.theme.equals("Winter") ? 1.1F : 0.5F;
+                    if (!this.theme.equals("Hell") && var23 < (double)temp && var22 > 0 && var22 < 128 && this.world.isAir(var96, var22, var107) && this.world.getMaterial(var96, var22 - 1, var107).blocksMovement() && this.world.getMaterial(var96, var22 - 1, var107) != Material.ICE) {
                         this.world.setBlock(var96, var22, var107, Block.SNOW.id);
                     }
                 }

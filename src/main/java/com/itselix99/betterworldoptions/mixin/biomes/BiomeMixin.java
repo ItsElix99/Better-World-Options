@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.biomes;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
-import com.itselix99.betterworldoptions.interfaces.BWOCustomRandomTreeFeature;
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
@@ -14,30 +14,29 @@ import net.minecraft.world.gen.feature.LargeOakTreeFeature;
 import net.minecraft.world.gen.feature.OakTreeFeature;
 import net.modificationstation.stationapi.api.worldgen.biome.StationBiome;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.Random;
 
 @Mixin(Biome.class)
-public class BiomeMixin implements BWOCustomRandomTreeFeature, StationBiome {
-
+public abstract class BiomeMixin implements BWOBiome, StationBiome {
     @Environment(EnvType.CLIENT)
     @ModifyReturnValue(method = "getSkyColor", at = @At("RETURN"))
     public int getSkyColor(int original) {
         Minecraft minecraft = (Minecraft) FabricLoader.getInstance().getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
+        String theme = ((BWOProperties) minecraft.world.getProperties()).bwo_getTheme();
 
         if (this.equals(BetterWorldOptions.EarlyInfdev)) {
             return 200;
         } else if (this.equals(BetterWorldOptions.Infdev) || this.equals(BetterWorldOptions.IndevNormal)) {
             return 10079487;
-        } else if (this.equals(BetterWorldOptions.IndevHell)) {
+        } else if (this.equals(BetterWorldOptions.IndevHell) || theme.equals("Hell")) {
             return 1049600;
-        } else if (this.equals(BetterWorldOptions.IndevParadise)) {
+        } else if (this.equals(BetterWorldOptions.IndevParadise) || theme.equals("Paradise")) {
             return 13033215;
-        } else if (this.equals(BetterWorldOptions.IndevWoods)) {
+        } else if (this.equals(BetterWorldOptions.IndevWoods) || theme.equals("Woods")) {
             return 7699847;
         } else if (this.equals(BetterWorldOptions.Alpha)) {
             return 8961023;

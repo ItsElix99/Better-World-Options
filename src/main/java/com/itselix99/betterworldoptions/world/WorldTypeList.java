@@ -1,7 +1,6 @@
 package com.itselix99.betterworldoptions.world;
 
 import com.itselix99.betterworldoptions.compat.CompatMods;
-import com.itselix99.betterworldoptions.world.worldtypes.FarlandsChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.FlatChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.alpha112.Alpha112ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.Alpha120ChunkGenerator;
@@ -72,7 +71,7 @@ public class WorldTypeList {
         WORLD_TYPE_LIST.add(Flat);
 
         WorldTypeEntry Farlands = new WorldTypeEntry();
-        Farlands.OVERWORLD_CHUNK_GENERATOR = FarlandsChunkGenerator.class;
+        Farlands.OVERWORLD_CHUNK_GENERATOR = OverworldChunkGenerator.class;
         Farlands.DISPLAY_NAME = "Farlands";
         Farlands.NAME = Farlands.DISPLAY_NAME;
         Farlands.ICON = "/assets/betterworldoptions/gui/farlands.png";

@@ -15,6 +15,7 @@ import net.minecraft.world.dimension.Dimension;
 import net.modificationstation.stationapi.api.world.dimension.StationDimension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -24,43 +25,44 @@ import java.lang.reflect.InvocationTargetException;
 @Mixin(Dimension.class)
 public class DimensionMixin implements StationDimension {
     @Shadow public BiomeSource biomeSource;
-    @Shadow public boolean isNether;
-    @Shadow public boolean evaporatesWater;
     @Shadow public World world;
+
+    @Unique private String worldType;
+    @Unique private boolean betaFeatures;
+    @Unique private String singleBiome;
+    @Unique private String theme;
+
+    @Inject(method = "initBiomeSource", at = @At("HEAD"))
+    private void init(CallbackInfo ci) {
+        this.worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
+        this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
+        this.singleBiome = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
+        this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
+    }
 
     @Inject(method = "initBiomeSource", at = @At("HEAD"), cancellable = true)
     protected void initBiomeSource(CallbackInfo ci) {
-        String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        boolean betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
-        String theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
-        String singleBiome = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
-
-        if (worldType.equals("Flat") && !betaFeatures) {
-            this.biomeSource = new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.5D);
-        } else if (worldType.equals("Alpha 1.1.2_01") && !betaFeatures) {
-            if (theme.equals("Winter")) {
-                this.biomeSource = new FixedBiomeSource(BetterWorldOptions.WinterAlpha, 0.0D, 0.5D);
-            } else {
+        if (!this.betaFeatures && !this.worldType.equals("MCPE")) {
+            if (this.theme.equals("Hell")) {
+                this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevHell, 1.0D, 0.0D);
+            } else if (this.theme.equals("Paradise")) {
+                this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevParadise, 1.0D, 0.5D);
+            } else if (this.theme.equals("Woods")) {
+                this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevWoods, 1.0D, 0.5D);
+            } else if (this.worldType.equals("Flat")) {
+                this.biomeSource = new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.5D);
+            } else if (this.worldType.equals("Alpha 1.1.2_01")) {
                 this.biomeSource = new FixedBiomeSource(BetterWorldOptions.Alpha, 1.0D, 0.5D);
+            } else if (this.worldType.equals("Infdev 611") || this.worldType.equals("Infdev 420") || this.worldType.equals("Infdev 415")) {
+                this.biomeSource = new FixedBiomeSource(BetterWorldOptions.Infdev, 1.0D, 0.5D);
+            } else if (this.worldType.equals("Early Infdev")) {
+                this.biomeSource = new FixedBiomeSource(BetterWorldOptions.EarlyInfdev, 1.0D, 0.5D);
+            } else if (this.worldType.equals("Indev 223")) {
+                this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevNormal, 1.0D, 0.5D);
             }
-        } else if (worldType.equals("Infdev 611") && !betaFeatures) {
-            this.biomeSource = new FixedBiomeSource(BetterWorldOptions.Infdev, 1.0D, 0.5D);
-        } else if (worldType.equals("Infdev 420") && !betaFeatures) {
-            this.biomeSource = new FixedBiomeSource(BetterWorldOptions.Infdev, 1.0D, 0.5D);
-        } else if (worldType.equals("Infdev 415") && !betaFeatures) {
-            this.biomeSource = new FixedBiomeSource(BetterWorldOptions.Infdev, 1.0D, 0.5D);
-        } else if (worldType.equals("Early Infdev") && !betaFeatures) {
-            this.biomeSource = new FixedBiomeSource(BetterWorldOptions.EarlyInfdev, 1.0D, 0.5D);
-        } else if (worldType.equals("Indev 223")) {
-            if (!betaFeatures) {
-                switch (theme) {
-                    case "Hell" -> this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevHell, 1.0D, 0.0D);
-                    case "Normal" -> this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevNormal, 1.0D, 0.5D);
-                    case "Paradise" -> this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevParadise, 1.0D, 0.5D);
-                    case "Woods" -> this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevWoods, 1.0D, 0.5D);
-                }
-            } else {
-                switch (singleBiome) {
+        } else {
+            if (!this.singleBiome.equals("All Biomes")) {
+                switch (this.singleBiome) {
                     case "Rainforest" -> this.biomeSource = new FixedBiomeSource(Biome.RAINFOREST, 1.0D, 1.0D);
                     case "Swampland" -> this.biomeSource = new FixedBiomeSource(Biome.SWAMPLAND, 0.6D, 0.6D);
                     case "Seasonal Forest" -> this.biomeSource = new FixedBiomeSource(Biome.SEASONAL_FOREST, 1.0D, 0.8D);
@@ -72,19 +74,12 @@ public class DimensionMixin implements StationDimension {
                     case "Plains" -> this.biomeSource = new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
                     case "Ice Desert" -> this.biomeSource = new FixedBiomeSource(Biome.ICE_DESERT, 0.0D, 0.1D);
                     case "Tundra" -> this.biomeSource = new FixedBiomeSource(Biome.TUNDRA, 0.0D, 1.0D);
-                    case "All Biomes" -> this.biomeSource = new BiomeSource(this.world);
                 }
+            } else {
+                this.biomeSource = new BiomeSource(this.world);
             }
-        } else if (!singleBiome.equals("All Biomes")) {
-            this.biomeSource = new FixedBiomeSource(WorldSettings.World.getSingleBiome(), 0.0D, 0.5D);
-        } else {
-            this.biomeSource = new BiomeSource(this.world);
         }
 
-        if (WorldSettings.World.getSingleBiome() == Biome.HELL) {
-            this.isNether = true;
-            this.evaporatesWater = true;
-        }
         ci.cancel();
     }
 
@@ -101,22 +96,11 @@ public class DimensionMixin implements StationDimension {
     private boolean injectIsValidSpawnPoint(boolean original, int x, int z) {
         int var3 = this.world.getSpawnBlockId(x, z);
 
-        String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        String indevTheme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
-        String betaTheme = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
-        boolean betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
-
         if (WorldSettings.World.getBlockToSpawnOn() != 0) {
-            if (worldType.equals("Indev 223")) {
-                if (!betaFeatures) {
-                    if (indevTheme.equals("Hell")) {
+            if (this.worldType.equals("Indev 223")) {
+                if (!this.betaFeatures) {
+                    if (this.theme.equals("Hell")) {
                         return var3 == Block.DIRT.id;
-                    }
-                } else {
-                    if (betaTheme.equals("Hell")) {
-                        return var3 == Block.DIRT.id;
-                    } else if (betaTheme.equals("Desert") || betaTheme.equals("Ice Desert")) {
-                        return var3 == Block.SAND.id;
                     }
                 }
             }
@@ -125,6 +109,15 @@ public class DimensionMixin implements StationDimension {
         } else {
             return original;
         }
+    }
+
+    @ModifyReturnValue(method = "getTimeOfDay", at = @At("RETURN"))
+    public float paradiseThemeGetTimeOfDay(float original, long time, float tickDelta) {
+        if (this.theme.equals("Paradise")) {
+            return 0.0F;
+        }
+
+        return original;
     }
 
     @Override

@@ -60,9 +60,16 @@ public class BiomeColorsMixin {
         @Deprecated Minecraft minecraft = (Minecraft) FabricLoader.getInstance().getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
+        String theme = ((BWOProperties) minecraft.world.getProperties()).bwo_getTheme();
 
-        if (!betaFeatures && worldType.equals("MCPE")) {
+        if (!betaFeatures && worldType.equals("MCPE") && (theme.equals("Normal") || theme.equals("Winter"))) {
             return 6731007;
+        } else if (theme.equals("Hell")) {
+            return 1049600;
+        } else if (theme.equals("Paradise")) {
+            return 13033215;
+        } else if (theme.equals("Woods")) {
+            return 5069403;
         }
 
         return original;

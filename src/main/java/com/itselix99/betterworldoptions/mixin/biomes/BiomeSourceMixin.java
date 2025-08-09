@@ -22,15 +22,13 @@ public class BiomeSourceMixin {
     @Unique private OctavePerlinNoiseSamplerMCPE mcpeDownfallSampler;
     @Unique private OctavePerlinNoiseSamplerMCPE mcpeWeirdnessSampler;
     @Unique private String worldType;
-    @Unique private boolean betaFeatures;
 
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("TAIL"))
-    private void captureWorld(World world, CallbackInfo ci) {
+    private void mcpeBiomeSource(World world, CallbackInfo ci) {
         this.mcpeTemperatureSampler = new OctavePerlinNoiseSamplerMCPE(new MTRandom((int) (world.getSeed() * 9871L)), 4);
         this.mcpeDownfallSampler = new OctavePerlinNoiseSamplerMCPE(new MTRandom((int) (world.getSeed() * 39811L)), 4);
         this.mcpeWeirdnessSampler = new OctavePerlinNoiseSamplerMCPE(new MTRandom((int) (world.getSeed() * 543321L)), 2);
         this.worldType = ((BWOProperties) world.getProperties()).bwo_getWorldType();
-        this.betaFeatures = ((BWOProperties) world.getProperties()).bwo_getBetaFeatures();
     }
 
     @Environment(EnvType.CLIENT)
@@ -42,7 +40,7 @@ public class BiomeSourceMixin {
             )
     )
     private double[] changeTemperatureMap(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
-        if (this.worldType.equals("MCPE") && !this.betaFeatures) {
+        if (this.worldType.equals("MCPE")) {
             return this.mcpeTemperatureSampler.create(map, (int) x, (int) z, width, depth, d, e, f);
         } else {
             return original.call(sampler, map, x, z, width, depth, d, e, f);
@@ -58,7 +56,7 @@ public class BiomeSourceMixin {
             )
     )
     private double[] changeTemperatureMap2(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
-        if (this.worldType.equals("MCPE") && !this.betaFeatures) {
+        if (this.worldType.equals("MCPE")) {
             return this.mcpeTemperatureSampler.create(map, (int) x, (int) z, width, depth, d, e, f);
         } else {
             return original.call(sampler, map, x, z, width, depth, d, e, f);
@@ -74,7 +72,7 @@ public class BiomeSourceMixin {
             )
     )
     private double[] changeWeirdnessMap(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
-        if (this.worldType.equals("MCPE") && !this.betaFeatures) {
+        if (this.worldType.equals("MCPE")) {
             return this.mcpeWeirdnessSampler.create(map, (int) x, (int) z, width, depth, d, e, f);
         } else {
             return original.call(sampler, map, x, z, width, depth, d, e, f);
@@ -90,7 +88,7 @@ public class BiomeSourceMixin {
             )
     )
     private double[] changeTemperatureMap3(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
-        if (this.worldType.equals("MCPE") && !this.betaFeatures) {
+        if (this.worldType.equals("MCPE")) {
             return this.mcpeTemperatureSampler.create(map, (int) x, (int) z, width, width, d, e, f);
         } else {
             return original.call(sampler, map, x, z, width, depth, d, e, f);
@@ -106,7 +104,7 @@ public class BiomeSourceMixin {
             )
     )
     private double[] changeDownfallMap(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
-        if (this.worldType.equals("MCPE") && !this.betaFeatures) {
+        if (this.worldType.equals("MCPE")) {
             return this.mcpeDownfallSampler.create(map, (int) x, (int) z, width, width, d, e, f);
         } else {
             return original.call(sampler, map, x, z, width, depth, d, e, f);
@@ -122,7 +120,7 @@ public class BiomeSourceMixin {
             )
     )
     private double[] changeWeirdnessMap2(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
-        if (this.worldType.equals("MCPE") && !this.betaFeatures) {
+        if (this.worldType.equals("MCPE")) {
             return this.mcpeWeirdnessSampler.create(map, (int) x, (int) z, width, width, d, e, f);
         } else {
             return original.call(sampler, map, x, z, width, depth, d, e, f);

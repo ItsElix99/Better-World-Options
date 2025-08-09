@@ -48,7 +48,7 @@ public class LeavesBlockMixin extends TransparentBlock {
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
 
-        if (worldType.equals("MCPE") && !betaFeatures) {
+        if (worldType.equals("MCPE") && !betaFeatures && !WorldSettings.Textures.isBetaFeaturesTextures()) {
             if (!((var5 & 1) == 1)) {
                 return 16777215;
             }

@@ -25,7 +25,6 @@ public class BetterWorldOptions {
     public static Biome EarlyInfdev;
     public static Biome Infdev;
     public static Biome Alpha;
-    public static Biome WinterAlpha;
 
     public static Block ALPHA_LEAVES;
 
@@ -136,22 +135,6 @@ public class BetterWorldOptions {
         Alpha = BiomeBuilder.start("Alpha")
                 .fogColor(12638463)
                 .snow(false)
-                .grassAndLeavesColor(16777215)
-                .hostileEntity(SpiderEntity.class, 10)
-                .hostileEntity(ZombieEntity.class, 10)
-                .hostileEntity(SkeletonEntity.class, 10)
-                .hostileEntity(CreeperEntity.class, 10)
-                .hostileEntity(SlimeEntity.class, 10)
-                .passiveEntity(SheepEntity.class, 12)
-                .passiveEntity(PigEntity.class, 10)
-                .passiveEntity(ChickenEntity.class, 10)
-                .passiveEntity(CowEntity.class, 8)
-                .passiveEntity(WolfEntity.class, 2)
-                .waterEntity(SquidEntity.class, 10)
-                .build();
-        WinterAlpha = BiomeBuilder.start("Winter Alpha")
-                .fogColor(12638463)
-                .snow(true)
                 .grassAndLeavesColor(16777215)
                 .hostileEntity(SpiderEntity.class, 10)
                 .hostileEntity(ZombieEntity.class, 10)

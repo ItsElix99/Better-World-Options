@@ -83,7 +83,7 @@ public class WorldSettings {
         );
 
         private static final Set<String> BETA_FEATURES_WORLD_TYPES = Set.of(
-                "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "Indev 223"
+                "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "Indev 223", "MCPE"
         );
 
         public static void setGameMode(String gameMode) {

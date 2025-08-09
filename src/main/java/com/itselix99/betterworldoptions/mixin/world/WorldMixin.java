@@ -1,5 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.interfaces.BWOGetDirectoryName;
 import com.itselix99.betterworldoptions.world.WorldSettings;
 import com.itselix99.betterworldoptions.world.WorldTypeList;
@@ -11,33 +13,54 @@ import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.world.WorldProperties;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.storage.WorldStorage;
+import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Random;
+import java.util.Set;
 
 @Mixin(World.class)
-public abstract class WorldMixin implements BWOGetDirectoryName {
+public abstract class WorldMixin implements BWOGetDirectoryName, BWOBiome {
     @Shadow public Random random;
     @Shadow public boolean newWorld;
     @Shadow protected WorldProperties properties;
     @Shadow @Final @Mutable public final Dimension dimension;
     @Shadow @Final @Mutable protected final WorldStorage dimensionData;
+    @Unique private Set<Biome> defaultBiomes = Set.of(Biome.RAINFOREST, Biome.SWAMPLAND, Biome.SEASONAL_FOREST, Biome.FOREST, Biome.SAVANNA, Biome.SHRUBLAND, Biome.DESERT, Biome.PLAINS);
 
     @Shadow public abstract int getBlockId(int x, int y, int z);
     @Shadow public abstract boolean setBlock(int x, int y, int z, int blockId);
-    @Shadow public abstract boolean isAir(int x, int y, int z);
     @Shadow public abstract WorldProperties getProperties();
     @Shadow public abstract Material getMaterial(int x, int y, int z);
-
 
     protected WorldMixin(Dimension dimension, WorldStorage dimensionData) {
         this.dimension = dimension;
         this.dimensionData = dimensionData;
+    }
+
+    @Override
+    public void bwo_setSnow(boolean bl) {
+        OverworldBiomeProviderImpl.getInstance()
+                .getBiomes()
+                .stream()
+                .filter(biome -> this.defaultBiomes.contains(biome))
+                .forEach(biome -> biome.setSnow(bl));
+    }
+
+    @Override
+    public void bwo_oldBiomeSetSnow(String worldType, boolean bl) {
+        switch (worldType) {
+            case "Alpha 1.1.2_01" -> BetterWorldOptions.Alpha.setSnow(bl);
+            case "Infdev 611", "Infdev 420", "Infdev 415" -> BetterWorldOptions.Infdev.setSnow(bl);
+            case "Early Infdev" -> BetterWorldOptions.EarlyInfdev.setSnow(bl);
+            case "Indev 223" -> BetterWorldOptions.IndevNormal.setSnow(bl);
+        }
     }
 
     @Inject(
@@ -174,21 +197,17 @@ public abstract class WorldMixin implements BWOGetDirectoryName {
             at = @At("RETURN")
     )
     private int modifySkylight(int original) {
-        String worldType = ((BWOProperties) this.getProperties()).bwo_getWorldType();
-        String indevTheme = ((BWOProperties) this.getProperties()).bwo_getTheme();
-        boolean betaFeatures = ((BWOProperties) this.getProperties()).bwo_getBetaFeatures();
+        String theme = ((BWOProperties) this.getProperties()).bwo_getTheme();
 
-        if (worldType.equals("Indev 223") && !betaFeatures) {
-            if (indevTheme.equals("Hell")) {
-                if (original < 9) {
-                    return 9;
-                } else if (original == 11) {
-                    return 12;
-                }
-            } else if (indevTheme.equals("Woods")) {
-                if (original < 4) {
-                    return 4;
-                }
+        if (theme.equals("Hell")) {
+            if (original < 9) {
+                return 9;
+            } else if (original == 11) {
+                return 12;
+            }
+        } else if (theme.equals("Woods")) {
+            if (original < 4) {
+                return 4;
             }
         }
 
@@ -204,22 +223,21 @@ public abstract class WorldMixin implements BWOGetDirectoryName {
     )
     private long indevHellCloudsColor(World world, Operation<Long> original) {
         String worldType = ((BWOProperties) world.getProperties()).bwo_getWorldType();
-        String indevTheme = ((BWOProperties) world.getProperties()).bwo_getTheme();
+        String theme = ((BWOProperties) world.getProperties()).bwo_getTheme();
         boolean betaFeatures = ((BWOProperties) world.getProperties()).bwo_getBetaFeatures();
 
-        if (worldType.equals("Indev 223") && !betaFeatures) {
-            switch (indevTheme) {
-                case "Hell" -> {
-                    return 2164736;
-                }
-                case "Paradise" -> {
-                    return 15658751;
-                }
-                case "Woods" -> {
-                    return 5069403;
-                }
+        switch (theme) {
+            case "Hell" -> {
+                return 2164736;
+            }
+            case "Paradise" -> {
+                return 15658751;
+            }
+            case "Woods" -> {
+                return 5069403;
             }
         }
+
 
         return original.call(world);
     }

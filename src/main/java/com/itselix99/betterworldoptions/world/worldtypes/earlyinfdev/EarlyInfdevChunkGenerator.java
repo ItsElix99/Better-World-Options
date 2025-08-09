@@ -4,7 +4,7 @@ import java.util.Random;
 
 import com.itselix99.betterworldoptions.BWOConfig;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.interfaces.BWOCustomRandomTreeFeature;
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.feature.OldOreFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.carver.CaveWorldCarverEarlyInfdev;
@@ -42,13 +42,32 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
     private Biome[] biomes;
     private double[] temperatures;
 
+    private final String worldType;
     private final boolean betaFeatures;
+    private final String theme;
 
     public EarlyInfdevChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
+        this.worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
+        this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
+        this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
 
-        if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()) {
+        if (this.theme.equals("Winter")) {
+            if (!this.betaFeatures) {
+                ((BWOBiome) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
+            } else {
+                ((BWOBiome) this.world).bwo_setSnow(true);
+            }
+        } else {
+            if (!this.betaFeatures) {
+                ((BWOBiome) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
+            } else {
+                ((BWOBiome) this.world).bwo_setSnow(false);
+            }
+        }
+
+        if (!this.betaFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         }
 
@@ -59,11 +78,9 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         this.noiseGen5 = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 4);
         this.noiseGen6 = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 5);
         this.forestNoise = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 5);
-
-        this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
     }
 
-    public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, double[] temperatures, double[] downfall) {
+    public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, double[] temperatures) {
         chunkX <<= 4;
         chunkZ <<= 4;
         int var5 = 0;
@@ -87,43 +104,47 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                 }
 
                 for (int var14 = 0; var14 < BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue(); ++var14) {
-                    int i = (var6 - chunkX) * 16 + var7 - chunkZ;
-                    double var18 = temperatures[i];
-                    double var19 = downfall[i];
+                    int index = (var6 - chunkX) * 16 + var7 - chunkZ;
+                    Biome var18 = biomes[index];
+                    double var19 = temperatures[index];
+                    double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
                     int var15 = 0;
+
                     if ((var6 == 0 || var7 == 0) && var14 <= var13 + 2) {
                         var15 = Block.OBSIDIAN.id;
-                    } else if (var14 == var13 + 1 && var13 >= 64 && Math.random() < 0.02D) {
-                        if (blocks[var5 - 1] == Block.GRASS_BLOCK.id) {
+                    } else if (var14 == var13 + 1 && var13 >= 64 && Math.random() < 0.02D && !this.betaFeatures) {
+                        int index2 = (index) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + (var14 - 1);
+                        if (blocks[index2] == Block.GRASS_BLOCK.id || blocks[index2] == Block.DIRT.id) {
                             var15 = Block.DANDELION.id;
+                            if (this.theme.equals("Paradise") && this.random.nextInt(2) == 0) {
+                                var15 = Block.ROSE.id;
+                            }
                         }
                     } else if (var14 == var13 && var13 >= 64) {
-                        if (var19 < 0.2F && var18 > 0.95F && this.betaFeatures) {
-                             var15 = Block.SAND.id;
+                        if (this.betaFeatures) {
+                            var15 = this.theme.equals("Hell") ? (var18.topBlockId != Block.SAND.id ? Block.DIRT.id : var18.topBlockId) : var18.topBlockId;
                         } else {
-                            var15 = Block.GRASS_BLOCK.id;
+                            var15 = this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id;
                         }
                     } else if (var14 <= var13 - 2) {
-                        if (var19 < 0.2F && var18 > 0.95F && this.betaFeatures) {
-                            if (var14 == var13 - 2 || var14 == var13 - 3) {
+                        var15 = Block.STONE.id;
+
+                        if (this.betaFeatures && var18 == Biome.DESERT || var18 == Biome.ICE_DESERT) {
+                            if (var13 - var14 <= 3) {
                                 var15 = Block.SANDSTONE.id;
-                            } else if (var14 < var13 - 3) {
-                                var15 = Block.STONE.id;
                             }
-                        } else {
-                            var15 = Block.STONE.id;
                         }
                     } else if (var14 <= var13) {
-                        if (var19 < 0.2F && var18 > 0.95F && this.betaFeatures) {
-                            var15 = Block.SAND.id;
+                        if (this.betaFeatures) {
+                            var15 = var18.soilBlockId;
                         } else {
                             var15 = Block.DIRT.id;
                         }
                     } else if (var14 <= 64) {
-                        if (var18 < 0.5D && var14 >= 63 && this.betaFeatures) {
+                        if (!this.theme.equals("Hell") && (var19 < temp && this.betaFeatures || this.theme.equals("Winter")) && var14 >= 63) {
                             var15 = Block.ICE.id;
                         } else {
-                            var15 = Block.WATER.id;
+                            var15 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
                         }
                     }
 
@@ -135,12 +156,12 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                     if (var17 > var16) var16 = var17;
                     var16 = (BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() - 1) - var16;
                     if (var16 < var13) var16 = var13;
-                    if (var14 <= var16 && (var15 == 0 || var15 == Block.WATER.id)) {
+                    if (var14 <= var16 && (var15 == 0 || var15 == Block.WATER.id || var15 == Block.LAVA.id)) {
                         var15 = Block.BRICKS.id;
                     }
                     if (var15 < 0) var15 = 0;
 
-                    blocks[var5++] = (byte)var15;
+                    blocks[var5++] = (byte) var15;
                 }
             }
         }
@@ -155,10 +176,9 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
-        double[] var6 = this.world.method_1781().downfallMap;
-        this.buildTerrain(chunkX, chunkZ, var3, var5, var6);
+        this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var5);
 
-        if (((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures()){
+        if (this.betaFeatures){
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         } else {
             this.caveEarlyInfdev.place(this, this.world, chunkX, chunkZ, var3);
@@ -217,11 +237,24 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             z = (int)this.forestNoise.sample((double)var4 * (double)0.0625F, (double)x * (double)0.0625F) << 3;
             OakTreeFeature var9 = new OakTreeFeature();
 
+            if (this.theme.equals("Woods") && z <= 0) {
+                z = 20;
+            }
+
             for(int var63 = 0; var63 < z; ++var63) {
-                int var75 = var4 + this.random.nextInt(16);
-                int x20 = x + this.random.nextInt(16);
+                int var5 = var4 + this.random.nextInt(16);
+                int var7 = x + this.random.nextInt(16);
                 var9.prepare(1.0F, 1.0F, 1.0F);
-                var9.generate(this.world, this.random, var75, this.world.getTopY(var75, x20), x20);
+                var9.generate(this.world, this.random, var5, this.world.getTopY(var5, var7), var7);
+            }
+
+            for(int var5 = var4 + 8; var5 < var4 + 8 + 16; ++var5) {
+                for(int var7 = x + 8; var7 < x + 8 + 16; ++var7) {
+                    int var6 = this.world.getTopSolidBlockY(var5, var7);
+                    if(this.theme.equals("Winter") && var6 > 0 && var6 < 128 && this.world.getBlockId(var5, var6, var7) == 0 && this.world.getMaterial(var5, var6 - 1, var7).isSolid() && this.world.getMaterial(var5, var6 - 1, var7) != Material.ICE) {
+                        this.world.setBlock(var5, var6, var7, Block.SNOW.id);
+                    }
+                }
             }
         } else {
             SandBlock.fallInstantly = true;
@@ -237,7 +270,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                 int var13 = var4 + this.random.nextInt(16) + 8;
                 int var14 = this.random.nextInt(128);
                 int var15 = var5 + this.random.nextInt(16) + 8;
-                (new LakeFeature(Block.WATER.id)).generate(this.world, this.random, var13, var14, var15);
+                (new LakeFeature(this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id)).generate(this.world, this.random, var13, var14, var15);
             }
 
             if (this.random.nextInt(8) == 0) {
@@ -343,26 +376,44 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             }
 
             if (var6 == Biome.DESERT) {
-                var49 -= 20;
+                if (this.theme.equals("Woods")) {
+                    var49 += var37 + 5;
+                } else {
+                    var49 -= 20;
+                }
             }
 
             if (var6 == Biome.TUNDRA) {
-                var49 -= 20;
+                if (this.theme.equals("Woods")) {
+                    var49 += var37 + 5;
+                } else {
+                    var49 -= 20;
+                }
             }
 
             if (var6 == Biome.PLAINS) {
-                var49 -= 20;
+                if (this.theme.equals("Woods")) {
+                    var49 += var37 + 5;
+                } else {
+                    var49 -= 20;
+                }
+            }
+
+            if (var6 == Biome.SWAMPLAND || var6 == Biome.SHRUBLAND || var6 == Biome.SAVANNA) {
+                if (this.theme.equals("Woods")) {
+                    var49 += var37 + 5;
+                }
             }
 
             for(int var61 = 0; var61 < var49; ++var61) {
                 int var72 = var4 + this.random.nextInt(16) + 8;
                 int var17 = var5 + this.random.nextInt(16) + 8;
-                Feature var18 = ((BWOCustomRandomTreeFeature) var6).bwo_getRandomTreeFeatureEarlyInfdev(this.random);
+                Feature var18 = ((BWOBiome) var6).bwo_getRandomTreeFeatureEarlyInfdev(this.random);
                 var18.prepare(1.0F, 1.0F, 1.0F);
                 var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
             }
 
-            byte var62 = 0;
+            byte var62 = (byte) (this.theme.equals("Paradise") ? 8 : 0);
             if (var6 == Biome.FOREST) {
                 var62 = 2;
             }
@@ -431,11 +482,20 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                 (new DeadBushPatchFeature(Block.DEAD_BUSH.id)).generate(this.world, this.random, var87, var98, var108);
             }
 
-            if (this.random.nextInt(2) == 0) {
-                int var79 = var4 + this.random.nextInt(16) + 8;
-                int var88 = this.random.nextInt(128);
-                int var99 = var5 + this.random.nextInt(16) + 8;
-                (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var79, var88, var99);
+            if (this.theme.equals("Paradise")) {
+                for (int var120 = 0; var120 < var62; var120++) {
+                    int var79 = var4 + this.random.nextInt(16) + 8;
+                    int var88 = this.random.nextInt(128);
+                    int var99 = var5 + this.random.nextInt(16) + 8;
+                    (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var79, var88, var99);
+                }
+            } else {
+                if (this.random.nextInt(2) == 0) {
+                    int var79 = var4 + this.random.nextInt(16) + 8;
+                    int var88 = this.random.nextInt(128);
+                    int var99 = var5 + this.random.nextInt(16) + 8;
+                    (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var79, var88, var99);
+                }
             }
 
             if (this.random.nextInt(4) == 0) {
@@ -482,7 +542,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                 int var105 = var4 + this.random.nextInt(16) + 8;
                 int var111 = this.random.nextInt(this.random.nextInt(120) + 8);
                 int var115 = var5 + this.random.nextInt(16) + 8;
-                (new SpringFeature(Block.FLOWING_WATER.id)).generate(this.world, this.random, var105, var111, var115);
+                (new SpringFeature(this.theme.equals("Hell") ? Block.FLOWING_LAVA.id : Block.FLOWING_WATER.id)).generate(this.world, this.random, var105, var111, var115);
             }
 
             for(int var95 = 0; var95 < 20; ++var95) {
@@ -500,7 +560,8 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                     int var117 = var107 - (var5 + 8);
                     int var22 = this.world.getTopSolidBlockY(var96, var107);
                     double var23 = this.temperatures[var113 * 16 + var117] - (double)(var22 - 64) / (double)64.0F * 0.3;
-                    if (var23 < (double)0.5F && var22 > 0 && var22 < 128 && this.world.isAir(var96, var22, var107) && this.world.getMaterial(var96, var22 - 1, var107).blocksMovement() && this.world.getMaterial(var96, var22 - 1, var107) != Material.ICE) {
+                    float temp = this.theme.equals("Winter") ? 1.1F : 0.5F;
+                    if (!this.theme.equals("Hell") && var23 < (double)temp && var22 > 0 && var22 < 128 && this.world.isAir(var96, var22, var107) && this.world.getMaterial(var96, var22 - 1, var107).blocksMovement() && this.world.getMaterial(var96, var22 - 1, var107) != Material.ICE) {
                         this.world.setBlock(var96, var22, var107, Block.SNOW.id);
                     }
                 }
