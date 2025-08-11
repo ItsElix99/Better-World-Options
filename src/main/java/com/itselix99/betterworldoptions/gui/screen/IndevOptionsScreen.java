@@ -44,6 +44,10 @@ public class IndevOptionsScreen extends Screen {
             if (button.id == 0) {
                 WorldSettings.GameMode.setBetaFeatures(!WorldSettings.GameMode.isBetaFeatures());
 
+                if (!WorldSettings.GameMode.isBetaFeatures() && WorldSettings.World.getSingleBiome() != null) {
+                    WorldSettings.World.setSingleBiome(null);
+                }
+
                 this.betaFeaturesButton.text = this.translation.get("selectWorld.betaFeatures") + " " + (WorldSettings.GameMode.isBetaFeatures() ? this.translation.get("options.on") : this.translation.get("options.off"));
             } else if (button.id == 1) {
                 if (Objects.equals(button.text, this.translation.get("indevOptions.type") + " " + "Island")) {
@@ -115,6 +119,7 @@ public class IndevOptionsScreen extends Screen {
 
         this.sizeButton.text = this.translation.get("indevOptions.size") + " " + WorldSettings.IndevWorld.getSize() + " " + WorldSettings.IndevWorld.getSizeInNumber();
         this.infiniteWorldButton.text = this.translation.get("indevOptions.infiniteWorld") + " " + (WorldSettings.IndevWorld.isInfiniteWorld() ? this.translation.get("options.on") : this.translation.get("options.off"));
+        this.singleBiomeButton.text = this.translation.get("selectWorld.singleBiome") + " " + (WorldSettings.World.getSingleBiome() != null ? WorldSettings.World.getSingleBiome().name : this.translation.get("options.off"));
 
         this.singleBiomeButton.active = WorldSettings.GameMode.isBetaFeatures();
 

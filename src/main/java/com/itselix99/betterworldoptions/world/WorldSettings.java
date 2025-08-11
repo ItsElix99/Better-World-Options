@@ -222,7 +222,7 @@ public class WorldSettings {
         Textures.setBetaFeaturesTextures(true);
         Textures.setMcpe(false);
 
-        IndevWorld.setIndevWorldType("Normal");
+        IndevWorld.setIndevWorldType("Island");
         IndevWorld.setShape("Square");
         IndevWorld.setSize("Normal");
         IndevWorld.setGenerateIndevHouse(true);

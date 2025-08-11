@@ -20,7 +20,7 @@ public class WorldTypeListScreen extends Screen {
     private final TranslationStorage translation = TranslationStorage.getInstance();
     private WorldTypeListWidget worldTypeListWidget;
     private ButtonWidget buttonSelect;
-    private static WorldTypeList.WorldTypeEntry selectedWorldType = WorldTypeList.getList().get(0);
+    private static WorldTypeList.WorldTypeEntry selectedWorldType;
 
     public WorldTypeListScreen(Screen parent) {
         this.parent = parent;
@@ -33,6 +33,7 @@ public class WorldTypeListScreen extends Screen {
         this.worldTypeListWidget = new WorldTypeListWidget(this);
         this.worldTypeListWidget.registerButtons(this.buttons, 4, 5);
         this.buttons.add(this.buttonSelect = new ButtonWidget(0, this.width / 2 - 75, this.height - 28, 150, 20, translation.get("gui.cancel")));
+        selectedWorldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(WorldSettings.World.getWorldTypeName())).toList().get(0);
     }
 
     @Override

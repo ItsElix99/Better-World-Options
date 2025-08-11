@@ -247,8 +247,8 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
                             if (y >= 55) {
 
-                                if (y == surroundingWaterHeight - 1 && this.betaFeatures) {
-                                    if (!this.theme.equals("Hell") && var19 < temp) {
+                                if (y == surroundingWaterHeight - 1) {
+                                    if (!this.theme.equals("Hell") && (var19 < temp && this.betaFeatures || this.theme.equals("Winter"))) {
                                         blockId = Block.ICE.id;
                                     }
                                 } else {
@@ -280,8 +280,8 @@ public class Indev223ChunkGenerator implements ChunkSource {
                         }
 
                         if (!indevWorldType.equals("Floating") && y <= surroundingWaterHeight - 1 && blockId == 0) {
-                            if (y == surroundingWaterHeight - 1 && this.betaFeatures) {
-                                if (!this.theme.equals("Hell") && var19 < temp) {
+                            if (y == surroundingWaterHeight - 1) {
+                                if (!this.theme.equals("Hell") && (var19 < temp && this.betaFeatures || this.theme.equals("Winter"))) {
                                     blockId = Block.ICE.id;
                                 }
                             } else {
@@ -438,15 +438,15 @@ public class Indev223ChunkGenerator implements ChunkSource {
         double[] var4 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var4);
 
-        double centerX = ((double)(chunkX * 16 + 15) / (WORLD_SIZE_X - 1) - 0.5) * 2.0;
-        double centerZ = ((double)(chunkZ * 16 + 15) / (WORLD_SIZE_Z - 1) - 0.5) * 2.0;
+        double centerX = ((double)(chunkX * 16) / (WORLD_SIZE_X - 1) - 0.5) * 2.0;
+        double centerZ = ((double)(chunkZ * 16) / (WORLD_SIZE_Z - 1) - 0.5) * 2.0;
         double distance = Math.max(Math.abs(centerX), Math.abs(centerZ));
 
         if (this.betaFeatures && (distance <= 1.0 || this.infiniteWorld)){
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
 
-        if (BWOConfig.WORLD_CONFIG.ravineGeneration) {
+        if (BWOConfig.WORLD_CONFIG.ravineGeneration && (distance <= 1.0 || this.infiniteWorld)) {
             if (this.betaFeatures || BWOConfig.WORLD_CONFIG.allowGenWithBetaFeaturesOff) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
@@ -474,14 +474,14 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
     public void decorate(ChunkSource source, int x, int z) {
         for (int var1 = 0; var1 < 16; var1++) {
-            int worldX = x * 16 + var1;
-            double nx = ((double) worldX / (WORLD_SIZE_X - 1) - 0.5) * 2.0;
+            int blockX = x * 16 + var1;
+            if (blockX < 0 || blockX >= WORLD_SIZE_X) {
+                return;
+            }
 
             for (int var2 = 0; var2 < 16; var2++) {
-                int worldZ = z * 16 + var2;
-                double nz = ((double) worldZ / (WORLD_SIZE_Z - 1) - 0.5) * 2.0;
-                double distance = Math.max(Math.abs(nx), Math.abs(nz));
-                if (distance >= 1.0 && !this.infiniteWorld) {
+                int blockZ = z * 16 + var2;
+                if (blockZ < 0 || blockZ >= WORLD_SIZE_Z) {
                     return;
                 }
             }
@@ -508,16 +508,25 @@ public class Indev223ChunkGenerator implements ChunkSource {
                 IndevFeatures.placePlant(this.world, this.random, Block.RED_MUSHROOM, 50, var4, var5);
             }
 
-            int var10 = this.theme.equals("Woods") ? (this.infiniteWorld ? 40 : 50) : 6;
+            int var10 = this.theme.equals("Woods") ? (this.infiniteWorld ? 40 : 50) : 8;
             OakTreeFeature var9 = new OakTreeFeature();
 
 
             for(int var11 = 0; var11 < var10; ++var11) {
-                int var12 = var4 + this.random.nextInt(16) + this.random.nextInt(12) - this.random.nextInt(12);
-                int var13 = var5 + this.random.nextInt(16) + this.random.nextInt(12) - this.random.nextInt(12);
+                int var12 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
+                int var13 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var14 = this.world.getTopY(var12, var13) + this.random.nextInt(3) - this.random.nextInt(6);
                 var9.prepare(1.0F, 1.0F, 1.0F);
                 var9.generate(this.world, this.random, var12, var14, var13);
+            }
+
+            for(int var6 = var4; var6 < var4 + 16; ++var6) {
+                for(int var7 = var5; var7 < var5 + 16; ++var7) {
+                    int var8 = this.world.getTopSolidBlockY(var6, var7);
+                    if(this.theme.equals("Winter") && var8 > 0 && var8 < 128 && this.world.getBlockId(var6, var8, var7) == 0 && this.world.getMaterial(var6, var8 - 1, var7).isSolid() && this.world.getMaterial(var6, var8 - 1, var7) != Material.ICE) {
+                        this.world.setBlock(var6, var8, var7, Block.SNOW.id);
+                    }
+                }
             }
         } else {
             SandBlock.fallInstantly = true;
@@ -530,25 +539,25 @@ public class Indev223ChunkGenerator implements ChunkSource {
             this.random.setSeed((long)x * var7 + (long)z * var9 ^ this.world.getSeed());
             double var11;
             if (this.random.nextInt(4) == 0) {
-                int var13 = var4 + this.random.nextInt(16) + 8;
+                int var13 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var14 = this.random.nextInt(128);
-                int var15 = var5 + this.random.nextInt(16) + 8;
+                int var15 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 (new LakeFeature(this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id)).generate(this.world, this.random, var13, var14, var15);
             }
 
             if (this.random.nextInt(8) == 0) {
-                int var26 = var4 + this.random.nextInt(16) + 8;
+                int var26 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var38 = this.random.nextInt(this.random.nextInt(120) + 8);
-                int var50 = var5 + this.random.nextInt(16) + 8;
+                int var50 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 if (var38 < 64 || this.random.nextInt(10) == 0) {
                     (new LakeFeature(Block.LAVA.id)).generate(this.world, this.random, var26, var38, var50);
                 }
             }
 
             for(int var27 = 0; var27 < 8; ++var27) {
-                int var39 = var4 + this.random.nextInt(16) + 8;
+                int var39 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var51 = this.random.nextInt(128);
-                int var16 = var5 + this.random.nextInt(16) + 8;
+                int var16 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 (new DungeonFeature()).generate(this.world, this.random, var39, var51, var16);
             }
 
@@ -669,8 +678,8 @@ public class Indev223ChunkGenerator implements ChunkSource {
             }
 
             for(int var61 = 0; var61 < var49; ++var61) {
-                int var72 = var4 + this.random.nextInt(16) + 8;
-                int var17 = var5 + this.random.nextInt(16) + 8;
+                int var72 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
+                int var17 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 Feature var18 = var6.getRandomTreeFeature(this.random);
                 var18.prepare(1.0F, 1.0F, 1.0F);
                 var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
@@ -694,9 +703,9 @@ public class Indev223ChunkGenerator implements ChunkSource {
             }
 
             for(int var73 = 0; var73 < var62; ++var73) {
-                int var76 = var4 + this.random.nextInt(16) + 8;
+                int var76 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var85 = this.random.nextInt(128);
-                int var19 = var5 + this.random.nextInt(16) + 8;
+                int var19 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 (new PlantPatchFeature(Block.DANDELION.id)).generate(this.world, this.random, var76, var85, var19);
             }
 
@@ -727,9 +736,9 @@ public class Indev223ChunkGenerator implements ChunkSource {
                     var86 = 2;
                 }
 
-                int var97 = var4 + this.random.nextInt(16) + 8;
+                int var97 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var20 = this.random.nextInt(128);
-                int var21 = var5 + this.random.nextInt(16) + 8;
+                int var21 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 (new GrassPatchFeature(Block.GRASS.id, var86)).generate(this.world, this.random, var97, var20, var21);
             }
 
@@ -739,53 +748,53 @@ public class Indev223ChunkGenerator implements ChunkSource {
             }
 
             for(int var78 = 0; var78 < var74; ++var78) {
-                int var87 = var4 + this.random.nextInt(16) + 8;
+                int var87 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var98 = this.random.nextInt(128);
-                int var108 = var5 + this.random.nextInt(16) + 8;
+                int var108 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 (new DeadBushPatchFeature(Block.DEAD_BUSH.id)).generate(this.world, this.random, var87, var98, var108);
             }
 
             if (this.theme.equals("Paradise")) {
                 for (int var120 = 0; var120 < var62; var120++) {
-                    int var79 = var4 + this.random.nextInt(16) + 8;
+                    int var79 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                     int var88 = this.random.nextInt(128);
-                    int var99 = var5 + this.random.nextInt(16) + 8;
+                    int var99 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                     (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var79, var88, var99);
                 }
             } else {
                 if (this.random.nextInt(2) == 0) {
-                    int var79 = var4 + this.random.nextInt(16) + 8;
+                    int var79 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                     int var88 = this.random.nextInt(128);
-                    int var99 = var5 + this.random.nextInt(16) + 8;
+                    int var99 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                     (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var79, var88, var99);
                 }
             }
 
             if (this.random.nextInt(4) == 0) {
-                int var80 = var4 + this.random.nextInt(16) + 8;
+                int var80 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var89 = this.random.nextInt(128);
-                int var100 = var5 + this.random.nextInt(16) + 8;
+                int var100 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 (new PlantPatchFeature(Block.BROWN_MUSHROOM.id)).generate(this.world, this.random, var80, var89, var100);
             }
 
             if (this.random.nextInt(8) == 0) {
-                int var81 = var4 + this.random.nextInt(16) + 8;
+                int var81 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var90 = this.random.nextInt(128);
-                int var101 = var5 + this.random.nextInt(16) + 8;
+                int var101 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 (new PlantPatchFeature(Block.RED_MUSHROOM.id)).generate(this.world, this.random, var81, var90, var101);
             }
 
             for(int var82 = 0; var82 < 10; ++var82) {
-                int var91 = var4 + this.random.nextInt(16) + 8;
+                int var91 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var102 = this.random.nextInt(128);
-                int var109 = var5 + this.random.nextInt(16) + 8;
+                int var109 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 (new SugarCanePatchFeature()).generate(this.world, this.random, var91, var102, var109);
             }
 
             if (this.random.nextInt(32) == 0) {
-                int var83 = var4 + this.random.nextInt(16) + 8;
+                int var83 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var92 = this.random.nextInt(128);
-                int var103 = var5 + this.random.nextInt(16) + 8;
+                int var103 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 (new PumpkinPatchFeature()).generate(this.world, this.random, var83, var92, var103);
             }
 
@@ -795,36 +804,36 @@ public class Indev223ChunkGenerator implements ChunkSource {
             }
 
             for(int var93 = 0; var93 < var84; ++var93) {
-                int var104 = var4 + this.random.nextInt(16) + 8;
+                int var104 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var110 = this.random.nextInt(128);
-                int var114 = var5 + this.random.nextInt(16) + 8;
+                int var114 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 (new CactusPatchFeature()).generate(this.world, this.random, var104, var110, var114);
             }
 
             for(int var94 = 0; var94 < 50; ++var94) {
-                int var105 = var4 + this.random.nextInt(16) + 8;
+                int var105 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var111 = this.random.nextInt(this.random.nextInt(120) + 8);
-                int var115 = var5 + this.random.nextInt(16) + 8;
+                int var115 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 (new SpringFeature(this.theme.equals("Hell") ? Block.FLOWING_LAVA.id : Block.FLOWING_WATER.id)).generate(this.world, this.random, var105, var111, var115);
             }
 
             for(int var95 = 0; var95 < 20; ++var95) {
-                int var106 = var4 + this.random.nextInt(16) + 8;
+                int var106 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 int var112 = this.random.nextInt(this.random.nextInt(this.random.nextInt(112) + 8) + 8);
-                int var116 = var5 + this.random.nextInt(16) + 8;
+                int var116 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
                 (new SpringFeature(Block.FLOWING_LAVA.id)).generate(this.world, this.random, var106, var112, var116);
             }
 
             this.temperatures = this.world.method_1781().create(this.temperatures, var4 + 8, var5 + 8, 16, 16);
 
-            for(int var96 = var4 + 8; var96 < var4 + 8 + 16; ++var96) {
-                for(int var107 = var5 + 8; var107 < var5 + 8 + 16; ++var107) {
-                    int var113 = var96 - (var4 + 8);
-                    int var117 = var107 - (var5 + 8);
+            for(int var96 = var4 + (this.infiniteWorld ? 8 : 0); var96 < var4 + 16 + (this.infiniteWorld ? 8 : 0); ++var96) {
+                for (int var107 = var5 + (this.infiniteWorld ? 8 : 0); var107 < var5 + 16 + (this.infiniteWorld ? 8 : 0); ++var107) {
+                    int var113 = var96 - (var4 + (this.infiniteWorld ? 8 : 0));
+                    int var117 = var107 - (var5 + (this.infiniteWorld ? 8 : 0));
                     int var22 = this.world.getTopSolidBlockY(var96, var107);
-                    double var23 = this.temperatures[var113 * 16 + var117] - (double)(var22 - 64) / (double)64.0F * 0.3;
+                    double var23 = this.temperatures[var113 * 16 + var117] - (double) (var22 - 64) / (double) 64.0F * 0.3;
                     float temp = this.theme.equals("Winter") ? 1.1F : 0.5F;
-                    if (!this.theme.equals("Hell") && var23 < (double)temp && var22 > 0 && var22 < 128 && this.world.isAir(var96, var22, var107) && this.world.getMaterial(var96, var22 - 1, var107).blocksMovement() && this.world.getMaterial(var96, var22 - 1, var107) != Material.ICE) {
+                    if (!this.theme.equals("Hell") && var23 < (double) temp && var22 > 0 && var22 < 128 && this.world.getBlockId(var96, var22, var107) == 0 && this.world.getMaterial(var96, var22 - 1, var107).blocksMovement() && this.world.getMaterial(var96, var22 - 1, var107) != Material.ICE) {
                         this.world.setBlock(var96, var22, var107, Block.SNOW.id);
                     }
                 }
