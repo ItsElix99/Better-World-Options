@@ -151,30 +151,24 @@ public class WorldSettings {
         }
 
         public static String getSizeInNumber() {
-            if (Objects.equals(getShape(), "Long")) {
-                if (Objects.equals(getSize(), "Small")) {
-                    return "256x64";
-                } else if (Objects.equals(getSize(), "Normal")) {
-                    return "512x128";
-                } else if (Objects.equals(getSize(), "Huge")) {
-                    return "1024x256";
-                } else if (Objects.equals(getSize(), "Very Huge")) {
-                    return "2048x512";
-                } else {
-                    return "";
-                }
+            if (getShape().equals("Long")) {
+                return switch (getSize()) {
+                    case "Small" -> "256x64";
+                    case "Normal" -> "512x128";
+                    case "Huge" -> "1024x256";
+                    case "Gigantic" -> "2048x512";
+                    case "Enormous" -> "4096x1024";
+                    default -> "";
+                };
             } else {
-                if (Objects.equals(getSize(), "Small")) {
-                    return "128x128";
-                } else if (Objects.equals(getSize(), "Normal")) {
-                    return "256x256";
-                } else if (Objects.equals(getSize(), "Huge")) {
-                    return "512x512";
-                } else if (Objects.equals(getSize(), "Very Huge")) {
-                    return "1024x1024";
-                } else {
-                    return "";
-                }
+                return switch (getSize()) {
+                    case "Small" -> "128x128";
+                    case "Normal" -> "256x256";
+                    case "Huge" -> "512x512";
+                    case "Gigantic" -> "1024x1024";
+                    case "Enormous" -> "2048x2048";
+                    default -> "";
+                };
             }
         }
 

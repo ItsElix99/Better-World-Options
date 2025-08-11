@@ -149,7 +149,8 @@ public abstract class WorldMixin implements BWOGetDirectoryName, BWOBiome {
                 case "Small" -> 256;
                 case "Normal" -> 512;
                 case "Huge" -> 1024;
-                case "Very Huge" -> 2048;
+                case "Gigantic" -> 2048;
+                case "Enormous" -> 4096;
                 default -> sizeX;
             };
         } else {
@@ -157,7 +158,8 @@ public abstract class WorldMixin implements BWOGetDirectoryName, BWOBiome {
                 case "Small" -> 128;
                 case "Normal" -> 256;
                 case "Huge" -> 512;
-                case "Very Huge" -> 1024;
+                case "Gigantic" -> 1024;
+                case "Enormous" -> 2048;
                 default -> sizeX;
             };
         }
@@ -176,7 +178,8 @@ public abstract class WorldMixin implements BWOGetDirectoryName, BWOBiome {
                 case "Small" -> 64;
                 case "Normal" -> 128;
                 case "Huge" -> 256;
-                case "Very Huge" -> 512;
+                case "Gigantic" -> 512;
+                case "Enormous" -> 1024;
                 default -> sizeZ;
             };
         } else {
@@ -184,7 +187,8 @@ public abstract class WorldMixin implements BWOGetDirectoryName, BWOBiome {
                 case "Small" -> 128;
                 case "Normal" -> 256;
                 case "Huge" -> 512;
-                case "Very Huge" -> 1024;
+                case "Gigantic" -> 1024;
+                case "Enormous" -> 2048;
                 default -> sizeZ;
             };
         }

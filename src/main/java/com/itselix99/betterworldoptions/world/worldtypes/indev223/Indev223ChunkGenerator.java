@@ -81,28 +81,22 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
         String indevWorldSize = ((BWOProperties) this.world.getProperties()).bwo_getSize();
         if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getShape(), "Long")) {
-            if (Objects.equals(indevWorldSize, "Small")) {
-                this.setSizeXY(256, 64);
-            } else if (Objects.equals(indevWorldSize, "Normal")) {
-                this.setSizeXY(512, 128);
-            } else if (Objects.equals(indevWorldSize, "Huge")) {
-                this.setSizeXY(1024, 256);
-            } else if (Objects.equals(indevWorldSize, "Very Huge")) {
-                this.setSizeXY(2048, 512);
-            } else {
-                this.setSizeXY(-1);
+            switch (indevWorldSize) {
+                case "Small" -> this.setSizeXZ(256, 64);
+                case "Normal" -> this.setSizeXZ(512, 128);
+                case "Huge" -> this.setSizeXZ(1024, 256);
+                case "Gigantic" -> this.setSizeXZ(2048, 512);
+                case "Enormous" -> this.setSizeXZ(4096, 1024);
+                default -> this.setSizeXZ(-1);
             }
         } else {
-            if (Objects.equals(indevWorldSize, "Small")) {
-                this.setSizeXY(128);
-            } else if (Objects.equals(indevWorldSize, "Normal")) {
-                this.setSizeXY(256);
-            } else if (Objects.equals(indevWorldSize, "Huge")) {
-                this.setSizeXY(512);
-            } else if (Objects.equals(indevWorldSize, "Very Huge")) {
-                this.setSizeXY(1024);
-            } else {
-                this.setSizeXY(-1);
+            switch (indevWorldSize) {
+                case "Small" -> this.setSizeXZ(128);
+                case "Normal" -> this.setSizeXZ(256);
+                case "Huge" -> this.setSizeXZ(512);
+                case "Gigantic" -> this.setSizeXZ(1024);
+                case "Enormous" -> this.setSizeXZ(2048);
+                default -> this.setSizeXZ(-1);
             }
         }
 
@@ -417,12 +411,12 @@ public class Indev223ChunkGenerator implements ChunkSource {
         }
     }
 
-    private void setSizeXY(int size) {
+    private void setSizeXZ(int size) {
         WORLD_SIZE_X = size;
         WORLD_SIZE_Z = size;
     }
 
-    private void setSizeXY(int sizeX, int sizeZ) {
+    private void setSizeXZ(int sizeX, int sizeZ) {
         WORLD_SIZE_X = sizeX;
         WORLD_SIZE_Z = sizeZ;
     }
@@ -492,25 +486,38 @@ public class Indev223ChunkGenerator implements ChunkSource {
             int var4 = x << 4;
             int var5 = z << 4;
 
-            if (!this.infiniteWorld || this.random.nextInt(4) == 0) {
-                IndevFeatures.placePlant(this.world, this.random, Block.DANDELION, this.theme.equals("Paradise") ? 1000 : 100, var4, var5);
+            byte var62 = (byte) (this.theme.equals("Paradise") ? 12 : 2);
+
+            for(int var73 = 0; var73 < var62; ++var73) {
+                int var76 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
+                int var85 = this.random.nextInt(128);
+                int var19 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
+                (new PlantPatchFeature(Block.DANDELION.id)).generate(this.world, this.random, var76, var85, var19);
             }
 
-            if (!this.infiniteWorld || this.random.nextInt(4) == 0) {
-                IndevFeatures.placePlant(this.world, this.random, Block.ROSE, this.theme.equals("Paradise") ? 1000 : 100, var4, var5);
+            for(int var74 = 0; var74 < var62; ++var74) {
+                int var79 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
+                int var88 = this.random.nextInt(128);
+                int var99 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
+                (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var79, var88, var99);
             }
 
-            if (!this.infiniteWorld || this.random.nextInt(8) == 0) {
-                IndevFeatures.placePlant(this.world, this.random, Block.BROWN_MUSHROOM, 50, var4, var5);
+            if (this.random.nextInt(4) == 0) {
+                int var80 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
+                int var89 = this.random.nextInt(128);
+                int var100 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
+                (new PlantPatchFeature(Block.BROWN_MUSHROOM.id)).generate(this.world, this.random, var80, var89, var100);
             }
 
-            if (!this.infiniteWorld || this.random.nextInt(8) == 0) {
-                IndevFeatures.placePlant(this.world, this.random, Block.RED_MUSHROOM, 50, var4, var5);
+            if (this.random.nextInt(8) == 0) {
+                int var81 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
+                int var90 = this.random.nextInt(128);
+                int var101 = var5 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);
+                (new PlantPatchFeature(Block.RED_MUSHROOM.id)).generate(this.world, this.random, var81, var90, var101);
             }
 
             int var10 = this.theme.equals("Woods") ? (this.infiniteWorld ? 40 : 50) : 8;
             OakTreeFeature var9 = new OakTreeFeature();
-
 
             for(int var11 = 0; var11 < var10; ++var11) {
                 int var12 = var4 + this.random.nextInt(16) + (this.infiniteWorld ? 8 : 0);

@@ -75,8 +75,10 @@ public class IndevOptionsScreen extends Screen {
                 if (this.sizeButton.text.equals(this.translation.get("indevOptions.size") + " " + "Normal" + " " + WorldSettings.IndevWorld.getSizeInNumber())) {
                     WorldSettings.IndevWorld.setSize("Huge");
                 } else if (this.sizeButton.text.equals(this.translation.get("indevOptions.size") + " " + "Huge" + " " + WorldSettings.IndevWorld.getSizeInNumber())) {
-                    WorldSettings.IndevWorld.setSize("Very Huge");
-                } else if (this.sizeButton.text.equals(this.translation.get("indevOptions.size") + " " + "Very Huge" + " " + WorldSettings.IndevWorld.getSizeInNumber())) {
+                    WorldSettings.IndevWorld.setSize("Gigantic");
+                } else if (this.sizeButton.text.equals(this.translation.get("indevOptions.size") + " " + "Gigantic" + " " + WorldSettings.IndevWorld.getSizeInNumber())) {
+                    WorldSettings.IndevWorld.setSize("Enormous");
+                } else if (this.sizeButton.text.equals(this.translation.get("indevOptions.size") + " " + "Enormous" + " " + WorldSettings.IndevWorld.getSizeInNumber())) {
                     WorldSettings.IndevWorld.setSize("Small");
                 } else if (this.sizeButton.text.equals(this.translation.get("indevOptions.size") + " " + "Small" + " " + WorldSettings.IndevWorld.getSizeInNumber())) {
                     WorldSettings.IndevWorld.setSize("Normal");
