@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.mixin.screen;
 
 import com.itselix99.betterworldoptions.compat.CompatMods;
 import com.itselix99.betterworldoptions.gui.screen.IndevOptionsScreen;
+import com.itselix99.betterworldoptions.gui.screen.McpeOptionsScreen;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.itselix99.betterworldoptions.gui.screen.WorldTypeListScreen;
@@ -20,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.List;
-import java.util.Objects;
 
 @Mixin(value = CreateWorldScreen.class, priority = 1100)
 public abstract class CreateWorldScreenMixin extends Screen {
@@ -34,7 +34,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Unique private ButtonWidget worldTypeButton;
     @Unique private ButtonWidget betaFeaturesButton;
     @Unique private ButtonWidget themeButton;
-    @Unique private ButtonWidget indevOptionsButton;
+    @Unique private ButtonWidget worldTypeOptionsButton;
 
     @Unique private static boolean moreOptions;
     @Unique private static String lastEnteredWorldName = translation.get("selectWorld.newWorld");
@@ -101,7 +101,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
         this.buttons.add(this.worldTypeButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, translation.get("selectWorld.worldtype") + " " + WorldSettings.World.getWorldTypeName()));
         this.buttons.add(this.betaFeaturesButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, translation.get("selectWorld.betaFeatures") + " " + (WorldSettings.GameMode.isBetaFeatures() ? translation.get("options.on") : translation.get("options.off"))));
         this.buttons.add(this.themeButton = new ButtonWidget(14, this.width / 2 - 75, 150, 150, 20, translation.get("selectWorld.theme") + " " + WorldSettings.World.getTheme()));
-        this.buttons.add(this.indevOptionsButton = new ButtonWidget(15, this.width / 2 + 5, 100, 150, 20, translation.get("selectWorld.indevOptions")));
+        this.buttons.add(this.worldTypeOptionsButton = new ButtonWidget(15, this.width / 2 + 5, 100, 150, 20, this.getWorldTypeOptionsButtonName()));
 
         if (WorldSettings.GameMode.getNonBetaFeaturesWorldTypes()) {
             this.betaFeaturesButton.active = false;
@@ -113,13 +113,24 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.betaFeaturesButton.active = true;
         }
 
-        if (Objects.equals(WorldSettings.World.getWorldTypeName(), "Indev 223")) {
+        if (WorldSettings.World.getWorldTypeName().equals("Indev 223") || WorldSettings.World.getWorldTypeName().equals("MCPE")) {
             this.betaFeaturesButton.visible = false;
             this.themeButton.visible = false;
         }
 
         this.seedField.setFocused(moreOptions);
         this.worldNameField.setFocused(!moreOptions);
+    }
+
+    @Unique
+    private String getWorldTypeOptionsButtonName() {
+        if (WorldSettings.World.getWorldTypeName().equals("Indev 223")) {
+            return translation.get("selectWorld.indevOptions");
+        } else if (WorldSettings.World.getWorldTypeName().equals("MCPE")) {
+            return translation.get("selectWorld.mcpeOptions");
+        } else {
+            return "";
+        }
     }
 
     @Inject(method = "init", at = @At("TAIL"))
@@ -191,7 +202,11 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 lastEnteredWorldName = this.worldNameField.getText();
                 lastEnteredSeed = this.seedField.getText();
 
-                this.minecraft.setScreen(new IndevOptionsScreen(this));
+                if (WorldSettings.World.getWorldTypeName().equals("Indev 223")) {
+                    this.minecraft.setScreen(new IndevOptionsScreen(this));
+                } else if (WorldSettings.World.getWorldTypeName().equals("MCPE")) {
+                    this.minecraft.setScreen(new McpeOptionsScreen(this));
+                }
             }
         }
     }
@@ -309,7 +324,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
         if(!moreOptions) {
             this.worldTypeButton.visible = false;
             this.betaFeaturesButton.visible = false;
-            this.indevOptionsButton.visible = false;
+            this.worldTypeOptionsButton.visible = false;
             this.themeButton.visible = false;
             this.gamemodeButton.visible = true;
 
@@ -338,22 +353,26 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.worldTypeButton.visible = true;
             this.gamemodeButton.visible = false;
 
-            if (Objects.equals(WorldSettings.World.getWorldTypeName(), "Indev 223")) {
+            if (WorldSettings.World.getWorldTypeName().equals("Indev 223") || WorldSettings.World.getWorldTypeName().equals("MCPE")) {
                 this.betaFeaturesButton.visible = false;
                 this.themeButton.visible = false;
-                this.indevOptionsButton.visible = true;
+                this.worldTypeOptionsButton.visible = true;
             } else {
                 this.betaFeaturesButton.visible = true;
                 this.themeButton.visible = true;
-                this.indevOptionsButton.visible = false;
+                this.worldTypeOptionsButton.visible = false;
             }
 
-            if (WorldSettings.GameMode.isBetaFeatures() && !Objects.equals(WorldSettings.World.getWorldTypeName(), "Indev 223")) {
-                this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.line1"), this.width / 2 + 5, 122, 10526880);
-                this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.line2"), this.width / 2 + 5, 134, 10526880);
-            } else if (!Objects.equals(WorldSettings.World.getWorldTypeName(), "Indev 223")) {
-                this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.disabled.line1"), this.width / 2 + 5, 122, 10526880);
-                this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.disabled.line2"), this.width / 2 + 5, 134, 10526880);
+            if (WorldSettings.GameMode.isBetaFeatures()) {
+                if (this.betaFeaturesButton.visible) {
+                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.line1"), this.width / 2 + 5, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.line2"), this.width / 2 + 5, 134, 10526880);
+                }
+            } else {
+                if (this.betaFeaturesButton.visible) {
+                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.disabled.line1"), this.width / 2 + 5, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.disabled.line2"), this.width / 2 + 5, 134, 10526880);
+                }
             }
         }
         super.render(mouseX, mouseY, delta);

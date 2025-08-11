@@ -81,11 +81,14 @@ public class WorldPropertiesMixin implements BWOProperties {
             WorldSettings.Textures.setMcpe(false);
         }
 
-        if (Objects.equals(bwo_getWorldType(), "Indev 223")) {
-            this.indevWorldType = nbt.getString("IndevWorldType");
-            this.shape = nbt.getString("Shape");
+        if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
+            if (bwo_getWorldType().equals("Indev 223")) {
+                this.indevWorldType = nbt.getString("IndevWorldType");
+                this.shape = nbt.getString("Shape");
+                this.generateIndevHouse = nbt.getBoolean("GenerateIndevHouse");
+            }
+
             this.size = nbt.getString("Size");
-            this.generateIndevHouse = nbt.getBoolean("GenerateIndevHouse");
             this.infiniteWorld = nbt.getBoolean("InfiniteWorld");
         }
     }
@@ -110,11 +113,14 @@ public class WorldPropertiesMixin implements BWOProperties {
             WorldSettings.Textures.setMcpe(false);
         }
 
-        if (Objects.equals(bwo_getWorldType(), "Indev 223")) {
-            this.indevWorldType = WorldSettings.IndevWorld.getIndevWorldType();
-            this.shape = WorldSettings.IndevWorld.getShape();
+        if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
+            if (bwo_getWorldType().equals("Indev 223")) {
+                this.indevWorldType = WorldSettings.IndevWorld.getIndevWorldType();
+                this.shape = WorldSettings.IndevWorld.getShape();
+                this.generateIndevHouse = WorldSettings.IndevWorld.isGenerateIndevHouse();
+            }
+
             this.size = WorldSettings.IndevWorld.getSize();
-            this.generateIndevHouse = WorldSettings.IndevWorld.isGenerateIndevHouse();
             this.infiniteWorld = WorldSettings.IndevWorld.isInfiniteWorld();
         }
     }
@@ -127,11 +133,14 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.singleBiome = ((BWOProperties) source).bwo_getSingleBiome();
         this.theme = ((BWOProperties) source).bwo_getTheme();
 
-        if (Objects.equals(bwo_getWorldType(), "Indev 223")) {
-            this.indevWorldType = ((BWOProperties) source).bwo_getIndevWorldType();
-            this.shape = ((BWOProperties) source).bwo_getShape();
+        if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
+            if (bwo_getWorldType().equals("Indev 223")) {
+                this.indevWorldType = ((BWOProperties) source).bwo_getIndevWorldType();
+                this.shape = ((BWOProperties) source).bwo_getShape();
+                this.generateIndevHouse = ((BWOProperties) source).bwo_isGenerateIndevHouse();
+            }
+
             this.size = ((BWOProperties) source).bwo_getSize();
-            this.generateIndevHouse = ((BWOProperties) source).bwo_isGenerateIndevHouse();
             this.infiniteWorld = ((BWOProperties) source).bwo_isInfiniteWorld();
         }
     }
@@ -144,11 +153,14 @@ public class WorldPropertiesMixin implements BWOProperties {
         nbt.putString("SingleBiome", this.singleBiome);
         nbt.putString("Theme", this.theme);
 
-        if (Objects.equals(bwo_getWorldType(), "Indev 223")) {
-            nbt.putString("IndevWorldType", this.indevWorldType);
-            nbt.putString("Shape", this.shape);
+        if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
+            if (bwo_getWorldType().equals("Indev 223")) {
+                nbt.putString("IndevWorldType", this.indevWorldType);
+                nbt.putString("Shape", this.shape);
+                nbt.putBoolean("GenerateIndevHouse", this.generateIndevHouse);
+            }
+
             nbt.putString("Size", this.size);
-            nbt.putBoolean("GenerateIndevHouse", this.generateIndevHouse);
             nbt.putBoolean("InfiniteWorld", this.infiniteWorld);
         }
     }

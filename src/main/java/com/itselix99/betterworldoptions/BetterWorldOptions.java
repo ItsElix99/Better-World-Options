@@ -1,9 +1,10 @@
 package com.itselix99.betterworldoptions;
 
-import com.itselix99.betterworldoptions.block.AlphaLeavesBlock;
+import com.itselix99.betterworldoptions.block.InvisibleBedrock;
 import com.itselix99.betterworldoptions.event.TextureListener;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.world.biome.Biome;
@@ -26,11 +27,11 @@ public class BetterWorldOptions {
     public static Biome Infdev;
     public static Biome Alpha;
 
-    public static Block ALPHA_LEAVES;
+    public static Block INVISIBLE_BEDROCK;
 
     @EventListener
     public void registerBlocks(BlockRegistryEvent event) {
-        ALPHA_LEAVES = new AlphaLeavesBlock(NAMESPACE.id("alpha_leaves"), TextureListener.alphaLeaves).setHardness(0.2F).setOpacity(1).setSoundGroup(Block.DIRT_SOUND_GROUP).setTranslationKey(NAMESPACE, "alpha_leaves").disableTrackingStatistics().ignoreMetaUpdates();
+        INVISIBLE_BEDROCK = new InvisibleBedrock(NAMESPACE.id("invisible_bedrock"), TextureListener.invisibleBedrock, Material.STONE).setUnbreakable().setResistance(6000000.0F).setSoundGroup(Block.STONE_SOUND_GROUP).setTranslationKey(NAMESPACE, "invisible_bedrock").disableTrackingStatistics();
     }
 
     @EventListener

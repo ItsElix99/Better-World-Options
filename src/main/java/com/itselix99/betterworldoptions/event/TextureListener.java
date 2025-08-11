@@ -8,6 +8,8 @@ import net.modificationstation.stationapi.api.client.texture.atlas.ExpandableAtl
 import static com.itselix99.betterworldoptions.BetterWorldOptions.NAMESPACE;
 
 public class TextureListener {
+    public static int invisibleBedrock;
+
     public static int alphaGrassBlockTop;
     public static int alphaGrassBlockSide;
 
@@ -43,6 +45,8 @@ public class TextureListener {
     @EventListener
     public void registerTextures(TextureRegisterEvent event) {
         ExpandableAtlas terrainAtlas = Atlases.getTerrain();
+
+        invisibleBedrock = terrainAtlas.addTexture(NAMESPACE.id("block/invisible_bedrock")).index;
 
         alphaGrassBlockTop = terrainAtlas.addTexture(NAMESPACE.id("block/alpha_grass_block_top")).index;
         alphaGrassBlockSide = terrainAtlas.addTexture(NAMESPACE.id("block/alpha_grass_block_side")).index;

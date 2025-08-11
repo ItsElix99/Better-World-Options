@@ -20,6 +20,7 @@
     "dimensions.DimensionMixin",
     "dimensions.NetherDimensionMixin",
     "world.AlphaWorldStorageMixin",
+    "world.EmptyChunkMixin",
     "world.FlattenedWorldStorageMixin",
     "world.OverworldChunkGeneratorMixin",
     "world.WorldMixin",

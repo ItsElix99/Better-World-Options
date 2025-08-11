@@ -5,6 +5,7 @@ selectWorld.moreWorldOptions=More World Options...
 selectWorld.betaFeatures=Beta Features:
 selectWorld.theme=Theme:
 selectWorld.indevOptions=Indev Options
+selectWorld.mcpeOptions=MCPE Options
 selectWorld.allBiomes=All Biomes
 indevOptions.type=Type:
 indevOptions.shape=Shape:

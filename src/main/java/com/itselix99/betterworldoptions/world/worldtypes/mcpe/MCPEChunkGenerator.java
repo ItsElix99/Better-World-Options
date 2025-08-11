@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
+import net.minecraft.world.chunk.EmptyChunk;
 import net.minecraft.world.gen.Generator;
 import net.minecraft.world.gen.carver.CaveWorldCarver;
 import net.minecraft.world.gen.feature.*;
@@ -23,6 +24,7 @@ import net.modificationstation.stationapi.api.util.math.MathHelper;
 import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class MCPEChunkGenerator implements ChunkSource {
@@ -53,6 +55,11 @@ public class MCPEChunkGenerator implements ChunkSource {
     private final String worldType;
     private final boolean betaFeatures;
     private final String theme;
+    private final String singleBiome;
+    private final boolean infiniteWorld;
+
+    private int WORLD_SIZE_X;
+    private int WORLD_SIZE_Z;
 
     public MCPEChunkGenerator(World world, long seed) {
         this.world = world;
@@ -60,6 +67,8 @@ public class MCPEChunkGenerator implements ChunkSource {
         this.worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
         this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
+        this.singleBiome = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
+        this.infiniteWorld = ((BWOProperties) this.world.getProperties()).bwo_isInfiniteWorld();
 
         if (this.theme.equals("Winter")) {
             if (!this.betaFeatures) {
@@ -77,6 +86,15 @@ public class MCPEChunkGenerator implements ChunkSource {
 
         if (this.betaFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
+        }
+
+        String worldSize = ((BWOProperties) this.world.getProperties()).bwo_getSize();
+        switch (worldSize) {
+            case "Normal" -> this.setSizeXZ(256);
+            case "Huge" -> this.setSizeXZ(512);
+            case "Gigantic" -> this.setSizeXZ(1024);
+            case "Enormous" -> this.setSizeXZ(2048);
+            default -> this.setSizeXZ(-1);
         }
 
         this.minLimitPerlinNoise = new OctavePerlinNoiseSamplerMCPE(this.random, 16);
@@ -242,6 +260,11 @@ public class MCPEChunkGenerator implements ChunkSource {
 
     }
 
+    private void setSizeXZ(int size) {
+        WORLD_SIZE_X = size;
+        WORLD_SIZE_Z = size;
+    }
+
     public Chunk loadChunk(int chunkX, int chunkZ) {
         return this.getChunk(chunkX, chunkZ);
     }
@@ -267,6 +290,21 @@ public class MCPEChunkGenerator implements ChunkSource {
         FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
+
+        for (int var1 = 0; var1 < 16; var1++) {
+            int blockX = chunkX * 16 + var1;
+            if (blockX < 0 || blockX >= WORLD_SIZE_X && !this.infiniteWorld) {
+                return new EmptyChunk(this.world, chunkX, chunkZ);
+            }
+
+            for (int var2 = 0; var2 < 16; var2++) {
+                int blockZ = chunkZ * 16 + var2;
+                if (blockZ < 0 || blockZ >= WORLD_SIZE_Z && !this.infiniteWorld) {
+                    return new EmptyChunk(this.world, chunkX, chunkZ);
+                }
+            }
+        }
+
         return flattenedChunk;
     }
 
