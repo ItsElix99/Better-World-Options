@@ -35,7 +35,7 @@ public class GrassBlockMixin extends Block {
                 return 2;
             } else {
                 Material var6 = blockView.getMaterial(x, y + 1, z);
-                return var6 != Material.SNOW_LAYER && var6 != Material.SNOW_BLOCK ? (worldType.equals("MCPE") ? original : TextureListener.alphaGrassBlockSide) : 68;
+                return var6 != Material.SNOW_LAYER && var6 != Material.SNOW_BLOCK ? TextureListener.alphaGrassBlockSide : 68;
             }
         } else if(worldType.equals("Alpha 1.2.0") && minecraft.world.dimension.id == 0) {
             if (side == 1) {
