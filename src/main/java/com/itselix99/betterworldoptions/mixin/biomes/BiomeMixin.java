@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.biomes;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
-import com.itselix99.betterworldoptions.interfaces.BWOBiome;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import java.util.Random;
 
 @Mixin(Biome.class)
-public abstract class BiomeMixin implements BWOBiome, StationBiome {
+public abstract class BiomeMixin implements BWOWorld, StationBiome {
     @Environment(EnvType.CLIENT)
     @ModifyReturnValue(method = "getSkyColor", at = @At("RETURN"))
     public int getSkyColor(int original) {

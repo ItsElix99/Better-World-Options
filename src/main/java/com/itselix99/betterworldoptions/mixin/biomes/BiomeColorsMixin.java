@@ -23,7 +23,7 @@ public class BiomeColorsMixin {
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
 
-        if (!betaFeatures && worldType.equals("MCPE")) {
+        if (!betaFeatures && worldType.equals("MCPE") && minecraft.world.dimension.id == 0) {
             return 3381555;
         }
 
@@ -42,7 +42,7 @@ public class BiomeColorsMixin {
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
 
-        if (!betaFeatures && worldType.equals("MCPE")) {
+        if (!betaFeatures && worldType.equals("MCPE") && minecraft.world.dimension.id == 0) {
             return 16777215;
         }
 
@@ -62,14 +62,16 @@ public class BiomeColorsMixin {
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
         String theme = ((BWOProperties) minecraft.world.getProperties()).bwo_getTheme();
 
-        if (!betaFeatures && worldType.equals("MCPE") && (theme.equals("Normal") || theme.equals("Winter"))) {
-            return 6731007;
-        } else if (theme.equals("Hell")) {
-            return 1049600;
-        } else if (theme.equals("Paradise")) {
-            return 13033215;
-        } else if (theme.equals("Woods")) {
-            return 5069403;
+        if (minecraft.world.dimension.id == 0) {
+            if (!betaFeatures && worldType.equals("MCPE") && (theme.equals("Normal") || theme.equals("Winter"))) {
+                return 6731007;
+            } else if (theme.equals("Hell")) {
+                return 1049600;
+            } else if (theme.equals("Paradise")) {
+                return 13033215;
+            } else if (theme.equals("Woods")) {
+                return 5069403;
+            }
         }
 
         return original;

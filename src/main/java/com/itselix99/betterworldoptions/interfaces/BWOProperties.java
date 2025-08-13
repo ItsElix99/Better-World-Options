@@ -12,7 +12,8 @@ public interface BWOProperties {
 
     String bwo_getIndevWorldType();
     String bwo_getShape();
-    String bwo_getSize();
+    int bwo_getWorldSizeX();
+    int bwo_getWorldSizeZ();
     boolean bwo_isGenerateIndevHouse();
     boolean bwo_isInfiniteWorld();
 }

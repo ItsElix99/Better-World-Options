@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.world.worldtypes;
 
 import com.itselix99.betterworldoptions.BWOConfig;
-import com.itselix99.betterworldoptions.interfaces.BWOBiome;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import net.fabricmc.api.EnvType;
@@ -41,7 +41,7 @@ public class FlatChunkGenerator implements ChunkSource {
         this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
 
-        ((BWOBiome) this.world).bwo_setSnow(this.theme.equals("Winter"));
+        ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
 
         if (this.betaFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);

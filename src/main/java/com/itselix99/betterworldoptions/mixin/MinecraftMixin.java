@@ -1,8 +1,8 @@
 package com.itselix99.betterworldoptions.mixin;
 
 import com.itselix99.betterworldoptions.compat.CompatMods;
+import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.world.WorldSettings;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.IndevFeatures;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -70,10 +70,13 @@ public class MinecraftMixin {
 
     @Inject(method = "setWorld(Lnet/minecraft/world/World;Ljava/lang/String;Lnet/minecraft/entity/player/PlayerEntity;)V", at = @At("TAIL"))
     private void dimensionBetaFeaturesTextures(World world, String message, PlayerEntity player, CallbackInfo ci) {
-        if (world != null && !(world.dimension.id == 0 && !((BWOProperties) world.getProperties()).bwo_getBetaFeatures())) {
-            WorldSettings.Textures.setBetaFeaturesTextures(true);
-        } else {
-            WorldSettings.Textures.setBetaFeaturesTextures(false);
+        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+        if (world != null && worldGenerationOptions != null) {
+            if (!(world.dimension.id == 0) && !((BWOProperties) world.getProperties()).bwo_getBetaFeatures()) {
+                WorldGenerationOptions.getInstance().oldTextures = false;
+            } else {
+                WorldGenerationOptions.getInstance().oldTextures = true;
+            }
         }
     }
 
@@ -85,12 +88,17 @@ public class MinecraftMixin {
             )
     )
     private World startGameInOtherDimensions(WorldStorage storage, String name, long seed, Operation<World> original) {
-        if (Objects.equals(WorldSettings.World.getWorldTypeName(), "Nether") && storage.loadProperties() == null) {
-            return new World(storage, name, seed, Dimension.fromId(-1));
-        } else if (Objects.equals(WorldSettings.World.getWorldTypeName(), "Skylands") && storage.loadProperties() == null) {
-            return new World(storage, name, seed, Dimension.fromId(1));
-        } else if (Objects.equals(WorldSettings.World.getWorldTypeName(), "Aether") && storage.loadProperties() == null) {
-            return new World(storage, name, seed, CompatMods.startWorldInAether());
-        } else return original.call(storage, name, seed);
+        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+        if (worldGenerationOptions != null) {
+            if (worldGenerationOptions.worldTypeName.equals("Nether") && storage.loadProperties() == null) {
+                return new World(storage, name, seed, Dimension.fromId(-1));
+            } else if (worldGenerationOptions.worldTypeName.equals("Skylands") && storage.loadProperties() == null) {
+                return new World(storage, name, seed, Dimension.fromId(1));
+            } else if (worldGenerationOptions.worldTypeName.equals("Aether") && storage.loadProperties() == null) {
+                return new World(storage, name, seed, CompatMods.startWorldInAether());
+            }
+        }
+
+        return original.call(storage, name, seed);
     }
 }

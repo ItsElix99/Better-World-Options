@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.world;
 
 import com.itselix99.betterworldoptions.compat.CompatMods;
+import com.itselix99.betterworldoptions.event.TextureListener;
 import com.itselix99.betterworldoptions.world.worldtypes.FlatChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.alpha112.Alpha112ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.Alpha120ChunkGenerator;
@@ -11,20 +12,19 @@ import com.itselix99.betterworldoptions.world.worldtypes.infdev420.Infdev420Chun
 import com.itselix99.betterworldoptions.world.worldtypes.infdev611.Infdev611ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.MCPEChunkGenerator;
 import net.minecraft.block.Block;
-import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkSource;
-import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WorldTypeList {
-    private static List<WorldTypeEntry> WORLD_TYPE_LIST = new ArrayList<>();
+    private static final List<WorldTypeEntry> WORLD_TYPE_LIST = new ArrayList<>();
 
     static {
         WorldTypeEntry Default = new WorldTypeEntry();
-        Default.OVERWORLD_CHUNK_GENERATOR = OverworldChunkGenerator.class;
         Default.DISPLAY_NAME = "Default";
         Default.NAME = Default.DISPLAY_NAME;
         Default.ICON = "/assets/betterworldoptions/gui/default.png";
@@ -35,7 +35,6 @@ public class WorldTypeList {
         WORLD_TYPE_LIST.add(Default);
 
         WorldTypeEntry Nether = new WorldTypeEntry();
-        Nether.OVERWORLD_CHUNK_GENERATOR = OverworldChunkGenerator.class;
         Nether.DISPLAY_NAME = "Nether";
         Nether.NAME = Nether.DISPLAY_NAME;
         Nether.ICON = "/assets/betterworldoptions/gui/nether.png";
@@ -47,7 +46,6 @@ public class WorldTypeList {
         WORLD_TYPE_LIST.add(Nether);
 
         WorldTypeEntry Skylands = new WorldTypeEntry();
-        Skylands.OVERWORLD_CHUNK_GENERATOR = OverworldChunkGenerator.class;
         Skylands.DISPLAY_NAME = "Skylands";
         Skylands.NAME = Skylands.DISPLAY_NAME;
         Skylands.ICON = "/assets/betterworldoptions/gui/skylands.png";
@@ -71,7 +69,6 @@ public class WorldTypeList {
         WORLD_TYPE_LIST.add(Flat);
 
         WorldTypeEntry Farlands = new WorldTypeEntry();
-        Farlands.OVERWORLD_CHUNK_GENERATOR = OverworldChunkGenerator.class;
         Farlands.DISPLAY_NAME = "Farlands";
         Farlands.NAME = Farlands.DISPLAY_NAME;
         Farlands.ICON = "/assets/betterworldoptions/gui/farlands.png";
@@ -92,6 +89,10 @@ public class WorldTypeList {
         Alpha120.LIGHTING_MODE = "Overworld";
         Alpha120.BIOME = null;
         Alpha120.BLOCK_TO_SPAWN_ON = Block.SAND.id;
+
+        Alpha120.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        Alpha120.OLD_TEXTURES.put("Cobblestone", TextureListener.alphaCobblestone);
+
         WORLD_TYPE_LIST.add(Alpha120);
 
         WorldTypeEntry Alpha112 = new WorldTypeEntry();
@@ -104,6 +105,25 @@ public class WorldTypeList {
         Alpha112.LIGHTING_MODE = "Overworld";
         Alpha112.BIOME = null;
         Alpha112.BLOCK_TO_SPAWN_ON = Block.SAND.id;
+
+        Alpha112.OLD_TEXTURES.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
+        Alpha112.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        Alpha112.OLD_TEXTURES.put("Cobblestone", TextureListener.alphaCobblestone);
+        Alpha112.OLD_TEXTURES.put("IronBlockTop", TextureListener.alphaIronBlock);
+        Alpha112.OLD_TEXTURES.put("IronBlockSide", TextureListener.alphaIronBlockSide);
+        Alpha112.OLD_TEXTURES.put("IronBlockBottom", TextureListener.alphaIronBlockBottom);
+        Alpha112.OLD_TEXTURES.put("GoldBlockTop", TextureListener.alphaGoldBlock);
+        Alpha112.OLD_TEXTURES.put("GoldBlockSide", TextureListener.alphaGoldBlockSide);
+        Alpha112.OLD_TEXTURES.put("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
+        Alpha112.OLD_TEXTURES.put("DiamondBlockTop", TextureListener.alphaDiamondBlock);
+        Alpha112.OLD_TEXTURES.put("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
+        Alpha112.OLD_TEXTURES.put("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
+        Alpha112.OLD_TEXTURES.put("Grass", TextureListener.alphaTallGrass);
+        Alpha112.OLD_TEXTURES.put("Fern", TextureListener.alphaFern);
+        Alpha112.OLD_TEXTURES.put("Leaves", TextureListener.alphaLeaves);
+        Alpha112.OLD_TEXTURES.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        Alpha112.OLD_TEXTURES.put("FurnaceTop", Block.STONE.textureId);
+
         WORLD_TYPE_LIST.add(Alpha112);
 
         WorldTypeEntry Infdev611 = new WorldTypeEntry();
@@ -116,6 +136,26 @@ public class WorldTypeList {
         Infdev611.LIGHTING_MODE = "Overworld";
         Infdev611.BIOME = null;
         Infdev611.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
+
+        Infdev611.OLD_TEXTURES.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
+        Infdev611.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        Infdev611.OLD_TEXTURES.put("Cobblestone", TextureListener.alphaCobblestone);
+        Infdev611.OLD_TEXTURES.put("IronBlockTop", TextureListener.alphaIronBlock);
+        Infdev611.OLD_TEXTURES.put("IronBlockSide", TextureListener.alphaIronBlockSide);
+        Infdev611.OLD_TEXTURES.put("IronBlockBottom", TextureListener.alphaIronBlockBottom);
+        Infdev611.OLD_TEXTURES.put("GoldBlockTop", TextureListener.alphaGoldBlock);
+        Infdev611.OLD_TEXTURES.put("GoldBlockSide", TextureListener.alphaGoldBlockSide);
+        Infdev611.OLD_TEXTURES.put("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
+        Infdev611.OLD_TEXTURES.put("DiamondBlockTop", TextureListener.alphaDiamondBlock);
+        Infdev611.OLD_TEXTURES.put("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
+        Infdev611.OLD_TEXTURES.put("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
+        Infdev611.OLD_TEXTURES.put("Grass", TextureListener.alphaTallGrass);
+        Infdev611.OLD_TEXTURES.put("Fern", TextureListener.alphaFern);
+        Infdev611.OLD_TEXTURES.put("Leaves", TextureListener.alphaLeaves);
+        Infdev611.OLD_TEXTURES.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        Infdev611.OLD_TEXTURES.put("FurnaceTop", Block.STONE.textureId);
+        Infdev611.OLD_TEXTURES.put("BrickBlock", TextureListener.infdevBricksBlock);
+
         WORLD_TYPE_LIST.add(Infdev611);
 
         WorldTypeEntry Infdev420 = new WorldTypeEntry();
@@ -128,6 +168,26 @@ public class WorldTypeList {
         Infdev420.LIGHTING_MODE = "Overworld";
         Infdev420.BIOME = null;
         Infdev420.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
+
+        Infdev420.OLD_TEXTURES.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
+        Infdev420.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        Infdev420.OLD_TEXTURES.put("Cobblestone", TextureListener.alphaCobblestone);
+        Infdev420.OLD_TEXTURES.put("IronBlockTop", TextureListener.alphaIronBlock);
+        Infdev420.OLD_TEXTURES.put("IronBlockSide", TextureListener.alphaIronBlockSide);
+        Infdev420.OLD_TEXTURES.put("IronBlockBottom", TextureListener.alphaIronBlockBottom);
+        Infdev420.OLD_TEXTURES.put("GoldBlockTop", TextureListener.alphaGoldBlock);
+        Infdev420.OLD_TEXTURES.put("GoldBlockSide", TextureListener.alphaGoldBlockSide);
+        Infdev420.OLD_TEXTURES.put("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
+        Infdev420.OLD_TEXTURES.put("DiamondBlockTop", TextureListener.alphaDiamondBlock);
+        Infdev420.OLD_TEXTURES.put("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
+        Infdev420.OLD_TEXTURES.put("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
+        Infdev420.OLD_TEXTURES.put("Grass", TextureListener.alphaTallGrass);
+        Infdev420.OLD_TEXTURES.put("Fern", TextureListener.alphaFern);
+        Infdev420.OLD_TEXTURES.put("Leaves", TextureListener.alphaLeaves);
+        Infdev420.OLD_TEXTURES.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        Infdev420.OLD_TEXTURES.put("FurnaceTop", Block.STONE.textureId);
+        Infdev420.OLD_TEXTURES.put("BrickBlock", TextureListener.infdevBricksBlock);
+
         WORLD_TYPE_LIST.add(Infdev420);
 
         WorldTypeEntry Infdev415 = new WorldTypeEntry();
@@ -140,6 +200,26 @@ public class WorldTypeList {
         Infdev415.LIGHTING_MODE = "Overworld";
         Infdev415.BIOME = null;
         Infdev415.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
+
+        Infdev415.OLD_TEXTURES.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
+        Infdev415.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        Infdev415.OLD_TEXTURES.put("Cobblestone", TextureListener.alphaCobblestone);
+        Infdev415.OLD_TEXTURES.put("IronBlockTop", TextureListener.alphaIronBlock);
+        Infdev415.OLD_TEXTURES.put("IronBlockSide", TextureListener.alphaIronBlockSide);
+        Infdev415.OLD_TEXTURES.put("IronBlockBottom", TextureListener.alphaIronBlockBottom);
+        Infdev415.OLD_TEXTURES.put("GoldBlockTop", TextureListener.alphaGoldBlock);
+        Infdev415.OLD_TEXTURES.put("GoldBlockSide", TextureListener.alphaGoldBlockSide);
+        Infdev415.OLD_TEXTURES.put("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
+        Infdev415.OLD_TEXTURES.put("DiamondBlockTop", TextureListener.alphaDiamondBlock);
+        Infdev415.OLD_TEXTURES.put("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
+        Infdev415.OLD_TEXTURES.put("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
+        Infdev415.OLD_TEXTURES.put("Grass", TextureListener.alphaTallGrass);
+        Infdev415.OLD_TEXTURES.put("Fern", TextureListener.alphaFern);
+        Infdev415.OLD_TEXTURES.put("Leaves", TextureListener.alphaLeaves);
+        Infdev415.OLD_TEXTURES.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        Infdev415.OLD_TEXTURES.put("FurnaceTop", Block.STONE.textureId);
+        Infdev415.OLD_TEXTURES.put("BrickBlock", TextureListener.infdevBricksBlock);
+
         WORLD_TYPE_LIST.add(Infdev415);
 
         WorldTypeEntry EarlyInfdev = new WorldTypeEntry();
@@ -152,6 +232,26 @@ public class WorldTypeList {
         EarlyInfdev.LIGHTING_MODE = "Overworld";
         EarlyInfdev.BIOME = null;
         EarlyInfdev.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
+
+        EarlyInfdev.OLD_TEXTURES.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
+        EarlyInfdev.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        EarlyInfdev.OLD_TEXTURES.put("Cobblestone", TextureListener.alphaCobblestone);
+        EarlyInfdev.OLD_TEXTURES.put("IronBlockTop", TextureListener.alphaIronBlock);
+        EarlyInfdev.OLD_TEXTURES.put("IronBlockSide", TextureListener.alphaIronBlockSide);
+        EarlyInfdev.OLD_TEXTURES.put("IronBlockBottom", TextureListener.alphaIronBlockBottom);
+        EarlyInfdev.OLD_TEXTURES.put("GoldBlockTop", TextureListener.alphaGoldBlock);
+        EarlyInfdev.OLD_TEXTURES.put("GoldBlockSide", TextureListener.alphaGoldBlockSide);
+        EarlyInfdev.OLD_TEXTURES.put("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
+        EarlyInfdev.OLD_TEXTURES.put("DiamondBlockTop", TextureListener.alphaDiamondBlock);
+        EarlyInfdev.OLD_TEXTURES.put("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
+        EarlyInfdev.OLD_TEXTURES.put("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
+        EarlyInfdev.OLD_TEXTURES.put("Grass", TextureListener.alphaTallGrass);
+        EarlyInfdev.OLD_TEXTURES.put("Fern", TextureListener.alphaFern);
+        EarlyInfdev.OLD_TEXTURES.put("Leaves", TextureListener.alphaLeaves);
+        EarlyInfdev.OLD_TEXTURES.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        EarlyInfdev.OLD_TEXTURES.put("FurnaceTop", Block.STONE.textureId);
+        EarlyInfdev.OLD_TEXTURES.put("BrickBlock", TextureListener.infdevBricksBlock);
+
         WORLD_TYPE_LIST.add(EarlyInfdev);
 
         WorldTypeEntry Indev223 = new WorldTypeEntry();
@@ -164,6 +264,26 @@ public class WorldTypeList {
         Indev223.LIGHTING_MODE = "Overworld";
         Indev223.BIOME = null;
         Indev223.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
+
+        Indev223.OLD_TEXTURES.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
+        Indev223.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        Indev223.OLD_TEXTURES.put("Cobblestone", TextureListener.alphaCobblestone);
+        Indev223.OLD_TEXTURES.put("IronBlockTop", TextureListener.alphaIronBlock);
+        Indev223.OLD_TEXTURES.put("IronBlockSide", TextureListener.alphaIronBlockSide);
+        Indev223.OLD_TEXTURES.put("IronBlockBottom", TextureListener.alphaIronBlockBottom);
+        Indev223.OLD_TEXTURES.put("GoldBlockTop", TextureListener.alphaGoldBlock);
+        Indev223.OLD_TEXTURES.put("GoldBlockSide", TextureListener.alphaGoldBlockSide);
+        Indev223.OLD_TEXTURES.put("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
+        Indev223.OLD_TEXTURES.put("DiamondBlockTop", TextureListener.alphaDiamondBlock);
+        Indev223.OLD_TEXTURES.put("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
+        Indev223.OLD_TEXTURES.put("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
+        Indev223.OLD_TEXTURES.put("Grass", TextureListener.alphaTallGrass);
+        Indev223.OLD_TEXTURES.put("Fern", TextureListener.alphaFern);
+        Indev223.OLD_TEXTURES.put("Leaves", TextureListener.alphaLeaves);
+        Indev223.OLD_TEXTURES.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        Indev223.OLD_TEXTURES.put("FurnaceTop", Block.STONE.textureId);
+        Indev223.OLD_TEXTURES.put("BrickBlock", TextureListener.infdevBricksBlock);
+
         WORLD_TYPE_LIST.add(Indev223);
 
         WorldTypeEntry MCPE = new WorldTypeEntry();
@@ -176,11 +296,17 @@ public class WorldTypeList {
         MCPE.LIGHTING_MODE = "Overworld";
         MCPE.BIOME = null;
         MCPE.BLOCK_TO_SPAWN_ON = Block.SAND.id;
+
+        MCPE.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        MCPE.OLD_TEXTURES.put("Leaves", TextureListener.mcpeLeaves);
+        MCPE.OLD_TEXTURES.put("LeavesOpaque", TextureListener.mcpeLeavesOpaque);
+        MCPE.OLD_TEXTURES.put("Rose", TextureListener.mcpeRose);
+        MCPE.OLD_TEXTURES.put("IceBlock", TextureListener.mcpeIceBlock);
+
         WORLD_TYPE_LIST.add(MCPE);
 
         if (CompatMods.AetherLoaded()) {
             WorldTypeEntry Aether = new WorldTypeEntry();
-            Aether.OVERWORLD_CHUNK_GENERATOR = OverworldChunkGenerator.class;
             Aether.DISPLAY_NAME = "Aether";
             Aether.NAME = Aether.DISPLAY_NAME;
             Aether.ICON = "/assets/betterworldoptions/gui/aether.png";
@@ -192,33 +318,12 @@ public class WorldTypeList {
         }
     }
 
-    public static void selectWorldType(String worldTypeName) throws NoSuchMethodException {
-        for (WorldTypeEntry var2 : WORLD_TYPE_LIST) {
-            if (var2.NAME.equals(worldTypeName)) {
-                setWorldType(var2);
-                return;
-            }
-        }
-    }
-
-
-    public static void setWorldType(WorldTypeEntry worldType) throws NoSuchMethodException {
-        WorldSettings.World.setChunkGenerator(worldType.OVERWORLD_CHUNK_GENERATOR.getConstructor(World.class, long.class));
-        WorldSettings.World.setDisplayWorldTypeName(worldType.DISPLAY_NAME);
-        WorldSettings.World.setWorldTypeName(worldType.NAME);
-        WorldSettings.World.setLightingMode(worldType.LIGHTING_MODE);
-        WorldSettings.World.setSingleBiome(worldType.BIOME);
-        WorldSettings.World.setBlockToSpawnOn(worldType.BLOCK_TO_SPAWN_ON);
-    }
-
     public static List<WorldTypeEntry> getList() {
         return WORLD_TYPE_LIST;
     }
 
     public static class WorldTypeEntry {
         public Class<? extends ChunkSource> OVERWORLD_CHUNK_GENERATOR;
-        public Class<? extends ChunkSource> NETHER_CHUNK_GENERATOR;
-        public Class<? extends ChunkSource> SKYLANDS_CHUNK_GENERATOR;
         public String DISPLAY_NAME;
         public String NAME;
         public String ICON;
@@ -227,5 +332,6 @@ public class WorldTypeList {
         public String LIGHTING_MODE;
         public Biome BIOME;
         public int BLOCK_TO_SPAWN_ON;
+        public Map<String, Integer> OLD_TEXTURES = new HashMap<>();
     }
 }

@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.gui.screen;
 
-import com.itselix99.betterworldoptions.world.WorldSettings;
+import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.world.WorldTypeList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -17,13 +17,16 @@ import java.util.List;
 public class WorldTypeListScreen extends Screen {
     protected Screen parent;
     protected String title = "Select World Type";
+    private final WorldGenerationOptions worldGenerationOptions;
     private final TranslationStorage translation = TranslationStorage.getInstance();
+
     private WorldTypeListWidget worldTypeListWidget;
     private ButtonWidget buttonSelect;
     private static WorldTypeList.WorldTypeEntry selectedWorldType;
 
-    public WorldTypeListScreen(Screen parent) {
+    public WorldTypeListScreen(Screen parent, WorldGenerationOptions worldGenerationOptions) {
         this.parent = parent;
+        this.worldGenerationOptions = worldGenerationOptions;
     }
 
     @SuppressWarnings("unchecked")
@@ -33,7 +36,7 @@ public class WorldTypeListScreen extends Screen {
         this.worldTypeListWidget = new WorldTypeListWidget(this);
         this.worldTypeListWidget.registerButtons(this.buttons, 4, 5);
         this.buttons.add(this.buttonSelect = new ButtonWidget(0, this.width / 2 - 75, this.height - 28, 150, 20, translation.get("gui.cancel")));
-        selectedWorldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(WorldSettings.World.getWorldTypeName())).toList().get(0);
+        selectedWorldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(this.worldGenerationOptions.worldTypeName)).toList().get(0);
     }
 
     @Override
@@ -71,12 +74,8 @@ public class WorldTypeListScreen extends Screen {
             List<WorldTypeList.WorldTypeEntry> var3 = WorldTypeList.getList();
             WorldTypeListScreen.selectWorldType(var3.get(index));
 
-            if (!WorldSettings.World.getWorldTypeName().equals(var3.get(index).NAME)) {
-                try {
-                    WorldTypeList.setWorldType(var3.get(index));
-                } catch (NoSuchMethodException e) {
-                    throw new RuntimeException(e);
-                }
+            if (!WorldTypeListScreen.this.worldGenerationOptions.worldTypeName.equals(var3.get(index).NAME)) {
+                WorldTypeListScreen.this.worldGenerationOptions.worldTypeName = var3.get(index).NAME;
 
                 WorldTypeListScreen.this.buttonSelect.text = WorldTypeListScreen.this.translation.get("gui.done");
             }
@@ -112,6 +111,7 @@ public class WorldTypeListScreen extends Screen {
             tessellator.vertex(x + 32, y, 0.0F, 1.0F, 0.0F);
             tessellator.vertex(x, y, 0.0F, 0.0F, 0.0F);
             tessellator.draw();
+
             WorldTypeListScreen.this.drawTextWithShadow(WorldTypeListScreen.this.minecraft.textRenderer, var6.DISPLAY_NAME, x + 32 + 2, y + 1, 16777215);
             if(var6.DESCRIPTION != null) {
                 WorldTypeListScreen.this.drawTextWithShadow(WorldTypeListScreen.this.minecraft.textRenderer, var6.DESCRIPTION, x + 32 + 2, y + 12, 8421504);

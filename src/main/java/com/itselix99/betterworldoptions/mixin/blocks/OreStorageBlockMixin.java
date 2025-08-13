@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.event.TextureListener;
-import com.itselix99.betterworldoptions.world.WorldSettings;
+import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
+import com.itselix99.betterworldoptions.world.WorldTypeList;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.block.Block;
 import net.minecraft.block.OreStorageBlock;
@@ -17,40 +17,38 @@ public class OreStorageBlockMixin extends Block {
 
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
     public int getTexture(int original, int side) {
-        if (!WorldSettings.Textures.isBetaFeaturesTextures() && !WorldSettings.Textures.isMcpe()) {
+        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+
+        if (worldGenerationOptions != null && !worldGenerationOptions.betaFeatures && worldGenerationOptions.oldTextures) {
+            WorldTypeList.WorldTypeEntry worldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
+
             if (side == 1) {
                 if (this.id == 57) {
-                    return TextureListener.alphaDiamondBlock;
+                    return worldType.OLD_TEXTURES.get("DiamondBlockTop") != null ? worldType.OLD_TEXTURES.get("DiamondBlockTop") : original;
                 } else if (this.id == 41) {
-                    return TextureListener.alphaGoldBlock;
+                    return worldType.OLD_TEXTURES.get("GoldBlockTop") != null ? worldType.OLD_TEXTURES.get("GoldBlockTop") : original;
                 } else if (this.id == 42) {
-                    return TextureListener.alphaIronBlock;
-                } else {
-                    return this.textureId;
+                    return worldType.OLD_TEXTURES.get("IronBlockTop") != null ? worldType.OLD_TEXTURES.get("IronBlockTop") : original;
                 }
             } else if (side == 0) {
                 if (this.id == 57) {
-                    return TextureListener.alphaDiamondBlockBottom;
+                    return worldType.OLD_TEXTURES.get("DiamondBlockBottom") != null ? worldType.OLD_TEXTURES.get("DiamondBlockBottom") : original;
                 } else if (this.id == 41) {
-                    return TextureListener.alphaGoldBlockBottom;
+                    return worldType.OLD_TEXTURES.get("GoldBlockBottom") != null ? worldType.OLD_TEXTURES.get("GoldBlockBottom") : original;
                 } else if (this.id == 42) {
-                    return TextureListener.alphaIronBlockBottom;
-                } else {
-                    return this.textureId;
+                    return worldType.OLD_TEXTURES.get("IronBlockBottom") != null ? worldType.OLD_TEXTURES.get("IronBlockBottom") : original;
                 }
             } else {
                 if (this.id == 57) {
-                    return TextureListener.alphaDiamondBlockSide;
+                    return worldType.OLD_TEXTURES.get("DiamondBlockSide") != null ? worldType.OLD_TEXTURES.get("DiamondBlockSide") : original;
                 } else if (this.id == 41) {
-                    return TextureListener.alphaGoldBlockSide;
+                    return worldType.OLD_TEXTURES.get("GoldBlockSide") != null ? worldType.OLD_TEXTURES.get("GoldBlockSide") : original;
                 } else if (this.id == 42) {
-                    return TextureListener.alphaIronBlockSide;
-                } else {
-                    return this.textureId;
+                    return worldType.OLD_TEXTURES.get("IronBlockSide") != null ? worldType.OLD_TEXTURES.get("IronBlockSide") : original;
                 }
             }
-        } else {
-            return original;
         }
+
+        return original;
     }
 }

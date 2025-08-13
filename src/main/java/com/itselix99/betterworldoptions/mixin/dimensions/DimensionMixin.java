@@ -2,10 +2,10 @@ package com.itselix99.betterworldoptions.mixin.dimensions;
 
 import com.itselix99.betterworldoptions.BWOConfig;
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.world.WorldSettings;
+import com.itselix99.betterworldoptions.world.WorldTypeList;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 @Mixin(Dimension.class)
 public class DimensionMixin implements StationDimension {
@@ -32,16 +33,13 @@ public class DimensionMixin implements StationDimension {
     @Unique private String singleBiome;
     @Unique private String theme;
 
-    @Inject(method = "initBiomeSource", at = @At("HEAD"))
-    private void init(CallbackInfo ci) {
+    @Inject(method = "initBiomeSource", at = @At("HEAD"), cancellable = true)
+    protected void initBiomeSource(CallbackInfo ci) {
         this.worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
         this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
         this.singleBiome = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
-    }
 
-    @Inject(method = "initBiomeSource", at = @At("HEAD"), cancellable = true)
-    protected void initBiomeSource(CallbackInfo ci) {
         if (!this.betaFeatures && !this.worldType.equals("MCPE")) {
             if (this.theme.equals("Hell")) {
                 this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevHell, 1.0D, 0.0D);
@@ -84,28 +82,14 @@ public class DimensionMixin implements StationDimension {
     }
 
     @ModifyReturnValue(method = "createChunkGenerator", at = @At("RETURN"))
-    public ChunkSource createChunkGenerator(ChunkSource original) throws InvocationTargetException, InstantiationException, IllegalAccessException {
-        if (WorldSettings.World.getChunkGenerator() != null) {
-            return WorldSettings.World.getChunkGenerator().newInstance(this.world, this.world.getSeed());
-        } else {
-            return original;
-        }
-    }
+    public ChunkSource createChunkGenerator(ChunkSource original) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+        List<WorldTypeList.WorldTypeEntry> worldTypeList = WorldTypeList.getList();
+        Class<? extends ChunkSource> chunkGenerator = null;
 
-    @ModifyReturnValue(method = "isValidSpawnPoint", at = @At("RETURN"))
-    private boolean injectIsValidSpawnPoint(boolean original, int x, int z) {
-        int var3 = this.world.getSpawnBlockId(x, z);
-
-        if (WorldSettings.World.getBlockToSpawnOn() != 0) {
-            if (this.worldType.equals("Indev 223")) {
-                if (!this.betaFeatures) {
-                    if (this.theme.equals("Hell")) {
-                        return var3 == Block.DIRT.id;
-                    }
-                }
-            }
-
-            return var3 == WorldSettings.World.getBlockToSpawnOn();
+        if (worldTypeList.stream().filter(worldTypeEntry -> worldGenerationOptions.worldTypeName.equals(worldTypeEntry.NAME)).toList().get(0).OVERWORLD_CHUNK_GENERATOR != null) {
+            chunkGenerator = worldTypeList.stream().filter(worldTypeEntry -> worldGenerationOptions.worldTypeName.equals(worldTypeEntry.NAME)).toList().get(0).OVERWORLD_CHUNK_GENERATOR;
+            return chunkGenerator.getDeclaredConstructor(World.class, long.class).newInstance(this.world, this.world.getSeed());
         } else {
             return original;
         }

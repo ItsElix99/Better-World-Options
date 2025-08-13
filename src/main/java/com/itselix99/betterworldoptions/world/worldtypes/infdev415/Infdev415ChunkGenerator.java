@@ -4,7 +4,7 @@ import java.util.Random;
 
 import com.itselix99.betterworldoptions.BWOConfig;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.interfaces.BWOBiome;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.feature.OldOreFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev415.util.math.noise.OctavePerlinNoiseSamplerInfdev415;
@@ -53,15 +53,15 @@ public class Infdev415ChunkGenerator implements ChunkSource {
 
         if (this.theme.equals("Winter")) {
             if (!this.betaFeatures) {
-                ((BWOBiome) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
+                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
             } else {
-                ((BWOBiome) this.world).bwo_setSnow(true);
+                ((BWOWorld) this.world).bwo_setSnow(true);
             }
         } else {
             if (!this.betaFeatures) {
-                ((BWOBiome) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
+                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
             } else {
-                ((BWOBiome) this.world).bwo_setSnow(false);
+                ((BWOWorld) this.world).bwo_setSnow(false);
             }
         }
 
@@ -543,7 +543,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
             for(int var61 = 0; var61 < var49; ++var61) {
                 int var72 = var4 + this.random.nextInt(16) + 8;
                 int var17 = var5 + this.random.nextInt(16) + 8;
-                Feature var18 = ((BWOBiome) var6).bwo_getRandomTreeFeatureInfdev(this.random);
+                Feature var18 = ((BWOWorld) var6).bwo_getRandomTreeFeatureInfdev(this.random);
                 var18.prepare(1.0F, 1.0F, 1.0F);
                 var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
             }

@@ -1,14 +1,11 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.event.TextureListener;
-import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.world.WorldSettings;
+import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
+import com.itselix99.betterworldoptions.world.WorldTypeList;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.TransparentBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.BlockView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,18 +19,16 @@ public class LeavesBlockMixin extends TransparentBlock {
 
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
     public int getTexture(int original, int side, int meta) {
-        if (!WorldSettings.Textures.isBetaFeaturesTextures()) {
-            if (!WorldSettings.Textures.isMcpe() && !((meta & 1) == 1 || (meta & 2) == 2)) {
+        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+
+        if (worldGenerationOptions != null && !worldGenerationOptions.betaFeatures && worldGenerationOptions.oldTextures) {
+            WorldTypeList.WorldTypeEntry worldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
+
+            if ((!worldType.NAME.equals("MCPE") && (meta & 3) == 0) || (worldType.NAME.equals("MCPE") && ((meta & 3) == 0 || (meta & 3) == 2))) {
                 if (this.renderSides) {
-                    return TextureListener.alphaLeaves;
+                    return worldType.OLD_TEXTURES.get("Leaves") != null ? worldType.OLD_TEXTURES.get("Leaves") : original;
                 } else {
-                    return TextureListener.alphaLeavesOpaque;
-                }
-            } else if (WorldSettings.Textures.isMcpe() && !((meta & 1) == 1)) {
-                if (this.renderSides) {
-                    return TextureListener.mcpeLeaves;
-                } else {
-                    return TextureListener.mcpeLeavesOpaque;
+                    return worldType.OLD_TEXTURES.get("LeavesOpaque") != null ? worldType.OLD_TEXTURES.get("LeavesOpaque") : original;
                 }
             }
         }
@@ -44,13 +39,15 @@ public class LeavesBlockMixin extends TransparentBlock {
     @ModifyReturnValue(method = "getColorMultiplier", at = @At("RETURN"))
     public int getColorMultiplier(int original, BlockView blockView, int x, int y, int z) {
         int var5 = blockView.getBlockMeta(x, y, z);
-        @Deprecated Minecraft minecraft = (Minecraft) FabricLoader.getInstance().getGameInstance();
-        String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
-        boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
+        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
 
-        if (worldType.equals("MCPE") && !betaFeatures && !WorldSettings.Textures.isBetaFeaturesTextures()) {
-            if (!((var5 & 1) == 1)) {
-                return 16777215;
+        if (worldGenerationOptions != null && !worldGenerationOptions.betaFeatures && worldGenerationOptions.oldTextures) {
+            WorldTypeList.WorldTypeEntry worldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
+
+            if (worldType.NAME.equals("MCPE")) {
+                if (((var5 & 3) == 0 || (var5 & 3) == 2)) {
+                    return 16777215;
+                }
             }
         }
 

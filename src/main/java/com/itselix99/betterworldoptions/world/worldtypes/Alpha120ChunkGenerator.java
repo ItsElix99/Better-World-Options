@@ -2,7 +2,7 @@ package com.itselix99.betterworldoptions.world.worldtypes;
 
 import java.util.Random;
 import com.itselix99.betterworldoptions.BWOConfig;
-import com.itselix99.betterworldoptions.interfaces.BWOBiome;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import net.fabricmc.api.EnvType;
@@ -55,7 +55,7 @@ public class Alpha120ChunkGenerator implements ChunkSource {
         this.random = new Random(seed);
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
 
-        ((BWOBiome) this.world).bwo_setSnow(this.theme.equals("Winter"));
+        ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
 
         ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
 

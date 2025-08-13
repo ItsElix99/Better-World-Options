@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.world.worldtypes.mcpe;
 
 import com.itselix99.betterworldoptions.BWOConfig;
-import com.itselix99.betterworldoptions.interfaces.BWOBiome;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.util.MTRandom;
@@ -24,7 +24,6 @@ import net.modificationstation.stationapi.api.util.math.MathHelper;
 import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
-import java.util.Objects;
 import java.util.Random;
 
 public class MCPEChunkGenerator implements ChunkSource {
@@ -58,8 +57,8 @@ public class MCPEChunkGenerator implements ChunkSource {
     private final String singleBiome;
     private final boolean infiniteWorld;
 
-    private int WORLD_SIZE_X;
-    private int WORLD_SIZE_Z;
+    private int worldSizeX;
+    private int worldSizeZ;
 
     public MCPEChunkGenerator(World world, long seed) {
         this.world = world;
@@ -69,32 +68,25 @@ public class MCPEChunkGenerator implements ChunkSource {
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
         this.singleBiome = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
         this.infiniteWorld = ((BWOProperties) this.world.getProperties()).bwo_isInfiniteWorld();
+        this.worldSizeX = ((BWOProperties) this.world.getProperties()).bwo_getWorldSizeX();
+        this.worldSizeZ = ((BWOProperties) this.world.getProperties()).bwo_getWorldSizeZ();
 
         if (this.theme.equals("Winter")) {
             if (!this.betaFeatures) {
-                ((BWOBiome) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
+                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
             } else {
-                ((BWOBiome) this.world).bwo_setSnow(true);
+                ((BWOWorld) this.world).bwo_setSnow(true);
             }
         } else {
             if (!this.betaFeatures) {
-                ((BWOBiome) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
+                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
             } else {
-                ((BWOBiome) this.world).bwo_setSnow(false);
+                ((BWOWorld) this.world).bwo_setSnow(false);
             }
         }
 
         if (this.betaFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
-        }
-
-        String worldSize = ((BWOProperties) this.world.getProperties()).bwo_getSize();
-        switch (worldSize) {
-            case "Normal" -> this.setSizeXZ(256);
-            case "Huge" -> this.setSizeXZ(512);
-            case "Gigantic" -> this.setSizeXZ(1024);
-            case "Enormous" -> this.setSizeXZ(2048);
-            default -> this.setSizeXZ(-1);
         }
 
         this.minLimitPerlinNoise = new OctavePerlinNoiseSamplerMCPE(this.random, 16);
@@ -260,11 +252,6 @@ public class MCPEChunkGenerator implements ChunkSource {
 
     }
 
-    private void setSizeXZ(int size) {
-        WORLD_SIZE_X = size;
-        WORLD_SIZE_Z = size;
-    }
-
     public Chunk loadChunk(int chunkX, int chunkZ) {
         return this.getChunk(chunkX, chunkZ);
     }
@@ -293,13 +280,13 @@ public class MCPEChunkGenerator implements ChunkSource {
 
         for (int var1 = 0; var1 < 16; var1++) {
             int blockX = chunkX * 16 + var1;
-            if (blockX < 0 || blockX >= WORLD_SIZE_X && !this.infiniteWorld) {
+            if (blockX < 0 || blockX >= worldSizeX && !this.infiniteWorld) {
                 return new EmptyChunk(this.world, chunkX, chunkZ);
             }
 
             for (int var2 = 0; var2 < 16; var2++) {
                 int blockZ = chunkZ * 16 + var2;
-                if (blockZ < 0 || blockZ >= WORLD_SIZE_Z && !this.infiniteWorld) {
+                if (blockZ < 0 || blockZ >= worldSizeZ && !this.infiniteWorld) {
                     return new EmptyChunk(this.world, chunkX, chunkZ);
                 }
             }
@@ -548,7 +535,7 @@ public class MCPEChunkGenerator implements ChunkSource {
             for(var13 = 0; var13 < var12; ++var13) {
                 var14 = var4 + this.random.nextInt(16) + 8;
                 var15 = var5 + this.random.nextInt(16) + 8;
-                Feature var16 = ((BWOBiome) var6).bwo_getRandomTreeFeatureMCPE(this.random);
+                Feature var16 = ((BWOWorld) var6).bwo_getRandomTreeFeatureMCPE(this.random);
                 var16.generate(this.world, this.random, var14, this.world.getTopY(var14, var15), var15);
             }
 

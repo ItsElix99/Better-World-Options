@@ -1,15 +1,13 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
+import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.world.WorldSettings;
 import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Objects;
 
 @Mixin(net.minecraft.world.WorldProperties.class)
 public class WorldPropertiesMixin implements BWOProperties {
@@ -21,7 +19,8 @@ public class WorldPropertiesMixin implements BWOProperties {
 
     @Unique private String indevWorldType;
     @Unique private String shape;
-    @Unique private String size;
+    @Unique private int sizeX;
+    @Unique private int sizeZ;
     @Unique private boolean generateIndevHouse;
     @Unique private boolean infiniteWorld;
 
@@ -55,8 +54,11 @@ public class WorldPropertiesMixin implements BWOProperties {
     @Override public String bwo_getShape() {
         return this.shape;
     }
-    @Override public String bwo_getSize() {
-        return this.size;
+    @Override public int bwo_getWorldSizeX() {
+        return this.sizeX;
+    }
+    @Override public int bwo_getWorldSizeZ() {
+        return this.sizeZ;
     }
     @Override public boolean bwo_isGenerateIndevHouse() {
         return this.generateIndevHouse;
@@ -73,14 +75,6 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.singleBiome = nbt.getString("SingleBiome");
         this.theme = nbt.getString("Theme");
 
-        WorldSettings.Textures.setBetaFeaturesTextures(this.betaFeatures);
-
-        if (!bwo_getBetaFeatures() && bwo_getWorldType().equals("MCPE")) {
-            WorldSettings.Textures.setMcpe(true);
-        } else {
-            WorldSettings.Textures.setMcpe(false);
-        }
-
         if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
             if (bwo_getWorldType().equals("Indev 223")) {
                 this.indevWorldType = nbt.getString("IndevWorldType");
@@ -88,40 +82,41 @@ public class WorldPropertiesMixin implements BWOProperties {
                 this.generateIndevHouse = nbt.getBoolean("GenerateIndevHouse");
             }
 
-            this.size = nbt.getString("Size");
             this.infiniteWorld = nbt.getBoolean("InfiniteWorld");
+
+            if (!bwo_isInfiniteWorld()) {
+                this.sizeX = nbt.getInt("SizeX");
+                this.sizeZ = nbt.getInt("SizeZ");
+            }
         }
     }
 
     @Inject(method = "<init>(JLjava/lang/String;)V", at = @At("TAIL"))
     private void newWorld(long seed, String name, CallbackInfo ci) {
-        this.worldType = WorldSettings.World.getWorldTypeName();
+        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+        this.worldType = worldGenerationOptions.worldTypeName;
 
-        if (WorldSettings.GameMode.getGameMode().equals("Hardcore")) {
+        if (worldGenerationOptions.gamemode.equals("Hardcore")) {
             this.hardcore = true;
         }
 
-        this.betaFeatures = WorldSettings.GameMode.isBetaFeatures();
-        this.singleBiome = WorldSettings.World.getSingleBiome() == null ? "All Biomes" : WorldSettings.World.getSingleBiome().name;
-        this.theme = WorldSettings.World.getTheme();
-
-        WorldSettings.Textures.setBetaFeaturesTextures(this.betaFeatures);
-
-        if (!bwo_getBetaFeatures() && bwo_getWorldType().equals("MCPE")) {
-            WorldSettings.Textures.setMcpe(true);
-        } else {
-            WorldSettings.Textures.setMcpe(false);
-        }
+        this.betaFeatures = worldGenerationOptions.betaFeatures;
+        this.singleBiome = worldGenerationOptions.singleBiome == null ? "All Biomes" : worldGenerationOptions.singleBiome;
+        this.theme = worldGenerationOptions.theme;
 
         if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
             if (bwo_getWorldType().equals("Indev 223")) {
-                this.indevWorldType = WorldSettings.IndevWorld.getIndevWorldType();
-                this.shape = WorldSettings.IndevWorld.getShape();
-                this.generateIndevHouse = WorldSettings.IndevWorld.isGenerateIndevHouse();
+                this.indevWorldType = worldGenerationOptions.indevWorldType;
+                this.shape = worldGenerationOptions.indevShape;
+                this.generateIndevHouse = worldGenerationOptions.generateIndevHouse;
             }
 
-            this.size = WorldSettings.IndevWorld.getSize();
-            this.infiniteWorld = WorldSettings.IndevWorld.isInfiniteWorld();
+            this.infiniteWorld = worldGenerationOptions.infiniteWorld;
+
+            if (!bwo_isInfiniteWorld()) {
+                this.sizeX = worldGenerationOptions.worldSizeX;
+                this.sizeZ = worldGenerationOptions.worldSizeZ;
+            }
         }
     }
 
@@ -140,8 +135,12 @@ public class WorldPropertiesMixin implements BWOProperties {
                 this.generateIndevHouse = ((BWOProperties) source).bwo_isGenerateIndevHouse();
             }
 
-            this.size = ((BWOProperties) source).bwo_getSize();
             this.infiniteWorld = ((BWOProperties) source).bwo_isInfiniteWorld();
+
+            if (!bwo_isInfiniteWorld()) {
+                this.sizeX = ((BWOProperties) source).bwo_getWorldSizeX();
+                this.sizeZ = ((BWOProperties) source).bwo_getWorldSizeZ();
+            }
         }
     }
 
@@ -160,8 +159,12 @@ public class WorldPropertiesMixin implements BWOProperties {
                 nbt.putBoolean("GenerateIndevHouse", this.generateIndevHouse);
             }
 
-            nbt.putString("Size", this.size);
             nbt.putBoolean("InfiniteWorld", this.infiniteWorld);
+
+            if (!bwo_isInfiniteWorld()) {
+                nbt.putInt("SizeX", this.sizeX);
+                nbt.putInt("SizeZ", this.sizeZ);
+            }
         }
     }
 }

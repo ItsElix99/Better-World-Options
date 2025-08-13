@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.world.WorldSettings;
+import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
+import com.itselix99.betterworldoptions.world.WorldTypeList;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.FurnaceBlock;
@@ -17,13 +18,16 @@ public abstract class FurnaceBlockMixin extends BlockWithEntity {
 
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
     public int getTexture(int original, int side) {
-        if (side == 1) {
-            if (!WorldSettings.Textures.isBetaFeaturesTextures() && !WorldSettings.Textures.isMcpe()) {
-                return 1;
-            } else {
-                return this.textureId + 17;
+        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+
+        if (worldGenerationOptions != null && !worldGenerationOptions.betaFeatures && worldGenerationOptions.oldTextures) {
+            WorldTypeList.WorldTypeEntry worldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
+
+            if (side == 1) {
+                return worldType.OLD_TEXTURES.get("FurnaceTop") != null ? worldType.OLD_TEXTURES.get("FurnaceTop") : original;
             }
         }
+
         return original;
     }
 }

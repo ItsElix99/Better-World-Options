@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.world.worldtypes.indev223;
 
 import com.itselix99.betterworldoptions.BWOConfig;
-import com.itselix99.betterworldoptions.interfaces.BWOBiome;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.IndevFeatures;
@@ -49,8 +49,8 @@ public class Indev223ChunkGenerator implements ChunkSource {
     private final String singleBiome;
     private final boolean infiniteWorld;
 
-    private int WORLD_SIZE_X;
-    private int WORLD_SIZE_Z;
+    private int worldSizeX;
+    private int worldSizeZ;
 
     public Indev223ChunkGenerator(World world, long seed) {
         this.world = world;
@@ -60,44 +60,25 @@ public class Indev223ChunkGenerator implements ChunkSource {
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
         this.singleBiome = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
         this.infiniteWorld = ((BWOProperties) this.world.getProperties()).bwo_isInfiniteWorld();
+        this.worldSizeX = ((BWOProperties) this.world.getProperties()).bwo_getWorldSizeX();
+        this.worldSizeZ = ((BWOProperties) this.world.getProperties()).bwo_getWorldSizeZ();
 
         if (this.theme.equals("Winter")) {
             if (!this.betaFeatures) {
-                ((BWOBiome) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
+                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
             } else {
-                ((BWOBiome) this.world).bwo_setSnow(true);
+                ((BWOWorld) this.world).bwo_setSnow(true);
             }
         } else {
             if (!this.betaFeatures) {
-                ((BWOBiome) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
+                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
             } else {
-                ((BWOBiome) this.world).bwo_setSnow(false);
+                ((BWOWorld) this.world).bwo_setSnow(false);
             }
         }
 
         if (this.betaFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
-        }
-
-        String indevWorldSize = ((BWOProperties) this.world.getProperties()).bwo_getSize();
-        if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getShape(), "Long")) {
-            switch (indevWorldSize) {
-                case "Small" -> this.setSizeXZ(256, 64);
-                case "Normal" -> this.setSizeXZ(512, 128);
-                case "Huge" -> this.setSizeXZ(1024, 256);
-                case "Gigantic" -> this.setSizeXZ(2048, 512);
-                case "Enormous" -> this.setSizeXZ(4096, 1024);
-                default -> this.setSizeXZ(-1);
-            }
-        } else {
-            switch (indevWorldSize) {
-                case "Small" -> this.setSizeXZ(128);
-                case "Normal" -> this.setSizeXZ(256);
-                case "Huge" -> this.setSizeXZ(512);
-                case "Gigantic" -> this.setSizeXZ(1024);
-                case "Enormous" -> this.setSizeXZ(2048);
-                default -> this.setSizeXZ(-1);
-            }
         }
 
         this.distortA = new Distort(new OctavePerlinNoiseSamplerIndev223(this.random, 8), new OctavePerlinNoiseSamplerIndev223(this.random, 8));
@@ -121,11 +102,11 @@ public class Indev223ChunkGenerator implements ChunkSource {
         } else {
             for (int x = 0; x < 16; x++) {
                 int worldX = chunkX * 16 + x;
-                double nx = ((double) worldX / (WORLD_SIZE_X - 1) - 0.5) * 2.0;
+                double nx = ((double) worldX / (worldSizeX - 1) - 0.5) * 2.0;
 
                 for (int z = 0; z < 16; z++) {
                     int worldZ = chunkZ * 16 + z;
-                    double nz = ((double) worldZ / (WORLD_SIZE_Z - 1) - 0.5) * 2.0;
+                    double nz = ((double) worldZ / (worldSizeZ - 1) - 0.5) * 2.0;
 
                     double low = this.distortA.create(worldX * 1.3, worldZ * 1.3) / 6.0 - 4.0;
                     double high = this.distortB.create(worldX * 1.3, worldZ * 1.3) / 5.0 + 6.0;
@@ -158,11 +139,11 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
             for (int x = 0; x < 16; x++) {
                 int worldX = chunkX * 16 + x;
-                double nx = ((double) worldX / (WORLD_SIZE_X - 1) - 0.5) * 2.0;
+                double nx = ((double) worldX / (worldSizeX - 1) - 0.5) * 2.0;
 
                 for (int z = 0; z < 16; z++) {
                     int worldZ = chunkZ * 16 + z;
-                    double nz = ((double) worldZ / (WORLD_SIZE_Z - 1) - 0.5) * 2.0;
+                    double nz = ((double) worldZ / (worldSizeZ - 1) - 0.5) * 2.0;
 
                     double distance = Math.max(Math.abs(nx), Math.abs(nz));
 
@@ -183,11 +164,11 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
         for (int x = 0; x < 16; x++) {
             int worldX = chunkX * 16 + x;
-            double nx = ((double) worldX / (WORLD_SIZE_X - 1) - 0.5) * 2.0;
+            double nx = ((double) worldX / (worldSizeX - 1) - 0.5) * 2.0;
 
             for (int z = 0; z < 16; z++) {
                 int worldZ = chunkZ * 16 + z;
-                double nz = ((double) worldZ / (WORLD_SIZE_Z - 1) - 0.5) * 2.0;
+                double nz = ((double) worldZ / (worldSizeZ - 1) - 0.5) * 2.0;
                 double distance = Math.max(Math.abs(nx), Math.abs(nz));
 
                 double radial;
@@ -411,16 +392,6 @@ public class Indev223ChunkGenerator implements ChunkSource {
         }
     }
 
-    private void setSizeXZ(int size) {
-        WORLD_SIZE_X = size;
-        WORLD_SIZE_Z = size;
-    }
-
-    private void setSizeXZ(int sizeX, int sizeZ) {
-        WORLD_SIZE_X = sizeX;
-        WORLD_SIZE_Z = sizeZ;
-    }
-
     public Chunk loadChunk(int chunkX, int chunkZ) {
         return this.getChunk(chunkX, chunkZ);
     }
@@ -432,8 +403,8 @@ public class Indev223ChunkGenerator implements ChunkSource {
         double[] var4 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var4);
 
-        double centerX = ((double)(chunkX * 16) / (WORLD_SIZE_X - 1) - 0.5) * 2.0;
-        double centerZ = ((double)(chunkZ * 16) / (WORLD_SIZE_Z - 1) - 0.5) * 2.0;
+        double centerX = ((double)(chunkX * 16) / (worldSizeX - 1) - 0.5) * 2.0;
+        double centerZ = ((double)(chunkZ * 16) / (worldSizeZ - 1) - 0.5) * 2.0;
         double distance = Math.max(Math.abs(centerX), Math.abs(centerZ));
 
         if (this.betaFeatures && (distance <= 1.0 || this.infiniteWorld)){
@@ -469,13 +440,13 @@ public class Indev223ChunkGenerator implements ChunkSource {
     public void decorate(ChunkSource source, int x, int z) {
         for (int var1 = 0; var1 < 16; var1++) {
             int blockX = x * 16 + var1;
-            if (blockX < 0 || blockX >= WORLD_SIZE_X) {
+            if (blockX < 0 || blockX >= worldSizeX) {
                 return;
             }
 
             for (int var2 = 0; var2 < 16; var2++) {
                 int blockZ = z * 16 + var2;
-                if (blockZ < 0 || blockZ >= WORLD_SIZE_Z) {
+                if (blockZ < 0 || blockZ >= worldSizeZ) {
                     return;
                 }
             }

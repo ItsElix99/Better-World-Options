@@ -1,10 +1,9 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
-import com.itselix99.betterworldoptions.interfaces.BWOBiome;
+import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOGetDirectoryName;
-import com.itselix99.betterworldoptions.world.WorldSettings;
-import com.itselix99.betterworldoptions.world.WorldTypeList;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -26,7 +25,7 @@ import java.util.Random;
 import java.util.Set;
 
 @Mixin(World.class)
-public abstract class WorldMixin implements BWOGetDirectoryName, BWOBiome {
+public abstract class WorldMixin implements BWOGetDirectoryName, BWOWorld {
     @Shadow public Random random;
     @Shadow public boolean newWorld;
     @Shadow protected WorldProperties properties;
@@ -70,20 +69,21 @@ public abstract class WorldMixin implements BWOGetDirectoryName, BWOBiome {
                     target = "Lnet/minecraft/world/dimension/Dimension;setWorld(Lnet/minecraft/world/World;)V"
             )
     )
-    private void beforeSetWorld(WorldStorage storage, String name, long seed, Dimension dimension, CallbackInfo ci) throws NoSuchMethodException {
+    private void beforeSetWorld(WorldStorage storage, String name, long seed, Dimension dimension, CallbackInfo ci) {
         if (this.newWorld) {
-            ((BWOProperties) this.properties).bwo_setWorldType(WorldSettings.World.getWorldTypeName());
+            ((BWOProperties) this.properties).bwo_setWorldType(WorldGenerationOptions.getInstance().worldTypeName);
         } else {
-            this.properties.setName(name);
-            WorldTypeList.selectWorldType(((BWOProperties) this.properties).bwo_getWorldType());
+            new WorldGenerationOptions(this.properties);
         }
     }
 
     @WrapOperation(method = "initializeSpawnPoint", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldProperties;setSpawn(III)V"))
-    private void initializeSpawnPointIndev(WorldProperties instance, int x, int y, int z, Operation<Void> original) {
-        String worldType = ((BWOProperties) instance).bwo_getWorldType();
-        boolean generateIndevHouse = ((BWOProperties) instance).bwo_isGenerateIndevHouse();
-        boolean infinite = ((BWOProperties) instance).bwo_isInfiniteWorld();
+    private void initializeSpawnPointIndev(WorldProperties properties, int x, int y, int z, Operation<Void> original) {
+        String worldType = ((BWOProperties) properties).bwo_getWorldType();
+        boolean generateIndevHouse = ((BWOProperties) properties).bwo_isGenerateIndevHouse();
+        boolean infinite = ((BWOProperties) properties).bwo_isInfiniteWorld();
+        int worldSizeX = ((BWOProperties) properties).bwo_getWorldSizeX();
+        int worldSizeZ = ((BWOProperties) properties).bwo_getWorldSizeZ();
 
         if (worldType.equals("Indev 223")) {
             boolean isValidSpawnArea = false;
@@ -96,8 +96,8 @@ public abstract class WorldMixin implements BWOGetDirectoryName, BWOBiome {
                     var1 += this.random.nextInt(64) - this.random.nextInt(64);
                     var3 += this.random.nextInt(64) - this.random.nextInt(64);
                 } else {
-                    var1 = this.random.nextInt(this.getSizeX(instance) / 2) + this.getSizeX(instance) / 4;
-                    var3 = this.random.nextInt(this.getSizeZ(instance) / 2) + this.getSizeZ(instance) / 4;
+                    var1 = this.random.nextInt(worldSizeX / 2) + worldSizeX / 4;
+                    var3 = this.random.nextInt(worldSizeZ / 2) + worldSizeZ / 4;
                 }
 
                 var2 = random.nextInt(64, 67);
@@ -106,11 +106,19 @@ public abstract class WorldMixin implements BWOGetDirectoryName, BWOBiome {
                 }
             }
 
-            original.call(instance, var1, var2 + 1, var3);
+            original.call(properties, var1, var2 + 1, var3);
         } else if (worldType.equals("MCPE")) {
-            original.call(instance, 128, 64, 128);
+            int var1 = 128;
+            int var2 = 64;
+            int var3;
+
+            for(var3 = 128; !this.dimension.isValidSpawnPoint(var1, var3); var3 += this.random.nextInt(64) - this.random.nextInt(64)) {
+                var1 += this.random.nextInt(64) - this.random.nextInt(64);
+            }
+
+            original.call(properties, var1, var2, var3);
         } else {
-            original.call(instance, x, y, z);
+            original.call(properties, x, y, z);
         }
     }
 
@@ -136,64 +144,6 @@ public abstract class WorldMixin implements BWOGetDirectoryName, BWOBiome {
         }
 
         return true;
-    }
-
-    @Unique
-    private int getSizeX(WorldProperties properties) {
-        String shape = ((BWOProperties) properties).bwo_getShape();
-        String size = ((BWOProperties) properties).bwo_getSize();
-        int sizeX = 0;
-
-        if (shape.equals("Long")) {
-            sizeX = switch (size) {
-                case "Small" -> 256;
-                case "Normal" -> 512;
-                case "Huge" -> 1024;
-                case "Gigantic" -> 2048;
-                case "Enormous" -> 4096;
-                default -> sizeX;
-            };
-        } else {
-            sizeX = switch (size) {
-                case "Small" -> 128;
-                case "Normal" -> 256;
-                case "Huge" -> 512;
-                case "Gigantic" -> 1024;
-                case "Enormous" -> 2048;
-                default -> sizeX;
-            };
-        }
-
-        return sizeX;
-    }
-
-    @Unique
-    private int getSizeZ(WorldProperties properties) {
-        String shape = ((BWOProperties) properties).bwo_getShape();
-        String size = ((BWOProperties) properties).bwo_getSize();
-        int sizeZ = 0;
-
-        if (shape.equals("Long")) {
-            sizeZ = switch (size) {
-                case "Small" -> 64;
-                case "Normal" -> 128;
-                case "Huge" -> 256;
-                case "Gigantic" -> 512;
-                case "Enormous" -> 1024;
-                default -> sizeZ;
-            };
-        } else {
-            sizeZ = switch (size) {
-                case "Small" -> 128;
-                case "Normal" -> 256;
-                case "Huge" -> 512;
-                case "Gigantic" -> 1024;
-                case "Enormous" -> 2048;
-                default -> sizeZ;
-            };
-        }
-
-        return sizeZ;
     }
 
     @ModifyReturnValue(

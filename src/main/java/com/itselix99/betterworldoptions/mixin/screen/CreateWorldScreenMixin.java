@@ -1,12 +1,12 @@
 package com.itselix99.betterworldoptions.mixin.screen;
 
 import com.itselix99.betterworldoptions.compat.CompatMods;
+import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.gui.screen.IndevOptionsScreen;
 import com.itselix99.betterworldoptions.gui.screen.McpeOptionsScreen;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.itselix99.betterworldoptions.gui.screen.WorldTypeListScreen;
-import com.itselix99.betterworldoptions.world.WorldSettings;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -27,7 +27,9 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Shadow private final Screen parent;
     @Shadow private TextFieldWidget worldNameField;
     @Shadow private TextFieldWidget seedField;
-    @Unique private static TranslationStorage translation = TranslationStorage.getInstance();
+    @Unique private TranslationStorage translation = TranslationStorage.getInstance();
+
+    @Unique private WorldGenerationOptions worldGenerationOptions = new WorldGenerationOptions();
 
     @Unique private ButtonWidget gamemodeButton;
     @Unique private ButtonWidget moreWorldOptions;
@@ -36,9 +38,9 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Unique private ButtonWidget themeButton;
     @Unique private ButtonWidget worldTypeOptionsButton;
 
-    @Unique private static boolean moreOptions;
-    @Unique private static String lastEnteredWorldName = translation.get("selectWorld.newWorld");
-    @Unique private static String lastEnteredSeed = "";
+    @Unique private boolean moreOptions = false;
+    @Unique private String lastEnteredWorldName = translation.get("selectWorld.newWorld");
+    @Unique private String lastEnteredSeed = "";
 
     public CreateWorldScreenMixin(Screen parent) {
         this.parent = parent;
@@ -73,7 +75,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             )
     )
     private void modifyWorldNameField(Args args) {
-        args.set(6, lastEnteredWorldName);
+        args.set(6, this.lastEnteredWorldName);
     }
 
     @ModifyArgs(
@@ -86,7 +88,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     )
     private void modifySeedField(Args args) {
         args.set(3, 60);
-        args.set(6, lastEnteredSeed);
+        args.set(6, this.lastEnteredSeed);
     }
 
     @SuppressWarnings("unchecked")
@@ -96,24 +98,30 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.buttons.remove(1);
         }
 
-        this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, translation.get("selectWorld.gameMode") + " " + WorldSettings.GameMode.getGameMode()));
+        this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, translation.get("selectWorld.gameMode") + " " + this.worldGenerationOptions.gamemode));
         this.buttons.add(this.moreWorldOptions = new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, moreOptions ? translation.get("gui.done") : translation.get("selectWorld.moreWorldOptions")));
-        this.buttons.add(this.worldTypeButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, translation.get("selectWorld.worldtype") + " " + WorldSettings.World.getWorldTypeName()));
-        this.buttons.add(this.betaFeaturesButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, translation.get("selectWorld.betaFeatures") + " " + (WorldSettings.GameMode.isBetaFeatures() ? translation.get("options.on") : translation.get("options.off"))));
-        this.buttons.add(this.themeButton = new ButtonWidget(14, this.width / 2 - 75, 150, 150, 20, translation.get("selectWorld.theme") + " " + WorldSettings.World.getTheme()));
+        this.buttons.add(this.worldTypeButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, translation.get("selectWorld.worldtype") + " " + this.worldGenerationOptions.worldTypeName));
+        this.buttons.add(this.betaFeaturesButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, translation.get("selectWorld.betaFeatures") + " " + (this.worldGenerationOptions.betaFeatures ? translation.get("options.on") : translation.get("options.off"))));
+        this.buttons.add(this.themeButton = new ButtonWidget(14, this.width / 2 - 75, 150, 150, 20, translation.get("selectWorld.theme") + " " + worldGenerationOptions.theme));
         this.buttons.add(this.worldTypeOptionsButton = new ButtonWidget(15, this.width / 2 + 5, 100, 150, 20, this.getWorldTypeOptionsButtonName()));
 
-        if (WorldSettings.GameMode.getNonBetaFeaturesWorldTypes()) {
+        if (this.worldGenerationOptions.worldTypeName.equals("MCPE")) {
+            this.worldGenerationOptions.resetIndevOptions();
+        } else if (!this.worldGenerationOptions.worldTypeName.equals("Indev 223")) {
+            this.worldGenerationOptions.resetFiniteOptions();
+        }
+
+        if (!WorldGenerationOptions.allowBetaFeaturesWorldTypes.contains(this.worldGenerationOptions.worldTypeName)) {
             this.betaFeaturesButton.active = false;
 
-            if (!WorldSettings.GameMode.isBetaFeatures()) {
-                WorldSettings.GameMode.setBetaFeatures(true);
+            if (!this.worldGenerationOptions.betaFeatures) {
+                this.worldGenerationOptions.betaFeatures = true;
             }
         } else {
             this.betaFeaturesButton.active = true;
         }
 
-        if (WorldSettings.World.getWorldTypeName().equals("Indev 223") || WorldSettings.World.getWorldTypeName().equals("MCPE")) {
+        if (this.worldGenerationOptions.worldTypeName.equals("Indev 223") || this.worldGenerationOptions.worldTypeName.equals("MCPE")) {
             this.betaFeaturesButton.visible = false;
             this.themeButton.visible = false;
         }
@@ -124,9 +132,9 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
     @Unique
     private String getWorldTypeOptionsButtonName() {
-        if (WorldSettings.World.getWorldTypeName().equals("Indev 223")) {
+        if (this.worldGenerationOptions.worldTypeName.equals("Indev 223")) {
             return translation.get("selectWorld.indevOptions");
-        } else if (WorldSettings.World.getWorldTypeName().equals("MCPE")) {
+        } else if (this.worldGenerationOptions.worldTypeName.equals("MCPE")) {
             return translation.get("selectWorld.mcpeOptions");
         } else {
             return "";
@@ -145,67 +153,58 @@ public abstract class CreateWorldScreenMixin extends Screen {
         if (button.active && button.visible) {
             if (button.id == 0) {
                 if (CompatMods.BHCreativeLoaded()) {
-                    if (minecraft.player != null && WorldSettings.GameMode.getGameMode().equals("Creative")) {
+                    if (minecraft.player != null && this.worldGenerationOptions.gamemode.equals("Creative")) {
                         minecraft.player.creative_setCreative(true);
                     }
                 }
-
-                moreOptions = false;
-                lastEnteredWorldName = translation.get("selectWorld.newWorld");
-                lastEnteredSeed = "";
-            } else if (button.id == 1) {
-                moreOptions = false;
-                lastEnteredWorldName = translation.get("selectWorld.newWorld");
-                lastEnteredSeed = "";
-                WorldSettings.resetSettings();
             } else if (button.id == 10) {
                 if (CompatMods.BHCreativeLoaded()) {
                     switch (this.gamemodeButton.text) {
-                        case "Game Mode: Survival" -> WorldSettings.GameMode.setGameMode("Hardcore");
-                        case "Game Mode: Hardcore" -> WorldSettings.GameMode.setGameMode("Creative");
-                        case "Game Mode: Creative" -> WorldSettings.GameMode.setGameMode("Survival");
+                        case "Game Mode: Survival" -> this.worldGenerationOptions.gamemode = "Hardcore";
+                        case "Game Mode: Hardcore" -> this.worldGenerationOptions.gamemode = "Creative";
+                        case "Game Mode: Creative" -> this.worldGenerationOptions.gamemode = "Survival";
                     }
                 } else {
                     switch (this.gamemodeButton.text) {
-                        case "Game Mode: Survival" -> WorldSettings.GameMode.setGameMode("Hardcore");
-                        case "Game Mode: Hardcore" -> WorldSettings.GameMode.setGameMode("Survival");
+                        case "Game Mode: Survival" -> this.worldGenerationOptions.gamemode = "Hardcore";
+                        case "Game Mode: Hardcore" -> this.worldGenerationOptions.gamemode = "Survival";
                     }
                 }
 
-                this.gamemodeButton.text = translation.get("selectWorld.gameMode") + " " + WorldSettings.GameMode.getGameMode();
+                this.gamemodeButton.text = this.translation.get("selectWorld.gameMode") + " " + this.worldGenerationOptions.gamemode;
             } else if (button.id == 11) {
-                moreOptions = !moreOptions;
-                this.moreWorldOptions.text = moreOptions ? translation.get("gui.done") : translation.get("selectWorld.moreWorldOptions");
+                this.moreOptions = !this.moreOptions;
+                this.moreWorldOptions.text = this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions");
 
-                this.seedField.setFocused(moreOptions);
-                this.worldNameField.setFocused(!moreOptions);
+                this.seedField.setFocused(this.moreOptions);
+                this.worldNameField.setFocused(!this.moreOptions);
             } else if (button.id == 12) {
-                lastEnteredWorldName = this.worldNameField.getText();
-                lastEnteredSeed = this.seedField.getText();
+                this.lastEnteredWorldName = this.worldNameField.getText();
+                this.lastEnteredSeed = this.seedField.getText();
 
-                this.minecraft.setScreen(new WorldTypeListScreen(this));
+                this.minecraft.setScreen(new WorldTypeListScreen(this, this.worldGenerationOptions));
             } else if (button.id == 13) {
-                WorldSettings.GameMode.setBetaFeatures(!WorldSettings.GameMode.isBetaFeatures());
+                this.worldGenerationOptions.betaFeatures = !this.worldGenerationOptions.betaFeatures;
 
-                this.betaFeaturesButton.text = translation.get("selectWorld.betaFeatures") + " " + (WorldSettings.GameMode.isBetaFeatures() ? translation.get("options.on") : translation.get("options.off"));
+                this.betaFeaturesButton.text = this.translation.get("selectWorld.betaFeatures") + " " + (this.worldGenerationOptions.betaFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
             } else if (button.id == 14) {
                 switch (this.themeButton.text) {
-                    case "Theme: Normal" -> WorldSettings.World.setTheme("Hell");
-                    case "Theme: Hell" -> WorldSettings.World.setTheme("Paradise");
-                    case "Theme: Paradise" -> WorldSettings.World.setTheme("Woods");
-                    case "Theme: Woods" -> WorldSettings.World.setTheme("Winter");
-                    case "Theme: Winter" -> WorldSettings.World.setTheme("Normal");
+                    case "Theme: Normal" -> this.worldGenerationOptions.theme = "Hell";
+                    case "Theme: Hell" -> this.worldGenerationOptions.theme = "Paradise";
+                    case "Theme: Paradise" -> this.worldGenerationOptions.theme = "Woods";
+                    case "Theme: Woods" -> this.worldGenerationOptions.theme = "Winter";
+                    case "Theme: Winter" -> this.worldGenerationOptions.theme = "Normal";
                 }
 
-                this.themeButton.text = translation.get("selectWorld.theme") + " " + WorldSettings.World.getTheme();
+                this.themeButton.text = this.translation.get("selectWorld.theme") + " " + this.worldGenerationOptions.theme;
             } else if (button.id == 15) {
-                lastEnteredWorldName = this.worldNameField.getText();
-                lastEnteredSeed = this.seedField.getText();
+                this.lastEnteredWorldName = this.worldNameField.getText();
+                this.lastEnteredSeed = this.seedField.getText();
 
-                if (WorldSettings.World.getWorldTypeName().equals("Indev 223")) {
-                    this.minecraft.setScreen(new IndevOptionsScreen(this));
-                } else if (WorldSettings.World.getWorldTypeName().equals("MCPE")) {
-                    this.minecraft.setScreen(new McpeOptionsScreen(this));
+                if (this.worldGenerationOptions.worldTypeName.equals("Indev 223")) {
+                    this.minecraft.setScreen(new IndevOptionsScreen(this, this.worldGenerationOptions));
+                } else if (this.worldGenerationOptions.worldTypeName.equals("MCPE")) {
+                    this.minecraft.setScreen(new McpeOptionsScreen(this, this.worldGenerationOptions));
                 }
             }
         }
@@ -219,7 +218,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             )
     )
     private void keyPressed(TextFieldWidget instance, char character, int keyCode, Operation<Void> original) {
-        TextFieldWidget activeField = moreOptions ? this.seedField : this.worldNameField;
+        TextFieldWidget activeField = this.moreOptions ? this.seedField : this.worldNameField;
         original.call(activeField, character, keyCode);
     }
 
@@ -243,7 +242,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             )
     )
     private void enterNameText(CreateWorldScreen instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Void> original) {
-        if(!moreOptions) {
+        if(!this.moreOptions) {
             original.call(instance, textRenderer, text, x, y, color);
         }
     }
@@ -257,7 +256,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             )
     )
     private void resultFolderText(CreateWorldScreen instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Void> original) {
-        if(!moreOptions) {
+        if(!this.moreOptions) {
             original.call(instance, textRenderer, text, x, y, color);
         }
     }
@@ -271,7 +270,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             )
     )
     private void enterSeedText(CreateWorldScreen instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Void> original) {
-        if(moreOptions) {
+        if(this.moreOptions) {
             original.call(instance, textRenderer, text, x, 47, color);
         }
     }
@@ -285,7 +284,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             )
     )
     private void seedInfoText(CreateWorldScreen instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Void> original) {
-        if(moreOptions) {
+        if(this.moreOptions) {
             original.call(instance, textRenderer, text, x, 85, color);
         }
     }
@@ -299,7 +298,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             )
     )
     private void worldNameFieldRender(TextFieldWidget instance, Operation<Void> original) {
-        if(!moreOptions) {
+        if(!this.moreOptions) {
             original.call(instance);
         }
     }
@@ -313,15 +312,14 @@ public abstract class CreateWorldScreenMixin extends Screen {
             )
     )
     private void seedFieldRender(TextFieldWidget instance, Operation<Void> original) {
-        if(moreOptions) {
+        if(this.moreOptions) {
             original.call(instance);
         }
     }
 
     @Inject(method = "render", at = @At("TAIL"))
     public void render(int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        TranslationStorage var4 = TranslationStorage.getInstance();
-        if(!moreOptions) {
+        if(!this.moreOptions) {
             this.worldTypeButton.visible = false;
             this.betaFeaturesButton.visible = false;
             this.worldTypeOptionsButton.visible = false;
@@ -330,22 +328,22 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
             if (CompatMods.BHCreativeLoaded()) {
                 switch (this.gamemodeButton.text) {
-                    case "Game Mode: Survival" -> this.drawCenteredTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.survival.info"), this.width / 2, 122, 10526880);
+                    case "Game Mode: Survival" -> this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.survival.info"), this.width / 2, 122, 10526880);
                     case "Game Mode: Hardcore" -> {
-                        this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.hardcore.info.line1"), this.width / 2 - 100, 122, 10526880);
-                        this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.hardcore.info.line2"), this.width / 2 - 100, 134, 10526880);
+                        this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.hardcore.info.line1"), this.width / 2 - 100, 122, 10526880);
+                        this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.hardcore.info.line2"), this.width / 2 - 100, 134, 10526880);
                     }
                     case "Game Mode: Creative" -> {
-                        this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.creative.info.line1"), this.width / 2 - 100, 122, 10526880);
-                        this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.creative.info.line2"), this.width / 2 - 100, 134, 10526880);
+                        this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.creative.info.line1"), this.width / 2 - 100, 122, 10526880);
+                        this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.creative.info.line2"), this.width / 2 - 100, 134, 10526880);
                     }
                 }
             } else {
                 switch (this.gamemodeButton.text) {
-                    case "Game Mode: Survival" -> this.drawCenteredTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.survival.info"), this.width / 2, 122, 10526880);
+                    case "Game Mode: Survival" -> this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.survival.info"), this.width / 2, 122, 10526880);
                     case "Game Mode: Hardcore" -> {
-                        this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.hardcore.info.line1"), this.width / 2 - 100, 122, 10526880);
-                        this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.gameMode.hardcore.info.line2"), this.width / 2 - 100, 134, 10526880);
+                        this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.hardcore.info.line1"), this.width / 2 - 100, 122, 10526880);
+                        this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.hardcore.info.line2"), this.width / 2 - 100, 134, 10526880);
                     }
                 }
             }
@@ -353,7 +351,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.worldTypeButton.visible = true;
             this.gamemodeButton.visible = false;
 
-            if (WorldSettings.World.getWorldTypeName().equals("Indev 223") || WorldSettings.World.getWorldTypeName().equals("MCPE")) {
+            if (this.worldGenerationOptions.worldTypeName.equals("Indev 223") || this.worldGenerationOptions.worldTypeName.equals("MCPE")) {
                 this.betaFeaturesButton.visible = false;
                 this.themeButton.visible = false;
                 this.worldTypeOptionsButton.visible = true;
@@ -363,15 +361,15 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 this.worldTypeOptionsButton.visible = false;
             }
 
-            if (WorldSettings.GameMode.isBetaFeatures()) {
+            if (this.worldGenerationOptions.betaFeatures) {
                 if (this.betaFeaturesButton.visible) {
-                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.line1"), this.width / 2 + 5, 122, 10526880);
-                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.line2"), this.width / 2 + 5, 134, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.betaFeatures.info.line1"), this.width / 2 + 5, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.betaFeatures.info.line2"), this.width / 2 + 5, 134, 10526880);
                 }
             } else {
                 if (this.betaFeaturesButton.visible) {
-                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.disabled.line1"), this.width / 2 + 5, 122, 10526880);
-                    this.drawTextWithShadow(this.textRenderer, var4.get("selectWorld.betaFeatures.info.disabled.line2"), this.width / 2 + 5, 134, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.betaFeatures.info.disabled.line1"), this.width / 2 + 5, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.betaFeatures.info.disabled.line2"), this.width / 2 + 5, 134, 10526880);
                 }
             }
         }

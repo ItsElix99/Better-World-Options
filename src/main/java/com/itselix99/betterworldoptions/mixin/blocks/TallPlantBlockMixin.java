@@ -1,13 +1,10 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.event.TextureListener;
-import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.world.WorldSettings;
+import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
+import com.itselix99.betterworldoptions.world.WorldTypeList;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.PlantBlock;
 import net.minecraft.block.TallPlantBlock;
-import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -19,20 +16,20 @@ public class TallPlantBlockMixin extends PlantBlock {
 
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
     public int getTexture(int original, int side, int meta) {
-        @Deprecated Minecraft minecraft = (Minecraft) FabricLoader.getInstance().getGameInstance();
-        String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
-        boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
+        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
 
-        if (WorldSettings.GameMode.isBetaFeaturesWorldTypes(worldType) && !betaFeatures && !WorldSettings.Textures.isBetaFeaturesTextures() &&!WorldSettings.Textures.isMcpe()) {
+        if (worldGenerationOptions != null && !worldGenerationOptions.betaFeatures && worldGenerationOptions.oldTextures) {
+            WorldTypeList.WorldTypeEntry worldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
+
             if (meta == 1) {
-                return TextureListener.alphaTallGrass;
+                return worldType.OLD_TEXTURES.get("Grass") != null ? worldType.OLD_TEXTURES.get("Grass") : original;
             } else if (meta == 2) {
-                return TextureListener.alphaFern;
+                return worldType.OLD_TEXTURES.get("Fern") != null ? worldType.OLD_TEXTURES.get("Fern") : original;
             } else {
-                return meta == 0 ? TextureListener.alphaFern : TextureListener.alphaTallGrass;
+                return meta == 0 ? (worldType.OLD_TEXTURES.get("Fern") != null ? worldType.OLD_TEXTURES.get("Fern") : original) : (worldType.OLD_TEXTURES.get("Grass") != null ? worldType.OLD_TEXTURES.get("Grass") : original);
             }
-        } else {
-            return original;
         }
+
+        return original;
     }
 }

@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
 import com.itselix99.betterworldoptions.BWOConfig;
-import com.itselix99.betterworldoptions.interfaces.BWOBiome;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -40,7 +40,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         this.worldType = ((BWOProperties) world.getProperties()).bwo_getWorldType();
         this.theme = ((BWOProperties) world.getProperties()).bwo_getTheme();
 
-        ((BWOBiome) this.world).bwo_setSnow(this.theme.equals("Winter"));
+        ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
     }
 
     @ModifyVariable(

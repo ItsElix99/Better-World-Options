@@ -3,7 +3,7 @@ package com.itselix99.betterworldoptions.world.worldtypes.alpha112;
 import java.util.Random;
 
 import com.itselix99.betterworldoptions.BWOConfig;
-import com.itselix99.betterworldoptions.interfaces.BWOBiome;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.worldtypes.alpha112.util.math.noise.OctavePerlinNoiseSamplerAlpha112;
@@ -62,15 +62,15 @@ public class Alpha112ChunkGenerator implements ChunkSource {
 
         if (this.theme.equals("Winter")) {
             if (!this.betaFeatures) {
-                ((BWOBiome) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
+                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
             } else {
-                ((BWOBiome) this.world).bwo_setSnow(true);
+                ((BWOWorld) this.world).bwo_setSnow(true);
             }
         } else {
             if (!this.betaFeatures) {
-                ((BWOBiome) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
+                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
             } else {
-                ((BWOBiome) this.world).bwo_setSnow(false);
+                ((BWOWorld) this.world).bwo_setSnow(false);
             }
         }
 

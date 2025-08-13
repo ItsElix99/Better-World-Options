@@ -34,7 +34,6 @@
     "player.ClientPlayerEntityMixin",
     "screen.CreateWorldScreenMixin",
     "screen.DeathScreenMixin",
-    "screen.GameMenuScreenMixin",
     "screen.InGameHudMixin",
     "screen.OptionsScreenMixin",
     "screen.WorldListWidgetMixin",
