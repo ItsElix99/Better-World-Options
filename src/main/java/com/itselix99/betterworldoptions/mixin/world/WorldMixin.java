@@ -7,6 +7,8 @@ import com.itselix99.betterworldoptions.interfaces.BWOGetDirectoryName;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
@@ -168,6 +170,7 @@ public abstract class WorldMixin implements BWOGetDirectoryName, BWOWorld {
         return original;
     }
 
+    @Environment(EnvType.CLIENT)
     @WrapOperation(
             method = "getCloudColor(F)Lnet/minecraft/util/math/Vec3d;",
             at = @At(

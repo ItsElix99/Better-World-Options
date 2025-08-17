@@ -1,19 +1,22 @@
 package com.itselix99.betterworldoptions.world;
 
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.WorldProperties;
 
 import java.util.Set;
 
 public class WorldGenerationOptions {
-    private static WorldGenerationOptions INSTANCE;
+    private static WorldGenerationOptions INSTANCE = new WorldGenerationOptions();
 
     public static final Set<String> allowBetaFeaturesWorldTypes = Set.of(
             "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "Indev 223", "MCPE"
     );
 
     public String worldTypeName;
-    public String gamemode;
+    public boolean hardcore;
     public boolean betaFeatures;
     public String theme;
     public String singleBiome;
@@ -32,19 +35,21 @@ public class WorldGenerationOptions {
     public WorldGenerationOptions() {
         INSTANCE = this;
 
-        this.worldTypeName = WorldTypeList.getList().get(0).NAME;
-        this.gamemode = "Survival";
-        this.betaFeatures = true;
-        this.theme = "Normal";
-        this.singleBiome = null;
+        boolean server = FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
 
-        this.indevWorldType = "Island";
-        this.indevShape = "Square";
-        this.generateIndevHouse = true;
+        this.worldTypeName = server ? Config.BWOConfig.server.worldType : "Default";
+        this.hardcore = server ? Config.BWOConfig.server.hardcore : false;
+        this.betaFeatures = server ? Config.BWOConfig.server.betaFeatures : true;
+        this.theme = server ? Config.BWOConfig.server.theme : "Normal";
+        this.singleBiome = server ? Config.BWOConfig.server.singleBiome : "Off";
 
-        this.size = "Normal";
+        this.indevWorldType = server ? Config.BWOConfig.server.indevWorldType : "Island";
+        this.indevShape = server ? Config.BWOConfig.server.indevShape : "Square";
+        this.generateIndevHouse = server ? Config.BWOConfig.server.generateIndevHouse : true;
+
+        this.size = server ? Config.BWOConfig.server.worldSize : "Normal";
         this.setSizeXZ();
-        this.infiniteWorld = false;
+        this.infiniteWorld = server ? Config.BWOConfig.server.infiniteWorld : false;
 
         this.oldTextures = false;
     }
@@ -53,7 +58,7 @@ public class WorldGenerationOptions {
         INSTANCE = this;
 
         this.worldTypeName = ((BWOProperties) properties).bwo_getWorldType();
-        this.gamemode = "Survival";
+        this.hardcore = ((BWOProperties) properties).bwo_isHardcore();
         this.betaFeatures = ((BWOProperties) properties).bwo_getBetaFeatures();
         this.theme = ((BWOProperties) properties).bwo_getTheme();
         this.singleBiome = ((BWOProperties) properties).bwo_getSingleBiome();
@@ -96,7 +101,7 @@ public class WorldGenerationOptions {
                     this.worldSizeX = 4096;
                     this.worldSizeZ = 1024;
                 }
-            };
+            }
         } else {
             switch (this.size) {
                 case "Small" -> {
@@ -119,7 +124,7 @@ public class WorldGenerationOptions {
                     this.worldSizeX = 2048;
                     this.worldSizeZ = 2048;
                 }
-            };
+            }
         }
     }
 

@@ -49,7 +49,7 @@ public class BiomeListScreen extends Screen {
             if (button.id == 0) {
                 this.minecraft.setScreen(this.parent);
             } else if (button.id == 1) {
-                if (this.worldGenerationOptions.singleBiome != null) {
+                if (!this.worldGenerationOptions.singleBiome.equals("Off")) {
                     this.worldGenerationOptions.singleBiome = null;
                     selectedBiome = null;
                     button.active = false;

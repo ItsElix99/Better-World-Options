@@ -3,6 +3,8 @@ package com.itselix99.betterworldoptions.mixin.blocks;
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.world.WorldTypeList;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.TransparentBlock;
 import net.minecraft.block.material.Material;
@@ -36,6 +38,7 @@ public class LeavesBlockMixin extends TransparentBlock {
         return original;
     }
 
+    @Environment(EnvType.CLIENT)
     @ModifyReturnValue(method = "getColorMultiplier", at = @At("RETURN"))
     public int getColorMultiplier(int original, BlockView blockView, int x, int y, int z) {
         int var5 = blockView.getBlockMeta(x, y, z);

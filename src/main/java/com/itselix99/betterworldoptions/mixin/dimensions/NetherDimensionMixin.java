@@ -14,7 +14,9 @@ public class NetherDimensionMixin extends Dimension {
 
     @ModifyReturnValue(method = "hasWorldSpawn", at = @At("RETURN"))
     private boolean netherHasWorldSpawn(boolean original) {
-        if (Objects.equals(((BWOProperties) this.world.getProperties()).bwo_getWorldType(), "Nether")) {
+        String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
+
+        if (worldType.equals("Nether")) {
             return true;
         } else {
             return original;

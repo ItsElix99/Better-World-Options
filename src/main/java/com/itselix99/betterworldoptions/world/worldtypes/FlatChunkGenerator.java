@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes;
 
-import com.itselix99.betterworldoptions.BWOConfig;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
@@ -53,7 +53,7 @@ public class FlatChunkGenerator implements ChunkSource {
     public void buildTerrain(byte[] blocks, Biome[] biomes) {
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
-                for (int y = 0; y < BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue(); ++y) {
+                for (int y = 0; y < Config.BWOConfig.world.worldHeightLimit.getIntValue(); ++y) {
                     int blockId;
                     Biome var1 = biomes[x + z * 16];
 
@@ -72,7 +72,7 @@ public class FlatChunkGenerator implements ChunkSource {
                     } else
                         blockId = 0;
 
-                    int index = (x * 16 + z) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + y;
+                    int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
                     blocks[index] = (byte) blockId;
                 }
             }
@@ -85,7 +85,7 @@ public class FlatChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() * 16];
+        byte[] var3 = new byte[16 * Config.BWOConfig.world.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         this.buildTerrain(var3, this.biomes);
 
@@ -93,7 +93,7 @@ public class FlatChunkGenerator implements ChunkSource {
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
 
-        if (BWOConfig.WORLD_CONFIG.ravineGeneration) {
+        if (Config.BWOConfig.world.ravineGeneration) {
             if (this.betaFeatures) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }

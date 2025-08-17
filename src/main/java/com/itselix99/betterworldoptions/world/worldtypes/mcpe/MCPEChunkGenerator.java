@@ -1,8 +1,9 @@
 package com.itselix99.betterworldoptions.world.worldtypes.mcpe;
 
-import com.itselix99.betterworldoptions.BWOConfig;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.world.chunk.EmptyFlattenedChunk;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.util.MTRandom;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.util.math.noise.OctavePerlinNoiseSamplerMCPE;
@@ -16,7 +17,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
-import net.minecraft.world.chunk.EmptyChunk;
 import net.minecraft.world.gen.Generator;
 import net.minecraft.world.gen.carver.CaveWorldCarver;
 import net.minecraft.world.gen.feature.*;
@@ -103,7 +103,7 @@ public class MCPEChunkGenerator implements ChunkSource {
         byte var6 = 4;
         byte var7 = 64;
         int var8 = var6 + 1;
-        int vertical = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() / 8;
+        int vertical = Config.BWOConfig.world.worldHeightLimit.getIntValue() / 8;
         byte var9 = (byte) (vertical + 1);
         int var10 = var6 + 1;
         this.heightMap = this.generateHeightMap(this.heightMap, chunkX * var6, chunkZ * var6, var8, var9, var10);
@@ -132,10 +132,10 @@ public class MCPEChunkGenerator implements ChunkSource {
                         double var41 = (var22 - var18) * var33;
 
                         for(int var43 = 0; var43 < 4; ++var43) {
-                            int shiftY = MathHelper.ceilLog2(BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue());
+                            int shiftY = MathHelper.ceilLog2(Config.BWOConfig.world.worldHeightLimit.getIntValue());
                             int shiftXZ = shiftY + 4;
                             int var44 = var43 + var11 * 4 << shiftXZ | var12 * 4 << shiftY | var13 * 8 + var32;
-                            int var45 = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue();
+                            int var45 = Config.BWOConfig.world.worldHeightLimit.getIntValue();
                             double var46 = 0.25F;
                             double var48 = var35;
                             double var50 = (var37 - var35) * var46;
@@ -193,8 +193,8 @@ public class MCPEChunkGenerator implements ChunkSource {
                 byte var15 = this.theme.equals("Hell") ? (byte) (var10.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var10.topBlockId) : var10.topBlockId;
                 byte var16 = var10.soilBlockId;
 
-                for(int var17 = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() - 1; var17 >= 0; --var17) {
-                    int var18 = (var9 * 16 + var8) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + var17;
+                for(int var17 = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1; var17 >= 0; --var17) {
+                    int var18 = (var9 * 16 + var8) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var17;
                     if (var17 <= this.random.nextInt(5)) {
                         blocks[var18] = (byte)Block.BEDROCK.id;
                     } else {
@@ -258,7 +258,7 @@ public class MCPEChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() * 16];
+        byte[] var3 = new byte[16 * Config.BWOConfig.world.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, var5);
@@ -268,8 +268,8 @@ public class MCPEChunkGenerator implements ChunkSource {
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
 
-        if (BWOConfig.WORLD_CONFIG.ravineGeneration) {
-            if (this.betaFeatures || BWOConfig.WORLD_CONFIG.allowGenWithBetaFeaturesOff) {
+        if (Config.BWOConfig.world.ravineGeneration) {
+            if (this.betaFeatures || Config.BWOConfig.world.allowGenWithBetaFeaturesOff) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
         }
@@ -281,13 +281,13 @@ public class MCPEChunkGenerator implements ChunkSource {
         for (int var1 = 0; var1 < 16; var1++) {
             int blockX = chunkX * 16 + var1;
             if (blockX < 0 || blockX >= worldSizeX && !this.infiniteWorld) {
-                return new EmptyChunk(this.world, chunkX, chunkZ);
+                return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
             }
 
             for (int var2 = 0; var2 < 16; var2++) {
                 int blockZ = chunkZ * 16 + var2;
                 if (blockZ < 0 || blockZ >= worldSizeZ && !this.infiniteWorld) {
-                    return new EmptyChunk(this.world, chunkX, chunkZ);
+                    return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
                 }
             }
         }

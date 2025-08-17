@@ -2,15 +2,19 @@ package com.itselix99.betterworldoptions;
 
 import com.itselix99.betterworldoptions.block.InvisibleBedrock;
 import com.itselix99.betterworldoptions.event.TextureListener;
+import com.itselix99.betterworldoptions.network.WorldGenerationOptionsPacket;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.world.biome.Biome;
+import net.modificationstation.stationapi.api.event.network.packet.PacketRegisterEvent;
 import net.modificationstation.stationapi.api.event.registry.BlockRegistryEvent;
 import net.modificationstation.stationapi.api.event.world.biome.BiomeRegisterEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
+import net.modificationstation.stationapi.api.registry.PacketTypeRegistry;
+import net.modificationstation.stationapi.api.registry.Registry;
 import net.modificationstation.stationapi.api.util.Namespace;
 import net.modificationstation.stationapi.api.util.Null;
 import net.modificationstation.stationapi.api.worldgen.biome.BiomeBuilder;
@@ -32,6 +36,11 @@ public class BetterWorldOptions {
     @EventListener
     public void registerBlocks(BlockRegistryEvent event) {
         INVISIBLE_BEDROCK = new InvisibleBedrock(NAMESPACE.id("invisible_bedrock"), TextureListener.invisibleBedrock, Material.STONE).setUnbreakable().setResistance(6000000.0F).setSoundGroup(Block.STONE_SOUND_GROUP).setTranslationKey(NAMESPACE, "invisible_bedrock").disableTrackingStatistics();
+    }
+
+    @EventListener
+    public void registerPackets(PacketRegisterEvent event) {
+        Registry.register(PacketTypeRegistry.INSTANCE, NAMESPACE.id("world_generation_options_packet"), WorldGenerationOptionsPacket.TYPE);
     }
 
     @EventListener

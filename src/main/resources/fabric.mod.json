@@ -21,19 +21,19 @@
   "environment": "*",
   "entrypoints": {
     "stationapi:event_bus": [
-      "com.itselix99.betterworldoptions.BetterWorldOptions",
-      "com.itselix99.betterworldoptions.event.TextureListener"
+      "com.itselix99.betterworldoptions.BetterWorldOptions"
     ],
     "stationapi:event_bus_client": [
+      "com.itselix99.betterworldoptions.event.TextureListener"
     ],
     "stationapi:event_bus_server": [
     ],
     "gcapi3": [
-      "com.itselix99.betterworldoptions.BWOConfig"
+      "com.itselix99.betterworldoptions.config.Config"
     ],
     "gcapi3:factory_provider": [
-      "com.itselix99.betterworldoptions.config.WalkingAnimConfigEnumFactories",
-      "com.itselix99.betterworldoptions.config.WorldHeightConfigEnumFactories"
+      "com.itselix99.betterworldoptions.config.enums.WalkingAnimConfigEnumFactories",
+      "com.itselix99.betterworldoptions.config.enums.WorldHeightConfigEnumFactories"
     ],
     "bhcreative:event_bus": [
     ]

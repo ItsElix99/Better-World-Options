@@ -34,6 +34,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
     )
     private void respawnInOthersDimensions(Args args) {
         String worldType = ((BWOProperties) this.minecraft.world.getProperties()).bwo_getWorldType();
+
         if (Objects.equals(worldType, "Nether")) {
             args.set(1, -1);
         } else if (Objects.equals(worldType, "Skylands")) {

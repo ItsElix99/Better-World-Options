@@ -2,14 +2,17 @@ package com.itselix99.betterworldoptions.mixin.biomes;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
 import net.modificationstation.stationapi.impl.worldgen.BiomeColorsImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+@Environment(EnvType.CLIENT)
 @Mixin(BiomeColorsImpl.class)
-public class BiomeColorsMixin {
+public class BiomeColorsImplClientMixin {
 
     @ModifyReturnValue(
             method = "lambda$static$0",
@@ -19,7 +22,7 @@ public class BiomeColorsMixin {
             )
     )
     private static int modifyGrassColor(int original) {
-        @Deprecated Minecraft minecraft = (Minecraft) FabricLoader.getInstance().getGameInstance();
+        Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
 
@@ -38,7 +41,7 @@ public class BiomeColorsMixin {
             )
     )
     private static int modifyLeavesColor(int original) {
-        @Deprecated Minecraft minecraft = (Minecraft) FabricLoader.getInstance().getGameInstance();
+        Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
 
@@ -57,7 +60,7 @@ public class BiomeColorsMixin {
             )
     )
     private static int modifyFogColor(int original) {
-        @Deprecated Minecraft minecraft = (Minecraft) FabricLoader.getInstance().getGameInstance();
+        Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
         String theme = ((BWOProperties) minecraft.world.getProperties()).bwo_getTheme();

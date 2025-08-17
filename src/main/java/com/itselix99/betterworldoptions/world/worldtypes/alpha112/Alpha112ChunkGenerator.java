@@ -2,7 +2,7 @@ package com.itselix99.betterworldoptions.world.worldtypes.alpha112;
 
 import java.util.Random;
 
-import com.itselix99.betterworldoptions.BWOConfig;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
@@ -90,7 +90,7 @@ public class Alpha112ChunkGenerator implements ChunkSource {
         byte var4 = 4;
         byte var5 = 64;
         int var6 = var4 + 1;
-        int vertical = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() / 8;
+        int vertical = Config.BWOConfig.world.worldHeightLimit.getIntValue() / 8;
         byte var7 = (byte) (vertical + 1);
         int var8 = var4 + 1;
         this.heightMap = this.generateHeightMap(this.heightMap, chunkX * var4, chunkZ * var4, var6, var7, var8);
@@ -119,10 +119,10 @@ public class Alpha112ChunkGenerator implements ChunkSource {
                         double var39 = (var20 - var16) * var31;
 
                         for(int var41 = 0; var41 < 4; ++var41) {
-                            int shiftY = MathHelper.ceilLog2(BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue());
+                            int shiftY = MathHelper.ceilLog2(Config.BWOConfig.world.worldHeightLimit.getIntValue());
                             int shiftXZ = shiftY + 4;
                             int var42 = var41 + var9 * 4 << shiftXZ | var10 * 4 << shiftY | var11 * 8 + var30;
-                            int var43 = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue();
+                            int var43 = Config.BWOConfig.world.worldHeightLimit.getIntValue();
                             double var44 = 0.25D;
                             double var46 = var33;
                             double var48 = (var35 - var33) * var44;
@@ -188,8 +188,8 @@ public class Alpha112ChunkGenerator implements ChunkSource {
                     var14 = (byte) Block.DIRT.id;
                 }
 
-                for(int var15 = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() - 1; var15 >= 0; --var15) {
-                    int var16 = (var8 * 16 + var7) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + var15;
+                for(int var15 = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1; var15 >= 0; --var15) {
+                    int var16 = (var8 * 16 + var7) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var15;
                     if(var15 <= this.random.nextInt(6) - 1) {
                         blocks[var16] = (byte)Block.BEDROCK.id;
                     } else {
@@ -258,15 +258,15 @@ public class Alpha112ChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() * 16];
+        byte[] var3 = new byte[16 * Config.BWOConfig.world.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, var5);
         this.buildSurfaces(chunkX, chunkZ, var3, this.biomes);
         this.cave.place(this, this.world, chunkX, chunkZ, var3);
 
-        if (BWOConfig.WORLD_CONFIG.ravineGeneration) {
-            if (this.betaFeatures || BWOConfig.WORLD_CONFIG.allowGenWithBetaFeaturesOff) {
+        if (Config.BWOConfig.world.ravineGeneration) {
+            if (this.betaFeatures || Config.BWOConfig.world.allowGenWithBetaFeaturesOff) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
         }

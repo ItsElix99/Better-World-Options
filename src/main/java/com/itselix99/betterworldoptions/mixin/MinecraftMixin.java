@@ -29,7 +29,8 @@ public class MinecraftMixin {
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/world/World;difficulty:I",
-                    opcode = Opcodes.PUTFIELD
+                    opcode = Opcodes.PUTFIELD,
+                    ordinal = 0
             )
     )
     private void hardcoreDifficulty(World world, int difficulty, Operation<Void> original) {

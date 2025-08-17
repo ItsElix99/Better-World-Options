@@ -7,6 +7,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
@@ -23,7 +24,7 @@ public abstract class BiomeMixin implements BWOWorld, StationBiome {
     @Environment(EnvType.CLIENT)
     @ModifyReturnValue(method = "getSkyColor", at = @At("RETURN"))
     public int getSkyColor(int original) {
-        Minecraft minecraft = (Minecraft) FabricLoader.getInstance().getGameInstance();
+        Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
         String theme = ((BWOProperties) minecraft.world.getProperties()).bwo_getTheme();

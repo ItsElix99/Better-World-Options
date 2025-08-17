@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.indev223;
 
-import com.itselix99.betterworldoptions.BWOConfig;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
@@ -178,8 +178,8 @@ public class Indev223ChunkGenerator implements ChunkSource {
                 int var108;
                 int baseHeight = (var108 = heightMap[x + z * 16] + surroundingWaterHeight) + offset;
                 heightMap[x + z * 16] = Math.max(var108, baseHeight);
-                if (heightMap[x + z * 16] > BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() - 2) {
-                    heightMap[x + z * 16] = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() - 2;
+                if (heightMap[x + z * 16] > Config.BWOConfig.world.worldHeightLimit.getIntValue() - 2) {
+                    heightMap[x + z * 16] = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 2;
                 }
 
                 if (heightMap[x + z * 16] <= 0) {
@@ -188,8 +188,8 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
                 double var105;
                 int var112;
-                if ((var112 = (int) ((double) ((int) (Math.sqrt(Math.abs(var105 = this.noiseGen4.create((double) worldX * 2.3, (double) worldZ * 2.3) / (double) 24.0F)) * Math.signum(var105) * (double) 20.0F) + surroundingWaterHeight) * ((double) 1.0F - radial) + radial * (double) BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue())) > surroundingWaterHeight) {
-                    var112 = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue();
+                if ((var112 = (int) ((double) ((int) (Math.sqrt(Math.abs(var105 = this.noiseGen4.create((double) worldX * 2.3, (double) worldZ * 2.3) / (double) 24.0F)) * Math.signum(var105) * (double) 20.0F) + surroundingWaterHeight) * ((double) 1.0F - radial) + radial * (double) Config.BWOConfig.world.worldHeightLimit.getIntValue())) > surroundingWaterHeight) {
+                    var112 = Config.BWOConfig.world.worldHeightLimit.getIntValue();
                 }
 
                 int lastSandY = -1;
@@ -199,8 +199,8 @@ public class Indev223ChunkGenerator implements ChunkSource {
                 double var19 = temperatures[i];
                 double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
 
-                for (int y = 0; y < BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue(); y++) {
-                    int index = (x * 16 + z) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + y;
+                for (int y = 0; y < Config.BWOConfig.world.worldHeightLimit.getIntValue(); y++) {
+                    int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
                     int blockId = 0;
 
                     if (distance > 1.0 && !this.infiniteWorld) {
@@ -271,7 +271,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                 }
 
                 if (lastSandY != -1) {
-                    int lastIndex = (x * 16 + z) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + lastSandY;
+                    int lastIndex = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + lastSandY;
                     if (this.betaFeatures && var18 == Biome.DESERT || var18 == Biome.ICE_DESERT) {
                         blocks[lastIndex] = (byte) Block.SANDSTONE.id;
                     }
@@ -303,7 +303,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                 }
 
                 int surfaceY = heightMap[x + z * 16];
-                int blockIndex = (x * 16 + z) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + surfaceY;
+                int blockIndex = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + surfaceY;
                 int aboveIndex = blockIndex + 1;
                 int aboveBlock = (aboveIndex < blocks.length) ? (blocks[aboveIndex] & 0xFF) : 0;
                 int i = x * 16 + z;
@@ -368,7 +368,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                         if (cx < 1 || cx >= 15) continue;
 
                         for (int cy = (int) (offsetY - radiusSq); cy <= (int) (offsetY + radiusSq); cy++) {
-                            if (cy < 1 || cy >= BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue()) continue;
+                            if (cy < 1 || cy >= Config.BWOConfig.world.worldHeightLimit.getIntValue()) continue;
 
                             for (int cz = (int) (offsetZ - radiusSq); cz <= (int) (offsetZ + radiusSq); cz++) {
                                 if (cz < 1 || cz >= 15) continue;
@@ -378,7 +378,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                                 float dz = cz - offsetZ;
 
                                 if ((dx * dx + dy * dy * 2.0F + dz * dz) < radiusSq2) {
-                                    int index = (cx * 16 + cz) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + cy;
+                                    int index = (cx * 16 + cz) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + cy;
 
                                     if (blocks[index] == Block.STONE.id) {
                                         blocks[index] = 0;
@@ -398,7 +398,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() * 16];
+        byte[] var3 = new byte[16 * Config.BWOConfig.world.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var4 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var4);
@@ -411,8 +411,8 @@ public class Indev223ChunkGenerator implements ChunkSource {
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
 
-        if (BWOConfig.WORLD_CONFIG.ravineGeneration && (distance <= 1.0 || this.infiniteWorld)) {
-            if (this.betaFeatures || BWOConfig.WORLD_CONFIG.allowGenWithBetaFeaturesOff) {
+        if (Config.BWOConfig.world.ravineGeneration && (distance <= 1.0 || this.infiniteWorld)) {
+            if (this.betaFeatures || Config.BWOConfig.world.allowGenWithBetaFeaturesOff) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
         }

@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.infdev420;
 
-import com.itselix99.betterworldoptions.BWOConfig;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.feature.OldOreFeature;
@@ -88,7 +88,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
         int var7 = var10003;
         double[] var6 = this.noiseArray;
         Infdev420ChunkGenerator var71 = this;
-        int vertical = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() / 8;
+        int vertical = Config.BWOConfig.world.worldHeightLimit.getIntValue() / 8;
 
         if(var6 == null) {
             var6 = new double[5 * 5 * (vertical + 1)];
@@ -154,7 +154,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
                             double var38 = var27 + (var31 - var27) * var36;
                             double var40 = var29 + (var33 - var29) * var36;
 
-                            int shiftY = MathHelper.ceilLog2(BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue());
+                            int shiftY = MathHelper.ceilLog2(Config.BWOConfig.world.worldHeightLimit.getIntValue());
                             int shiftXZ = shiftY + 4;
                             int var26 = var82 + (var72 << 2) << shiftXZ | (var73 << 2) << shiftY | (var7 << 3) + var24;
 
@@ -177,7 +177,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
                                 }
 
                                 blocks[var26] = (byte)var83;
-                                var26 += BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue();
+                                var26 += Config.BWOConfig.world.worldHeightLimit.getIntValue();
                             }
                         }
                     }
@@ -205,8 +205,8 @@ public class Infdev420ChunkGenerator implements ChunkSource {
                     var19 = Block.DIRT.id;
                 }
 
-                for(int var81 = BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() - 1; var81 >= 0; --var81) {
-                    int var79 = (var73 * 16 + var72) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + var81;
+                for(int var81 = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1; var81 >= 0; --var81) {
+                    int var79 = (var73 * 16 + var72) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var81;
                     if(blocks[var79] == 0) {
                         var17 = -1;
                     } else if(blocks[var79] == Block.STONE.id) {
@@ -271,7 +271,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() * 16];
+        byte[] var3 = new byte[16 * Config.BWOConfig.world.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var5);
@@ -280,8 +280,8 @@ public class Infdev420ChunkGenerator implements ChunkSource {
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
 
-        if (BWOConfig.WORLD_CONFIG.ravineGeneration) {
-            if (this.betaFeatures || BWOConfig.WORLD_CONFIG.allowGenWithBetaFeaturesOff) {
+        if (Config.BWOConfig.world.ravineGeneration) {
+            if (this.betaFeatures || Config.BWOConfig.world.allowGenWithBetaFeaturesOff) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
         }

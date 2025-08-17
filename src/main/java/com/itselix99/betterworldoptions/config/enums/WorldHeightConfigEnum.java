@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.config;
+package com.itselix99.betterworldoptions.config.enums;
 
 public enum WorldHeightConfigEnum {
     H128(128),

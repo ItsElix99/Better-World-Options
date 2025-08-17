@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.player;
 
-import com.itselix99.betterworldoptions.BWOConfig;
+import com.itselix99.betterworldoptions.config.Config;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.ModelPart;
@@ -22,12 +22,12 @@ public class BipedEntityModelMixin extends EntityModel {
 
     @Inject(method = "setAngles", at = @At("TAIL"))
     private void playerWalkingAnimation(float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch, float scale, CallbackInfo ci) {
-        if (BWOConfig.OTHERS_CONFIG.walkingAnim.toString().equals("Infdev") || BWOConfig.OTHERS_CONFIG.walkingAnim.toString().equals("Classic")) {
+        if (Config.BWOConfig.others.walkingAnim.toString().equals("Infdev") || Config.BWOConfig.others.walkingAnim.toString().equals("Classic")) {
             this.rightArm.roll = (MathHelper.cos(limbAngle * 0.2312F) + 1.0F) * limbDistance;
             this.leftArm.roll = (MathHelper.cos(limbAngle * 0.2812F) - 1.0F) * limbDistance;
         }
 
-        if (BWOConfig.OTHERS_CONFIG.walkingAnim.toString().equals("Classic")) {
+        if (Config.BWOConfig.others.walkingAnim.toString().equals("Classic")) {
             this.head.yaw = headYaw / 57.29578F + (float)Math.sin((double)(limbAngle * 0.6662F) * 0.23D) * limbDistance;
             this.head.pitch = headPitch / 57.29578F + (float)Math.sin((double)(limbAngle * 0.6662F) * 0.1D) * 0.8F / 1.5F * limbDistance;
         }

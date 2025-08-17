@@ -38,6 +38,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Unique private ButtonWidget themeButton;
     @Unique private ButtonWidget worldTypeOptionsButton;
 
+    @Unique private String gamemode = "Survival";
     @Unique private boolean moreOptions = false;
     @Unique private String lastEnteredWorldName = translation.get("selectWorld.newWorld");
     @Unique private String lastEnteredSeed = "";
@@ -98,7 +99,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.buttons.remove(1);
         }
 
-        this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, translation.get("selectWorld.gameMode") + " " + this.worldGenerationOptions.gamemode));
+        this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, translation.get("selectWorld.gameMode") + " " + this.gamemode));
         this.buttons.add(this.moreWorldOptions = new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, moreOptions ? translation.get("gui.done") : translation.get("selectWorld.moreWorldOptions")));
         this.buttons.add(this.worldTypeButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, translation.get("selectWorld.worldtype") + " " + this.worldGenerationOptions.worldTypeName));
         this.buttons.add(this.betaFeaturesButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, translation.get("selectWorld.betaFeatures") + " " + (this.worldGenerationOptions.betaFeatures ? translation.get("options.on") : translation.get("options.off"))));
@@ -153,25 +154,37 @@ public abstract class CreateWorldScreenMixin extends Screen {
         if (button.active && button.visible) {
             if (button.id == 0) {
                 if (CompatMods.BHCreativeLoaded()) {
-                    if (minecraft.player != null && this.worldGenerationOptions.gamemode.equals("Creative")) {
+                    if (minecraft.player != null && this.gamemode.equals("Creative")) {
                         minecraft.player.creative_setCreative(true);
                     }
                 }
             } else if (button.id == 10) {
                 if (CompatMods.BHCreativeLoaded()) {
                     switch (this.gamemodeButton.text) {
-                        case "Game Mode: Survival" -> this.worldGenerationOptions.gamemode = "Hardcore";
-                        case "Game Mode: Hardcore" -> this.worldGenerationOptions.gamemode = "Creative";
-                        case "Game Mode: Creative" -> this.worldGenerationOptions.gamemode = "Survival";
+                        case "Game Mode: Survival" -> {
+                            this.gamemode = "Hardcore";
+                            this.worldGenerationOptions.hardcore = true;
+                        }
+                        case "Game Mode: Hardcore" -> {
+                            this.gamemode = "Creative";
+                            this.worldGenerationOptions.hardcore = false;
+                        }
+                        case "Game Mode: Creative" -> this.gamemode = "Survival";
                     }
                 } else {
                     switch (this.gamemodeButton.text) {
-                        case "Game Mode: Survival" -> this.worldGenerationOptions.gamemode = "Hardcore";
-                        case "Game Mode: Hardcore" -> this.worldGenerationOptions.gamemode = "Survival";
+                        case "Game Mode: Survival" -> {
+                            this.gamemode = "Hardcore";
+                            this.worldGenerationOptions.hardcore = true;
+                        }
+                        case "Game Mode: Hardcore" -> {
+                            this.gamemode = "Survival";
+                            this.worldGenerationOptions.hardcore = false;
+                        }
                     }
                 }
 
-                this.gamemodeButton.text = this.translation.get("selectWorld.gameMode") + " " + this.worldGenerationOptions.gamemode;
+                this.gamemodeButton.text = this.translation.get("selectWorld.gameMode") + " " + this.gamemode;
             } else if (button.id == 11) {
                 this.moreOptions = !this.moreOptions;
                 this.moreWorldOptions.text = this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions");

@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
-import com.itselix99.betterworldoptions.BWOConfig;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
@@ -149,7 +149,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
                     )
     )
     private void ravineGeneration(int chunkX, int chunkZ, CallbackInfoReturnable<Chunk> cir, @Local byte[] var3) {
-        if (BWOConfig.WORLD_CONFIG.ravineGeneration) {
+        if (Config.BWOConfig.world.ravineGeneration) {
             this.ravine.place(this, this.world, chunkX, chunkZ, var3);
         }
     }

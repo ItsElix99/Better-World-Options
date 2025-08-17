@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.mixin.screen;
 
 import net.fabricmc.loader.api.FabricLoader;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
 import net.minecraft.client.render.Tessellator;
@@ -33,8 +34,7 @@ public class WorldListWidgetMixin {
             locals = LocalCapture.CAPTURE_FAILSOFT
     )
     protected void renderEntry(int i, int x, int y, int l, Tessellator arg, CallbackInfo ci, WorldSaveInfo worldSaveInfo, String worldName, String var8, long var9, String var11) {
-        @Deprecated
-        Minecraft minecraft = (Minecraft)FabricLoader.getInstance().getGameInstance();
+        Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) worldSaveInfo).bwo_getWorldType();
         if (Objects.equals(worldType, "")) {
             worldType = "Default";

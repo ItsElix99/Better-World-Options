@@ -2,7 +2,7 @@ package com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev;
 
 import java.util.Random;
 
-import com.itselix99.betterworldoptions.BWOConfig;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
@@ -103,7 +103,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                     }
                 }
 
-                for (int var14 = 0; var14 < BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue(); ++var14) {
+                for (int var14 = 0; var14 < Config.BWOConfig.world.worldHeightLimit.getIntValue(); ++var14) {
                     int index = (var6 - chunkX) * 16 + var7 - chunkZ;
                     Biome var18 = biomes[index];
                     double var19 = temperatures[index];
@@ -113,7 +113,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                     if ((var6 == 0 || var7 == 0) && var14 <= var13 + 2) {
                         var15 = Block.OBSIDIAN.id;
                     } else if (var14 == var13 + 1 && var13 >= 64 && Math.random() < 0.02D && !this.betaFeatures) {
-                        int index2 = (index) * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + (var14 - 1);
+                        int index2 = (index) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + (var14 - 1);
                         if (blocks[index2] == Block.GRASS_BLOCK.id || blocks[index2] == Block.DIRT.id) {
                             var15 = Block.DANDELION.id;
                             if (this.theme.equals("Paradise") && this.random.nextInt(2) == 0) {
@@ -149,12 +149,12 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                     }
 
                     this.brickRandom.setSeed(var8 + var9 * 13871L);
-                    int var16 = (var8 << 10) + BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + this.brickRandom.nextInt(512);
-                    int var17 = (var9 << 10) + BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() + this.brickRandom.nextInt(512);
+                    int var16 = (var8 << 10) + Config.BWOConfig.world.worldHeightLimit.getIntValue() + this.brickRandom.nextInt(512);
+                    int var17 = (var9 << 10) + Config.BWOConfig.world.worldHeightLimit.getIntValue() + this.brickRandom.nextInt(512);
                     var16 = Math.abs(var6 - var16);
                     var17 = Math.abs(var7 - var17);
                     if (var17 > var16) var16 = var17;
-                    var16 = (BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() - 1) - var16;
+                    var16 = (Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1) - var16;
                     if (var16 < var13) var16 = var13;
                     if (var14 <= var16 && (var15 == 0 || var15 == Block.WATER.id || var15 == Block.LAVA.id)) {
                         var15 = Block.BRICKS.id;
@@ -173,7 +173,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
 
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
-        byte[] var3 = new byte[16 * BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue() * 16];
+        byte[] var3 = new byte[16 * Config.BWOConfig.world.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var5);
@@ -184,8 +184,8 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             this.caveEarlyInfdev.place(this, this.world, chunkX, chunkZ, var3);
         }
 
-        if (BWOConfig.WORLD_CONFIG.ravineGeneration) {
-            if (this.betaFeatures || BWOConfig.WORLD_CONFIG.allowGenWithBetaFeaturesOff) {
+        if (Config.BWOConfig.world.ravineGeneration) {
+            if (this.betaFeatures || Config.BWOConfig.world.allowGenWithBetaFeaturesOff) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
         }

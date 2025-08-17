@@ -95,13 +95,9 @@ public class WorldPropertiesMixin implements BWOProperties {
     private void newWorld(long seed, String name, CallbackInfo ci) {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
         this.worldType = worldGenerationOptions.worldTypeName;
-
-        if (worldGenerationOptions.gamemode.equals("Hardcore")) {
-            this.hardcore = true;
-        }
-
+        this.hardcore = worldGenerationOptions.hardcore;
         this.betaFeatures = worldGenerationOptions.betaFeatures;
-        this.singleBiome = worldGenerationOptions.singleBiome == null ? "All Biomes" : worldGenerationOptions.singleBiome;
+        this.singleBiome = worldGenerationOptions.singleBiome;
         this.theme = worldGenerationOptions.theme;
 
         if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {

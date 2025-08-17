@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.dimensions;
 
-import com.itselix99.betterworldoptions.BWOConfig;
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.WorldTypeList;
@@ -59,7 +59,7 @@ public class DimensionMixin implements StationDimension {
                 this.biomeSource = new FixedBiomeSource(BetterWorldOptions.IndevNormal, 1.0D, 0.5D);
             }
         } else {
-            if (!this.singleBiome.equals("All Biomes")) {
+            if (!this.singleBiome.equals("Off")) {
                 switch (this.singleBiome) {
                     case "Rainforest" -> this.biomeSource = new FixedBiomeSource(Biome.RAINFOREST, 1.0D, 1.0D);
                     case "Swampland" -> this.biomeSource = new FixedBiomeSource(Biome.SWAMPLAND, 0.6D, 0.6D);
@@ -106,6 +106,6 @@ public class DimensionMixin implements StationDimension {
 
     @Override
     public int getHeight() {
-        return BWOConfig.WORLD_CONFIG.worldHeightLimit.getIntValue();
+        return Config.BWOConfig.world.worldHeightLimit.getIntValue();
     }
 }

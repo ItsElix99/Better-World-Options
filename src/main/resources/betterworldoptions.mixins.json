@@ -4,7 +4,6 @@
   "package": "com.itselix99.betterworldoptions.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "biomes.BiomeColorsMixin",
     "biomes.BiomeMixin",
     "biomes.BiomeSourceMixin",
     "biomes.ForestBiomeMixin",
@@ -20,16 +19,19 @@
     "dimensions.DimensionMixin",
     "dimensions.NetherDimensionMixin",
     "world.AlphaWorldStorageMixin",
-    "world.EmptyChunkMixin",
     "world.FlattenedWorldStorageMixin",
     "world.OverworldChunkGeneratorMixin",
     "world.WorldMixin",
     "world.WorldPropertiesMixin"
   ],
   "server": [
+    "biomes.BiomeColorsImplServerMixin",
+    "network.ServerLoginNetworkHandlerMixin"
   ],
   "client": [
     "MinecraftMixin",
+    "biomes.BiomeColorsImplClientMixin",
+    "network.ClientNetworkHandlerMixin",
     "player.BipedEntityModelMixin",
     "player.ClientPlayerEntityMixin",
     "screen.CreateWorldScreenMixin",
