@@ -3,7 +3,6 @@ package com.itselix99.betterworldoptions.mixin.world;
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
-import com.itselix99.betterworldoptions.interfaces.BWOGetDirectoryName;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -27,7 +26,7 @@ import java.util.Random;
 import java.util.Set;
 
 @Mixin(World.class)
-public abstract class WorldMixin implements BWOGetDirectoryName, BWOWorld {
+public abstract class WorldMixin implements BWOWorld {
     @Shadow public Random random;
     @Shadow public boolean newWorld;
     @Shadow protected WorldProperties properties;
@@ -197,12 +196,6 @@ public abstract class WorldMixin implements BWOGetDirectoryName, BWOWorld {
 
 
         return original.call(world);
-    }
-
-
-    @Override
-    public WorldStorage bwo_getDimensionData() {
-        return this.dimensionData;
     }
 }
 

@@ -40,8 +40,8 @@ public class WorldGenerationOptions {
         this.worldTypeName = server ? Config.BWOConfig.server.worldType : "Default";
         this.hardcore = server ? Config.BWOConfig.server.hardcore : false;
         this.betaFeatures = server ? Config.BWOConfig.server.betaFeatures : true;
-        this.theme = server ? Config.BWOConfig.server.theme : "Normal";
         this.singleBiome = server ? Config.BWOConfig.server.singleBiome : "Off";
+        this.theme = server ? Config.BWOConfig.server.theme : "Normal";
 
         this.indevWorldType = server ? Config.BWOConfig.server.indevWorldType : "Island";
         this.indevShape = server ? Config.BWOConfig.server.indevShape : "Square";
@@ -60,8 +60,8 @@ public class WorldGenerationOptions {
         this.worldTypeName = ((BWOProperties) properties).bwo_getWorldType();
         this.hardcore = ((BWOProperties) properties).bwo_isHardcore();
         this.betaFeatures = ((BWOProperties) properties).bwo_getBetaFeatures();
-        this.theme = ((BWOProperties) properties).bwo_getTheme();
         this.singleBiome = ((BWOProperties) properties).bwo_getSingleBiome();
+        this.theme = ((BWOProperties) properties).bwo_getTheme();
 
         this.indevWorldType = ((BWOProperties) properties).bwo_getIndevWorldType();
         this.indevShape = ((BWOProperties) properties).bwo_getShape();

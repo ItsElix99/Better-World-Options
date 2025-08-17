@@ -30,7 +30,7 @@ public class McpeOptionsScreen extends Screen {
         this.buttons.add(this.betaFeaturesButton = new ButtonWidget(0, this.width / 2 - 100, this.height / 4, this.translation.get("selectWorld.betaFeatures") + " " + (this.worldGenerationOptions.betaFeatures ? this.translation.get("options.on") : this.translation.get("options.off"))));
         this.buttons.add(this.sizeButton = new ButtonWidget(1, this.width / 2 - 100, this.height / 4 + 24, this.translation.get("indevOptions.size") + " " + this.worldGenerationOptions.size + " " + this.worldGenerationOptions.worldSizeX + "x" + this.worldGenerationOptions.worldSizeZ));
         this.buttons.add(this.themeButton = new ButtonWidget(2, this.width / 2 - 100, this.height / 4 + 48, this.translation.get("selectWorld.theme") + " " + this.worldGenerationOptions.theme));
-        this.buttons.add(this.singleBiomeButton = new ButtonWidget(3, this.width / 2 - 100, this.height / 4 + 72, this.translation.get("selectWorld.singleBiome") + " " + (this.worldGenerationOptions.singleBiome != null ? this.worldGenerationOptions.singleBiome : this.translation.get("options.off"))));
+        this.buttons.add(this.singleBiomeButton = new ButtonWidget(3, this.width / 2 - 100, this.height / 4 + 72, this.translation.get("selectWorld.singleBiome") + " " + (!this.worldGenerationOptions.singleBiome.equals("Off") ? this.worldGenerationOptions.singleBiome : this.translation.get("options.off"))));
         this.buttons.add(this.infiniteWorldButton = new ButtonWidget(4, this.width / 2 - 100, this.height / 4 + 96, this.translation.get("indevOptions.infiniteWorld") + " " + (this.worldGenerationOptions.infiniteWorld ? this.translation.get("options.on") : this.translation.get("options.off"))));
         this.buttons.add(new ButtonWidget(5, this.width / 2 - 100, this.height / 6 + 168, this.translation.get("gui.done")));
     }
@@ -40,8 +40,8 @@ public class McpeOptionsScreen extends Screen {
             if (button.id == 0) {
                 this.worldGenerationOptions.betaFeatures = !this.worldGenerationOptions.betaFeatures;
 
-                if (!this.worldGenerationOptions.betaFeatures && this.worldGenerationOptions.singleBiome != null) {
-                    this.worldGenerationOptions.singleBiome = null;
+                if (!this.worldGenerationOptions.betaFeatures && !this.worldGenerationOptions.singleBiome.equals("Off")) {
+                    this.worldGenerationOptions.singleBiome = "Off";
                 }
 
                 this.betaFeaturesButton.text = this.translation.get("selectWorld.betaFeatures") + " " + (this.worldGenerationOptions.betaFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
@@ -88,7 +88,7 @@ public class McpeOptionsScreen extends Screen {
         this.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 20, 16777215);
 
         this.infiniteWorldButton.text = this.translation.get("indevOptions.infiniteWorld") + " " + (this.worldGenerationOptions.infiniteWorld ? this.translation.get("options.on") : this.translation.get("options.off"));
-        this.singleBiomeButton.text = this.translation.get("selectWorld.singleBiome") + " " + (this.worldGenerationOptions.singleBiome != null ? this.worldGenerationOptions.singleBiome : this.translation.get("options.off"));
+        this.singleBiomeButton.text = this.translation.get("selectWorld.singleBiome") + " " + (!this.worldGenerationOptions.singleBiome.equals("Off") ? this.worldGenerationOptions.singleBiome : this.translation.get("options.off"));
 
         this.singleBiomeButton.active = this.worldGenerationOptions.betaFeatures;
         this.sizeButton.active = !this.worldGenerationOptions.infiniteWorld;

@@ -36,7 +36,7 @@ public class BiomeListScreen extends Screen {
         this.biomeListWidget.registerButtons(this.buttons, 4, 5);
         this.buttons.add(this.buttonSelect = new ButtonWidget(0, this.width / 2 + 5, this.height - 28, 150, 20, this.translation.get("gui.cancel")));
         this.buttons.add(this.allBiomesButton = new ButtonWidget(1, this.width / 2 - 155, this.height - 28, 150, 20, this.translation.get("selectWorld.allBiomes")));
-        if (this.worldGenerationOptions.singleBiome != null) {
+        if (!this.worldGenerationOptions.singleBiome.equals("Off")) {
             selectedBiome = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome -> biome.name.equals(this.worldGenerationOptions.singleBiome)).toList().get(0);
         } else {
             this.allBiomesButton.active = false;
@@ -50,7 +50,7 @@ public class BiomeListScreen extends Screen {
                 this.minecraft.setScreen(this.parent);
             } else if (button.id == 1) {
                 if (!this.worldGenerationOptions.singleBiome.equals("Off")) {
-                    this.worldGenerationOptions.singleBiome = null;
+                    this.worldGenerationOptions.singleBiome = "Off";
                     selectedBiome = null;
                     button.active = false;
                     this.buttonSelect.text = this.translation.get("gui.done");
