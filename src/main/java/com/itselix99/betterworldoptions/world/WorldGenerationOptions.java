@@ -15,6 +15,10 @@ public class WorldGenerationOptions {
             "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "Indev 223", "MCPE"
     );
 
+    public static final Set<String> disableThemeWorldTypes = Set.of(
+            "Nether", "Skylands", "Aether"
+    );
+
     public String worldTypeName;
     public boolean hardcore;
     public boolean betaFeatures;

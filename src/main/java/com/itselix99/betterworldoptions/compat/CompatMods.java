@@ -14,6 +14,10 @@ public class CompatMods {
         return FabricLoader.getInstance().isModLoaded("aether");
     }
 
+    public static boolean bnbLoaded() {
+        return FabricLoader.getInstance().isModLoaded("bnb");
+    }
+
     public static Dimension startWorldInAether() {
         return new AetherDimension(2);
     }

@@ -35,36 +35,58 @@ public class DimensionMixin implements StationDimension {
 
         if (!betaFeatures && !worldType.equals("MCPE")) {
             if (theme.equals("Hell")) {
-                new FixedBiomeSource(BetterWorldOptions.IndevHell, 1.0D, 0.0D);
+                return new FixedBiomeSource(BetterWorldOptions.IndevHell, 1.0D, 0.0D);
             } else if (theme.equals("Paradise")) {
-                new FixedBiomeSource(BetterWorldOptions.IndevParadise, 1.0D, 0.5D);
+                return new FixedBiomeSource(BetterWorldOptions.IndevParadise, 1.0D, 0.5D);
             } else if (theme.equals("Woods")) {
-                new FixedBiomeSource(BetterWorldOptions.IndevWoods, 1.0D, 0.5D);
+                return new FixedBiomeSource(BetterWorldOptions.IndevWoods, 1.0D, 0.5D);
             } else if (worldType.equals("Flat")) {
-                new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.5D);
+                return new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.5D);
             } else if (worldType.equals("Alpha 1.1.2_01")) {
-                new FixedBiomeSource(BetterWorldOptions.Alpha, 1.0D, 0.5D);
+                return new FixedBiomeSource(BetterWorldOptions.Alpha, 1.0D, 0.5D);
             } else if (worldType.equals("Infdev 611") || worldType.equals("Infdev 420") || worldType.equals("Infdev 415")) {
-                new FixedBiomeSource(BetterWorldOptions.Infdev, 1.0D, 0.5D);
+                return new FixedBiomeSource(BetterWorldOptions.Infdev, 1.0D, 0.5D);
             } else if (worldType.equals("Early Infdev")) {
-                new FixedBiomeSource(BetterWorldOptions.EarlyInfdev, 1.0D, 0.5D);
+                return new FixedBiomeSource(BetterWorldOptions.EarlyInfdev, 1.0D, 0.5D);
             } else if (worldType.equals("Indev 223")) {
-                new FixedBiomeSource(BetterWorldOptions.IndevNormal, 1.0D, 0.5D);
+                return new FixedBiomeSource(BetterWorldOptions.IndevNormal, 1.0D, 0.5D);
             }
         } else {
             if (!singleBiome.equals("Off")) {
                 switch (singleBiome) {
-                    case "Rainforest" -> new FixedBiomeSource(Biome.RAINFOREST, 1.0D, 1.0D);
-                    case "Swampland" -> new FixedBiomeSource(Biome.SWAMPLAND, 0.6D, 0.6D);
-                    case "Seasonal Forest" -> new FixedBiomeSource(Biome.SEASONAL_FOREST, 1.0D, 0.8D);
-                    case "Forest" -> new FixedBiomeSource(Biome.FOREST, 0.7D, 0.5D);
-                    case "Savanna" -> new FixedBiomeSource(Biome.SAVANNA, 0.8D, 0.1D);
-                    case "Shrubland" -> new FixedBiomeSource(Biome.SHRUBLAND, 0.6D, 0.3D);
-                    case "Taiga" -> new FixedBiomeSource(Biome.TAIGA, 0.3D, 0.4D);
-                    case "Desert" -> new FixedBiomeSource(Biome.DESERT, 1.0D, 0.1D);
-                    case "Plains" -> new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
-                    case "Ice Desert" -> new FixedBiomeSource(Biome.ICE_DESERT, 0.0D, 0.1D);
-                    case "Tundra" -> new FixedBiomeSource(Biome.TUNDRA, 0.0D, 1.0D);
+                    case "Rainforest" -> {
+                        return new FixedBiomeSource(Biome.RAINFOREST, 1.0D, 1.0D);
+                    }
+                    case "Swampland" -> {
+                        return new FixedBiomeSource(Biome.SWAMPLAND, 0.6D, 0.6D);
+                    }
+                    case "Seasonal Forest" -> {
+                        return new FixedBiomeSource(Biome.SEASONAL_FOREST, 1.0D, 0.8D);
+                    }
+                    case "Forest" -> {
+                        return new FixedBiomeSource(Biome.FOREST, 0.7D, 0.5D);
+                    }
+                    case "Savanna" -> {
+                        return new FixedBiomeSource(Biome.SAVANNA, 0.8D, 0.1D);
+                    }
+                    case "Shrubland" -> {
+                        return new FixedBiomeSource(Biome.SHRUBLAND, 0.6D, 0.3D);
+                    }
+                    case "Taiga" -> {
+                        return new FixedBiomeSource(Biome.TAIGA, 0.3D, 0.4D);
+                    }
+                    case "Desert" -> {
+                        return new FixedBiomeSource(Biome.DESERT, 1.0D, 0.1D);
+                    }
+                    case "Plains" -> {
+                        return new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
+                    }
+                    case "Ice Desert" -> {
+                        return new FixedBiomeSource(Biome.ICE_DESERT, 0.0D, 0.1D);
+                    }
+                    case "Tundra" -> {
+                        return new FixedBiomeSource(Biome.TUNDRA, 0.0D, 1.0D);
+                    }
                 }
             }
         }

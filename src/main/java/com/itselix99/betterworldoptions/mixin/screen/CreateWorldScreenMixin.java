@@ -112,6 +112,16 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.worldGenerationOptions.resetFiniteOptions();
         }
 
+        if (WorldGenerationOptions.disableThemeWorldTypes.contains(this.worldGenerationOptions.worldTypeName)) {
+            this.themeButton.active = false;
+
+            if (!this.worldGenerationOptions.theme.equals("Normal")) {
+                this.worldGenerationOptions.theme = "Normal";
+            }
+        } else {
+            this.themeButton.active = true;
+        }
+
         if (!WorldGenerationOptions.allowBetaFeaturesWorldTypes.contains(this.worldGenerationOptions.worldTypeName)) {
             this.betaFeaturesButton.active = false;
 
