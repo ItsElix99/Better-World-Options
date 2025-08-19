@@ -22,7 +22,7 @@ public class BiomeListScreen extends Screen {
     private BiomeListWidget biomeListWidget;
     private ButtonWidget buttonSelect;
     private ButtonWidget allBiomesButton;
-    private static Biome selectedBiome;
+    private Biome selectedBiome;
 
     public BiomeListScreen(Screen parent, WorldGenerationOptions worldGenerationOptions) {
         this.parent = parent;
@@ -66,8 +66,8 @@ public class BiomeListScreen extends Screen {
         super.render(var1, var2, var3);
     }
 
-    public static void selectBiome(Biome var1) {
-        selectedBiome = var1;
+    private void selectBiome(Biome var1) {
+        this.selectedBiome = var1;
     }
 
     @Environment(EnvType.CLIENT)
@@ -83,7 +83,7 @@ public class BiomeListScreen extends Screen {
 
         protected void entryClicked(int index, boolean doubleClick) {
             List<Biome> var3 = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().toList();
-            BiomeListScreen.selectBiome(var3.get(index));
+            BiomeListScreen.this.selectBiome(var3.get(index));
 
             if (!var3.get(index).name.equals(WorldGenerationOptions.getInstance().singleBiome)) {
                 BiomeListScreen.this.worldGenerationOptions.singleBiome = var3.get(index).name;
@@ -94,7 +94,7 @@ public class BiomeListScreen extends Screen {
 
         protected boolean isSelectedEntry(int index) {
             List<Biome> var2 = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().toList();
-            return BiomeListScreen.selectedBiome == var2.get(index);
+            return BiomeListScreen.this.selectedBiome == var2.get(index);
         }
 
         protected int getEntriesHeight() {

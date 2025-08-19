@@ -40,10 +40,6 @@ public class McpeOptionsScreen extends Screen {
             if (button.id == 0) {
                 this.worldGenerationOptions.betaFeatures = !this.worldGenerationOptions.betaFeatures;
 
-                if (!this.worldGenerationOptions.betaFeatures && !this.worldGenerationOptions.singleBiome.equals("Off")) {
-                    this.worldGenerationOptions.singleBiome = "Off";
-                }
-
                 this.betaFeaturesButton.text = this.translation.get("selectWorld.betaFeatures") + " " + (this.worldGenerationOptions.betaFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
             } else if (button.id == 1) {
                 if (this.sizeButton.text.equals(this.translation.get("indevOptions.size") + " " + "Normal" + " " + this.worldGenerationOptions.worldSizeX + "x" + this.worldGenerationOptions.worldSizeZ)) {
@@ -90,7 +86,6 @@ public class McpeOptionsScreen extends Screen {
         this.infiniteWorldButton.text = this.translation.get("indevOptions.infiniteWorld") + " " + (this.worldGenerationOptions.infiniteWorld ? this.translation.get("options.on") : this.translation.get("options.off"));
         this.singleBiomeButton.text = this.translation.get("selectWorld.singleBiome") + " " + (!this.worldGenerationOptions.singleBiome.equals("Off") ? this.worldGenerationOptions.singleBiome : this.translation.get("options.off"));
 
-        this.singleBiomeButton.active = this.worldGenerationOptions.betaFeatures;
         this.sizeButton.active = !this.worldGenerationOptions.infiniteWorld;
 
         super.render(mouseX, mouseY, delta);

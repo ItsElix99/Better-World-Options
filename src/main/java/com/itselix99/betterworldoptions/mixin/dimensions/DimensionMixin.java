@@ -15,8 +15,10 @@ import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.dimension.Dimension;
 import net.modificationstation.stationapi.api.world.dimension.StationDimension;
+import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +43,7 @@ public class DimensionMixin implements StationDimension {
             } else if (theme.equals("Woods")) {
                 return new FixedBiomeSource(BetterWorldOptions.IndevWoods, 1.0D, 0.5D);
             } else if (worldType.equals("Flat")) {
-                return new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.5D);
+                return new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
             } else if (worldType.equals("Alpha 1.1.2_01")) {
                 return new FixedBiomeSource(BetterWorldOptions.Alpha, 1.0D, 0.5D);
             } else if (worldType.equals("Infdev 611") || worldType.equals("Infdev 420") || worldType.equals("Infdev 415")) {
@@ -53,45 +55,43 @@ public class DimensionMixin implements StationDimension {
             }
         } else {
             if (!singleBiome.equals("Off")) {
-                switch (singleBiome) {
-                    case "Rainforest" -> {
-                        return new FixedBiomeSource(Biome.RAINFOREST, 1.0D, 1.0D);
-                    }
-                    case "Swampland" -> {
-                        return new FixedBiomeSource(Biome.SWAMPLAND, 0.6D, 0.6D);
-                    }
-                    case "Seasonal Forest" -> {
-                        return new FixedBiomeSource(Biome.SEASONAL_FOREST, 1.0D, 0.8D);
-                    }
-                    case "Forest" -> {
-                        return new FixedBiomeSource(Biome.FOREST, 0.7D, 0.5D);
-                    }
-                    case "Savanna" -> {
-                        return new FixedBiomeSource(Biome.SAVANNA, 0.8D, 0.1D);
-                    }
-                    case "Shrubland" -> {
-                        return new FixedBiomeSource(Biome.SHRUBLAND, 0.6D, 0.3D);
-                    }
-                    case "Taiga" -> {
-                        return new FixedBiomeSource(Biome.TAIGA, 0.3D, 0.4D);
-                    }
-                    case "Desert" -> {
-                        return new FixedBiomeSource(Biome.DESERT, 1.0D, 0.1D);
-                    }
-                    case "Plains" -> {
-                        return new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
-                    }
-                    case "Ice Desert" -> {
-                        return new FixedBiomeSource(Biome.ICE_DESERT, 0.0D, 0.1D);
-                    }
-                    case "Tundra" -> {
-                        return new FixedBiomeSource(Biome.TUNDRA, 0.0D, 1.0D);
-                    }
-                }
+                Biome biome = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).toList().get(0);
+                double[] climate = this.getClimateForBiome(biome);
+
+                return new FixedBiomeSource(biome, climate[0], climate[1]);
             }
         }
 
         return original.call(world);
+    }
+
+    @Unique
+    private double[] getClimateForBiome(Biome biome) {
+        if (biome == Biome.TUNDRA) {
+            return new double[]{0.05D, 0.2D};
+        } else if (biome == Biome.SAVANNA) {
+            return new double[]{0.7D, 0.1D};
+        } else if (biome == Biome.DESERT) {
+            return new double[]{1.0D, 0.05D};
+        } else if (biome == Biome.SWAMPLAND) {
+            return new double[]{0.6D, 0.8D};
+        } else if (biome == Biome.TAIGA) {
+            return new double[]{0.4D, 0.4D};
+        } else if (biome == Biome.SHRUBLAND) {
+            return new double[]{0.8D, 0.3D};
+        } else if (biome == Biome.FOREST) {
+            return new double[]{0.8D, 0.6D};
+        } else if (biome == Biome.PLAINS) {
+            return new double[]{1.0D, 0.4D};
+        } else if (biome == Biome.SEASONAL_FOREST) {
+            return new double[]{1.0D, 0.7D};
+        } else if (biome == Biome.RAINFOREST) {
+            return new double[]{1.0D, 0.85D};
+        } else if (biome == Biome.ICE_DESERT) {
+            return new double[]{0.0D, 0.0D};
+        }
+
+        return new double[]{0.5D, 0.5D};
     }
 
     @ModifyReturnValue(method = "createChunkGenerator", at = @At("RETURN"))

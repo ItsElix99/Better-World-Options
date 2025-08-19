@@ -440,13 +440,13 @@ public class Indev223ChunkGenerator implements ChunkSource {
     public void decorate(ChunkSource source, int x, int z) {
         for (int var1 = 0; var1 < 16; var1++) {
             int blockX = x * 16 + var1;
-            if (blockX < 0 || blockX >= worldSizeX) {
+            if ((blockX < 0 || blockX >= worldSizeX) && !this.infiniteWorld) {
                 return;
             }
 
             for (int var2 = 0; var2 < 16; var2++) {
                 int blockZ = z * 16 + var2;
-                if (blockZ < 0 || blockZ >= worldSizeZ) {
+                if ((blockZ < 0 || blockZ >= worldSizeZ) && !this.infiniteWorld) {
                     return;
                 }
             }

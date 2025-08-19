@@ -280,13 +280,13 @@ public class MCPEChunkGenerator implements ChunkSource {
 
         for (int var1 = 0; var1 < 16; var1++) {
             int blockX = chunkX * 16 + var1;
-            if (blockX < 0 || blockX >= worldSizeX && !this.infiniteWorld) {
+            if ((blockX < 0 || blockX >= worldSizeX) && !this.infiniteWorld) {
                 return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
             }
 
             for (int var2 = 0; var2 < 16; var2++) {
                 int blockZ = chunkZ * 16 + var2;
-                if (blockZ < 0 || blockZ >= worldSizeZ && !this.infiniteWorld) {
+                if ((blockZ < 0 || blockZ >= worldSizeZ) && !this.infiniteWorld) {
                     return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
                 }
             }
@@ -400,6 +400,20 @@ public class MCPEChunkGenerator implements ChunkSource {
     }
 
     public void decorate(ChunkSource source, int x, int z) {
+        for (int var1 = 0; var1 < 16; var1++) {
+            int blockX = x * 16 + var1;
+            if ((blockX < 0 || blockX >= worldSizeX) && !this.infiniteWorld) {
+                return;
+            }
+
+            for (int var2 = 0; var2 < 16; var2++) {
+                int blockZ = z * 16 + var2;
+                if ((blockZ < 0 || blockZ >= worldSizeZ) && !this.infiniteWorld) {
+                    return;
+                }
+            }
+        }
+
         if (!this.betaFeatures) {
             SandBlock.fallInstantly = true;
             int var4 = x * 16;
@@ -409,228 +423,219 @@ public class MCPEChunkGenerator implements ChunkSource {
             int var7 = this.random.nextInt() / 2 * 2 + 1;
             int var9 = this.random.nextInt() / 2 * 2 + 1;
             this.random.setSeed((long) x * var7 + (long)z * var9 ^ (int)this.world.getSeed());
-            double var10;
+            double var11;
 
-            int var11;
-            int var12;
-            int var13;
-            int var14;
-            for(var11 = 0; var11 < 10; ++var11) {
-                var12 = var4 + this.random.nextInt(16);
-                var13 = this.random.nextInt(128);
-                var14 = var5 + this.random.nextInt(16);
-                (new ClayOreFeature(32)).generate(this.world, this.random, var12, var13, var14);
+            for(int var28 = 0; var28 < 10; ++var28) {
+                int var40 = var4 + this.random.nextInt(16);
+                int var52 = this.random.nextInt(128);
+                int var63 = var5 + this.random.nextInt(16);
+                (new ClayOreFeature(32)).generate(this.world, this.random, var40, var52, var63);
             }
 
-            for(var11 = 0; var11 < 20; ++var11) {
-                var12 = var4 + this.random.nextInt(16);
-                var13 = this.random.nextInt(128);
-                var14 = var5 + this.random.nextInt(16);
-                (new OreFeature(Block.DIRT.id, 32)).generate(this.world, this.random, var12, var13, var14);
+            for(int var29 = 0; var29 < 20; ++var29) {
+                int var41 = var4 + this.random.nextInt(16);
+                int var53 = this.random.nextInt(128);
+                int var64 = var5 + this.random.nextInt(16);
+                (new OreFeature(Block.DIRT.id, 32)).generate(this.world, this.random, var41, var53, var64);
             }
 
-            for(var11 = 0; var11 < 10; ++var11) {
-                var12 = var4 + this.random.nextInt(16);
-                var13 = this.random.nextInt(128);
-                var14 = var5 + this.random.nextInt(16);
-                (new OreFeature(Block.GRAVEL.id, 32)).generate(this.world, this.random, var12, var13, var14);
+            for(int var30 = 0; var30 < 10; ++var30) {
+                int var42 = var4 + this.random.nextInt(16);
+                int var54 = this.random.nextInt(128);
+                int var65 = var5 + this.random.nextInt(16);
+                (new OreFeature(Block.GRAVEL.id, 32)).generate(this.world, this.random, var42, var54, var65);
             }
 
-            for(var11 = 0; var11 < 20; ++var11) {
-                var12 = var4 + this.random.nextInt(16);
-                var13 = this.random.nextInt(128);
-                var14 = var5 + this.random.nextInt(16);
-                (new OreFeature(Block.COAL_ORE.id, 16)).generate(this.world, this.random, var12, var13, var14);
+            for(int var31 = 0; var31 < 20; ++var31) {
+                int var43 = var4 + this.random.nextInt(16);
+                int var55 = this.random.nextInt(128);
+                int var66 = var5 + this.random.nextInt(16);
+                (new OreFeature(Block.COAL_ORE.id, 16)).generate(this.world, this.random, var43, var55, var66);
             }
 
-            for(var11 = 0; var11 < 20; ++var11) {
-                var12 = var4 + this.random.nextInt(16);
-                var13 = this.random.nextInt(64);
-                var14 = var5 + this.random.nextInt(16);
-                (new OreFeature(Block.IRON_ORE.id, 8)).generate(this.world, this.random, var12, var13, var14);
+            for(int var32 = 0; var32 < 20; ++var32) {
+                int var44 = var4 + this.random.nextInt(16);
+                int var56 = this.random.nextInt(64);
+                int var67 = var5 + this.random.nextInt(16);
+                (new OreFeature(Block.IRON_ORE.id, 8)).generate(this.world, this.random, var44, var56, var67);
             }
 
-            for(var11 = 0; var11 < 2; ++var11) {
-                var12 = var4 + this.random.nextInt(16);
-                var13 = this.random.nextInt(32);
-                var14 = var5 + this.random.nextInt(16);
-                (new OreFeature(Block.GOLD_ORE.id, 8)).generate(this.world, this.random, var12, var13, var14);
+            for(int var33 = 0; var33 < 2; ++var33) {
+                int var45 = var4 + this.random.nextInt(16);
+                int var57 = this.random.nextInt(32);
+                int var68 = var5 + this.random.nextInt(16);
+                (new OreFeature(Block.GOLD_ORE.id, 8)).generate(this.world, this.random, var45, var57, var68);
             }
 
-            for(var11 = 0; var11 < 8; ++var11) {
-                var12 = var4 + this.random.nextInt(16);
-                var13 = this.random.nextInt(16);
-                var14 = var5 + this.random.nextInt(16);
-                (new OreFeature(Block.REDSTONE_ORE.id, 7)).generate(this.world, this.random, var12, var13, var14);
+            for(int var34 = 0; var34 < 8; ++var34) {
+                int var46 = var4 + this.random.nextInt(16);
+                int var58 = this.random.nextInt(16);
+                int var69 = var5 + this.random.nextInt(16);
+                (new OreFeature(Block.REDSTONE_ORE.id, 7)).generate(this.world, this.random, var46, var58, var69);
             }
 
-            for(var11 = 0; var11 < 1; ++var11) {
-                var12 = var4 + this.random.nextInt(16);
-                var13 = this.random.nextInt(16);
-                var14 = var5 + this.random.nextInt(16);
-                (new OreFeature(Block.DIAMOND_ORE.id, 7)).generate(this.world, this.random, var12, var13, var14);
+            for(int var35 = 0; var35 < 1; ++var35) {
+                int var47 = var4 + this.random.nextInt(16);
+                int var59 = this.random.nextInt(16);
+                int var70 = var5 + this.random.nextInt(16);
+                (new OreFeature(Block.DIAMOND_ORE.id, 7)).generate(this.world, this.random, var47, var59, var70);
             }
 
-            for(var11 = 0; var11 < 1; ++var11) {
-                var12 = var4 + this.random.nextInt(16);
-                var13 = this.random.nextInt(16) + this.random.nextInt(16);
-                var14 = var5 + this.random.nextInt(16);
-                (new OreFeature(Block.LAPIS_ORE.id, 6)).generate(this.world, this.random, var12, var13, var14);
+            for(int var36 = 0; var36 < 1; ++var36) {
+                int var48 = var4 + this.random.nextInt(16);
+                int var60 = this.random.nextInt(16) + this.random.nextInt(16);
+                int var71 = var5 + this.random.nextInt(16);
+                (new OreFeature(Block.LAPIS_ORE.id, 6)).generate(this.world, this.random, var48, var60, var71);
             }
 
-            var10 = 0.5D;
-            var11 = (int)((this.forestNoise.sample((double)var4 * var10, (double)var5 * var10) / 8.0D + this.random.nextDouble() * 4.0D + 4.0D) / 3.0D);
-            var12 = 0;
-            if(this.random.nextInt(10) == 0) {
-                ++var12;
+            var11 = 0.5F;
+            int var37 = (int)((this.forestNoise.sample((double)var4 * var11, (double)var5 * var11) / (double)8.0F + this.random.nextDouble() * (double)4.0F + (double)4.0F) / (double)3.0F);
+            int var49 = 0;
+            if (this.random.nextInt(10) == 0) {
+                ++var49;
             }
 
-            if(var6 == Biome.FOREST) {
-                var12 += var11 + 2;
+            if (var6 == Biome.FOREST) {
+                var49 += var37 + 2;
             }
 
-            if(var6 == Biome.RAINFOREST) {
-                var12 += var11 + 2;
+            if (var6 == Biome.RAINFOREST) {
+                var49 += var37 + 2;
             }
 
-            if(var6 == Biome.SEASONAL_FOREST) {
-                var12 += var11 + 1;
+            if (var6 == Biome.SEASONAL_FOREST) {
+                var49 += var37 + 1;
             }
 
-            if(var6 == Biome.TAIGA) {
-                var12 += var11 + 1;
+            if (var6 == Biome.TAIGA) {
+                var49 += var37 + 1;
             }
 
             if (var6 == Biome.DESERT) {
                 if (this.theme.equals("Woods")) {
-                    var12 += var11 + 2;
+                    var49 += var37 + 2;
                 } else {
-                    var12 -= 20;
+                    var49 -= 20;
                 }
             }
 
             if (var6 == Biome.TUNDRA) {
                 if (this.theme.equals("Woods")) {
-                    var12 += var11 + 2;
+                    var49 += var37 + 2;
                 } else {
-                    var12 -= 20;
+                    var49 -= 20;
                 }
             }
 
             if (var6 == Biome.PLAINS) {
                 if (this.theme.equals("Woods")) {
-                    var12 += var11 + 2;
+                    var49 += var37 + 2;
                 } else {
-                    var12 -= 20;
+                    var49 -= 20;
                 }
             }
 
             if (var6 == Biome.SWAMPLAND || var6 == Biome.SHRUBLAND || var6 == Biome.SAVANNA) {
                 if (this.theme.equals("Woods")) {
-                    var12 += var11 + 2;
+                    var49 += var37 + 2;
                 }
             }
 
-            int var15;
-            for(var13 = 0; var13 < var12; ++var13) {
-                var14 = var4 + this.random.nextInt(16) + 8;
-                var15 = var5 + this.random.nextInt(16) + 8;
-                Feature var16 = ((BWOWorld) var6).bwo_getRandomTreeFeatureMCPE(this.random);
-                var16.generate(this.world, this.random, var14, this.world.getTopY(var14, var15), var15);
+            for(int var61 = 0; var61 < var49; ++var61) {
+                int var72 = var4 + this.random.nextInt(16) + 8;
+                int var17 = var5 + this.random.nextInt(16) + 8;
+                Feature var18 = ((BWOWorld) var6).bwo_getRandomTreeFeatureMCPE(this.random);
+                var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
             }
 
-            int var17;
-            int var23;
             if (this.theme.equals("Paradise")) {
-                for(var14 = 0; var14 < 12; ++var14) {
-                    var15 = var4 + this.random.nextInt(16) + 8;
-                    var17 = this.random.nextInt(128);
-                    var23 = var5 + this.random.nextInt(16) + 8;
-                    (new PlantPatchFeature(Block.DANDELION.id)).generate(this.world, this.random, var15, var17, var23);
+                for(int var73 = 0; var73 < 12; ++var73) {
+                    int var76 = var4 + this.random.nextInt(16) + 8;
+                    int var85 = this.random.nextInt(128);
+                    int var19 = var5 + this.random.nextInt(16) + 8;
+                    (new PlantPatchFeature(Block.DANDELION.id)).generate(this.world, this.random, var76, var85, var19);
                 }
 
-                for(var14 = 0; var14 < 12; ++var14) {
-                    var15 = var4 + this.random.nextInt(16) + 8;
-                    var17 = this.random.nextInt(128);
-                    var23 = var5 + this.random.nextInt(16) + 8;
-                    (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var15, var17, var23);
+                for (int var120 = 0; var120 < 12; var120++) {
+                    int var79 = var4 + this.random.nextInt(16) + 8;
+                    int var88 = this.random.nextInt(128);
+                    int var99 = var5 + this.random.nextInt(16) + 8;
+                    (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var79, var88, var99);
                 }
             } else {
-                for(var14 = 0; var14 < 2; ++var14) {
-                    var15 = var4 + this.random.nextInt(16) + 8;
-                    var17 = this.random.nextInt(128);
-                    var23 = var5 + this.random.nextInt(16) + 8;
-                    (new PlantPatchFeature(Block.DANDELION.id)).generate(this.world, this.random, var15, var17, var23);
+                for(int var73 = 0; var73 < 2; ++var73) {
+                    int var76 = var4 + this.random.nextInt(16) + 8;
+                    int var85 = this.random.nextInt(128);
+                    int var19 = var5 + this.random.nextInt(16) + 8;
+                    (new PlantPatchFeature(Block.DANDELION.id)).generate(this.world, this.random, var76, var85, var19);
                 }
 
-                if(this.random.nextInt(2) == 0) {
-                    var15 = var4 + this.random.nextInt(16) + 8;
-                    var17 = this.random.nextInt(128);
-                    var23 = var5 + this.random.nextInt(16) + 8;
-                    (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var15, var17, var23);
+                if (this.random.nextInt(2) == 0) {
+                    int var79 = var4 + this.random.nextInt(16) + 8;
+                    int var88 = this.random.nextInt(128);
+                    int var99 = var5 + this.random.nextInt(16) + 8;
+                    (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var79, var88, var99);
                 }
             }
 
-            if(this.random.nextInt(4) == 0) {
-                var15 = var4 + this.random.nextInt(16) + 8;
-                var17 = this.random.nextInt(128);
-                var23 = var5 + this.random.nextInt(16) + 8;
-                (new PlantPatchFeature(Block.BROWN_MUSHROOM.id)).generate(this.world, this.random, var15, var17, var23);
+            if (this.random.nextInt(4) == 0) {
+                int var80 = var4 + this.random.nextInt(16) + 8;
+                int var89 = this.random.nextInt(128);
+                int var100 = var5 + this.random.nextInt(16) + 8;
+                (new PlantPatchFeature(Block.BROWN_MUSHROOM.id)).generate(this.world, this.random, var80, var89, var100);
             }
 
-            if(this.random.nextInt(8) == 0) {
-                var15 = var4 + this.random.nextInt(16) + 8;
-                var17 = this.random.nextInt(128);
-                var23 = var5 + this.random.nextInt(16) + 8;
-                (new PlantPatchFeature(Block.RED_MUSHROOM.id)).generate(this.world, this.random, var15, var17, var23);
+            if (this.random.nextInt(8) == 0) {
+                int var81 = var4 + this.random.nextInt(16) + 8;
+                int var90 = this.random.nextInt(128);
+                int var101 = var5 + this.random.nextInt(16) + 8;
+                (new PlantPatchFeature(Block.RED_MUSHROOM.id)).generate(this.world, this.random, var81, var90, var101);
             }
 
-            int var18;
-            for(var15 = 0; var15 < 10; ++var15) {
-                var17 = var4 + this.random.nextInt(16) + 8;
-                var23 = this.random.nextInt(128);
-                var18 = var5 + this.random.nextInt(16) + 8;
-                (new SugarCanePatchFeature()).generate(this.world, this.random, var17, var23, var18);
+            for(int var82 = 0; var82 < 10; ++var82) {
+                int var91 = var4 + this.random.nextInt(16) + 8;
+                int var102 = this.random.nextInt(128);
+                int var109 = var5 + this.random.nextInt(16) + 8;
+                (new SugarCanePatchFeature()).generate(this.world, this.random, var91, var102, var109);
             }
 
-            var15 = 0;
-            if(var6 == Biome.DESERT) {
-                var15 += 5;
+            int var84 = 0;
+            if (var6 == Biome.DESERT) {
+                var84 += 5;
             }
 
-            int var19;
-            for(var17 = 0; var17 < var15; ++var17) {
-                var23 = var4 + this.random.nextInt(16) + 8;
-                var18 = this.random.nextInt(128);
-                var19 = var5 + this.random.nextInt(16) + 8;
-                (new CactusPatchFeature()).generate(this.world, this.random, var23, var18, var19);
+            for(int var93 = 0; var93 < var84; ++var93) {
+                int var104 = var4 + this.random.nextInt(16) + 8;
+                int var110 = this.random.nextInt(128);
+                int var114 = var5 + this.random.nextInt(16) + 8;
+                (new CactusPatchFeature()).generate(this.world, this.random, var104, var110, var114);
             }
 
-            for(var17 = 0; var17 < 50; ++var17) {
-                var23 = var4 + this.random.nextInt(16) + 8;
-                var18 = this.random.nextInt(this.random.nextInt(120) + 8);
-                var19 = var5 + this.random.nextInt(16) + 8;
-                (new SpringFeature(this.theme.equals("Hell") ? Block.FLOWING_LAVA.id : Block.FLOWING_WATER.id)).generate(this.world, this.random, var23, var18, var19);
+            for(int var94 = 0; var94 < 50; ++var94) {
+                int var105 = var4 + this.random.nextInt(16) + 8;
+                int var111 = this.random.nextInt(this.random.nextInt(120) + 8);
+                int var115 = var5 + this.random.nextInt(16) + 8;
+                (new SpringFeature(this.theme.equals("Hell") ? Block.FLOWING_LAVA.id : Block.FLOWING_WATER.id)).generate(this.world, this.random, var105, var111, var115);
             }
 
-            for(var17 = 0; var17 < 20; ++var17) {
-                var23 = var4 + this.random.nextInt(16) + 8;
-                var18 = this.random.nextInt(this.random.nextInt(this.random.nextInt(112) + 8) + 8);
-                var19 = var5 + this.random.nextInt(16) + 8;
-                (new SpringFeature(Block.FLOWING_LAVA.id)).generate(this.world, this.random, var23, var18, var19);
+            for(int var95 = 0; var95 < 20; ++var95) {
+                int var106 = var4 + this.random.nextInt(16) + 8;
+                int var112 = this.random.nextInt(this.random.nextInt(this.random.nextInt(112) + 8) + 8);
+                int var116 = var5 + this.random.nextInt(16) + 8;
+                (new SpringFeature(Block.FLOWING_LAVA.id)).generate(this.world, this.random, var106, var112, var116);
             }
 
             this.temperatures = this.world.method_1781().create(this.temperatures, var4 + 8, var5 + 8, 16, 16);
 
-            for(var17 = var4 + 8; var17 < var4 + 8 + 16; ++var17) {
-                for(var23 = var5 + 8; var23 < var5 + 8 + 16; ++var23) {
-                    var18 = var17 - (var4 + 8);
-                    var19 = var23 - (var5 + 8);
-                    int var20 = this.world.getTopSolidBlockY(var17, var23);
-                    double var21 = this.temperatures[var18 * 16 + var19] - (double)(var20 - 64) / 64.0D * 0.3D;
+            for(int var96 = var4 + 8; var96 < var4 + 8 + 16; ++var96) {
+                for(int var107 = var5 + 8; var107 < var5 + 8 + 16; ++var107) {
+                    int var113 = var96 - (var4 + 8);
+                    int var117 = var107 - (var5 + 8);
+                    int var22 = this.world.getTopSolidBlockY(var96, var107);
+                    double var23 = this.temperatures[var113 * 16 + var117] - (double)(var22 - 64) / (double)64.0F * 0.3;
                     float temp = this.theme.equals("Winter") ? 1.1F : 0.5F;
-                    if(!this.theme.equals("Hell") && var21 < (double)temp && var20 > 0 && var20 < 128 && this.world.isAir(var17, var20, var23) && this.world.getMaterial(var17, var20 - 1, var23).isSolid() && this.world.getMaterial(var17, var20 - 1, var23) != Material.ICE) {
-                        this.world.setBlock(var17, var20, var23, Block.SNOW.id);
+                    if (!this.theme.equals("Hell") && var23 < (double)temp && var22 > 0 && var22 < 128 && this.world.isAir(var96, var22, var107) && this.world.getMaterial(var96, var22 - 1, var107).blocksMovement() && this.world.getMaterial(var96, var22 - 1, var107) != Material.ICE) {
+                        this.world.setBlock(var96, var22, var107, Block.SNOW.id);
                     }
                 }
             }
