@@ -5,19 +5,19 @@ import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.WorldProperties;
+import net.minecraft.world.biome.Biome;
 
 import java.util.Set;
 
 public class WorldGenerationOptions {
     private static WorldGenerationOptions INSTANCE = new WorldGenerationOptions();
 
-    public static final Set<String> allowBetaFeaturesWorldTypes = Set.of(
-            "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "Indev 223", "MCPE"
-    );
+    public static final Set<String> allowBetaFeaturesWorldTypes = Set.of("Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "Indev 223", "MCPE");
+    public static final Set<String> disableThemeWorldTypes = Set.of("Nether", "Skylands", "Aether");
 
-    public static final Set<String> disableThemeWorldTypes = Set.of(
-            "Nether", "Skylands", "Aether"
-    );
+    public static Set<Biome> defaultBiomesSetSnow = Set.of(Biome.RAINFOREST, Biome.SWAMPLAND, Biome.SEASONAL_FOREST, Biome.FOREST, Biome.SAVANNA, Biome.SHRUBLAND, Biome.DESERT, Biome.PLAINS);
+    public static Set<Biome> defaultBiomesSetPrecipitation = Set.of(Biome.RAINFOREST, Biome.SWAMPLAND, Biome.SEASONAL_FOREST, Biome.FOREST, Biome.SAVANNA, Biome.SHRUBLAND, Biome.TAIGA, Biome.PLAINS, Biome.TUNDRA);
+    public static Set<Biome> defaultBiomesSetPrecipitationNoSnow = Set.of(Biome.TAIGA, Biome.TUNDRA, Biome.ICE_DESERT);
 
     public String worldTypeName;
     public boolean hardcore;

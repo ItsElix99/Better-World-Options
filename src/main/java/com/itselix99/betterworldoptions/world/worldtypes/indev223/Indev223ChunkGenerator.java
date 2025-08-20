@@ -77,6 +77,20 @@ public class Indev223ChunkGenerator implements ChunkSource {
             }
         }
 
+        if (this.theme.equals("Hell") || this.theme.equals("Paradise")) {
+            if (!this.betaFeatures) {
+                ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, false);
+            } else {
+                ((BWOWorld) this.world).bwo_setPrecipitation(false);
+            }
+        } else {
+            if (!this.betaFeatures) {
+                ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, true);
+            } else {
+                ((BWOWorld) this.world).bwo_setPrecipitation(true);
+            }
+        }
+
         if (this.betaFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         }

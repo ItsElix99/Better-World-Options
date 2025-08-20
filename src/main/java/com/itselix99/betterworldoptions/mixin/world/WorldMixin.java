@@ -13,7 +13,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.world.WorldProperties;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.storage.WorldStorage;
 import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
@@ -23,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Random;
-import java.util.Set;
 
 @Mixin(World.class)
 public abstract class WorldMixin implements BWOWorld {
@@ -31,17 +29,14 @@ public abstract class WorldMixin implements BWOWorld {
     @Shadow public boolean newWorld;
     @Shadow protected WorldProperties properties;
     @Shadow @Final @Mutable public final Dimension dimension;
-    @Shadow @Final @Mutable protected final WorldStorage dimensionData;
-    @Unique private Set<Biome> defaultBiomes = Set.of(Biome.RAINFOREST, Biome.SWAMPLAND, Biome.SEASONAL_FOREST, Biome.FOREST, Biome.SAVANNA, Biome.SHRUBLAND, Biome.DESERT, Biome.PLAINS);
 
     @Shadow public abstract int getBlockId(int x, int y, int z);
     @Shadow public abstract boolean setBlock(int x, int y, int z, int blockId);
     @Shadow public abstract WorldProperties getProperties();
     @Shadow public abstract Material getMaterial(int x, int y, int z);
 
-    protected WorldMixin(Dimension dimension, WorldStorage dimensionData) {
+    protected WorldMixin(Dimension dimension) {
         this.dimension = dimension;
-        this.dimensionData = dimensionData;
     }
 
     @Override
@@ -49,8 +44,31 @@ public abstract class WorldMixin implements BWOWorld {
         OverworldBiomeProviderImpl.getInstance()
                 .getBiomes()
                 .stream()
-                .filter(biome -> this.defaultBiomes.contains(biome))
+                .filter(biome -> WorldGenerationOptions.defaultBiomesSetSnow.contains(biome))
                 .forEach(biome -> biome.setSnow(bl));
+    }
+
+    @Override
+    public void bwo_setPrecipitation(boolean bl) {
+        OverworldBiomeProviderImpl.getInstance()
+                .getBiomes()
+                .stream()
+                .filter(biome -> WorldGenerationOptions.defaultBiomesSetPrecipitation.contains(biome))
+                .forEach(biome -> biome.setPrecipitation(bl));
+
+        if (!bl) {
+            OverworldBiomeProviderImpl.getInstance()
+                    .getBiomes()
+                    .stream()
+                    .filter(biome -> WorldGenerationOptions.defaultBiomesSetPrecipitationNoSnow.contains(biome))
+                    .forEach(biome -> biome.setSnow(false));
+        } else {
+            OverworldBiomeProviderImpl.getInstance()
+                    .getBiomes()
+                    .stream()
+                    .filter(biome -> WorldGenerationOptions.defaultBiomesSetPrecipitationNoSnow.contains(biome))
+                    .forEach(biome -> biome.setSnow(true));
+        }
     }
 
     @Override
@@ -60,6 +78,16 @@ public abstract class WorldMixin implements BWOWorld {
             case "Infdev 611", "Infdev 420", "Infdev 415" -> BetterWorldOptions.Infdev.setSnow(bl);
             case "Early Infdev" -> BetterWorldOptions.EarlyInfdev.setSnow(bl);
             case "Indev 223" -> BetterWorldOptions.IndevNormal.setSnow(bl);
+        }
+    }
+
+    @Override
+    public void bwo_oldBiomeSetPrecipitation(String worldType, boolean bl) {
+        switch (worldType) {
+            case "Alpha 1.1.2_01" -> BetterWorldOptions.Alpha.setPrecipitation(bl);
+            case "Infdev 611", "Infdev 420", "Infdev 415" -> BetterWorldOptions.Infdev.setPrecipitation(bl);
+            case "Early Infdev" -> BetterWorldOptions.EarlyInfdev.setPrecipitation(bl);
+            case "Indev 223" -> BetterWorldOptions.IndevNormal.setPrecipitation(bl);
         }
     }
 
@@ -154,15 +182,17 @@ public abstract class WorldMixin implements BWOWorld {
     private int modifySkylight(int original) {
         String theme = ((BWOProperties) this.getProperties()).bwo_getTheme();
 
-        if (theme.equals("Hell")) {
-            if (original < 9) {
-                return 9;
-            } else if (original == 11) {
-                return 12;
-            }
-        } else if (theme.equals("Woods")) {
-            if (original < 4) {
-                return 4;
+        if (this.dimension.id == 0) {
+            if (theme.equals("Hell")) {
+                if (original < 9) {
+                    return 9;
+                } else if (original == 11) {
+                    return 12;
+                }
+            } else if (theme.equals("Woods")) {
+                if (original < 4) {
+                    return 4;
+                }
             }
         }
 
@@ -178,24 +208,50 @@ public abstract class WorldMixin implements BWOWorld {
             )
     )
     private long indevHellCloudsColor(World world, Operation<Long> original) {
-        String worldType = ((BWOProperties) world.getProperties()).bwo_getWorldType();
         String theme = ((BWOProperties) world.getProperties()).bwo_getTheme();
-        boolean betaFeatures = ((BWOProperties) world.getProperties()).bwo_getBetaFeatures();
 
-        switch (theme) {
-            case "Hell" -> {
-                return 2164736;
-            }
-            case "Paradise" -> {
-                return 15658751;
-            }
-            case "Woods" -> {
-                return 5069403;
+        if (world.dimension.id == 0) {
+            switch (theme) {
+                case "Hell" -> {
+                    return 2164736;
+                }
+                case "Paradise" -> {
+                    return 15658751;
+                }
+                case "Woods" -> {
+                    return 5069403;
+                }
             }
         }
 
 
         return original.call(world);
+    }
+
+    @ModifyReturnValue(method = "getRainGradient", at = @At("RETURN"))
+    private float noRainGradientInHellAndParadise(float original) {
+        String theme = ((BWOProperties) this.getProperties()).bwo_getTheme();
+
+        if (this.dimension.id == 0) {
+            if (theme.equals("Hell") || theme.equals("Paradise")) {
+                return 0.0F;
+            }
+        }
+
+        return original;
+    }
+
+    @ModifyReturnValue(method = "getThunderGradient", at = @At("RETURN"))
+    private float noThunderGradientInHellAndParadise(float original) {
+        String theme = ((BWOProperties) this.getProperties()).bwo_getTheme();
+
+        if (this.dimension.id == 0) {
+            if (theme.equals("Hell") || theme.equals("Paradise")) {
+                return 0.0F;
+            }
+        }
+
+        return original;
     }
 }
 

@@ -57,6 +57,7 @@ public class Alpha120ChunkGenerator implements ChunkSource {
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
 
         ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
+        ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
 
         ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
 

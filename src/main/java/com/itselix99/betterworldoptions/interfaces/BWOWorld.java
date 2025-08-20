@@ -12,4 +12,6 @@ public interface BWOWorld {
 
     void bwo_setSnow(boolean bl);
     void bwo_oldBiomeSetSnow(String worldtype, boolean bl);
+    void bwo_setPrecipitation(boolean bl);
+    void bwo_oldBiomeSetPrecipitation(String worldtype, boolean bl);
 }

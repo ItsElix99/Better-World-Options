@@ -74,6 +74,20 @@ public class Alpha112ChunkGenerator implements ChunkSource {
             }
         }
 
+        if (this.theme.equals("Hell") || this.theme.equals("Paradise")) {
+            if (!this.betaFeatures) {
+                ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, false);
+            } else {
+                ((BWOWorld) this.world).bwo_setPrecipitation(false);
+            }
+        } else {
+            if (!this.betaFeatures) {
+                ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, true);
+            } else {
+                ((BWOWorld) this.world).bwo_setPrecipitation(true);
+            }
+        }
+
         ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
 
         this.minLimitPerlinNoise = new OctavePerlinNoiseSamplerAlpha112(this.random, 16);

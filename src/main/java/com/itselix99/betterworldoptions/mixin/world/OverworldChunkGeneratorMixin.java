@@ -41,6 +41,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         this.theme = ((BWOProperties) world.getProperties()).bwo_getTheme();
 
         ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
+        ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
     }
 
     @ModifyVariable(

@@ -71,19 +71,8 @@ public class MCPEChunkGenerator implements ChunkSource {
         this.worldSizeX = ((BWOProperties) this.world.getProperties()).bwo_getWorldSizeX();
         this.worldSizeZ = ((BWOProperties) this.world.getProperties()).bwo_getWorldSizeZ();
 
-        if (this.theme.equals("Winter")) {
-            if (!this.betaFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
-            } else {
-                ((BWOWorld) this.world).bwo_setSnow(true);
-            }
-        } else {
-            if (!this.betaFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
-            } else {
-                ((BWOWorld) this.world).bwo_setSnow(false);
-            }
-        }
+        ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
+        ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
 
         if (this.betaFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
