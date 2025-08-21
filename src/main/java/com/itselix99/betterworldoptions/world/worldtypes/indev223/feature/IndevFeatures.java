@@ -11,7 +11,7 @@ import java.util.*;
 public class IndevFeatures {
     public static void placeSpawnBuilding(World world) {
         int var1 = world.getProperties().getSpawnX();
-        int var2 = world.getProperties().getSpawnY();
+        int var2 = world.getProperties().getSpawnY() + 2;
         int var3 = world.getProperties().getSpawnZ();
 
         for(int var4 = var1 - 3; var4 <= var1 + 3; ++var4) {

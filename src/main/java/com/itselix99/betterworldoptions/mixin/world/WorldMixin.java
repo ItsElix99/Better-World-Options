@@ -3,6 +3,7 @@ package com.itselix99.betterworldoptions.mixin.world;
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
+import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.IndevFeatures;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -99,9 +100,7 @@ public abstract class WorldMixin implements BWOWorld {
             )
     )
     private void beforeSetWorld(WorldStorage storage, String name, long seed, Dimension dimension, CallbackInfo ci) {
-        if (this.newWorld) {
-            ((BWOProperties) this.properties).bwo_setWorldType(WorldGenerationOptions.getInstance().worldTypeName);
-        } else {
+        if (!this.newWorld) {
             new WorldGenerationOptions(this.properties);
         }
     }
@@ -135,7 +134,11 @@ public abstract class WorldMixin implements BWOWorld {
                 }
             }
 
-            original.call(properties, var1, var2 + 1, var3);
+            original.call(properties, var1, var2 - 1, var3);
+
+            if (generateIndevHouse) {
+                IndevFeatures.placeSpawnBuilding(World.class.cast(this));
+            }
         } else if (worldType.equals("MCPE")) {
             int var1 = 128;
             int var2 = 64;

@@ -57,18 +57,6 @@ public class MinecraftMixin {
         }
     }
 
-    @Inject(
-            method = "setWorld(Lnet/minecraft/world/World;Ljava/lang/String;Lnet/minecraft/entity/player/PlayerEntity;)V",
-            at = @At(
-                    value = "TAIL"
-            )
-    )
-    private void indevSpawnBuilding(World world, String message, PlayerEntity player, CallbackInfo ci) {
-        if (world != null && Objects.equals(((BWOProperties) world.getProperties()).bwo_getWorldType(), "Indev 223") && ((BWOProperties) world.getProperties()).bwo_isGenerateIndevHouse()) {
-            IndevFeatures.placeSpawnBuilding(world);
-        }
-    }
-
     @Inject(method = "setWorld(Lnet/minecraft/world/World;Ljava/lang/String;Lnet/minecraft/entity/player/PlayerEntity;)V", at = @At("TAIL"))
     private void dimensionBetaFeaturesTextures(World world, String message, PlayerEntity player, CallbackInfo ci) {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
