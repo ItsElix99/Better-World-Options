@@ -81,7 +81,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             }
         }
 
-        if (!this.betaFeatures) {
+        if (this.betaFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         }
 
