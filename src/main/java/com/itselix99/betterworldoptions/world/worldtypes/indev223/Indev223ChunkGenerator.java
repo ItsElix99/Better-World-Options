@@ -109,7 +109,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, double[] temperatures) {
         int[] heightMap = new int[16 * 16];
         String indevWorldType = ((BWOProperties) this.world.getProperties()).bwo_getIndevWorldType();
-        int surroundingWaterHeight = 64;
+        int surroundingWaterHeight = 65;
 
         if (indevWorldType.equals("Flat")) {
             for (int i = 0; i < heightMap.length; i++) heightMap[i] = 0;
@@ -236,16 +236,16 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
                             if (y >= 55) {
 
-                                if (y == surroundingWaterHeight - 1) {
+                                if (y == surroundingWaterHeight - 2) {
                                     if (!this.theme.equals("Hell") && (var19 < temp && this.betaFeatures || this.theme.equals("Winter"))) {
                                         blockId = Block.ICE.id;
+                                    } else {
+                                        blockId = !this.theme.equals("Hell") ? Block.WATER.id : Block.LAVA.id;
                                     }
-                                } else {
-                                    blockId = !this.theme.equals("Hell") ? Block.WATER.id : Block.LAVA.id;
                                 }
                             }
 
-                            if (y > surroundingWaterHeight - 1) {
+                            if (y > surroundingWaterHeight - 2) {
                                 blockId = 0;
                             }
                         }
@@ -268,14 +268,14 @@ public class Indev223ChunkGenerator implements ChunkSource {
                             blockId = 0;
                         }
 
-                        if (!indevWorldType.equals("Floating") && y <= surroundingWaterHeight - 1 && blockId == 0) {
-                            if (y == surroundingWaterHeight - 1) {
+                        if (!indevWorldType.equals("Floating") && y <= surroundingWaterHeight - 2 && blockId == 0) {
+                            if (y == surroundingWaterHeight - 2) {
                                 if (!this.theme.equals("Hell") && (var19 < temp && this.betaFeatures || this.theme.equals("Winter"))) {
                                     blockId = Block.ICE.id;
-                                }
                             } else {
                                 blockId = !this.theme.equals("Hell") ? Block.WATER.id : Block.LAVA.id;
                             }
+                                }
                         }
                     }
 
@@ -312,7 +312,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                 }
 
                 boolean gravel = noiseGen3.create(worldX, worldZ) > 12.0;
-                if ((!this.betaFeatures && "Hell".equals(this.theme) || "Woods".equals(this.theme)) || (this.betaFeatures && "Hell".equals(this.singleBiome) || "Rainforest".equals(this.singleBiome) || "Seasonal Forest".equals(this.singleBiome) || "Forest".equals(this.singleBiome) || "Taiga".equals(this.singleBiome))) {
+                if ((!this.betaFeatures && this.theme.equals("Hell") || this.theme.equals("Woods")) || (this.betaFeatures && this.singleBiome.equals("Rainforest") || this.singleBiome.equals("Seasonal Forest") || this.singleBiome.equals("Forest") || this.singleBiome.equals("Taiga"))) {
                     sand = noiseGen5.create(worldX, worldZ) > (double) -8.0F;
                 }
 
@@ -432,7 +432,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
         }
 
         if (!this.betaFeatures) {
-            IndevFeatures.placeUndergroundLakes(this.random, var3);
+            //IndevFeatures.placeUndergroundLakes(this.random, var3);
             //IndevFeatures.placeLakes(this.random, var3, this.indevTheme);
 
             IndevFeatures.placeOre(this.random, Block.COAL_ORE.id, 1000, 10, (128 << 2) / 5, var3);
