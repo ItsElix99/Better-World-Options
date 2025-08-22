@@ -43,24 +43,24 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
     private double[] temperatures;
 
     private final String worldType;
-    private final boolean betaFeatures;
+    private final boolean oldFeatures;
     private final String theme;
 
     public EarlyInfdevChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
         this.worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
+        this.oldFeatures = ((BWOProperties) this.world.getProperties()).bwo_isOldFeatures();
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
 
         if (this.theme.equals("Winter")) {
-            if (!this.betaFeatures) {
+            if (this.oldFeatures) {
                 ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
             } else {
                 ((BWOWorld) this.world).bwo_setSnow(true);
             }
         } else {
-            if (!this.betaFeatures) {
+            if (this.oldFeatures) {
                 ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
             } else {
                 ((BWOWorld) this.world).bwo_setSnow(false);
@@ -68,20 +68,20 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         }
 
         if (this.theme.equals("Hell") || this.theme.equals("Paradise")) {
-            if (!this.betaFeatures) {
+            if (this.oldFeatures) {
                 ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, false);
             } else {
                 ((BWOWorld) this.world).bwo_setPrecipitation(false);
             }
         } else {
-            if (!this.betaFeatures) {
+            if (this.oldFeatures) {
                 ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, true);
             } else {
                 ((BWOWorld) this.world).bwo_setPrecipitation(true);
             }
         }
 
-        if (this.betaFeatures) {
+        if (!this.oldFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         }
 
@@ -126,7 +126,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
 
                     if ((var6 == 0 || var7 == 0) && var14 <= var13 + 2) {
                         var15 = Block.OBSIDIAN.id;
-                    } else if (var14 == var13 + 1 && var13 >= 64 && Math.random() < 0.02D && !this.betaFeatures) {
+                    } else if (var14 == var13 + 1 && var13 >= 64 && Math.random() < 0.02D && this.oldFeatures) {
                         int index2 = (index) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + (var14 - 1);
                         if (blocks[index2] == Block.GRASS_BLOCK.id || blocks[index2] == Block.DIRT.id) {
                             var15 = Block.DANDELION.id;
@@ -135,7 +135,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                             }
                         }
                     } else if (var14 == var13 && var13 >= 64) {
-                        if (this.betaFeatures) {
+                        if (!this.oldFeatures) {
                             var15 = this.theme.equals("Hell") ? (var18.topBlockId != Block.SAND.id ? Block.DIRT.id : var18.topBlockId) : var18.topBlockId;
                         } else {
                             var15 = this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id;
@@ -143,19 +143,19 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                     } else if (var14 <= var13 - 2) {
                         var15 = Block.STONE.id;
 
-                        if (this.betaFeatures && var18 == Biome.DESERT || var18 == Biome.ICE_DESERT) {
+                        if (!this.oldFeatures && var18 == Biome.DESERT || var18 == Biome.ICE_DESERT) {
                             if (var13 - var14 <= 3) {
                                 var15 = Block.SANDSTONE.id;
                             }
                         }
                     } else if (var14 <= var13) {
-                        if (this.betaFeatures) {
+                        if (!this.oldFeatures) {
                             var15 = var18.soilBlockId;
                         } else {
                             var15 = Block.DIRT.id;
                         }
                     } else if (var14 <= 64) {
-                        if (!this.theme.equals("Hell") && (var19 < temp && this.betaFeatures || this.theme.equals("Winter")) && var14 >= 63) {
+                        if (!this.theme.equals("Hell") && (var19 < temp && !this.oldFeatures || this.theme.equals("Winter")) && var14 >= 63) {
                             var15 = Block.ICE.id;
                         } else {
                             var15 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
@@ -192,14 +192,14 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var5);
 
-        if (this.betaFeatures){
+        if (!this.oldFeatures){
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         } else {
             this.caveEarlyInfdev.place(this, this.world, chunkX, chunkZ, var3);
         }
 
         if (Config.BWOConfig.world.ravineGeneration) {
-            if (this.betaFeatures || Config.BWOConfig.world.allowGenWithBetaFeaturesOff) {
+            if (!this.oldFeatures || Config.BWOConfig.world.allowGenWithOldFeaturesOn) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
         }
@@ -215,7 +215,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
     }
 
     public void decorate(ChunkSource source, int x, int z) {
-        if (!this.betaFeatures) {
+        if (this.oldFeatures) {
             this.random.setSeed((long)x * 318279123L + (long)z * 919871212L);
             int var4 = x << 4;
             x = z << 4;

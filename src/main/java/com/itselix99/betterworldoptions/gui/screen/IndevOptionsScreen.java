@@ -14,7 +14,7 @@ public class IndevOptionsScreen extends Screen {
     protected String title = translation.get("selectWorld.indevOptions");
     private final WorldGenerationOptions worldGenerationOptions;
 
-    private ButtonWidget betaFeaturesButton;
+    private ButtonWidget oldFeaturesButton;
     private ButtonWidget shapeButton;
     private ButtonWidget sizeButton;
     private ButtonWidget themeButton;
@@ -28,7 +28,7 @@ public class IndevOptionsScreen extends Screen {
 
     @SuppressWarnings("unchecked")
     public void init() {
-        this.buttons.add(this.betaFeaturesButton = new ButtonWidget(0, this.width / 2 - 155, this.height / 4, 310, 20, this.translation.get("selectWorld.betaFeatures") + " " + (this.worldGenerationOptions.betaFeatures ? this.translation.get("options.on") : this.translation.get("options.off"))));
+        this.buttons.add(this.oldFeaturesButton = new ButtonWidget(0, this.width / 2 - 155, this.height / 4, 310, 20, this.translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? this.translation.get("options.on") : this.translation.get("options.off"))));
         this.buttons.add(new ButtonWidget(1, this.width / 2 - 155, this.height / 4 + 24, 150, 20, this.translation.get("indevOptions.type") + " " + this.worldGenerationOptions.indevWorldType));
         this.buttons.add(this.shapeButton = new ButtonWidget(2, this.width / 2 + 5, this.height / 4 + 24, 150, 20, this.translation.get("indevOptions.shape") + " " + this.worldGenerationOptions.indevShape));
         this.buttons.add(this.sizeButton = new ButtonWidget(3, this.width / 2 - 155, this.height / 4 + 48, 150, 20, this.translation.get("indevOptions.size") + " " + this.worldGenerationOptions.size + " " + this.worldGenerationOptions.worldSizeX + "x" + this.worldGenerationOptions.worldSizeZ));
@@ -42,13 +42,13 @@ public class IndevOptionsScreen extends Screen {
     protected void buttonClicked(ButtonWidget button) {
         if (button.active && button.visible) {
             if (button.id == 0) {
-                this.worldGenerationOptions.betaFeatures = !this.worldGenerationOptions.betaFeatures;
+                this.worldGenerationOptions.oldFeatures = !this.worldGenerationOptions.oldFeatures;
 
-                if (!this.worldGenerationOptions.betaFeatures && !this.worldGenerationOptions.singleBiome.equals("Off")) {
+                if (this.worldGenerationOptions.oldFeatures && !this.worldGenerationOptions.singleBiome.equals("Off")) {
                     this.worldGenerationOptions.singleBiome = "0ff";
                 }
 
-                this.betaFeaturesButton.text = this.translation.get("selectWorld.betaFeatures") + " " + (this.worldGenerationOptions.betaFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
+                this.oldFeaturesButton.text = this.translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
             } else if (button.id == 1) {
                 if (button.text.equals(this.translation.get("indevOptions.type") + " " + "Island")) {
                     this.worldGenerationOptions.indevWorldType = "Floating";
@@ -124,7 +124,7 @@ public class IndevOptionsScreen extends Screen {
         this.infiniteWorldButton.text = this.translation.get("indevOptions.infiniteWorld") + " " + (this.worldGenerationOptions.infiniteWorld ? this.translation.get("options.on") : this.translation.get("options.off"));
         this.singleBiomeButton.text = this.translation.get("selectWorld.singleBiome") + " " + (!this.worldGenerationOptions.singleBiome.equals("Off") ? this.worldGenerationOptions.singleBiome : this.translation.get("options.off"));
 
-        this.singleBiomeButton.active = this.worldGenerationOptions.betaFeatures;
+        this.singleBiomeButton.active = !this.worldGenerationOptions.oldFeatures;
 
         this.infiniteWorldButton.active = this.worldGenerationOptions.indevWorldType.equals("Flat") || this.worldGenerationOptions.indevWorldType.equals("Inland");
 

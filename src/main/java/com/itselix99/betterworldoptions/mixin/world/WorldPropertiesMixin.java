@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class WorldPropertiesMixin implements BWOProperties {
     @Unique private String worldType;
     @Unique private boolean hardcore;
-    @Unique private boolean betaFeatures;
+    @Unique private boolean oldFeatures;
     @Unique private String theme;
     @Unique private String singleBiome;
 
@@ -38,8 +38,8 @@ public class WorldPropertiesMixin implements BWOProperties {
         return this.hardcore;
     }
 
-    @Override public boolean bwo_getBetaFeatures() {
-        return this.betaFeatures;
+    @Override public boolean bwo_isOldFeatures() {
+        return this.oldFeatures;
     }
     @Override public String bwo_getSingleBiome() {
         return this.singleBiome;
@@ -71,13 +71,13 @@ public class WorldPropertiesMixin implements BWOProperties {
     private void onLoadFromNbt(NbtCompound nbt, CallbackInfo ci) {
         this.worldType = nbt.getString("WorldType");
         this.hardcore = nbt.getBoolean("Hardcore");
-        this.betaFeatures = nbt.getBoolean("BetaFeatures");
+        this.oldFeatures = nbt.getBoolean("OldFeatures");
         this.singleBiome = nbt.getString("SingleBiome");
         this.theme = nbt.getString("Theme");
 
         if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
             if (bwo_getWorldType().equals("Indev 223")) {
-                this.indevWorldType = nbt.getString("IndevWorldType");
+                this.indevWorldType = nbt.getString("Indev World Type");
                 this.shape = nbt.getString("Shape");
                 this.generateIndevHouse = nbt.getBoolean("GenerateIndevHouse");
             }
@@ -96,7 +96,7 @@ public class WorldPropertiesMixin implements BWOProperties {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
         this.worldType = worldGenerationOptions.worldTypeName;
         this.hardcore = worldGenerationOptions.hardcore;
-        this.betaFeatures = worldGenerationOptions.betaFeatures;
+        this.oldFeatures = worldGenerationOptions.oldFeatures;
         this.singleBiome = worldGenerationOptions.singleBiome;
         this.theme = worldGenerationOptions.theme;
 
@@ -120,7 +120,7 @@ public class WorldPropertiesMixin implements BWOProperties {
     private void onCopyConstructor(net.minecraft.world.WorldProperties source, CallbackInfo ci) {
         this.worldType = ((BWOProperties) source).bwo_getWorldType();
         this.hardcore = ((BWOProperties) source).bwo_isHardcore();
-        this.betaFeatures = ((BWOProperties) source).bwo_getBetaFeatures();
+        this.oldFeatures = ((BWOProperties) source).bwo_isOldFeatures();
         this.singleBiome = ((BWOProperties) source).bwo_getSingleBiome();
         this.theme = ((BWOProperties) source).bwo_getTheme();
 
@@ -144,7 +144,7 @@ public class WorldPropertiesMixin implements BWOProperties {
     private void onUpdateProperties(NbtCompound nbt, NbtCompound playerNbt, CallbackInfo ci) {
         nbt.putString("WorldType", this.worldType);
         nbt.putBoolean("Hardcore", this.hardcore);
-        nbt.putBoolean("BetaFeatures", this.betaFeatures);
+        nbt.putBoolean("OldFeatures", this.oldFeatures);
         nbt.putString("SingleBiome", this.singleBiome);
         nbt.putString("Theme", this.theme);
 

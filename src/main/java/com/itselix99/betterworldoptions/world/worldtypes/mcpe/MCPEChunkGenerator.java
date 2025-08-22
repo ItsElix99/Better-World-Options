@@ -52,7 +52,7 @@ public class MCPEChunkGenerator implements ChunkSource {
     private double[] temperatures;
 
     private final String worldType;
-    private final boolean betaFeatures;
+    private final boolean oldFeatures;
     private final String theme;
     private final String singleBiome;
     private final boolean infiniteWorld;
@@ -64,7 +64,7 @@ public class MCPEChunkGenerator implements ChunkSource {
         this.world = world;
         this.random = new MTRandom((int) seed);
         this.worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
+        this.oldFeatures = ((BWOProperties) this.world.getProperties()).bwo_isOldFeatures();
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
         this.singleBiome = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
         this.infiniteWorld = ((BWOProperties) this.world.getProperties()).bwo_isInfiniteWorld();
@@ -74,7 +74,7 @@ public class MCPEChunkGenerator implements ChunkSource {
         ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
         ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
 
-        if (this.betaFeatures) {
+        if (!this.oldFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         }
 
@@ -253,12 +253,12 @@ public class MCPEChunkGenerator implements ChunkSource {
         this.buildTerrain(chunkX, chunkZ, var3, var5);
         this.buildSurfaces(chunkX, chunkZ, var3, this.biomes);
 
-        if (this.betaFeatures) {
+        if (!this.oldFeatures) {
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
 
         if (Config.BWOConfig.world.ravineGeneration) {
-            if (this.betaFeatures || Config.BWOConfig.world.allowGenWithBetaFeaturesOff) {
+            if (!this.oldFeatures || Config.BWOConfig.world.allowGenWithOldFeaturesOn) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
         }
@@ -403,7 +403,7 @@ public class MCPEChunkGenerator implements ChunkSource {
             }
         }
 
-        if (!this.betaFeatures) {
+        if (this.oldFeatures) {
             SandBlock.fallInstantly = true;
             int var4 = x * 16;
             int var5 = z * 16;

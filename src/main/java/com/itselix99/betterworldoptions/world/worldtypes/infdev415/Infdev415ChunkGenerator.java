@@ -40,7 +40,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
     private Biome[] biomes;
 
     private final String worldType;
-    private final boolean betaFeatures;
+    private final boolean oldFeatures;
     private final String theme;
 
     public Infdev415ChunkGenerator(World world, long seed) {
@@ -48,17 +48,17 @@ public class Infdev415ChunkGenerator implements ChunkSource {
         this.random = new Random(seed);
         new Random(seed);
         this.worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        this.betaFeatures = ((BWOProperties) this.world.getProperties()).bwo_getBetaFeatures();
+        this.oldFeatures = ((BWOProperties) this.world.getProperties()).bwo_isOldFeatures();
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
 
         if (this.theme.equals("Winter")) {
-            if (!this.betaFeatures) {
+            if (this.oldFeatures) {
                 ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
             } else {
                 ((BWOWorld) this.world).bwo_setSnow(true);
             }
         } else {
-            if (!this.betaFeatures) {
+            if (this.oldFeatures) {
                 ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
             } else {
                 ((BWOWorld) this.world).bwo_setSnow(false);
@@ -66,20 +66,20 @@ public class Infdev415ChunkGenerator implements ChunkSource {
         }
 
         if (this.theme.equals("Hell") || this.theme.equals("Paradise")) {
-            if (!this.betaFeatures) {
+            if (this.oldFeatures) {
                 ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, false);
             } else {
                 ((BWOWorld) this.world).bwo_setPrecipitation(false);
             }
         } else {
-            if (!this.betaFeatures) {
+            if (this.oldFeatures) {
                 ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, true);
             } else {
                 ((BWOWorld) this.world).bwo_setPrecipitation(true);
             }
         }
 
-        if (this.betaFeatures) {
+        if (!this.oldFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         }
 
@@ -141,7 +141,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                                 double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
                                 int var56 = 0;
                                 if((var8 << 2) + var25 < 64) {
-                                    if (!this.theme.equals("Hell") && (var53 < temp && this.betaFeatures || this.theme.equals("Winter")) && var8 * 8 + var25 >= 63) {
+                                    if (!this.theme.equals("Hell") && (var53 < temp && !this.oldFeatures || this.theme.equals("Winter")) && var8 * 8 + var25 >= 63) {
                                         var56 = Block.ICE.id;
                                     } else {
                                         var56 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
@@ -174,7 +174,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                 int var18;
                 int var54;
 
-                if (this.betaFeatures) {
+                if (!this.oldFeatures) {
                     var18 = this.theme.equals("Hell") ? (var55.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var55.topBlockId) : var55.topBlockId;
                     var54 = var55.soilBlockId;
                 } else {
@@ -192,7 +192,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                                 var18 = 0;
                                 var54 = (byte)Block.STONE.id;
                             } else if(var20 >= 60 && var20 <= 65) {
-                                if (this.betaFeatures) {
+                                if (!this.oldFeatures) {
                                     var18 = this.theme.equals("Hell") ? (var55.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var55.topBlockId) : var55.topBlockId;
                                     var54 = var55.soilBlockId;
                                 } else {
@@ -229,7 +229,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                         } else if(var53 > 0) {
                             --var53;
                             blocks[var16] = (byte)var54;
-                            if (var53 == 0 && var54 == Block.SAND.id && this.betaFeatures) {
+                            if (var53 == 0 && var54 == Block.SAND.id && !this.oldFeatures) {
                                 var53 = this.random.nextInt(4);
                                 var54 = (byte)Block.SANDSTONE.id;
                             }
@@ -253,12 +253,12 @@ public class Infdev415ChunkGenerator implements ChunkSource {
         double[] var5 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var5);
 
-        if (this.betaFeatures) {
+        if (!this.oldFeatures) {
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
 
         if (Config.BWOConfig.world.ravineGeneration) {
-            if (this.betaFeatures || Config.BWOConfig.world.allowGenWithBetaFeaturesOff) {
+            if (!this.oldFeatures || Config.BWOConfig.world.allowGenWithOldFeaturesOn) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
         }
@@ -331,7 +331,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
     }
 
     public void decorate(ChunkSource source, int x, int z) {
-        if (!this.betaFeatures) {
+        if (this.oldFeatures) {
             this.random.setSeed((long)x * 318279123L + (long)z * 919871212L);
             int var4 = x << 4;
             x = z << 4;

@@ -34,7 +34,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Unique private ButtonWidget gamemodeButton;
     @Unique private ButtonWidget moreWorldOptions;
     @Unique private ButtonWidget worldTypeButton;
-    @Unique private ButtonWidget betaFeaturesButton;
+    @Unique private ButtonWidget oldFeaturesButton;
     @Unique private ButtonWidget themeButton;
     @Unique private ButtonWidget worldTypeOptionsButton;
 
@@ -102,7 +102,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
         this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, translation.get("selectWorld.gameMode") + " " + this.gamemode));
         this.buttons.add(this.moreWorldOptions = new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, moreOptions ? translation.get("gui.done") : translation.get("selectWorld.moreWorldOptions")));
         this.buttons.add(this.worldTypeButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, translation.get("selectWorld.worldtype") + " " + this.worldGenerationOptions.worldTypeName));
-        this.buttons.add(this.betaFeaturesButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, translation.get("selectWorld.betaFeatures") + " " + (this.worldGenerationOptions.betaFeatures ? translation.get("options.on") : translation.get("options.off"))));
+        this.buttons.add(this.oldFeaturesButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? translation.get("options.on") : translation.get("options.off"))));
         this.buttons.add(this.themeButton = new ButtonWidget(14, this.width / 2 - 75, 150, 150, 20, translation.get("selectWorld.theme") + " " + worldGenerationOptions.theme));
         this.buttons.add(this.worldTypeOptionsButton = new ButtonWidget(15, this.width / 2 + 5, 100, 150, 20, this.getWorldTypeOptionsButtonName()));
 
@@ -123,17 +123,17 @@ public abstract class CreateWorldScreenMixin extends Screen {
         }
 
         if (!WorldGenerationOptions.allowBetaFeaturesWorldTypes.contains(this.worldGenerationOptions.worldTypeName)) {
-            this.betaFeaturesButton.active = false;
+            this.oldFeaturesButton.active = false;
 
-            if (!this.worldGenerationOptions.betaFeatures) {
-                this.worldGenerationOptions.betaFeatures = true;
+            if (this.worldGenerationOptions.oldFeatures) {
+                this.worldGenerationOptions.oldFeatures = false;
             }
         } else {
-            this.betaFeaturesButton.active = true;
+            this.oldFeaturesButton.active = true;
         }
 
         if (this.worldGenerationOptions.worldTypeName.equals("Indev 223") || this.worldGenerationOptions.worldTypeName.equals("MCPE")) {
-            this.betaFeaturesButton.visible = false;
+            this.oldFeaturesButton.visible = false;
             this.themeButton.visible = false;
         }
 
@@ -207,9 +207,9 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
                 this.minecraft.setScreen(new WorldTypeListScreen(this, this.worldGenerationOptions));
             } else if (button.id == 13) {
-                this.worldGenerationOptions.betaFeatures = !this.worldGenerationOptions.betaFeatures;
+                this.worldGenerationOptions.oldFeatures = !this.worldGenerationOptions.oldFeatures;
 
-                this.betaFeaturesButton.text = this.translation.get("selectWorld.betaFeatures") + " " + (this.worldGenerationOptions.betaFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
+                this.oldFeaturesButton.text = this.translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
             } else if (button.id == 14) {
                 switch (this.themeButton.text) {
                     case "Theme: Normal" -> this.worldGenerationOptions.theme = "Hell";
@@ -344,7 +344,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     public void render(int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if(!this.moreOptions) {
             this.worldTypeButton.visible = false;
-            this.betaFeaturesButton.visible = false;
+            this.oldFeaturesButton.visible = false;
             this.worldTypeOptionsButton.visible = false;
             this.themeButton.visible = false;
             this.gamemodeButton.visible = true;
@@ -375,25 +375,18 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.gamemodeButton.visible = false;
 
             if (this.worldGenerationOptions.worldTypeName.equals("Indev 223") || this.worldGenerationOptions.worldTypeName.equals("MCPE")) {
-                this.betaFeaturesButton.visible = false;
+                this.oldFeaturesButton.visible = false;
                 this.themeButton.visible = false;
                 this.worldTypeOptionsButton.visible = true;
             } else {
-                this.betaFeaturesButton.visible = true;
+                this.oldFeaturesButton.visible = true;
                 this.themeButton.visible = true;
                 this.worldTypeOptionsButton.visible = false;
             }
 
-            if (this.worldGenerationOptions.betaFeatures) {
-                if (this.betaFeaturesButton.visible) {
-                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.betaFeatures.info.line1"), this.width / 2 + 5, 122, 10526880);
-                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.betaFeatures.info.line2"), this.width / 2 + 5, 134, 10526880);
-                }
-            } else {
-                if (this.betaFeaturesButton.visible) {
-                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.betaFeatures.info.disabled.line1"), this.width / 2 + 5, 122, 10526880);
-                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.betaFeatures.info.disabled.line2"), this.width / 2 + 5, 134, 10526880);
-                }
+            if (this.oldFeaturesButton.visible) {
+                this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.oldFeatures.info.line1"), this.width / 2 + 5, 122, 10526880);
+                this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.oldFeatures.info.line2"), this.width / 2 + 5, 134, 10526880);
             }
         }
         super.render(mouseX, mouseY, delta);

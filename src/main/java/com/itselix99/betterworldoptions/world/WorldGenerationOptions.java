@@ -21,7 +21,7 @@ public class WorldGenerationOptions {
 
     public String worldTypeName;
     public boolean hardcore;
-    public boolean betaFeatures;
+    public boolean oldFeatures;
     public String theme;
     public String singleBiome;
 
@@ -43,7 +43,7 @@ public class WorldGenerationOptions {
 
         this.worldTypeName = server ? Config.BWOConfig.server.worldType : "Default";
         this.hardcore = server ? Config.BWOConfig.server.hardcore : false;
-        this.betaFeatures = server ? Config.BWOConfig.server.betaFeatures : true;
+        this.oldFeatures = server ? Config.BWOConfig.server.oldFeatures : false;
         this.singleBiome = server ? Config.BWOConfig.server.singleBiome : "Off";
         this.theme = server ? Config.BWOConfig.server.theme : "Normal";
 
@@ -63,7 +63,7 @@ public class WorldGenerationOptions {
 
         this.worldTypeName = ((BWOProperties) properties).bwo_getWorldType();
         this.hardcore = ((BWOProperties) properties).bwo_isHardcore();
-        this.betaFeatures = ((BWOProperties) properties).bwo_getBetaFeatures();
+        this.oldFeatures = ((BWOProperties) properties).bwo_isOldFeatures();
         this.singleBiome = ((BWOProperties) properties).bwo_getSingleBiome();
         this.theme = ((BWOProperties) properties).bwo_getTheme();
 

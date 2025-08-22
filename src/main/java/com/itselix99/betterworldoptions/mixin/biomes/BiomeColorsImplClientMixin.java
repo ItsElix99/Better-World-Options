@@ -24,9 +24,9 @@ public class BiomeColorsImplClientMixin {
     private static int modifyGrassColor(int original) {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
-        boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
+        boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
 
-        if (!betaFeatures && worldType.equals("MCPE") && minecraft.world.dimension.id == 0) {
+        if (oldFeatures && worldType.equals("MCPE") && minecraft.world.dimension.id == 0) {
             return 3381555;
         }
 
@@ -43,9 +43,9 @@ public class BiomeColorsImplClientMixin {
     private static int modifyLeavesColor(int original) {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
-        boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
+        boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
 
-        if (!betaFeatures && worldType.equals("MCPE") && minecraft.world.dimension.id == 0) {
+        if (oldFeatures && worldType.equals("MCPE") && minecraft.world.dimension.id == 0) {
             return 16777215;
         }
 
@@ -62,11 +62,11 @@ public class BiomeColorsImplClientMixin {
     private static int modifyFogColor(int original) {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
-        boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
+        boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
         String theme = ((BWOProperties) minecraft.world.getProperties()).bwo_getTheme();
 
         if (minecraft.world.dimension.id == 0) {
-            if (!betaFeatures && worldType.equals("MCPE") && (theme.equals("Normal") || theme.equals("Winter"))) {
+            if (oldFeatures && worldType.equals("MCPE") && (theme.equals("Normal") || theme.equals("Winter"))) {
                 return 6731007;
             } else if (theme.equals("Hell")) {
                 return 1049600;

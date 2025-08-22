@@ -20,7 +20,7 @@ public class SlabBlockMixin extends Block {
     public int getTexture(int original, int side, int meta) {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
 
-        if (worldGenerationOptions != null && !worldGenerationOptions.betaFeatures && worldGenerationOptions.oldTextures) {
+        if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
             WorldTypeList.WorldTypeEntry worldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
 
             return meta == 3 ? (worldType.OLD_TEXTURES.get("Cobblestone") != null ? worldType.OLD_TEXTURES.get("Cobblestone") : original) : original;

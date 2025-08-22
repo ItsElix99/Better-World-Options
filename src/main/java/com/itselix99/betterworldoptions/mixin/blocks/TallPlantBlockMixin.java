@@ -18,7 +18,7 @@ public class TallPlantBlockMixin extends PlantBlock {
     public int getTexture(int original, int side, int meta) {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
 
-        if (worldGenerationOptions != null && !worldGenerationOptions.betaFeatures && worldGenerationOptions.oldTextures) {
+        if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
             WorldTypeList.WorldTypeEntry worldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
 
             if (meta == 1) {

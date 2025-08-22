@@ -23,7 +23,7 @@ public class LeavesBlockMixin extends TransparentBlock {
     public int getTexture(int original, int side, int meta) {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
 
-        if (worldGenerationOptions != null && !worldGenerationOptions.betaFeatures && worldGenerationOptions.oldTextures) {
+        if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
             WorldTypeList.WorldTypeEntry worldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
 
             if ((!worldType.NAME.equals("MCPE") && (meta & 3) == 0) || (worldType.NAME.equals("MCPE") && ((meta & 3) == 0 || (meta & 3) == 2))) {
@@ -44,7 +44,7 @@ public class LeavesBlockMixin extends TransparentBlock {
         int var5 = blockView.getBlockMeta(x, y, z);
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
 
-        if (worldGenerationOptions != null && !worldGenerationOptions.betaFeatures && worldGenerationOptions.oldTextures) {
+        if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
             WorldTypeList.WorldTypeEntry worldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
 
             if (worldType.NAME.equals("MCPE")) {

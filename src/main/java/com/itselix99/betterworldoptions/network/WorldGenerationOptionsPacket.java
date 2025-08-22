@@ -19,7 +19,7 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
 
     private String worldType;
     private boolean hardcore;
-    private boolean betaFeatures;
+    private boolean oldFeatures;
     private String singleBiome;
     private String theme;
 
@@ -37,7 +37,7 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
     public WorldGenerationOptionsPacket(BWOProperties properties) {
         this.worldType = properties.bwo_getWorldType();
         this.hardcore = properties.bwo_isHardcore();
-        this.betaFeatures = properties.bwo_getBetaFeatures();
+        this.oldFeatures = properties.bwo_isOldFeatures();
         this.singleBiome = properties.bwo_getSingleBiome();
         this.theme = properties.bwo_getTheme();
 
@@ -59,7 +59,7 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
         try {
             this.worldType = stream.readUTF();
             this.hardcore = stream.readBoolean();
-            this.betaFeatures = stream.readBoolean();
+            this.oldFeatures = stream.readBoolean();
             this.singleBiome = stream.readUTF();
             this.theme = stream.readUTF();
 
@@ -85,7 +85,7 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
         try {
             stream.writeUTF(this.worldType);
             stream.writeBoolean(this.hardcore);
-            stream.writeBoolean(this.betaFeatures);
+            stream.writeBoolean(this.oldFeatures);
             stream.writeUTF(this.singleBiome);
             stream.writeUTF(this.theme);
 
@@ -116,7 +116,7 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
 
         worldGenerationOptions.worldTypeName = this.worldType;
         worldGenerationOptions.hardcore = this.hardcore;
-        worldGenerationOptions.betaFeatures = this.betaFeatures;
+        worldGenerationOptions.oldFeatures = this.oldFeatures;
         worldGenerationOptions.singleBiome = this.singleBiome;
         worldGenerationOptions.theme = this.theme;
 

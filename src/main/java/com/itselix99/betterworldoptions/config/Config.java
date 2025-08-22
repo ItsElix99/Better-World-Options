@@ -28,8 +28,8 @@ public class Config {
         @ConfigEntry(name = "World height limit", multiplayerSynced = true, requiresRestart = true)
         public WorldHeightConfigEnum worldHeightLimit = WorldHeightConfigEnum.H128;
 
-        @ConfigEntry(name = "Allow generation of these features with Beta Features disabled", multiplayerSynced = true)
-        public Boolean allowGenWithBetaFeaturesOff = false;
+        @ConfigEntry(name = "Allow generation of these features with Old Features enabled", multiplayerSynced = true)
+        public Boolean allowGenWithOldFeaturesOn = false;
 
         @ConfigEntry(name = "Ravine generation", multiplayerSynced = true)
         public Boolean ravineGeneration = false;
@@ -59,10 +59,10 @@ public class Config {
         public Boolean hardcore = false;
 
         @ConfigEntry(
-                name = "Beta Features",
+                name = "Old Features",
                 multiplayerSynced = true
         )
-        public Boolean betaFeatures = true;
+        public Boolean oldFeatures = false;
 
         @ConfigEntry(
                 name = "Theme",

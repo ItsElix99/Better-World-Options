@@ -14,7 +14,7 @@ public class McpeOptionsScreen extends Screen {
     protected String title = translation.get("selectWorld.mcpeOptions");
     private final WorldGenerationOptions worldGenerationOptions;
 
-    private ButtonWidget betaFeaturesButton;
+    private ButtonWidget oldFeaturesButton;
     private ButtonWidget sizeButton;
     private ButtonWidget themeButton;
     private ButtonWidget singleBiomeButton;
@@ -27,7 +27,7 @@ public class McpeOptionsScreen extends Screen {
 
     @SuppressWarnings("unchecked")
     public void init() {
-        this.buttons.add(this.betaFeaturesButton = new ButtonWidget(0, this.width / 2 - 100, this.height / 4, this.translation.get("selectWorld.betaFeatures") + " " + (this.worldGenerationOptions.betaFeatures ? this.translation.get("options.on") : this.translation.get("options.off"))));
+        this.buttons.add(this.oldFeaturesButton = new ButtonWidget(0, this.width / 2 - 100, this.height / 4, this.translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? this.translation.get("options.on") : this.translation.get("options.off"))));
         this.buttons.add(this.sizeButton = new ButtonWidget(1, this.width / 2 - 100, this.height / 4 + 24, this.translation.get("indevOptions.size") + " " + this.worldGenerationOptions.size + " " + this.worldGenerationOptions.worldSizeX + "x" + this.worldGenerationOptions.worldSizeZ));
         this.buttons.add(this.themeButton = new ButtonWidget(2, this.width / 2 - 100, this.height / 4 + 48, this.translation.get("selectWorld.theme") + " " + this.worldGenerationOptions.theme));
         this.buttons.add(this.singleBiomeButton = new ButtonWidget(3, this.width / 2 - 100, this.height / 4 + 72, this.translation.get("selectWorld.singleBiome") + " " + (!this.worldGenerationOptions.singleBiome.equals("Off") ? this.worldGenerationOptions.singleBiome : this.translation.get("options.off"))));
@@ -38,9 +38,9 @@ public class McpeOptionsScreen extends Screen {
     protected void buttonClicked(ButtonWidget button) {
         if (button.active && button.visible) {
             if (button.id == 0) {
-                this.worldGenerationOptions.betaFeatures = !this.worldGenerationOptions.betaFeatures;
+                this.worldGenerationOptions.oldFeatures = !this.worldGenerationOptions.oldFeatures;
 
-                this.betaFeaturesButton.text = this.translation.get("selectWorld.betaFeatures") + " " + (this.worldGenerationOptions.betaFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
+                this.oldFeaturesButton.text = this.translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
             } else if (button.id == 1) {
                 if (this.sizeButton.text.equals(this.translation.get("indevOptions.size") + " " + "Normal" + " " + this.worldGenerationOptions.worldSizeX + "x" + this.worldGenerationOptions.worldSizeZ)) {
                     this.worldGenerationOptions.size = "Huge";

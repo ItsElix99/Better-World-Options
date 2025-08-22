@@ -20,27 +20,30 @@ import java.util.Random;
 
 @Mixin(Biome.class)
 public abstract class BiomeMixin implements BWOWorld, StationBiome {
+
     @Environment(EnvType.CLIENT)
     @ModifyReturnValue(method = "getSkyColor", at = @At("RETURN"))
     public int getSkyColor(int original) {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
-        boolean betaFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_getBetaFeatures();
+        boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
         String theme = ((BWOProperties) minecraft.world.getProperties()).bwo_getTheme();
 
-        if (this.equals(BetterWorldOptions.EarlyInfdev)) {
+        if (Biome.class.cast(this) == BetterWorldOptions.EarlyInfdev) {
             return 200;
-        } else if (this.equals(BetterWorldOptions.Infdev) || this.equals(BetterWorldOptions.IndevNormal)) {
+        } else if (Biome.class.cast(this) == BetterWorldOptions.Infdev) {
             return 10079487;
-        } else if (this.equals(BetterWorldOptions.IndevHell) || theme.equals("Hell")) {
+        } else if (Biome.class.cast(this) == BetterWorldOptions.IndevNormal) {
+            return 10079487;
+        } else if (Biome.class.cast(this) == BetterWorldOptions.IndevHell || theme.equals("Hell")) {
             return 1049600;
-        } else if (this.equals(BetterWorldOptions.IndevParadise) || theme.equals("Paradise")) {
+        } else if (Biome.class.cast(this) == BetterWorldOptions.IndevParadise || theme.equals("Paradise")) {
             return 13033215;
-        } else if (this.equals(BetterWorldOptions.IndevWoods) || theme.equals("Woods")) {
+        } else if (Biome.class.cast(this) == BetterWorldOptions.IndevWoods || theme.equals("Woods")) {
             return 7699847;
-        } else if (this.equals(BetterWorldOptions.Alpha)) {
+        } else if (Biome.class.cast(this) == BetterWorldOptions.Alpha) {
             return 8961023;
-        } else if (worldType.equals("MCPE") && !betaFeatures) {
+        } else if (worldType.equals("MCPE") && oldFeatures) {
             return 2907587;
         } else {
             return original;

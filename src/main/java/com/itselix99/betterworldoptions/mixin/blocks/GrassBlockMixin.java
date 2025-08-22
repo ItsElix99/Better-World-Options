@@ -23,7 +23,7 @@ public class GrassBlockMixin extends Block {
     public int getTextureId(int original, BlockView blockView, int x, int y, int z, int side) {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
 
-        if (worldGenerationOptions != null && !worldGenerationOptions.betaFeatures && worldGenerationOptions.oldTextures) {
+        if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
             WorldTypeList.WorldTypeEntry worldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
 
             if (side == 1) {

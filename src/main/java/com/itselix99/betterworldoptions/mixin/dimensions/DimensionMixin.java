@@ -31,11 +31,11 @@ public class DimensionMixin implements StationDimension {
     @WrapOperation(method = "initBiomeSource", at = @At(value = "NEW", target = "(Lnet/minecraft/world/World;)Lnet/minecraft/world/biome/source/BiomeSource;"))
     private BiomeSource initBiomeSource(World world, Operation<BiomeSource> original) {
         String worldType = ((BWOProperties) world.getProperties()).bwo_getWorldType();
-        boolean betaFeatures = ((BWOProperties) world.getProperties()).bwo_getBetaFeatures();
+        boolean oldFeatures = ((BWOProperties) world.getProperties()).bwo_isOldFeatures();
         String singleBiome = ((BWOProperties) world.getProperties()).bwo_getSingleBiome();
         String theme = ((BWOProperties) world.getProperties()).bwo_getTheme();
 
-        if (!betaFeatures && !worldType.equals("MCPE")) {
+        if (oldFeatures && !worldType.equals("MCPE")) {
             if (theme.equals("Hell")) {
                 return new FixedBiomeSource(BetterWorldOptions.IndevHell, 1.0D, 0.0D);
             } else if (theme.equals("Paradise")) {

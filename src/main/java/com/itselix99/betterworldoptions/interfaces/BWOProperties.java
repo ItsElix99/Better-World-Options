@@ -6,7 +6,7 @@ public interface BWOProperties {
 
     String bwo_getWorldType();
     boolean bwo_isHardcore();
-    boolean bwo_getBetaFeatures();
+    boolean bwo_isOldFeatures();
     String bwo_getSingleBiome();
     String bwo_getTheme();
 
