@@ -19,7 +19,7 @@
     "blocks.TallPlantBlockMixin",
     "dimensions.DimensionMixin",
     "dimensions.NetherDimensionMixin",
-    "dimensions.SkylandsDimensionMixin",
+    "dimensions.OverworldDimensionMixin",
     "world.AlphaWorldStorageAccessor",
     "world.DimensionDataAccessor",
     "world.FlattenedWorldStorageMixin",

@@ -29,20 +29,20 @@ public abstract class BiomeMixin implements BWOWorld, StationBiome {
         boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
         String theme = ((BWOProperties) minecraft.world.getProperties()).bwo_getTheme();
 
-        if (Biome.class.cast(this) == BetterWorldOptions.EarlyInfdev) {
-            return 200;
-        } else if (Biome.class.cast(this) == BetterWorldOptions.Infdev) {
-            return 10079487;
-        } else if (Biome.class.cast(this) == BetterWorldOptions.IndevNormal) {
-            return 10079487;
-        } else if (Biome.class.cast(this) == BetterWorldOptions.IndevHell || theme.equals("Hell")) {
+        if (theme.equals("Hell")) {
             return 1049600;
-        } else if (Biome.class.cast(this) == BetterWorldOptions.IndevParadise || theme.equals("Paradise")) {
+        } else if (theme.equals("Paradise")) {
             return 13033215;
-        } else if (Biome.class.cast(this) == BetterWorldOptions.IndevWoods || theme.equals("Woods")) {
+        } else if (theme.equals("Woods")) {
             return 7699847;
         } else if (Biome.class.cast(this) == BetterWorldOptions.Alpha) {
             return 8961023;
+        } else if (Biome.class.cast(this) == BetterWorldOptions.Infdev) {
+            return 10079487;
+        } else if (Biome.class.cast(this) == BetterWorldOptions.EarlyInfdev) {
+            return 200;
+        } else if (Biome.class.cast(this) == BetterWorldOptions.Indev) {
+            return 10079487;
         } else if (worldType.equals("MCPE") && oldFeatures) {
             return 2907587;
         } else {

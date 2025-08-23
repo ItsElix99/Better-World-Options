@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
-import com.itselix99.betterworldoptions.world.WorldTypeList;
+import com.itselix99.betterworldoptions.world.WorldType;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,7 +24,7 @@ public class GrassBlockMixin extends Block {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
 
         if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
-            WorldTypeList.WorldTypeEntry worldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
+            WorldType.WorldTypeEntry worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
 
             if (side == 1) {
                 return worldType.OLD_TEXTURES.get("GrassBlockTop") != null ? worldType.OLD_TEXTURES.get("GrassBlockTop") : original;

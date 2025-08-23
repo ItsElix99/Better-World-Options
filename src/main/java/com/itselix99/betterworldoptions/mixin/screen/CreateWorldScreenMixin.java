@@ -99,11 +99,11 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.buttons.remove(1);
         }
 
-        this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, translation.get("selectWorld.gameMode") + " " + this.gamemode));
-        this.buttons.add(this.moreWorldOptions = new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, moreOptions ? translation.get("gui.done") : translation.get("selectWorld.moreWorldOptions")));
-        this.buttons.add(this.worldTypeButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, translation.get("selectWorld.worldtype") + " " + this.worldGenerationOptions.worldTypeName));
-        this.buttons.add(this.oldFeaturesButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? translation.get("options.on") : translation.get("options.off"))));
-        this.buttons.add(this.themeButton = new ButtonWidget(14, this.width / 2 - 75, 150, 150, 20, translation.get("selectWorld.theme") + " " + worldGenerationOptions.theme));
+        this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, this.translation.get("selectWorld.gameMode") + " " + this.gamemode));
+        this.buttons.add(this.moreWorldOptions = new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions")));
+        this.buttons.add(this.worldTypeButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, this.translation.get("selectWorld.worldtype") + " " + this.worldGenerationOptions.worldTypeName));
+        this.buttons.add(this.oldFeaturesButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, this.translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? this.translation.get("options.on") : this.translation.get("options.off"))));
+        this.buttons.add(this.themeButton = new ButtonWidget(14, this.width / 2 - 75, 150, 150, 20, this.translation.get("selectWorld.theme") + " " + this.worldGenerationOptions.theme));
         this.buttons.add(this.worldTypeOptionsButton = new ButtonWidget(15, this.width / 2 + 5, 100, 150, 20, this.getWorldTypeOptionsButtonName()));
 
         if (this.worldGenerationOptions.worldTypeName.equals("MCPE")) {
@@ -118,6 +118,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
             if (!this.worldGenerationOptions.theme.equals("Normal")) {
                 this.worldGenerationOptions.theme = "Normal";
             }
+
+            this.themeButton.text = this.translation.get("selectWorld.theme") + " " + this.worldGenerationOptions.theme;
         } else {
             this.themeButton.active = true;
         }
@@ -125,9 +127,15 @@ public abstract class CreateWorldScreenMixin extends Screen {
         if (!WorldGenerationOptions.allowBetaFeaturesWorldTypes.contains(this.worldGenerationOptions.worldTypeName)) {
             this.oldFeaturesButton.active = false;
 
-            if (this.worldGenerationOptions.oldFeatures) {
-                this.worldGenerationOptions.oldFeatures = false;
+            if (this.worldGenerationOptions.worldTypeName.equals("Alpha 1.2.0")) {
+                this.worldGenerationOptions.oldFeatures = true;
+            } else {
+                if (this.worldGenerationOptions.oldFeatures) {
+                    this.worldGenerationOptions.oldFeatures = false;
+                }
             }
+
+            this.oldFeaturesButton.text = this.translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
         } else {
             this.oldFeaturesButton.active = true;
         }
@@ -137,8 +145,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.themeButton.visible = false;
         }
 
-        this.seedField.setFocused(moreOptions);
-        this.worldNameField.setFocused(!moreOptions);
+        this.seedField.setFocused(this.moreOptions);
+        this.worldNameField.setFocused(!this.moreOptions);
     }
 
     @Unique

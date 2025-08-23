@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.world.worldtypes.infdev415;
 
 import java.util.Random;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
@@ -81,6 +82,13 @@ public class Infdev415ChunkGenerator implements ChunkSource {
 
         if (!this.oldFeatures) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
+        } else {
+            switch (this.theme) {
+                case "Hell" -> BetterWorldOptions.Infdev.setFogColor(1049600);
+                case "Paradise" -> BetterWorldOptions.Infdev.setFogColor(13033215);
+                case "Woods" -> BetterWorldOptions.Infdev.setFogColor(5069403);
+                default -> BetterWorldOptions.Infdev.setFogColor(11587839);
+            }
         }
 
         this.noiseGen1 = new OctavePerlinNoiseSamplerInfdev415(this.random, 16);

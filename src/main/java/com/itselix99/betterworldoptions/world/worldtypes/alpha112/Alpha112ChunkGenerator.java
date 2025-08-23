@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.world.worldtypes.alpha112;
 
 import java.util.Random;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
@@ -89,6 +90,15 @@ public class Alpha112ChunkGenerator implements ChunkSource {
         }
 
         ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
+
+        if (this.oldFeatures) {
+            switch (this.theme) {
+                case "Hell" -> BetterWorldOptions.Alpha.setFogColor(1049600);
+                case "Paradise" -> BetterWorldOptions.Alpha.setFogColor(13033215);
+                case "Woods" -> BetterWorldOptions.Alpha.setFogColor(5069403);
+                default -> BetterWorldOptions.Alpha.setFogColor(12638463);
+            }
+        }
 
         this.minLimitPerlinNoise = new OctavePerlinNoiseSamplerAlpha112(this.random, 16);
         this.maxLimitPerlinNoise = new OctavePerlinNoiseSamplerAlpha112(this.random, 16);

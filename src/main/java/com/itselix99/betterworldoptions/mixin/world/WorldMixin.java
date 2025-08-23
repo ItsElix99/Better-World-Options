@@ -78,7 +78,7 @@ public abstract class WorldMixin implements BWOWorld {
             case "Alpha 1.1.2_01" -> BetterWorldOptions.Alpha.setSnow(bl);
             case "Infdev 611", "Infdev 420", "Infdev 415" -> BetterWorldOptions.Infdev.setSnow(bl);
             case "Early Infdev" -> BetterWorldOptions.EarlyInfdev.setSnow(bl);
-            case "Indev 223" -> BetterWorldOptions.IndevNormal.setSnow(bl);
+            case "Indev 223" -> BetterWorldOptions.Indev.setSnow(bl);
         }
     }
 
@@ -88,7 +88,7 @@ public abstract class WorldMixin implements BWOWorld {
             case "Alpha 1.1.2_01" -> BetterWorldOptions.Alpha.setPrecipitation(bl);
             case "Infdev 611", "Infdev 420", "Infdev 415" -> BetterWorldOptions.Infdev.setPrecipitation(bl);
             case "Early Infdev" -> BetterWorldOptions.EarlyInfdev.setPrecipitation(bl);
-            case "Indev 223" -> BetterWorldOptions.IndevNormal.setPrecipitation(bl);
+            case "Indev 223" -> BetterWorldOptions.Indev.setPrecipitation(bl);
         }
     }
 

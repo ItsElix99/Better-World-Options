@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.gui.screen;
 
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
-import com.itselix99.betterworldoptions.world.WorldTypeList;
+import com.itselix99.betterworldoptions.world.WorldType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
@@ -22,7 +22,7 @@ public class WorldTypeListScreen extends Screen {
 
     private WorldTypeListWidget worldTypeListWidget;
     private ButtonWidget buttonSelect;
-    private static WorldTypeList.WorldTypeEntry selectedWorldType;
+    private static WorldType.WorldTypeEntry selectedWorldType;
 
     public WorldTypeListScreen(Screen parent, WorldGenerationOptions worldGenerationOptions) {
         this.parent = parent;
@@ -36,7 +36,7 @@ public class WorldTypeListScreen extends Screen {
         this.worldTypeListWidget = new WorldTypeListWidget(this);
         this.worldTypeListWidget.registerButtons(this.buttons, 4, 5);
         this.buttons.add(this.buttonSelect = new ButtonWidget(0, this.width / 2 - 75, this.height - 28, 150, 20, translation.get("gui.cancel")));
-        selectedWorldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(this.worldGenerationOptions.worldTypeName)).toList().get(0);
+        selectedWorldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(this.worldGenerationOptions.worldTypeName)).toList().get(0);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class WorldTypeListScreen extends Screen {
         super.render(var1, var2, var3);
     }
 
-    public static void selectWorldType(WorldTypeList.WorldTypeEntry var1) {
+    public static void selectWorldType(WorldType.WorldTypeEntry var1) {
         selectedWorldType = var1;
     }
 
@@ -66,12 +66,12 @@ public class WorldTypeListScreen extends Screen {
         }
 
         protected int getEntryCount() {
-            List<WorldTypeList.WorldTypeEntry> var1 = WorldTypeList.getList();
+            List<WorldType.WorldTypeEntry> var1 = WorldType.getList();
             return var1.size();
         }
 
         protected void entryClicked(int index, boolean doubleClick) {
-            List<WorldTypeList.WorldTypeEntry> var3 = WorldTypeList.getList();
+            List<WorldType.WorldTypeEntry> var3 = WorldType.getList();
             WorldTypeListScreen.selectWorldType(var3.get(index));
 
             if (!WorldTypeListScreen.this.worldGenerationOptions.worldTypeName.equals(var3.get(index).NAME)) {
@@ -82,7 +82,7 @@ public class WorldTypeListScreen extends Screen {
         }
 
         protected boolean isSelectedEntry(int index) {
-            List<WorldTypeList.WorldTypeEntry> var2 = WorldTypeList.getList();
+            List<WorldType.WorldTypeEntry> var2 = WorldType.getList();
             return WorldTypeListScreen.selectedWorldType == var2.get(index);
         }
 
@@ -95,7 +95,7 @@ public class WorldTypeListScreen extends Screen {
         }
 
         protected void renderEntry(int index, int x, int y, int i, Tessellator tessellator) {
-            WorldTypeList.WorldTypeEntry var6 = WorldTypeList.getList().get(index);
+            WorldType.WorldTypeEntry var6 = WorldType.getList().get(index);
 
             if (var6.ICON != null) {
                 GL11.glBindTexture(3553, WorldTypeListScreen.this.minecraft.textureManager.getTextureId(var6.ICON));

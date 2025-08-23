@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
-import com.itselix99.betterworldoptions.world.WorldTypeList;
+import com.itselix99.betterworldoptions.world.WorldType;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.block.PlantBlock;
 import net.minecraft.block.TallPlantBlock;
@@ -19,7 +19,7 @@ public class TallPlantBlockMixin extends PlantBlock {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
 
         if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
-            WorldTypeList.WorldTypeEntry worldType = WorldTypeList.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
+            WorldType.WorldTypeEntry worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
 
             if (meta == 1) {
                 return worldType.OLD_TEXTURES.get("Grass") != null ? worldType.OLD_TEXTURES.get("Grass") : original;

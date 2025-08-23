@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.screen;
 
-import net.fabricmc.loader.api.FabricLoader;
+import com.itselix99.betterworldoptions.compat.CompatMods;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
@@ -10,14 +11,12 @@ import net.minecraft.world.storage.WorldSaveInfo;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import java.util.Objects;
-
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(targets = "net.minecraft.client.gui.screen.world.SelectWorldScreen$WorldListWidget")
 public class WorldListWidgetMixin {
@@ -33,35 +32,46 @@ public class WorldListWidgetMixin {
             ),
             locals = LocalCapture.CAPTURE_FAILSOFT
     )
-    protected void renderEntry(int i, int x, int y, int l, Tessellator arg, CallbackInfo ci, WorldSaveInfo worldSaveInfo, String worldName, String var8, long var9, String var11) {
+    private void worldTypeAndHardcoreText(int index, int x, int y, int i, Tessellator arg, CallbackInfo ci, WorldSaveInfo worldSaveInfo, String worldName, String var8, long var9, String var11) {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) worldSaveInfo).bwo_getWorldType();
-        if (Objects.equals(worldType, "")) {
+        boolean isHardcore = ((BWOProperties) worldSaveInfo).bwo_isHardcore();
+
+        if (worldType.isEmpty()) {
             worldType = "Default";
         }
 
-        if (isBHCreativeModPresent()) {
-            boolean isHardcore = ((BWOProperties) worldSaveInfo).bwo_isHardcore();
-            if (isHardcore) {
+        if (isHardcore) {
+            if (CompatMods.BHCreativeLoaded()) {
                 int offset = minecraft.textRenderer.getWidth(worldName) + 60;
+
+                this.field_2444.drawTextWithShadow(minecraft.textRenderer, "Hardcore", x + offset, y + 1, 16711680);
+            } else {
+                int offset = minecraft.textRenderer.getWidth(worldName) + 6;
+
                 this.field_2444.drawTextWithShadow(minecraft.textRenderer, "Hardcore", x + offset, y + 1, 16711680);
             }
-        } else {
-            int offset = minecraft.textRenderer.getWidth(worldName) + 6;
-            this.field_2444.drawTextWithShadow(minecraft.textRenderer, "[", x + offset, y + 1, 16777215);
-            offset += minecraft.textRenderer.getWidth("[");
-            boolean isHardcore = ((BWOProperties) worldSaveInfo).bwo_isHardcore();
-            String gameMode = isHardcore ? "Hardcore" : "Survival";
-            int color = isHardcore ? 16711680 : '\uff00';
-            this.field_2444.drawTextWithShadow(minecraft.textRenderer, gameMode, x + offset, y + 1, color);
-            offset += minecraft.textRenderer.getWidth(gameMode);
-            this.field_2444.drawTextWithShadow(minecraft.textRenderer, "]", x + offset, y + 1, 16777215);
         }
         this.field_2444.drawTextWithShadow(minecraft.textRenderer, "World Type:" + " " + worldType, x + 2, y + 12 + 10, 8421504);
     }
 
-    @Unique
-    private boolean isBHCreativeModPresent() {
-        return FabricLoader.getInstance().isModLoaded("bhcreative");
+    @ModifyArgs(
+            method = "renderEntry",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/world/SelectWorldScreen;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V",
+                    ordinal = 2
+            )
+    )
+    private void changeConversionTextX(Args args, @Local(argsOnly = true, ordinal = 1) int x, @Local WorldSaveInfo worldSaveInfo) {
+        Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
+        String worldType = ((BWOProperties) worldSaveInfo).bwo_getWorldType();
+
+        if (worldType.isEmpty()) {
+            worldType = "Default";
+        }
+        int offset = minecraft.textRenderer.getWidth("World Type:" + " " + worldType) + 10;
+
+        args.set(2, x + offset);
     }
 }

@@ -11,7 +11,7 @@ import net.minecraft.client.resource.language.TranslationStorage;
 public class McpeOptionsScreen extends Screen {
     protected final Screen parent;
     private final TranslationStorage translation = TranslationStorage.getInstance();
-    protected String title = translation.get("selectWorld.mcpeOptions");
+    protected String title = this.translation.get("selectWorld.mcpeOptions");
     private final WorldGenerationOptions worldGenerationOptions;
 
     private ButtonWidget oldFeaturesButton;

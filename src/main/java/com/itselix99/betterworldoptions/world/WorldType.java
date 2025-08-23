@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WorldTypeList {
+public class WorldType {
     private static final List<WorldTypeEntry> WORLD_TYPE_LIST = new ArrayList<>();
 
     static {

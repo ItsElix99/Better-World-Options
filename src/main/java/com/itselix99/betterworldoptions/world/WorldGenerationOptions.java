@@ -132,6 +132,34 @@ public class WorldGenerationOptions {
         }
     }
 
+    public static double[] getClimateForBiome(Biome biome) {
+        if (biome == Biome.TUNDRA) {
+            return new double[]{0.05D, 0.2D};
+        } else if (biome == Biome.SAVANNA) {
+            return new double[]{0.7D, 0.1D};
+        } else if (biome == Biome.DESERT) {
+            return new double[]{1.0D, 0.05D};
+        } else if (biome == Biome.SWAMPLAND) {
+            return new double[]{0.6D, 0.8D};
+        } else if (biome == Biome.TAIGA) {
+            return new double[]{0.4D, 0.4D};
+        } else if (biome == Biome.SHRUBLAND) {
+            return new double[]{0.8D, 0.3D};
+        } else if (biome == Biome.FOREST) {
+            return new double[]{0.8D, 0.6D};
+        } else if (biome == Biome.PLAINS) {
+            return new double[]{1.0D, 0.4D};
+        } else if (biome == Biome.SEASONAL_FOREST) {
+            return new double[]{1.0D, 0.7D};
+        } else if (biome == Biome.RAINFOREST) {
+            return new double[]{1.0D, 0.85D};
+        } else if (biome == Biome.ICE_DESERT) {
+            return new double[]{0.0D, 0.0D};
+        }
+
+        return new double[]{0.5D, 0.5D};
+    }
+
     public void resetFiniteOptions() {
         this.indevWorldType = "Island";
         this.indevShape = "Square";
