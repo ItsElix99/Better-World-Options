@@ -60,11 +60,7 @@ public class MinecraftMixin {
     private void dimensionBetaFeaturesTextures(World world, String message, PlayerEntity player, CallbackInfo ci) {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
         if (world != null) {
-            if (!(world.dimension.id == 0) && !((BWOProperties) world.getProperties()).bwo_isOldFeatures()) {
-                worldGenerationOptions.oldTextures = false;
-            } else {
-                worldGenerationOptions.oldTextures = true;
-            }
+            worldGenerationOptions.oldTextures = world.dimension.id == 0 && ((BWOProperties) world.getProperties()).bwo_isOldFeatures();
         }
     }
 
