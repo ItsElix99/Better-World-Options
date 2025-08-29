@@ -49,11 +49,15 @@ public class DimensionMixin {
             }
         } else if (worldType.equals("Flat") && !superflat) {
             return new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
-        } else if (!singleBiome.equals("Off")) {
-            Biome biome = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).toList().get(0);
-            double[] climate = WorldGenerationOptions.getClimateForBiome(biome);
+        } else if (singleBiome != null && !singleBiome.equals("Off") && !singleBiome.isEmpty()) {
+            List<Biome> biomes = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).toList();
 
-            return new FixedBiomeSource(biome, climate[0], climate[1]);
+            if (!biomes.isEmpty()) {
+                Biome biome = biomes.get(0);
+                double[] climate = WorldGenerationOptions.getClimateForBiome(biome);
+
+                return new FixedBiomeSource(biome, climate[0], climate[1]);
+            }
         }
 
         return original.call(world);
@@ -65,12 +69,12 @@ public class DimensionMixin {
         List<WorldType.WorldTypeEntry> worldTypeList = WorldType.getList();
         Class<? extends ChunkSource> chunkGenerator;
 
-        if (worldTypeList.stream().filter(worldTypeEntry -> worldGenerationOptions.worldTypeName.equals(worldTypeEntry.NAME)).toList().get(0).OVERWORLD_CHUNK_GENERATOR != null) {
+        if (!worldTypeList.stream().filter(worldTypeEntry -> worldGenerationOptions.worldTypeName.equals(worldTypeEntry.NAME)).toList().isEmpty()) {
             chunkGenerator = worldTypeList.stream().filter(worldTypeEntry -> worldGenerationOptions.worldTypeName.equals(worldTypeEntry.NAME)).toList().get(0).OVERWORLD_CHUNK_GENERATOR;
             return chunkGenerator.getDeclaredConstructor(World.class, long.class).newInstance(this.world, this.world.getSeed());
-        } else {
-            return original;
         }
+
+        return original;
     }
 
     @ModifyReturnValue(method = "getTimeOfDay", at = @At("RETURN"))
