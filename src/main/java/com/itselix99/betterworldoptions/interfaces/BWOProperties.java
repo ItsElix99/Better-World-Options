@@ -9,6 +9,7 @@ public interface BWOProperties {
     boolean bwo_isOldFeatures();
     String bwo_getSingleBiome();
     String bwo_getTheme();
+    boolean bwo_isSuperflat();
 
     String bwo_getIndevWorldType();
     String bwo_getShape();

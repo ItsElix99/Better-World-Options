@@ -32,19 +32,19 @@ public class FlatChunkGenerator implements ChunkSource {
     private double[] temperatures;
     private Biome[] biomes;
 
-    private final boolean oldFeatures;
+    private final boolean superflat;
     private final String theme;
 
     public FlatChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
-        this.oldFeatures = ((BWOProperties) this.world.getProperties()).bwo_isOldFeatures();
+        this.superflat = ((BWOProperties) this.world.getProperties()).bwo_isSuperflat();
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
 
         ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
         ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
 
-        if (!this.oldFeatures) {
+        if (this.superflat) {
             ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
         }
 
@@ -63,7 +63,7 @@ public class FlatChunkGenerator implements ChunkSource {
                     } else if (y <= 60) {
                         blockId = Block.STONE.id;
 
-                        if (y >= 58 && var1 == Biome.DESERT || var1 == Biome.ICE_DESERT) {
+                        if (y >= 59 && var1 == Biome.DESERT || var1 == Biome.ICE_DESERT) {
                             blockId = Block.SANDSTONE.id;
                         }
                     } else if (y <= 63) {
@@ -73,7 +73,7 @@ public class FlatChunkGenerator implements ChunkSource {
                     } else
                         blockId = 0;
 
-                    int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
+                    int index = (z * 16 + x) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
                     blocks[index] = (byte) blockId;
                 }
             }
@@ -90,12 +90,12 @@ public class FlatChunkGenerator implements ChunkSource {
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         this.buildTerrain(var3, this.biomes);
 
-        if (!this.oldFeatures) {
+        if (this.superflat) {
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
 
         if (Config.BWOConfig.world.ravineGeneration) {
-            if (!this.oldFeatures) {
+            if (this.superflat) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
         }
@@ -111,7 +111,7 @@ public class FlatChunkGenerator implements ChunkSource {
     }
 
     public void decorate(ChunkSource source, int x, int z) {
-        if (this.oldFeatures) {
+        if (!this.superflat) {
             for (int var1 = 0; var1 < 16; var1++) {
                 int worldX = x * 16 + var1;
 

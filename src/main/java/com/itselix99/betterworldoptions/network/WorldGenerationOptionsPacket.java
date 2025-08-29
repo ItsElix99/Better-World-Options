@@ -22,6 +22,7 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
     private boolean oldFeatures;
     private String singleBiome;
     private String theme;
+    private boolean superflat;
 
     private String indevWorldType;
     private String indevShape;
@@ -40,6 +41,10 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
         this.oldFeatures = properties.bwo_isOldFeatures();
         this.singleBiome = properties.bwo_getSingleBiome();
         this.theme = properties.bwo_getTheme();
+
+        if (this.worldType.equals("Flat")) {
+            this.superflat = properties.bwo_isSuperflat();
+        }
 
         if (this.worldType.equals("Indev 223") || this.worldType.equals("MCPE")) {
             if (this.worldType.equals("Indev 223")) {
@@ -62,6 +67,10 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
             this.oldFeatures = stream.readBoolean();
             this.singleBiome = stream.readUTF();
             this.theme = stream.readUTF();
+
+            if (this.worldType.equals("Flat")) {
+                this.superflat = stream.readBoolean();
+            }
 
             if (this.worldType.equals("Indev 223") || this.worldType.equals("MCPE")) {
                 if (this.worldType.equals("Indev 223")) {
@@ -88,6 +97,10 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
             stream.writeBoolean(this.oldFeatures);
             stream.writeUTF(this.singleBiome);
             stream.writeUTF(this.theme);
+
+            if (this.worldType.equals("Flat")) {
+                stream.writeBoolean(this.superflat);
+            }
 
             if (this.worldType.equals("Indev 223") || this.worldType.equals("MCPE")) {
                 if (this.worldType.equals("Indev 223")) {
@@ -120,6 +133,10 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
         worldGenerationOptions.singleBiome = this.singleBiome;
         worldGenerationOptions.theme = this.theme;
 
+        if (worldGenerationOptions.worldTypeName.equals("Flat")) {
+            worldGenerationOptions.superflat = this.superflat;
+        }
+
         if (worldGenerationOptions.worldTypeName.equals("Indev 223") || worldGenerationOptions.worldTypeName.equals("MCPE")) {
             if (worldGenerationOptions.worldTypeName.equals("Indev 223")) {
                 worldGenerationOptions.indevWorldType = this.indevWorldType;
@@ -140,17 +157,25 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
     }
 
     private int calculateSize() {
-        int size = this.worldType.length() + 2 + this.singleBiome.length() + this.theme.length();
+        if (this.worldType != null) {
+            int size = this.worldType.length() + 2 + this.singleBiome.length() + this.theme.length();
 
-        if (this.worldType.equals("Indev 223") || this.worldType.equals("MCPE")) {
-            if (this.worldType.equals("Indev 223")) {
-                size += this.indevWorldType.length() + this.indevShape.length() + 1;
+            if (this.worldType.equals("Flat")) {
+                size += 1;
             }
 
-            size += 9;
-        }
+            if (this.worldType.equals("Indev 223") || this.worldType.equals("MCPE")) {
+                if (this.worldType.equals("Indev 223")) {
+                    size += this.indevWorldType.length() + this.indevShape.length() + 1;
+                }
 
-        return size;
+                size += 9;
+            }
+
+            return size;
+        } else {
+            return 0;
+        }
     }
 
     @Override

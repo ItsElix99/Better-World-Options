@@ -20,7 +20,7 @@ public class BiomeListScreen extends Screen {
     private final TranslationStorage translation = TranslationStorage.getInstance();
 
     private BiomeListWidget biomeListWidget;
-    private ButtonWidget buttonSelect;
+    private ButtonWidget doneButton;
     private ButtonWidget allBiomesButton;
     private Biome selectedBiome;
 
@@ -34,7 +34,7 @@ public class BiomeListScreen extends Screen {
     public void init() {
         this.biomeListWidget = new BiomeListWidget(this);
         this.biomeListWidget.registerButtons(this.buttons, 4, 5);
-        this.buttons.add(this.buttonSelect = new ButtonWidget(0, this.width / 2 + 5, this.height - 28, 150, 20, this.translation.get("gui.cancel")));
+        this.buttons.add(this.doneButton = new ButtonWidget(0, this.width / 2 + 5, this.height - 28, 150, 20, this.translation.get("gui.cancel")));
         this.buttons.add(this.allBiomesButton = new ButtonWidget(1, this.width / 2 - 155, this.height - 28, 150, 20, this.translation.get("selectWorld.allBiomes")));
         if (!this.worldGenerationOptions.singleBiome.equals("Off")) {
             selectedBiome = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome -> biome.name.equals(this.worldGenerationOptions.singleBiome)).toList().get(0);
@@ -53,7 +53,7 @@ public class BiomeListScreen extends Screen {
                     this.worldGenerationOptions.singleBiome = "Off";
                     selectedBiome = null;
                     button.active = false;
-                    this.buttonSelect.text = this.translation.get("gui.done");
+                    this.doneButton.text = this.translation.get("gui.done");
                 }
             }
         }
@@ -88,7 +88,7 @@ public class BiomeListScreen extends Screen {
             if (!var3.get(index).name.equals(WorldGenerationOptions.getInstance().singleBiome)) {
                 BiomeListScreen.this.worldGenerationOptions.singleBiome = var3.get(index).name;
                 BiomeListScreen.this.allBiomesButton.active = true;
-                BiomeListScreen.this.buttonSelect.text = BiomeListScreen.this.translation.get("gui.done");
+                BiomeListScreen.this.doneButton.text = BiomeListScreen.this.translation.get("gui.done");
             }
         }
 

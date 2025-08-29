@@ -32,11 +32,12 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Unique private WorldGenerationOptions worldGenerationOptions = new WorldGenerationOptions();
 
     @Unique private ButtonWidget gamemodeButton;
-    @Unique private ButtonWidget moreWorldOptions;
+    @Unique private ButtonWidget moreWorldOptionsButton;
     @Unique private ButtonWidget worldTypeButton;
     @Unique private ButtonWidget oldFeaturesButton;
     @Unique private ButtonWidget themeButton;
     @Unique private ButtonWidget worldTypeOptionsButton;
+    @Unique private ButtonWidget superflatButton;
 
     @Unique private String gamemode = "Survival";
     @Unique private boolean moreOptions = false;
@@ -100,11 +101,12 @@ public abstract class CreateWorldScreenMixin extends Screen {
         }
 
         this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, this.translation.get("selectWorld.gameMode") + " " + this.gamemode));
-        this.buttons.add(this.moreWorldOptions = new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions")));
+        this.buttons.add(this.moreWorldOptionsButton = new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions")));
         this.buttons.add(this.worldTypeButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, this.translation.get("selectWorld.worldtype") + " " + this.worldGenerationOptions.worldTypeName));
         this.buttons.add(this.oldFeaturesButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, this.translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? this.translation.get("options.on") : this.translation.get("options.off"))));
         this.buttons.add(this.themeButton = new ButtonWidget(14, this.width / 2 - 75, 150, 150, 20, this.translation.get("selectWorld.theme") + " " + this.worldGenerationOptions.theme));
         this.buttons.add(this.worldTypeOptionsButton = new ButtonWidget(15, this.width / 2 + 5, 100, 150, 20, this.getWorldTypeOptionsButtonName()));
+        this.buttons.add(this.superflatButton = new ButtonWidget(16, this.width / 2 + 5, 100, 150, 20, this.translation.get("selectWorld.superflat") + " " + (this.worldGenerationOptions.superflat ? this.translation.get("options.on") : this.translation.get("options.off"))));
 
         if (this.worldGenerationOptions.worldTypeName.equals("MCPE")) {
             this.worldGenerationOptions.resetIndevOptions();
@@ -124,7 +126,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.themeButton.active = true;
         }
 
-        if (!WorldGenerationOptions.allowBetaFeaturesWorldTypes.contains(this.worldGenerationOptions.worldTypeName)) {
+        if (!WorldGenerationOptions.allowOldFeaturesWorldTypes.contains(this.worldGenerationOptions.worldTypeName)) {
             this.oldFeaturesButton.active = false;
 
             if (this.worldGenerationOptions.worldTypeName.equals("Alpha 1.2.0")) {
@@ -143,6 +145,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
         if (this.worldGenerationOptions.worldTypeName.equals("Indev 223") || this.worldGenerationOptions.worldTypeName.equals("MCPE")) {
             this.oldFeaturesButton.visible = false;
             this.themeButton.visible = false;
+        } else if (this.worldGenerationOptions.worldTypeName.equals("Flat")) {
+            this.oldFeaturesButton.visible = false;
         }
 
         this.seedField.setFocused(this.moreOptions);
@@ -205,7 +209,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 this.gamemodeButton.text = this.translation.get("selectWorld.gameMode") + " " + this.gamemode;
             } else if (button.id == 11) {
                 this.moreOptions = !this.moreOptions;
-                this.moreWorldOptions.text = this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions");
+                this.moreWorldOptionsButton.text = this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions");
 
                 this.seedField.setFocused(this.moreOptions);
                 this.worldNameField.setFocused(!this.moreOptions);
@@ -237,6 +241,10 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 } else if (this.worldGenerationOptions.worldTypeName.equals("MCPE")) {
                     this.minecraft.setScreen(new McpeOptionsScreen(this, this.worldGenerationOptions));
                 }
+            } else if (button.id == 16) {
+                this.worldGenerationOptions.superflat = !this.worldGenerationOptions.superflat;
+
+                this.superflatButton.text = this.translation.get("selectWorld.superflat") + " " + (this.worldGenerationOptions.superflat ? this.translation.get("options.on") : this.translation.get("options.off"));
             }
         }
     }
@@ -355,6 +363,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.oldFeaturesButton.visible = false;
             this.worldTypeOptionsButton.visible = false;
             this.themeButton.visible = false;
+            this.superflatButton.visible = false;
             this.gamemodeButton.visible = true;
 
             if (CompatMods.BHCreativeLoaded()) {
@@ -386,10 +395,14 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 this.oldFeaturesButton.visible = false;
                 this.themeButton.visible = false;
                 this.worldTypeOptionsButton.visible = true;
+                this.superflatButton.visible = false;
+            } else if (this.worldGenerationOptions.worldTypeName.equals("Flat")) {
+                this.oldFeaturesButton.visible = false;
             } else {
                 this.oldFeaturesButton.visible = true;
                 this.themeButton.visible = true;
                 this.worldTypeOptionsButton.visible = false;
+                this.superflatButton.visible = false;
             }
 
             if (this.oldFeaturesButton.visible) {

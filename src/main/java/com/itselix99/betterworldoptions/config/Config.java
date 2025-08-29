@@ -73,10 +73,15 @@ public class Config {
 
         @ConfigEntry(
                 name = "Single Biome",
-                multiplayerSynced = true,
-                comment = "This option is available only for Indev 223 and MCPE"
+                multiplayerSynced = true
         )
         public String singleBiome = "Off";
+
+        @ConfigEntry(
+                name = "Superflat",
+                multiplayerSynced = true
+        )
+        public Boolean superflat = false;
 
         @ConfigEntry(
                 name = "Indev World Type",

@@ -30,13 +30,10 @@ public class DimensionMixin {
         String worldType = ((BWOProperties) world.getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) world.getProperties()).bwo_isOldFeatures();
         String singleBiome = ((BWOProperties) world.getProperties()).bwo_getSingleBiome();
-        String theme = ((BWOProperties) world.getProperties()).bwo_getTheme();
+        boolean superflat = ((BWOProperties) world.getProperties()).bwo_isSuperflat();
 
         if (oldFeatures && !worldType.equals("MCPE")) {
             switch (worldType) {
-                case "Flat" -> {
-                    return new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
-                }
                 case "Alpha 1.1.2_01" -> {
                     return new FixedBiomeSource(BetterWorldOptions.Alpha, 1.0D, 0.5D);
                 }
@@ -50,13 +47,13 @@ public class DimensionMixin {
                     return new FixedBiomeSource(BetterWorldOptions.Indev, 1.0D, 0.5D);
                 }
             }
-        } else {
-            if (!singleBiome.equals("Off")) {
-                Biome biome = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).toList().get(0);
-                double[] climate = WorldGenerationOptions.getClimateForBiome(biome);
+        } else if (worldType.equals("Flat") && !superflat) {
+            return new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
+        } else if (!singleBiome.equals("Off")) {
+            Biome biome = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).toList().get(0);
+            double[] climate = WorldGenerationOptions.getClimateForBiome(biome);
 
-                return new FixedBiomeSource(biome, climate[0], climate[1]);
-            }
+            return new FixedBiomeSource(biome, climate[0], climate[1]);
         }
 
         return original.call(world);

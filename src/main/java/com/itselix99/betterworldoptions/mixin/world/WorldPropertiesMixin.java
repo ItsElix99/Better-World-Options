@@ -16,6 +16,7 @@ public class WorldPropertiesMixin implements BWOProperties {
     @Unique private boolean oldFeatures;
     @Unique private String theme;
     @Unique private String singleBiome;
+    @Unique private boolean superflat;
 
     @Unique private String indevWorldType;
     @Unique private String shape;
@@ -47,6 +48,9 @@ public class WorldPropertiesMixin implements BWOProperties {
     @Override public String bwo_getTheme() {
         return this.theme;
     }
+    @Override public boolean bwo_isSuperflat() {
+        return this.superflat;
+    }
 
     @Override public String bwo_getIndevWorldType() {
         return this.indevWorldType;
@@ -75,6 +79,10 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.singleBiome = nbt.getString("SingleBiome");
         this.theme = nbt.getString("Theme");
 
+        if (bwo_getWorldType().equals("Flat")) {
+            this.superflat = nbt.getBoolean("Superflat");
+        }
+
         if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
             if (bwo_getWorldType().equals("Indev 223")) {
                 this.indevWorldType = nbt.getString("Indev World Type");
@@ -100,6 +108,10 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.singleBiome = worldGenerationOptions.singleBiome;
         this.theme = worldGenerationOptions.theme;
 
+        if (bwo_getWorldType().equals("Flat")) {
+            this.superflat = worldGenerationOptions.superflat;
+        }
+
         if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
             if (bwo_getWorldType().equals("Indev 223")) {
                 this.indevWorldType = worldGenerationOptions.indevWorldType;
@@ -124,6 +136,10 @@ public class WorldPropertiesMixin implements BWOProperties {
         this.singleBiome = ((BWOProperties) source).bwo_getSingleBiome();
         this.theme = ((BWOProperties) source).bwo_getTheme();
 
+        if (bwo_getWorldType().equals("Flat")) {
+            this.superflat = ((BWOProperties) source).bwo_isSuperflat();
+        }
+
         if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
             if (bwo_getWorldType().equals("Indev 223")) {
                 this.indevWorldType = ((BWOProperties) source).bwo_getIndevWorldType();
@@ -147,6 +163,10 @@ public class WorldPropertiesMixin implements BWOProperties {
         nbt.putBoolean("OldFeatures", this.oldFeatures);
         nbt.putString("SingleBiome", this.singleBiome);
         nbt.putString("Theme", this.theme);
+
+        if (bwo_getWorldType().equals("Flat")) {
+            nbt.putBoolean("Superflat", this.superflat);
+        }
 
         if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
             if (bwo_getWorldType().equals("Indev 223")) {

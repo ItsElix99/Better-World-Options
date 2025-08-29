@@ -12,7 +12,7 @@ import java.util.Set;
 public class WorldGenerationOptions {
     private static WorldGenerationOptions INSTANCE = new WorldGenerationOptions();
 
-    public static final Set<String> allowBetaFeaturesWorldTypes = Set.of("Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "Indev 223", "MCPE");
+    public static final Set<String> allowOldFeaturesWorldTypes = Set.of("Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "Indev 223", "MCPE");
     public static final Set<String> disableThemeWorldTypes = Set.of("Nether", "Skylands", "Aether");
 
     public static Set<Biome> defaultBiomesSetSnow = Set.of(Biome.RAINFOREST, Biome.SWAMPLAND, Biome.SEASONAL_FOREST, Biome.FOREST, Biome.SAVANNA, Biome.SHRUBLAND, Biome.DESERT, Biome.PLAINS);
@@ -24,6 +24,7 @@ public class WorldGenerationOptions {
     public boolean oldFeatures;
     public String theme;
     public String singleBiome;
+    public boolean superflat;
 
     public String indevWorldType;
     public String indevShape;
@@ -46,6 +47,7 @@ public class WorldGenerationOptions {
         this.oldFeatures = server ? Config.BWOConfig.server.oldFeatures : false;
         this.singleBiome = server ? Config.BWOConfig.server.singleBiome : "Off";
         this.theme = server ? Config.BWOConfig.server.theme : "Normal";
+        this.superflat = server ? Config.BWOConfig.server.superflat : false;
 
         this.indevWorldType = server ? Config.BWOConfig.server.indevWorldType : "Island";
         this.indevShape = server ? Config.BWOConfig.server.indevShape : "Square";
@@ -66,6 +68,7 @@ public class WorldGenerationOptions {
         this.oldFeatures = ((BWOProperties) properties).bwo_isOldFeatures();
         this.singleBiome = ((BWOProperties) properties).bwo_getSingleBiome();
         this.theme = ((BWOProperties) properties).bwo_getTheme();
+        this.superflat = ((BWOProperties) properties).bwo_isSuperflat();
 
         this.indevWorldType = ((BWOProperties) properties).bwo_getIndevWorldType();
         this.indevShape = ((BWOProperties) properties).bwo_getShape();

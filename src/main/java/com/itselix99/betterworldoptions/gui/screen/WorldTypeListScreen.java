@@ -21,7 +21,7 @@ public class WorldTypeListScreen extends Screen {
     private final TranslationStorage translation = TranslationStorage.getInstance();
 
     private WorldTypeListWidget worldTypeListWidget;
-    private ButtonWidget buttonSelect;
+    private ButtonWidget doneButton;
     private static WorldType.WorldTypeEntry selectedWorldType;
 
     public WorldTypeListScreen(Screen parent, WorldGenerationOptions worldGenerationOptions) {
@@ -35,7 +35,7 @@ public class WorldTypeListScreen extends Screen {
         TranslationStorage translation = TranslationStorage.getInstance();
         this.worldTypeListWidget = new WorldTypeListWidget(this);
         this.worldTypeListWidget.registerButtons(this.buttons, 4, 5);
-        this.buttons.add(this.buttonSelect = new ButtonWidget(0, this.width / 2 - 75, this.height - 28, 150, 20, translation.get("gui.cancel")));
+        this.buttons.add(this.doneButton = new ButtonWidget(0, this.width / 2 - 75, this.height - 28, 150, 20, translation.get("gui.cancel")));
         selectedWorldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(this.worldGenerationOptions.worldTypeName)).toList().get(0);
     }
 
@@ -77,7 +77,7 @@ public class WorldTypeListScreen extends Screen {
             if (!WorldTypeListScreen.this.worldGenerationOptions.worldTypeName.equals(var3.get(index).NAME)) {
                 WorldTypeListScreen.this.worldGenerationOptions.worldTypeName = var3.get(index).NAME;
 
-                WorldTypeListScreen.this.buttonSelect.text = WorldTypeListScreen.this.translation.get("gui.done");
+                WorldTypeListScreen.this.doneButton.text = WorldTypeListScreen.this.translation.get("gui.done");
             }
         }
 

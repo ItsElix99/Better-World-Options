@@ -4,6 +4,7 @@ selectWorld.singleBiome=Single Biome:
 selectWorld.moreWorldOptions=More World Options...
 selectWorld.oldFeatures=Old Features:
 selectWorld.theme=Theme:
+selectWorld.superflat=Superflat:
 selectWorld.indevOptions=Indev Options
 selectWorld.mcpeOptions=MCPE Options
 selectWorld.allBiomes=All Biomes
