@@ -5,7 +5,10 @@ import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
@@ -22,6 +25,8 @@ import java.util.Objects;
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
     @Shadow public World world;
+
+    @Shadow public ClientPlayerEntity player;
 
     @WrapOperation(
             method = "tick",
@@ -56,11 +61,19 @@ public class MinecraftMixin {
         }
     }
 
-    @Inject(method = "setWorld(Lnet/minecraft/world/World;Ljava/lang/String;Lnet/minecraft/entity/player/PlayerEntity;)V", at = @At("TAIL"))
-    private void dimensionBetaFeaturesTextures(World world, String message, PlayerEntity player, CallbackInfo ci) {
+    @Environment(EnvType.CLIENT)
+    @Inject(method = "changeDimension", at = @At("TAIL"))
+    private void dimensionOldTextures(CallbackInfo ci) {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
-        if (world != null) {
-            worldGenerationOptions.oldTextures = world.dimension.id == 0 && ((BWOProperties) world.getProperties()).bwo_isOldFeatures();
+        worldGenerationOptions.oldTextures = this.player.dimensionId == 0 && ((BWOProperties) this.world.getProperties()).bwo_isOldFeatures();
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Inject(method = "startGame", at = @At("TAIL"))
+    private void startGameOldTextures(String worldName, String name, long seed, CallbackInfo ci) {
+        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+        if (this.world != null) {
+            worldGenerationOptions.oldTextures = this.world.dimension.id == 0 && ((BWOProperties) this.world.getProperties()).bwo_isOldFeatures();
         }
     }
 
