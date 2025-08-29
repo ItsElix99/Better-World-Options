@@ -78,7 +78,7 @@ public class WorldGenerationOptions {
         this.worldSizeZ = ((BWOProperties) properties).bwo_getWorldSizeZ();
         this.infiniteWorld = ((BWOProperties) properties).bwo_isInfiniteWorld();
 
-        this.oldTextures = false;
+        this.oldTextures = ((BWOProperties) properties).bwo_isOldFeatures();
     }
 
     public static WorldGenerationOptions getInstance() {
