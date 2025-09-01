@@ -49,11 +49,11 @@ public class DimensionMixin {
             }
         } else if (worldType.equals("Flat") && !superflat) {
             return new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
-        } else if (singleBiome != null && !singleBiome.equals("Off") && !singleBiome.isEmpty()) {
-            List<Biome> biomes = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).toList();
+        } else if (!singleBiome.equals("Off") && !singleBiome.isEmpty()) {
+            List<Biome> biomesList = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).toList();
 
-            if (!biomes.isEmpty()) {
-                Biome biome = biomes.get(0);
+            if (!biomesList.isEmpty()) {
+                Biome biome = biomesList.get(0);
                 double[] climate = WorldGenerationOptions.getClimateForBiome(biome);
 
                 return new FixedBiomeSource(biome, climate[0], climate[1]);
@@ -66,11 +66,11 @@ public class DimensionMixin {
     @ModifyReturnValue(method = "createChunkGenerator", at = @At("RETURN"))
     public ChunkSource createChunkGenerator(ChunkSource original) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
-        List<WorldType.WorldTypeEntry> worldTypeList = WorldType.getList();
+        List<WorldType.WorldTypeEntry> worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldGenerationOptions.worldType.equals(worldTypeEntry.NAME)).toList();
         Class<? extends ChunkSource> chunkGenerator;
 
-        if (!worldTypeList.stream().filter(worldTypeEntry -> worldGenerationOptions.worldType.equals(worldTypeEntry.NAME)).toList().isEmpty()) {
-            chunkGenerator = worldTypeList.stream().filter(worldTypeEntry -> worldGenerationOptions.worldType.equals(worldTypeEntry.NAME)).toList().get(0).OVERWORLD_CHUNK_GENERATOR;
+        if (!worldType.isEmpty() && worldType.get(0).OVERWORLD_CHUNK_GENERATOR != null) {
+            chunkGenerator = worldType.get(0).OVERWORLD_CHUNK_GENERATOR;
             return chunkGenerator.getDeclaredConstructor(World.class, long.class).newInstance(this.world, this.world.getSeed());
         }
 
