@@ -126,11 +126,11 @@ public class Indev223ChunkGenerator implements ChunkSource {
         } else {
             for (int x = 0; x < 16; x++) {
                 int worldX = chunkX * 16 + x;
-                double nx = ((double) worldX / (worldSizeX - 1) - 0.5) * 2.0;
+                double nx = ((double) worldX / (this.worldSizeX - 1) - 0.5) * 2.0;
 
                 for (int z = 0; z < 16; z++) {
                     int worldZ = chunkZ * 16 + z;
-                    double nz = ((double) worldZ / (worldSizeZ - 1) - 0.5) * 2.0;
+                    double nz = ((double) worldZ / (this.worldSizeZ - 1) - 0.5) * 2.0;
 
                     double low = this.distortA.create(worldX * 1.3, worldZ * 1.3) / 6.0 - 4.0;
                     double high = this.distortB.create(worldX * 1.3, worldZ * 1.3) / 5.0 + 6.0;
@@ -142,7 +142,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
                     if (indevWorldType.equals("Island")) {
                         double radius = Math.sqrt(nx * nx + nz * nz) * 1.2;
-                        double falloff = noiseGen2.create(worldX * 0.05, worldZ * 0.05) / 4.0 + 1.0;
+                        double falloff = this.noiseGen2.create(worldX * 0.05, worldZ * 0.05) / 4.0 + 1.0;
                         radius = Math.min(Math.max(distance, Math.min(radius, falloff)), 1.0);
                         radius *= radius;
                         h = h * (1.0 - radius) - radius * 10.0 + 5.0;
@@ -163,11 +163,11 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
             for (int x = 0; x < 16; x++) {
                 int worldX = chunkX * 16 + x;
-                double nx = ((double) worldX / (worldSizeX - 1) - 0.5) * 2.0;
+                double nx = ((double) worldX / (this.worldSizeX - 1) - 0.5) * 2.0;
 
                 for (int z = 0; z < 16; z++) {
                     int worldZ = chunkZ * 16 + z;
-                    double nz = ((double) worldZ / (worldSizeZ - 1) - 0.5) * 2.0;
+                    double nz = ((double) worldZ / (this.worldSizeZ - 1) - 0.5) * 2.0;
 
                     double distance = Math.max(Math.abs(nx), Math.abs(nz));
 
@@ -188,11 +188,11 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
         for (int x = 0; x < 16; x++) {
             int worldX = chunkX * 16 + x;
-            double nx = ((double) worldX / (worldSizeX - 1) - 0.5) * 2.0;
+            double nx = ((double) worldX / (this.worldSizeX - 1) - 0.5) * 2.0;
 
             for (int z = 0; z < 16; z++) {
                 int worldZ = chunkZ * 16 + z;
-                double nz = ((double) worldZ / (worldSizeZ - 1) - 0.5) * 2.0;
+                double nz = ((double) worldZ / (this.worldSizeZ - 1) - 0.5) * 2.0;
                 double distance = Math.max(Math.abs(nx), Math.abs(nz));
 
                 double radial;
@@ -229,10 +229,10 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
                     if (distance > 1.0 && !this.infiniteWorld) {
                         if (!indevWorldType.equals("Island") && !indevWorldType.equals("Floating")) {
-                            if (y == 64) {
+                            if (y == surroundingWaterHeight) {
                                 blockId = Block.GRASS_BLOCK.id;
                             }
-                            if (y <= 63) {
+                            if (y <= surroundingWaterHeight - 2) {
                                 blockId = Block.BEDROCK.id;
                             }
                         } else if (indevWorldType.equals("Island")) {
@@ -250,8 +250,10 @@ public class Indev223ChunkGenerator implements ChunkSource {
                                     if (!this.theme.equals("Hell") && (var19 < temp && !this.oldFeatures || this.theme.equals("Winter"))) {
                                         blockId = Block.ICE.id;
                                     } else {
-                                        blockId = !this.theme.equals("Hell") ? Block.WATER.id : Block.LAVA.id;
+                                        blockId = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
                                     }
+                                } else {
+                                    blockId = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
                                 }
                             }
 
@@ -282,10 +284,12 @@ public class Indev223ChunkGenerator implements ChunkSource {
                             if (y == surroundingWaterHeight - 2) {
                                 if (!this.theme.equals("Hell") && (var19 < temp && !this.oldFeatures || this.theme.equals("Winter"))) {
                                     blockId = Block.ICE.id;
-                            } else {
-                                blockId = !this.theme.equals("Hell") ? Block.WATER.id : Block.LAVA.id;
-                            }
+                                } else {
+                                    blockId = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
                                 }
+                            } else {
+                                blockId = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                            }
                         }
                     }
 
@@ -312,18 +316,18 @@ public class Indev223ChunkGenerator implements ChunkSource {
             double worldX = chunkX * 16 + x;
             for (int z = 0; z < 16; z++) {
                 double worldZ = chunkZ * 16 + z;
-                boolean sand = noiseGen5.create(worldX, worldZ) > 8.0;
+                boolean sand = this.noiseGen5.create(worldX, worldZ) > 8.0;
                 if (indevWorldType.equals("Island")) {
-                    sand = noiseGen5.create(worldX, worldZ) > (double) -8.0F;
+                    sand = this.noiseGen5.create(worldX, worldZ) > (double) -8.0F;
                 }
 
                 if (this.theme.equals("Paradise")) {
-                    sand = noiseGen5.create(worldX, worldZ) > (double) -32.0F;
+                    sand = this.noiseGen5.create(worldX, worldZ) > (double) -32.0F;
                 }
 
-                boolean gravel = noiseGen3.create(worldX, worldZ) > 12.0;
+                boolean gravel = this.noiseGen3.create(worldX, worldZ) > 12.0;
                 if ((this.theme.equals("Hell") || this.theme.equals("Woods")) || (this.singleBiome.equals("Rainforest") || this.singleBiome.equals("Seasonal Forest") || this.singleBiome.equals("Forest") || this.singleBiome.equals("Taiga"))) {
-                    sand = noiseGen5.create(worldX, worldZ) > (double) -8.0F;
+                    sand = this.noiseGen5.create(worldX, worldZ) > (double) -8.0F;
                 }
 
                 int surfaceY = heightMap[x + z * 16];
@@ -427,8 +431,8 @@ public class Indev223ChunkGenerator implements ChunkSource {
         double[] var4 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var4);
 
-        double centerX = ((double)(chunkX * 16) / (worldSizeX - 1) - 0.5) * 2.0;
-        double centerZ = ((double)(chunkZ * 16) / (worldSizeZ - 1) - 0.5) * 2.0;
+        double centerX = ((double)(chunkX * 16) / (this.worldSizeX - 1) - 0.5) * 2.0;
+        double centerZ = ((double)(chunkZ * 16) / (this.worldSizeZ - 1) - 0.5) * 2.0;
         double distance = Math.max(Math.abs(centerX), Math.abs(centerZ));
 
         if (!this.oldFeatures && (distance <= 1.0 || this.infiniteWorld)){
@@ -464,13 +468,13 @@ public class Indev223ChunkGenerator implements ChunkSource {
     public void decorate(ChunkSource source, int x, int z) {
         for (int var1 = 0; var1 < 16; var1++) {
             int blockX = x * 16 + var1;
-            if ((blockX < 0 || blockX >= worldSizeX) && !this.infiniteWorld) {
+            if ((blockX < 0 || blockX >= this.worldSizeX) && !this.infiniteWorld) {
                 return;
             }
 
             for (int var2 = 0; var2 < 16; var2++) {
                 int blockZ = z * 16 + var2;
-                if ((blockZ < 0 || blockZ >= worldSizeZ) && !this.infiniteWorld) {
+                if ((blockZ < 0 || blockZ >= this.worldSizeZ) && !this.infiniteWorld) {
                     return;
                 }
             }

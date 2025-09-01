@@ -99,6 +99,9 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         this.noiseGen4 = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 4);
         this.noiseGen5 = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 4);
         this.noiseGen6 = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 5);
+        new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 3);
+        new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 3);
+        new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 3);
         this.forestNoise = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 5);
     }
 
