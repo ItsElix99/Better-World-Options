@@ -69,8 +69,8 @@ public class DimensionMixin {
         List<WorldType.WorldTypeEntry> worldTypeList = WorldType.getList();
         Class<? extends ChunkSource> chunkGenerator;
 
-        if (!worldTypeList.stream().filter(worldTypeEntry -> worldGenerationOptions.worldTypeName.equals(worldTypeEntry.NAME)).toList().isEmpty()) {
-            chunkGenerator = worldTypeList.stream().filter(worldTypeEntry -> worldGenerationOptions.worldTypeName.equals(worldTypeEntry.NAME)).toList().get(0).OVERWORLD_CHUNK_GENERATOR;
+        if (!worldTypeList.stream().filter(worldTypeEntry -> worldGenerationOptions.worldType.equals(worldTypeEntry.NAME)).toList().isEmpty()) {
+            chunkGenerator = worldTypeList.stream().filter(worldTypeEntry -> worldGenerationOptions.worldType.equals(worldTypeEntry.NAME)).toList().get(0).OVERWORLD_CHUNK_GENERATOR;
             return chunkGenerator.getDeclaredConstructor(World.class, long.class).newInstance(this.world, this.world.getSeed());
         }
 

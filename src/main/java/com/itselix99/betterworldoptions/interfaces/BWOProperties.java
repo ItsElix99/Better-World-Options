@@ -12,7 +12,7 @@ public interface BWOProperties {
     boolean bwo_isSuperflat();
 
     String bwo_getIndevWorldType();
-    String bwo_getShape();
+    String bwo_getIndevShape();
     int bwo_getWorldSizeX();
     int bwo_getWorldSizeZ();
     boolean bwo_isGenerateIndevHouse();

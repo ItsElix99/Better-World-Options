@@ -9,7 +9,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.storage.WorldStorage;
@@ -87,11 +86,11 @@ public class MinecraftMixin {
     private World startGameInOtherDimensions(WorldStorage storage, String name, long seed, Operation<World> original) {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
 
-        if (worldGenerationOptions.worldTypeName.equals("Nether") && storage.loadProperties() == null) {
+        if (worldGenerationOptions.worldType.equals("Nether") && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(-1));
-        } else if (worldGenerationOptions.worldTypeName.equals("Skylands") && storage.loadProperties() == null) {
+        } else if (worldGenerationOptions.worldType.equals("Skylands") && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(1));
-        } else if (worldGenerationOptions.worldTypeName.equals("Aether") && storage.loadProperties() == null) {
+        } else if (worldGenerationOptions.worldType.equals("Aether") && storage.loadProperties() == null) {
             return new World(storage, name, seed, CompatMods.startWorldInAether());
         }
 

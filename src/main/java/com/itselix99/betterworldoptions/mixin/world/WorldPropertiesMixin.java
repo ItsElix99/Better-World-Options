@@ -19,9 +19,9 @@ public class WorldPropertiesMixin implements BWOProperties {
     @Unique private boolean superflat;
 
     @Unique private String indevWorldType;
-    @Unique private String shape;
-    @Unique private int sizeX;
-    @Unique private int sizeZ;
+    @Unique private String indevShape;
+    @Unique private int worldSizeX;
+    @Unique private int worldSizeZ;
     @Unique private boolean generateIndevHouse;
     @Unique private boolean infiniteWorld;
 
@@ -55,14 +55,14 @@ public class WorldPropertiesMixin implements BWOProperties {
     @Override public String bwo_getIndevWorldType() {
         return this.indevWorldType;
     }
-    @Override public String bwo_getShape() {
-        return this.shape;
+    @Override public String bwo_getIndevShape() {
+        return this.indevShape;
     }
     @Override public int bwo_getWorldSizeX() {
-        return this.sizeX;
+        return this.worldSizeX;
     }
     @Override public int bwo_getWorldSizeZ() {
-        return this.sizeZ;
+        return this.worldSizeZ;
     }
     @Override public boolean bwo_isGenerateIndevHouse() {
         return this.generateIndevHouse;
@@ -85,16 +85,16 @@ public class WorldPropertiesMixin implements BWOProperties {
 
         if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
             if (bwo_getWorldType().equals("Indev 223")) {
-                this.indevWorldType = nbt.getString("Indev World Type");
-                this.shape = nbt.getString("Shape");
+                this.indevWorldType = nbt.getString("IndevWorldType");
+                this.indevShape = nbt.getString("IndevShape");
                 this.generateIndevHouse = nbt.getBoolean("GenerateIndevHouse");
             }
 
             this.infiniteWorld = nbt.getBoolean("InfiniteWorld");
 
             if (!bwo_isInfiniteWorld()) {
-                this.sizeX = nbt.getInt("SizeX");
-                this.sizeZ = nbt.getInt("SizeZ");
+                this.worldSizeX = nbt.getInt("WorldSizeX");
+                this.worldSizeZ = nbt.getInt("WorldSizeZ");
             }
         }
     }
@@ -102,7 +102,7 @@ public class WorldPropertiesMixin implements BWOProperties {
     @Inject(method = "<init>(JLjava/lang/String;)V", at = @At("TAIL"))
     private void newWorld(long seed, String name, CallbackInfo ci) {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
-        this.worldType = worldGenerationOptions.worldTypeName;
+        this.worldType = worldGenerationOptions.worldType;
         this.hardcore = worldGenerationOptions.hardcore;
         this.oldFeatures = worldGenerationOptions.oldFeatures;
         this.singleBiome = worldGenerationOptions.singleBiome;
@@ -115,15 +115,15 @@ public class WorldPropertiesMixin implements BWOProperties {
         if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
             if (bwo_getWorldType().equals("Indev 223")) {
                 this.indevWorldType = worldGenerationOptions.indevWorldType;
-                this.shape = worldGenerationOptions.indevShape;
+                this.indevShape = worldGenerationOptions.indevShape;
                 this.generateIndevHouse = worldGenerationOptions.generateIndevHouse;
             }
 
             this.infiniteWorld = worldGenerationOptions.infiniteWorld;
 
             if (!bwo_isInfiniteWorld()) {
-                this.sizeX = worldGenerationOptions.worldSizeX;
-                this.sizeZ = worldGenerationOptions.worldSizeZ;
+                this.worldSizeX = worldGenerationOptions.worldSizeX;
+                this.worldSizeZ = worldGenerationOptions.worldSizeZ;
             }
         }
     }
@@ -143,15 +143,15 @@ public class WorldPropertiesMixin implements BWOProperties {
         if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
             if (bwo_getWorldType().equals("Indev 223")) {
                 this.indevWorldType = ((BWOProperties) source).bwo_getIndevWorldType();
-                this.shape = ((BWOProperties) source).bwo_getShape();
+                this.indevShape = ((BWOProperties) source).bwo_getIndevShape();
                 this.generateIndevHouse = ((BWOProperties) source).bwo_isGenerateIndevHouse();
             }
 
             this.infiniteWorld = ((BWOProperties) source).bwo_isInfiniteWorld();
 
             if (!bwo_isInfiniteWorld()) {
-                this.sizeX = ((BWOProperties) source).bwo_getWorldSizeX();
-                this.sizeZ = ((BWOProperties) source).bwo_getWorldSizeZ();
+                this.worldSizeX = ((BWOProperties) source).bwo_getWorldSizeX();
+                this.worldSizeZ = ((BWOProperties) source).bwo_getWorldSizeZ();
             }
         }
     }
@@ -171,15 +171,15 @@ public class WorldPropertiesMixin implements BWOProperties {
         if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
             if (bwo_getWorldType().equals("Indev 223")) {
                 nbt.putString("IndevWorldType", this.indevWorldType);
-                nbt.putString("Shape", this.shape);
+                nbt.putString("IndevShape", this.indevShape);
                 nbt.putBoolean("GenerateIndevHouse", this.generateIndevHouse);
             }
 
             nbt.putBoolean("InfiniteWorld", this.infiniteWorld);
 
             if (!bwo_isInfiniteWorld()) {
-                nbt.putInt("SizeX", this.sizeX);
-                nbt.putInt("SizeZ", this.sizeZ);
+                nbt.putInt("WorldSizeX", this.worldSizeX);
+                nbt.putInt("WorldSizeZ", this.worldSizeZ);
             }
         }
     }

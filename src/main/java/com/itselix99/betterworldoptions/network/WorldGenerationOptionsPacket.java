@@ -49,7 +49,7 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
         if (this.worldType.equals("Indev 223") || this.worldType.equals("MCPE")) {
             if (this.worldType.equals("Indev 223")) {
                 this.indevWorldType = properties.bwo_getIndevWorldType();
-                this.indevShape = properties.bwo_getShape();
+                this.indevShape = properties.bwo_getIndevShape();
                 this.generateIndevHouse = properties.bwo_isGenerateIndevHouse();
             }
 
@@ -127,18 +127,18 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
     public void handleClient(NetworkHandler networkHandler) {
         WorldGenerationOptions worldGenerationOptions = new WorldGenerationOptions();
 
-        worldGenerationOptions.worldTypeName = this.worldType;
+        worldGenerationOptions.worldType = this.worldType;
         worldGenerationOptions.hardcore = this.hardcore;
         worldGenerationOptions.oldFeatures = this.oldFeatures;
         worldGenerationOptions.singleBiome = this.singleBiome;
         worldGenerationOptions.theme = this.theme;
 
-        if (worldGenerationOptions.worldTypeName.equals("Flat")) {
+        if (worldGenerationOptions.worldType.equals("Flat")) {
             worldGenerationOptions.superflat = this.superflat;
         }
 
-        if (worldGenerationOptions.worldTypeName.equals("Indev 223") || worldGenerationOptions.worldTypeName.equals("MCPE")) {
-            if (worldGenerationOptions.worldTypeName.equals("Indev 223")) {
+        if (worldGenerationOptions.worldType.equals("Indev 223") || worldGenerationOptions.worldType.equals("MCPE")) {
+            if (worldGenerationOptions.worldType.equals("Indev 223")) {
                 worldGenerationOptions.indevWorldType = this.indevWorldType;
                 worldGenerationOptions.indevShape = this.indevShape;
                 worldGenerationOptions.generateIndevHouse = this.generateIndevHouse;

@@ -20,7 +20,7 @@ public abstract class BlockMixin {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
 
         if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
-            WorldType.WorldTypeEntry worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
+            WorldType.WorldTypeEntry worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldType)).toList().get(0);
 
             if (this.id == 4) {
                 return worldType.OLD_TEXTURES.get("Cobblestone") != null ? worldType.OLD_TEXTURES.get("Cobblestone") : original;

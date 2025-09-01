@@ -19,7 +19,7 @@ public class WorldGenerationOptions {
     public static Set<Biome> defaultBiomesSetPrecipitation = Set.of(Biome.RAINFOREST, Biome.SWAMPLAND, Biome.SEASONAL_FOREST, Biome.FOREST, Biome.SAVANNA, Biome.SHRUBLAND, Biome.TAIGA, Biome.PLAINS, Biome.TUNDRA);
     public static Set<Biome> defaultBiomesSetPrecipitationNoSnow = Set.of(Biome.TAIGA, Biome.TUNDRA, Biome.ICE_DESERT);
 
-    public String worldTypeName;
+    public String worldType;
     public boolean hardcore;
     public boolean oldFeatures;
     public String theme;
@@ -42,7 +42,7 @@ public class WorldGenerationOptions {
 
         boolean server = FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
 
-        this.worldTypeName = server ? Config.BWOConfig.server.worldType : "Default";
+        this.worldType = server ? Config.BWOConfig.server.worldType : "Default";
         this.hardcore = server ? Config.BWOConfig.server.hardcore : false;
         this.oldFeatures = server ? Config.BWOConfig.server.oldFeatures : false;
         this.singleBiome = server ? Config.BWOConfig.server.singleBiome : "Off";
@@ -63,7 +63,7 @@ public class WorldGenerationOptions {
     public WorldGenerationOptions(WorldProperties properties) {
         INSTANCE = this;
 
-        this.worldTypeName = ((BWOProperties) properties).bwo_getWorldType();
+        this.worldType = ((BWOProperties) properties).bwo_getWorldType();
         this.hardcore = ((BWOProperties) properties).bwo_isHardcore();
         this.oldFeatures = ((BWOProperties) properties).bwo_isOldFeatures();
         this.singleBiome = ((BWOProperties) properties).bwo_getSingleBiome();
@@ -71,7 +71,7 @@ public class WorldGenerationOptions {
         this.superflat = ((BWOProperties) properties).bwo_isSuperflat();
 
         this.indevWorldType = ((BWOProperties) properties).bwo_getIndevWorldType();
-        this.indevShape = ((BWOProperties) properties).bwo_getShape();
+        this.indevShape = ((BWOProperties) properties).bwo_getIndevShape();
         this.generateIndevHouse = ((BWOProperties) properties).bwo_isGenerateIndevHouse();
 
         this.worldSizeX = ((BWOProperties) properties).bwo_getWorldSizeX();

@@ -24,7 +24,7 @@ public class GrassBlockMixin extends Block {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
 
         if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
-            WorldType.WorldTypeEntry worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldTypeName)).toList().get(0);
+            WorldType.WorldTypeEntry worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldType)).toList().get(0);
 
             if (side == 1) {
                 return worldType.OLD_TEXTURES.get("GrassBlockTop") != null ? worldType.OLD_TEXTURES.get("GrassBlockTop") : original;
