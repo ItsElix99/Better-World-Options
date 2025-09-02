@@ -782,7 +782,7 @@ public class MCPEChunkGenerator implements ChunkSource {
             for(int var61 = 0; var61 < var49; ++var61) {
                 int var72 = var4 + this.random.nextInt(16) + 8;
                 int var17 = var5 + this.random.nextInt(16) + 8;
-                Feature var18 = var6.getRandomTreeFeature(this.random);
+                Feature var18 = ((BWOWorld) var6).bwo_getRandomTreeFeatureMCPE(this.random);
                 var18.prepare(1.0F, 1.0F, 1.0F);
                 var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
             }

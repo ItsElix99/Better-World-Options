@@ -36,7 +36,7 @@ public class SaplingBlockMixin extends PlantBlock {
         if (var7 instanceof OakTreeFeature || var7 instanceof LargeOakTreeFeature) {
             if (worldType.equals("Infdev 420") || worldType.equals("Infdev 415")) {
                 var7 = new LargeOakTreeFeature();
-            } else if (worldType.equals("Infdev 611") || worldType.equals("Early Infdev") || worldType.equals("Indev 223")) {
+            } else if (worldType.equals("Infdev 611") || worldType.equals("Early Infdev") || worldType.equals("Indev 223")|| worldType.equals("MCPE")) {
                 var7 = new OakTreeFeature();
             }
         }
