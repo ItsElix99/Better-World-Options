@@ -112,13 +112,14 @@ public class FlatChunkGenerator implements ChunkSource {
 
     public void decorate(ChunkSource source, int x, int z) {
         if (!this.superflat) {
-            for (int var1 = 0; var1 < 16; var1++) {
-                int worldX = x * 16 + var1;
+            int var4 = x * 16;
+            int var5 = z * 16;
 
-                for (int var2 = 0; var2 < 16; var2++) {
-                    int worldZ = z * 16 + var2;
-                    if (worldX < 0 || worldX >= 16 || worldZ < 0 || worldZ >= 16) {
-                        return;
+            for(int var10 = var4 + 8; var10 < var4 + 8 + 16; ++var10) {
+                for(int var12 = var5 + 8; var12 < var5 + 8 + 16; ++var12) {
+                    int var11 = this.world.getTopSolidBlockY(var10, var12);
+                    if(this.theme.equals("Winter") && var11 > 0 && var11 < 128 && this.world.getBlockId(var10, var11, var12) == 0 && this.world.getMaterial(var10, var11 - 1, var12).isSolid() && this.world.getMaterial(var10, var11 - 1, var12) != Material.ICE) {
+                        this.world.setBlock(var10, var11, var12, Block.SNOW.id);
                     }
                 }
             }
@@ -234,7 +235,7 @@ public class FlatChunkGenerator implements ChunkSource {
             }
 
             if (var6 == Biome.SEASONAL_FOREST) {
-                var49 += var37 + 2;
+                var49 += var37 + (this.theme.equals("Woods") ? 5 : 2);
             }
 
             if (var6 == Biome.TAIGA) {

@@ -262,8 +262,8 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             z = (int)this.forestNoise.sample((double)var4 * (double)0.0625F, (double)x * (double)0.0625F) << 3;
             OakTreeFeature var9 = new OakTreeFeature();
 
-            if (this.theme.equals("Woods") && z <= 0) {
-                z = 20;
+            if (this.theme.equals("Woods") && z <= 4) {
+                z = 10;
             }
 
             for(int var63 = 0; var63 < z; ++var63) {
@@ -393,7 +393,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             }
 
             if (var6 == Biome.SEASONAL_FOREST) {
-                var49 += var37 + 2;
+                var49 += var37 + (this.theme.equals("Woods") ? 5 : 2);
             }
 
             if (var6 == Biome.TAIGA) {

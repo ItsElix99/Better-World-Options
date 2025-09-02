@@ -646,7 +646,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
             }
 
             if (var6 == Biome.SEASONAL_FOREST) {
-                var49 += var37 + 2;
+                var49 += var37 + (this.theme.equals("Woods") ? 5 : 2);
             }
 
             if (var6 == Biome.TAIGA) {

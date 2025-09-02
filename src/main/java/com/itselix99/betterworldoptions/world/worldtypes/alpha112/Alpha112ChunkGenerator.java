@@ -484,8 +484,8 @@ public class Alpha112ChunkGenerator implements ChunkSource {
             var10 = 0.5D;
             var12 = (int)((this.forestNoise.sample((double)var4 * var10, (double)var5 * var10) / 8.0D + this.random.nextDouble() * 4.0D + 4.0D) / 3.0D);
             if (this.theme.equals("Woods")) {
-                if (var12 <= 0) {
-                    var12 = 30;
+                if (var12 <= 4) {
+                    var12 = 10;
                 }
             } else {
                 if (var12 < 0) {
@@ -706,7 +706,7 @@ public class Alpha112ChunkGenerator implements ChunkSource {
             }
 
             if (var6 == Biome.SEASONAL_FOREST) {
-                var49 += var37 + 2;
+                var49 += var37 + (this.theme.equals("Woods") ? 5 : 2);
             }
 
             if (var6 == Biome.TAIGA) {

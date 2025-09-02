@@ -357,8 +357,8 @@ public class Infdev420ChunkGenerator implements ChunkSource {
 
             z = (int)(this.forestNoise.sample((double)var4 * 0.05D, (double)x * 0.05D) - this.random.nextDouble());
             if (this.theme.equals("Woods")) {
-                if(z <= 0) {
-                    z = 30;
+                if(z <= 4) {
+                    z = 10;
                 }
             } else {
                 if (z < 0) {
@@ -514,7 +514,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
             }
 
             if (var6 == Biome.SEASONAL_FOREST) {
-                var49 += var37 + 2;
+                var49 += var37 + (this.theme.equals("Woods") ? 5 : 2);
             }
 
             if (var6 == Biome.TAIGA) {

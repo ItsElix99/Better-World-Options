@@ -378,7 +378,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
             z = (int) this.forestNoise.sample((double)var4 * 0.25D, (double)x * 0.25D) << 3;
             LargeOakTreeFeature var9 = new LargeOakTreeFeature();
 
-            if (this.theme.equals("Woods") && z <= 0) {
+            if (this.theme.equals("Woods") && z <= 4) {
                 z = 10;
             }
 
@@ -525,7 +525,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
             }
 
             if (var6 == Biome.SEASONAL_FOREST) {
-                var49 += var37 + 2;
+                var49 += var37 + (this.theme.equals("Woods") ? 5 : 2);
             }
 
             if (var6 == Biome.TAIGA) {

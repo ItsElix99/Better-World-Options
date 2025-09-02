@@ -485,24 +485,24 @@ public class MCPEChunkGenerator implements ChunkSource {
             }
 
             if (var6 == Biome.FOREST) {
-                var49 += var37 + 2;
+                var49 += var37 + (this.theme.equals("Woods") ? 5 : 2);
             }
 
             if (var6 == Biome.RAINFOREST) {
-                var49 += var37 + 2;
+                var49 += var37 + (this.theme.equals("Woods") ? 5 : 2);
             }
 
             if (var6 == Biome.SEASONAL_FOREST) {
-                var49 += var37 + 1;
+                var49 += var37 + (this.theme.equals("Woods") ? 5 : 1);
             }
 
             if (var6 == Biome.TAIGA) {
-                var49 += var37 + 1;
+                var49 += var37 + (this.theme.equals("Woods") ? 5 : 1);
             }
 
             if (var6 == Biome.DESERT) {
                 if (this.theme.equals("Woods")) {
-                    var49 += var37 + 2;
+                    var49 += var37 + 5;
                 } else {
                     var49 -= 20;
                 }
@@ -510,7 +510,7 @@ public class MCPEChunkGenerator implements ChunkSource {
 
             if (var6 == Biome.TUNDRA) {
                 if (this.theme.equals("Woods")) {
-                    var49 += var37 + 2;
+                    var49 += var37 + 5;
                 } else {
                     var49 -= 20;
                 }
@@ -518,7 +518,7 @@ public class MCPEChunkGenerator implements ChunkSource {
 
             if (var6 == Biome.PLAINS) {
                 if (this.theme.equals("Woods")) {
-                    var49 += var37 + 2;
+                    var49 += var37 + 5;
                 } else {
                     var49 -= 20;
                 }
@@ -526,7 +526,7 @@ public class MCPEChunkGenerator implements ChunkSource {
 
             if (var6 == Biome.SWAMPLAND || var6 == Biome.SHRUBLAND || var6 == Biome.SAVANNA) {
                 if (this.theme.equals("Woods")) {
-                    var49 += var37 + 2;
+                    var49 += var37 + 5;
                 }
             }
 
@@ -742,7 +742,7 @@ public class MCPEChunkGenerator implements ChunkSource {
             }
 
             if (var6 == Biome.SEASONAL_FOREST) {
-                var49 += var37 + 2;
+                var49 += var37 + (this.theme.equals("Woods") ? 5 : 2);
             }
 
             if (var6 == Biome.TAIGA) {
