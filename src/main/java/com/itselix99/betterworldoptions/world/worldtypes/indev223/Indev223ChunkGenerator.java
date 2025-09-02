@@ -232,7 +232,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                             if (y == surroundingWaterHeight) {
                                 blockId = Block.GRASS_BLOCK.id;
                             }
-                            if (y <= surroundingWaterHeight - 2) {
+                            if (y <= surroundingWaterHeight - 1) {
                                 blockId = Block.BEDROCK.id;
                             }
                         } else if (indevWorldType.equals("Island")) {
