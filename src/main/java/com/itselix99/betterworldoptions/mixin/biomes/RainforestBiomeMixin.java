@@ -14,7 +14,7 @@ public abstract class RainforestBiomeMixin extends BiomeMixin implements BWOWorl
 
     @Override
     public Feature bwo_getRandomTreeFeatureInfdev(Random random) {
-        return new LargeOakTreeFeature();
+        return random.nextInt(3) == 0 ? new OakTreeFeature() : new LargeOakTreeFeature();
     }
 
 }

@@ -18,7 +18,7 @@ public abstract class ForestBiomeMixin extends BiomeMixin implements BWOWorld {
         if (random.nextInt(5) == 0) {
             return new BirchTreeFeature();
         } else {
-            return new LargeOakTreeFeature();
+            return random.nextInt(3) == 0 ? new OakTreeFeature() : new LargeOakTreeFeature();
         }
     }
 
