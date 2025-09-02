@@ -24,6 +24,7 @@ import java.util.Objects;
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
     @Shadow public World world;
+    @Shadow public ClientPlayerEntity player;
 
     @WrapOperation(
             method = "tick",
@@ -39,6 +40,13 @@ public class MinecraftMixin {
             original.call(world, 3);
         } else {
             original.call(world, difficulty);
+        }
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void notChangeGamemodeInHardcore(CallbackInfo ci) {
+        if (this.world != null && ((BWOProperties) this.world.getProperties()).bwo_isHardcore() && this.player != null && CompatMods.BHCreativeLoaded()) {
+            this.player.creative_setCreative(false);
         }
     }
 
