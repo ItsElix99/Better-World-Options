@@ -46,7 +46,7 @@ public class BiomeColorsImplServerMixin {
         boolean oldFeatures = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_isOldFeatures();
 
         if (oldFeatures && worldType.equals("MCPE") && minecraftServer.getWorld(0).dimension.id == 0) {
-            return 16777215;
+            return 6396257;
         }
 
         return original;
