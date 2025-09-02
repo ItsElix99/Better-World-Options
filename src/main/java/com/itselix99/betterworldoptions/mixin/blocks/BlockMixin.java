@@ -3,10 +3,13 @@ package com.itselix99.betterworldoptions.mixin.blocks;
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.world.WorldType;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 
+@Environment(EnvType.CLIENT)
 @Mixin(Block.class)
 public abstract class BlockMixin {
     @Shadow @Final @Mutable public final int id;

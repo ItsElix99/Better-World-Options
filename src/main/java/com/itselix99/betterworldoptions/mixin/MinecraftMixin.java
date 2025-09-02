@@ -25,8 +25,6 @@ import java.util.Objects;
 public class MinecraftMixin {
     @Shadow public World world;
 
-    @Shadow public ClientPlayerEntity player;
-
     @WrapOperation(
             method = "tick",
             at = @At(
@@ -57,22 +55,6 @@ public class MinecraftMixin {
             return true;
         } else {
             return original.call(instance);
-        }
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Inject(method = "changeDimension", at = @At("TAIL"))
-    private void dimensionOldTextures(CallbackInfo ci) {
-        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
-        worldGenerationOptions.oldTextures = this.player.dimensionId == 0 && ((BWOProperties) this.world.getProperties()).bwo_isOldFeatures();
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Inject(method = "startGame", at = @At("TAIL"))
-    private void startGameOldTextures(String worldName, String name, long seed, CallbackInfo ci) {
-        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
-        if (this.world != null) {
-            worldGenerationOptions.oldTextures = this.world.dimension.id == 0 && ((BWOProperties) this.world.getProperties()).bwo_isOldFeatures();
         }
     }
 

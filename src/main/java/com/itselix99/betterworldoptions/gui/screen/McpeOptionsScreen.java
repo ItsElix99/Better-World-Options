@@ -39,8 +39,6 @@ public class McpeOptionsScreen extends Screen {
         if (button.active && button.visible) {
             if (button.id == 0) {
                 this.worldGenerationOptions.oldFeatures = !this.worldGenerationOptions.oldFeatures;
-                this.worldGenerationOptions.oldTextures = this.worldGenerationOptions.oldFeatures;
-
                 this.oldFeaturesButton.text = this.translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
             } else if (button.id == 1) {
                 if (this.sizeButton.text.equals(this.translation.get("indevOptions.size") + " " + "Normal" + " " + this.worldGenerationOptions.worldSizeX + "x" + this.worldGenerationOptions.worldSizeZ)) {

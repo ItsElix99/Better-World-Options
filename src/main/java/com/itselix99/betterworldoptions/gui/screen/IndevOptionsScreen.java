@@ -43,7 +43,6 @@ public class IndevOptionsScreen extends Screen {
         if (button.active && button.visible) {
             if (button.id == 0) {
                 this.worldGenerationOptions.oldFeatures = !this.worldGenerationOptions.oldFeatures;
-                this.worldGenerationOptions.oldTextures = this.worldGenerationOptions.oldFeatures;
 
                 if (this.worldGenerationOptions.oldFeatures && !this.worldGenerationOptions.singleBiome.equals("Off")) {
                     this.worldGenerationOptions.singleBiome = "0ff";

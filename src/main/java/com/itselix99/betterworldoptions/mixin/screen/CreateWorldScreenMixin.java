@@ -220,8 +220,6 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 this.minecraft.setScreen(new WorldTypeListScreen(this, this.worldGenerationOptions));
             } else if (button.id == 13) {
                 this.worldGenerationOptions.oldFeatures = !this.worldGenerationOptions.oldFeatures;
-                this.worldGenerationOptions.oldTextures = this.worldGenerationOptions.oldFeatures;
-
                 this.oldFeaturesButton.text = this.translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
             } else if (button.id == 14) {
                 switch (this.themeButton.text) {

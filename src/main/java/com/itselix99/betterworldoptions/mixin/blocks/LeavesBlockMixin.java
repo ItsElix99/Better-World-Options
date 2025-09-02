@@ -12,6 +12,7 @@ import net.minecraft.world.BlockView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+@Environment(EnvType.CLIENT)
 @Mixin(LeavesBlock.class)
 public class LeavesBlockMixin extends TransparentBlock {
 
@@ -38,22 +39,22 @@ public class LeavesBlockMixin extends TransparentBlock {
         return original;
     }
 
-    @Environment(EnvType.CLIENT)
-    @ModifyReturnValue(method = "getColorMultiplier", at = @At("RETURN"))
-    public int getColorMultiplier(int original, BlockView blockView, int x, int y, int z) {
-        int var5 = blockView.getBlockMeta(x, y, z);
-        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
-
-        if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
-            WorldType.WorldTypeEntry worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldType)).toList().get(0);
-
-            if (worldType.NAME.equals("MCPE")) {
-                if (((var5 & 3) == 0 || (var5 & 3) == 2)) {
-                    return 16777215;
-                }
-            }
-        }
-
-        return original;
-    }
+//    @Environment(EnvType.CLIENT)
+//    @ModifyReturnValue(method = "getColorMultiplier", at = @At("RETURN"))
+//    public int getColorMultiplier(int original, BlockView blockView, int x, int y, int z) {
+//        int var5 = blockView.getBlockMeta(x, y, z);
+//        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+//
+//        if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
+//            WorldType.WorldTypeEntry worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldType)).toList().get(0);
+//
+//            if (worldType.NAME.equals("MCPE")) {
+//                if (((var5 & 3) == 0 || (var5 & 3) == 2)) {
+//                    return 16777215;
+//                }
+//            }
+//        }
+//
+//        return original;
+//    }
 }

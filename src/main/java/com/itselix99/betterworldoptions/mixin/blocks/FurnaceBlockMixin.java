@@ -3,12 +3,15 @@ package com.itselix99.betterworldoptions.mixin.blocks;
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.world.WorldType;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.FurnaceBlock;
 import net.minecraft.block.material.Material;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+@Environment(EnvType.CLIENT)
 @Mixin(FurnaceBlock.class)
 public abstract class FurnaceBlockMixin extends BlockWithEntity {
 

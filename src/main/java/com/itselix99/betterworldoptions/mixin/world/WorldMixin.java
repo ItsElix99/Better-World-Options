@@ -99,10 +99,22 @@ public abstract class WorldMixin implements BWOWorld {
                     target = "Lnet/minecraft/world/dimension/Dimension;setWorld(Lnet/minecraft/world/World;)V"
             )
     )
-    private void beforeSetWorld(WorldStorage storage, String name, long seed, Dimension dimension, CallbackInfo ci) {
+    private void loadProperties(WorldStorage storage, String name, long seed, Dimension dimension, CallbackInfo ci) {
         if (!this.newWorld) {
             new WorldGenerationOptions(this.properties);
         }
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Inject(method = "<init>(Lnet/minecraft/world/World;Lnet/minecraft/world/dimension/Dimension;)V", at = @At("TAIL"))
+    private void oldTexturesChangingDimension(World world, Dimension dimension, CallbackInfo ci) {
+        WorldGenerationOptions.getInstance().setOldTextures(dimension.id == 0 && ((BWOProperties) world.getProperties()).bwo_isOldFeatures());
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Inject(method = "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;JLnet/minecraft/world/dimension/Dimension;)V", at = @At("TAIL"))
+    private void oldTexturesSetWorld(WorldStorage worldStorage, String name, long seed, Dimension dimension, CallbackInfo ci) {
+        WorldGenerationOptions.getInstance().setOldTextures(this.getProperties().getDimensionId() == 0 && ((BWOProperties) this.getProperties()).bwo_isOldFeatures());
     }
 
     @WrapOperation(method = "initializeSpawnPoint", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldProperties;setSpawn(III)V"))

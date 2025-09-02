@@ -3,6 +3,7 @@ package com.itselix99.betterworldoptions.world;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.WorldProperties;
 import net.minecraft.world.biome.Biome;
@@ -38,8 +39,6 @@ public class WorldGenerationOptions {
     public boolean oldTextures;
 
     public WorldGenerationOptions() {
-        INSTANCE = this;
-
         boolean server = FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
 
         this.worldType = server ? Config.BWOConfig.server.worldType : "Default";
@@ -57,12 +56,10 @@ public class WorldGenerationOptions {
         this.setSizeXZ();
         this.infiniteWorld = server ? Config.BWOConfig.server.infiniteWorld : false;
 
-        this.oldTextures = false;
+        INSTANCE = this;
     }
 
     public WorldGenerationOptions(WorldProperties properties) {
-        INSTANCE = this;
-
         this.worldType = ((BWOProperties) properties).bwo_getWorldType();
         this.hardcore = ((BWOProperties) properties).bwo_isHardcore();
         this.oldFeatures = ((BWOProperties) properties).bwo_isOldFeatures();
@@ -78,11 +75,16 @@ public class WorldGenerationOptions {
         this.worldSizeZ = ((BWOProperties) properties).bwo_getWorldSizeZ();
         this.infiniteWorld = ((BWOProperties) properties).bwo_isInfiniteWorld();
 
-        this.oldTextures = ((BWOProperties) properties).bwo_isOldFeatures();
+        INSTANCE = this;
     }
 
     public static WorldGenerationOptions getInstance() {
         return INSTANCE;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void setOldTextures(boolean bl) {
+        this.oldTextures = bl;
     }
 
     public void setSizeXZ() {

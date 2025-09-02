@@ -12,13 +12,13 @@ import net.minecraft.world.BlockView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+@Environment(EnvType.CLIENT)
 @Mixin(GrassBlock.class)
 public class GrassBlockMixin extends Block {
     public GrassBlockMixin(int id, Material material) {
         super(id, material);
     }
 
-    @Environment(EnvType.CLIENT)
     @ModifyReturnValue(method = "getTextureId", at = @At("RETURN"))
     public int getTextureId(int original, BlockView blockView, int x, int y, int z, int side) {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
