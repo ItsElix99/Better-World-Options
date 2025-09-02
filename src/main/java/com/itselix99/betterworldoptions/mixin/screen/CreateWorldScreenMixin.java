@@ -397,6 +397,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 this.superflatButton.visible = false;
             } else if (this.worldGenerationOptions.worldType.equals("Flat")) {
                 this.oldFeaturesButton.visible = false;
+                this.superflatButton.visible = true;
+                this.themeButton.visible = true;
             } else {
                 this.oldFeaturesButton.visible = true;
                 this.themeButton.visible = true;
