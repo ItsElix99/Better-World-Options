@@ -51,15 +51,7 @@ public abstract class BiomeMixin implements BWOWorld, StationBiome {
     }
 
     @Override
-    public Feature bwo_getRandomTreeFeatureInfdev611(Random random) { return new OakTreeFeature(); }
-
-    @Override
-    public Feature bwo_getRandomTreeFeatureInfdev(Random random) { return new LargeOakTreeFeature(); }
-
-    @Override
-    public Feature bwo_getRandomTreeFeatureEarlyInfdev(Random random) {
-        return new OakTreeFeature();
-    }
+    public Feature bwo_getRandomTreeFeatureInfdev(Random random) { return random.nextInt(10) == 0 ? new OakTreeFeature() : new LargeOakTreeFeature(); }
 
     @Override
     public Feature bwo_getRandomTreeFeatureMCPE(Random random) {

@@ -13,29 +13,12 @@ import java.util.Random;
 @Mixin(ForestBiome.class)
 public abstract class ForestBiomeMixin extends BiomeMixin implements BWOWorld {
 
-    public Feature bwo_getRandomTreeFeatureInfdev611(Random random) {
-        if (random.nextInt(5) == 0) {
-            return new BirchTreeFeature();
-        } else {
-            return new OakTreeFeature();
-        }
-    }
-
     @Override
     public Feature bwo_getRandomTreeFeatureInfdev(Random random) {
         if (random.nextInt(5) == 0) {
             return new BirchTreeFeature();
         } else {
             return new LargeOakTreeFeature();
-        }
-    }
-
-    @Override
-    public Feature bwo_getRandomTreeFeatureEarlyInfdev(Random random) {
-        if (random.nextInt(5) == 0) {
-            return new BirchTreeFeature();
-        } else {
-            return new OakTreeFeature();
         }
     }
 

@@ -11,17 +11,7 @@ import java.util.Random;
 public abstract class TaigaBiomeMixin extends BiomeMixin implements BWOWorld {
 
     @Override
-    public Feature bwo_getRandomTreeFeatureInfdev611(Random random) {
-        return random.nextInt(3) == 0 ? new PineTreeFeature() : new SpruceTreeFeature();
-    }
-
-    @Override
     public Feature bwo_getRandomTreeFeatureInfdev(Random random) {
-        return random.nextInt(3) == 0 ? new PineTreeFeature() : new SpruceTreeFeature();
-    }
-
-    @Override
-    public Feature bwo_getRandomTreeFeatureEarlyInfdev(Random random) {
         return random.nextInt(3) == 0 ? new PineTreeFeature() : new SpruceTreeFeature();
     }
 

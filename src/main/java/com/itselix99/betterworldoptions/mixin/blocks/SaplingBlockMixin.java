@@ -32,12 +32,20 @@ public class SaplingBlockMixin extends PlantBlock {
     private boolean wrapFeatureGenerate(Feature originalFeature, World world, Random random, int x, int y, int z, Operation<Boolean> original) {
         Feature var7 = originalFeature;
         String worldType = ((BWOProperties) world.getProperties()).bwo_getWorldType();
+        boolean oldFeatures = ((BWOProperties) world.getProperties()).bwo_isOldFeatures();
 
-        if (var7 instanceof OakTreeFeature || var7 instanceof LargeOakTreeFeature) {
+        if (((var7 instanceof OakTreeFeature || var7 instanceof LargeOakTreeFeature) && oldFeatures)) {
             if (worldType.equals("Infdev 420") || worldType.equals("Infdev 415")) {
                 var7 = new LargeOakTreeFeature();
             } else if (worldType.equals("Infdev 611") || worldType.equals("Early Infdev") || worldType.equals("Indev 223")|| worldType.equals("MCPE")) {
                 var7 = new OakTreeFeature();
+            }
+        } else if (var7 instanceof OakTreeFeature || var7 instanceof LargeOakTreeFeature) {
+            if (worldType.equals("Infdev 420") || worldType.equals("Infdev 415")) {
+                var7 = new LargeOakTreeFeature();
+                if (random.nextInt(10) == 0) {
+                    var7 = new OakTreeFeature();
+                }
             }
         }
 

@@ -13,17 +13,8 @@ import java.util.Random;
 public abstract class RainforestBiomeMixin extends BiomeMixin implements BWOWorld {
 
     @Override
-    public Feature bwo_getRandomTreeFeatureInfdev611(Random random) {
-        return new OakTreeFeature();
-    }
-
-    @Override
     public Feature bwo_getRandomTreeFeatureInfdev(Random random) {
         return new LargeOakTreeFeature();
     }
 
-    @Override
-    public Feature bwo_getRandomTreeFeatureEarlyInfdev(Random random) {
-        return new OakTreeFeature();
-    }
 }
