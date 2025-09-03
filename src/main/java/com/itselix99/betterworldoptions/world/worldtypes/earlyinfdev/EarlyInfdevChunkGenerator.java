@@ -174,12 +174,12 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                     }
 
                     this.brickRandom.setSeed(var8 + var9 * 13871L);
-                    int var16 = (var8 << 10) + Config.BWOConfig.world.worldHeightLimit.getIntValue() + this.brickRandom.nextInt(512);
-                    int var17 = (var9 << 10) + Config.BWOConfig.world.worldHeightLimit.getIntValue() + this.brickRandom.nextInt(512);
+                    int var16 = (var8 << 10) + 128 + this.brickRandom.nextInt(512);
+                    int var17 = (var9 << 10) + 128 + this.brickRandom.nextInt(512);
                     var16 = Math.abs(var6 - var16);
                     var17 = Math.abs(var7 - var17);
                     if (var17 > var16) var16 = var17;
-                    var16 = (Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1) - var16;
+                    var16 = (128 - 1) - var16;
                     if (var16 < var13) var16 = var13;
                     if (var14 <= var16 && (var15 == 0 || var15 == Block.WATER.id || var15 == Block.LAVA.id)) {
                         var15 = Block.BRICKS.id;
