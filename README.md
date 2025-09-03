@@ -2,7 +2,7 @@
 
 <img width="1068" height="600" alt="1000084841" src="https://github.com/user-attachments/assets/2563fe10-5898-4c6f-a7ea-ed8fcba453fe" />
 
-This mod is designed for legacy versions of Minecraft and brings a fresh twist to the classic experience by blending old-school world generation with modern features. It focuses on recreating the feeling of early gameplay while also introducing improvements and options inspired by newer versions of the game. The goal is to keep the nostalgic atmosphere while providing useful enhancements.
+This mod is designed for legacy versions of Minecraft and brings a fresh twist to the classic experience by blending old-school world generation with modern features. It introduces improvements and options inspired by newer versions of the game, with the goal of keeping the nostalgic atmosphere while providing useful enhancements.
 
 # Features
 * **World Types**
@@ -31,3 +31,4 @@ This mod is designed for legacy versions of Minecraft and brings a fresh twist t
 # Requirements
 * **StationAPI**
 * **Glass Config API**
+
