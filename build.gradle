@@ -122,6 +122,10 @@ dependencies {
         transitive false
     }
 
+    modImplementation("maven.modrinth:smoothbeta:${project.smoothbeta_version}-fabric,b1.7.3") {
+        transitive false
+    }
+
 }
 
 processResources {
