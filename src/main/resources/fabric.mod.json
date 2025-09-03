@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Better World Options",
-  "description": "Add hardcore mode and world types to babric b1.7.3",
+  "description": "A mod for legacy versions of Minecraft that mixes classic world generation with modern features and useful options.",
   "authors": [
     "ItsElix99"
   ],
