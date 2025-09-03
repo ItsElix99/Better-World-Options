@@ -17,15 +17,20 @@ public class Config {
         @ConfigCategory(name = "Environment", hidden = true)
         public BWOEnvironment environment = new BWOEnvironment();
 
-        @ConfigCategory(name = "Others")
-        public BWOOthers others = new BWOOthers();
+        @ConfigCategory(name = "Player")
+        public BWOPlayer player = new BWOPlayer();
 
-        @ConfigCategory(name = "Server", hidden = true, comment = "")
+        @ConfigCategory(name = "Server", hidden = true, comment = "These configs are only applied to new worlds")
         public BWOServer server = new BWOServer();
     }
 
     public static class BWOWorld {
-        @ConfigEntry(name = "World height limit", multiplayerSynced = true, requiresRestart = true)
+        @ConfigEntry(
+                name = "World height limit",
+                multiplayerSynced = true,
+                requiresRestart = true,
+                comment = "0 = 128, 1 = 256, 2 = 512"
+        )
         public WorldHeightConfigEnum worldHeightLimit = WorldHeightConfigEnum.H128;
 
         @ConfigEntry(name = "Allow generation of these features with Old Features enabled", multiplayerSynced = true)
@@ -39,7 +44,7 @@ public class Config {
 
     }
 
-    public static class BWOOthers {
+    public static class BWOPlayer {
         @ConfigEntry(name = "Player walking animation")
         public WalkingAnimConfigEnum walkingAnim = WalkingAnimConfigEnum.DEFAULT;
     }
@@ -79,7 +84,8 @@ public class Config {
 
         @ConfigEntry(
                 name = "Superflat",
-                multiplayerSynced = true
+                multiplayerSynced = true,
+                comment = "This option is available only for Flat"
         )
         public Boolean superflat = false;
 
