@@ -297,7 +297,7 @@ public class WorldType {
         MCPE.BIOME = null;
         MCPE.BLOCK_TO_SPAWN_ON = Block.SAND.id;
 
-        MCPE.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        MCPE.OLD_TEXTURES.put("GrassBlockSide", TextureListener.mcpeGrassBlockSide);
         MCPE.OLD_TEXTURES.put("Leaves", TextureListener.alphaLeaves);
         MCPE.OLD_TEXTURES.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
         MCPE.OLD_TEXTURES.put("Rose", TextureListener.mcpeRose);

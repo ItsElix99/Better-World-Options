@@ -35,6 +35,8 @@ public class TextureListener {
 
     public static int infdevBricksBlock;
 
+    public static int mcpeGrassBlockSide;
+
     public static int mcpeRose;
 
     public static int mcpeLeaves;
@@ -72,6 +74,8 @@ public class TextureListener {
         alphaLeavesOpaque = terrainAtlas.addTexture(NAMESPACE.id("block/alpha_leaves_opaque")).index;
 
         infdevBricksBlock = terrainAtlas.addTexture(NAMESPACE.id("block/infdev_bricks_block")).index;
+
+        mcpeGrassBlockSide = terrainAtlas.addTexture(NAMESPACE.id("block/mcpe_grass_block_side")).index;
 
         mcpeRose = terrainAtlas.addTexture(NAMESPACE.id("block/mcpe_rose")).index;
 
