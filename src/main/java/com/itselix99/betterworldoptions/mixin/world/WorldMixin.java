@@ -158,11 +158,11 @@ public abstract class WorldMixin implements BWOWorld {
                 IndevFeatures.placeSpawnBuilding(World.class.cast(this));
             }
         } else if (worldType.equals("MCPE")) {
-            int var1 = 128;
+            int var1 = infinite ? 128 : worldSizeX / 2;
             int var2 = 64;
             int var3;
 
-            for(var3 = 128; !this.dimension.isValidSpawnPoint(var1, var3); var3 += this.random.nextInt(64) - this.random.nextInt(64)) {
+            for(var3 = infinite ? 128 : worldSizeZ / 2; !this.dimension.isValidSpawnPoint(var1, var3); var3 += this.random.nextInt(64) - this.random.nextInt(64)) {
                 var1 += this.random.nextInt(64) - this.random.nextInt(64);
             }
 
