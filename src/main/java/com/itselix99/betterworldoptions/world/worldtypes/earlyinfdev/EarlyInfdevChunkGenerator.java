@@ -37,6 +37,8 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
     private final OctavePerlinNoiseSamplerEarlyInfdev noiseGen6;
     public final OctavePerlinNoiseSamplerEarlyInfdev forestNoise;
     private final World world;
+    private double[] sandBuffer = new double[256];
+    private double[] gravelBuffer = new double[256];
     private final Generator cave = new CaveWorldCarver();
     private final Generator caveEarlyInfdev = new CaveWorldCarverEarlyInfdev();
     private final Generator ravine = new RavineWorldCarver();
@@ -110,6 +112,16 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         chunkZ <<= 4;
         int var5 = 0;
 
+        double scale = 0.03125D;
+
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                int idx = x + z * 16;
+                this.sandBuffer[idx] = this.noiseGen4.sample((chunkX + x) * scale, (chunkZ + z) * scale);
+                this.gravelBuffer[idx] = this.noiseGen4.sample((chunkZ + x) * scale, (chunkZ + z) * scale);
+            }
+        }
+
         for (int var6 = chunkX; var6 < chunkX + 16; ++var6) {
             for (int var7 = chunkZ; var7 < chunkZ + 16; ++var7) {
                 int var8 = var6 / 1024;
@@ -127,6 +139,9 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                         ++var13;
                     }
                 }
+
+                boolean sandBeach = this.sandBuffer[(var6 - chunkX) + (var7 - chunkZ) * 16] + this.random.nextDouble() * 0.2D > 0.0D;
+                boolean gravelBeach = this.gravelBuffer[(var6 - chunkX) + (var7 - chunkZ) * 16] + this.random.nextDouble() * 0.2D > 3.0D;
 
                 for (int var14 = 0; var14 < Config.BWOConfig.world.worldHeightLimit.getIntValue(); ++var14) {
                     int index = (var6 - chunkX) * 16 + var7 - chunkZ;
@@ -154,9 +169,15 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                     } else if (var14 <= var13 - 2) {
                         var15 = Block.STONE.id;
 
-                        if (!this.oldFeatures && var18 == Biome.DESERT || var18 == Biome.ICE_DESERT) {
+                        if (!this.oldFeatures && ((var18 == Biome.DESERT || var18 == Biome.ICE_DESERT) || (sandBeach && var14 >= 59 && var14 <= 63))) {
                             if (var13 - var14 <= 3) {
-                                var15 = Block.SANDSTONE.id;
+                                if (var18 == Biome.DESERT || var18 == Biome.ICE_DESERT) {
+                                    var15 = Block.SANDSTONE.id;
+                                } else if (this.theme.equals("Hell") && sandBeach) {
+                                    var15 = Block.STONE.id;
+                                } else {
+                                    var15 = gravelBeach ? Block.STONE.id : Block.SANDSTONE.id;
+                                }
                             }
                         }
                     } else if (var14 <= var13) {
@@ -170,6 +191,24 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                             var15 = Block.ICE.id;
                         } else {
                             var15 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                        }
+                    }
+
+                    if (!this.oldFeatures && var14 <= var13 && var13 >= 61 && var13 <= 65) {
+                        if (sandBeach) {
+                            if (var15 == (this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id)) {
+                                if (var14 == var13) {
+                                    var15 = this.theme.equals("Hell") ? Block.GRASS_BLOCK.id : Block.SAND.id;
+                                } else {
+                                    var15 = this.theme.equals("Hell") ? Block.DIRT.id : Block.SAND.id;
+                                }
+                            } else if (var15 == Block.DIRT.id) {
+                                var15 = this.theme.equals("Hell") ? Block.DIRT.id : Block.SAND.id;
+                            }
+                        }
+
+                        if (gravelBeach && (var15 == Block.DIRT.id || var15 == Block.GRASS_BLOCK.id || var15 == Block.SAND.id)) {
+                            var15 = Block.GRAVEL.id;
                         }
                     }
 
