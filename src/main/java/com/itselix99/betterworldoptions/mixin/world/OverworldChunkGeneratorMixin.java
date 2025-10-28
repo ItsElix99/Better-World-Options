@@ -10,7 +10,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalDoubleRef;
-import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 import net.minecraft.world.World;
@@ -19,9 +18,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.gen.Generator;
 import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.PlantPatchFeature;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -172,39 +169,37 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         return this.theme.equals("Hell") ? Block.LAVA.id : original.call(block);
     }
 
-    @ModifyExpressionValue(
+    @WrapOperation(
             method = "decorate",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/util/math/noise/OctavePerlinNoiseSampler;sample(DD)D",
-                    shift = At.Shift.AFTER
+                    ordinal = 0
             )
     )
-    private double captureVar37(double original, @Share("var37") LocalDoubleRef var37) {
-        var37.set(original);
+    private double captureVar37(OctavePerlinNoiseSampler instance, double x, double z, Operation<Double> original, @Share("var37") LocalDoubleRef var37) {
+        var37.set(((original.call(instance, x, z) / (double)8.0F + this.random.nextDouble() * (double)4.0F + (double)4.0F) / (double)3.0F));
+        return original.call(instance, x, z);
+    }
+
+    @ModifyConstant(
+            method = "decorate",
+            constant = @Constant(intValue = 0, ordinal = 10)
+    )
+    private int woodsThemeTrees(int original, @Local(ordinal = 0) Biome var6, @Share("var37") LocalDoubleRef var37) {
+        if (this.theme.equals("Woods")) {
+            int var38 = (int) (var37.get());
+            if (var6 == Biome.DESERT || var6 == Biome.TUNDRA || var6 == Biome.PLAINS || var6 == Biome.SWAMPLAND || var6 == Biome.SHRUBLAND || var6 == Biome.SAVANNA) {
+                return 20 + (var38 + 5);
+            }
+        }
+
         return original;
     }
 
     @ModifyConstant(method = "decorate", constant = @Constant(intValue = 0, ordinal = 12))
     private int paradiseTheme(int constant) {
         return this.theme.equals("Paradise") ? 8 : constant;
-    }
-
-    @WrapOperation(
-            method = "decorate",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/gen/feature/Feature;generate(Lnet/minecraft/world/World;Ljava/util/Random;III)Z",
-                    ordinal = 0
-            )
-
-    )
-    private boolean cancelTrees(Feature instance, World world, Random random, int x, int y, int z, Operation<Boolean> original, @Local Biome var6, @Local(ordinal = 2) int var4, @Local(ordinal = 3) int var5) {
-        if (this.theme.equals("Woods")) {
-            return false;
-        }
-
-        return original.call(instance, world, random, x, y, z);
     }
 
     @WrapOperation(
@@ -222,57 +217,6 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         }
 
         return original.call(instance, world, random, x, y, z);
-    }
-
-    @Inject(method = "decorate", at = @At("TAIL"))
-    private void woodsThemeTrees(ChunkSource source, int x, int z, CallbackInfo ci, @Local Biome var6, @Local(ordinal = 2) int var4, @Local(ordinal = 3) int var5, @Share("var37") LocalDoubleRef var37) {
-        if (this.theme.equals("Woods")) {
-            int var38 = (int) (var37.get());
-            int var49 = 0;
-            if (this.random.nextInt(10) == 0) {
-                ++var49;
-            }
-
-            if (var6 == Biome.FOREST) {
-                var49 += var38 + 5;
-            }
-
-            if (var6 == Biome.RAINFOREST) {
-                var49 += var38 + 5;
-            }
-
-            if (var6 == Biome.SEASONAL_FOREST) {
-                var49 += var38 + 5;
-            }
-
-            if (var6 == Biome.TAIGA) {
-                var49 += var38 + 5;
-            }
-
-            if (var6 == Biome.DESERT) {
-                var49 += var38 + 5;
-            }
-
-            if (var6 == Biome.TUNDRA) {
-                var49 += var38 + 5;
-            }
-
-            if (var6 == Biome.PLAINS) {
-                var49 += var38 + 5;
-            }
-
-            if (var6 == Biome.SWAMPLAND || var6 == Biome.SHRUBLAND || var6 == Biome.SAVANNA) {
-                var49 += var38 + 5;
-            }
-
-            for(int var61 = 0; var61 < var49; ++var61) {
-                int var72 = var4 + this.random.nextInt(16) + 8;
-                int var17 = var5 + this.random.nextInt(16) + 8;
-                Feature var18 = var6.getRandomTreeFeature(this.random);
-                var18.prepare(1.0F, 1.0F, 1.0F);
-                var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
-            }
-        }
     }
 
     @Inject(method = "decorate", at = @At("TAIL"))
