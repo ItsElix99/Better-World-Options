@@ -186,7 +186,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                             var15 = Block.DIRT.id;
                         }
                     } else if (var14 <= 64) {
-                        if (!this.theme.equals("Hell") && (var19 < temp && !this.oldFeatures || this.theme.equals("Winter")) && var14 >= 63) {
+                        if (!this.theme.equals("Hell") && (var19 < temp && !this.oldFeatures || this.theme.equals("Winter")) && var14 > 63) {
                             var15 = Block.ICE.id;
                         } else {
                             var15 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;

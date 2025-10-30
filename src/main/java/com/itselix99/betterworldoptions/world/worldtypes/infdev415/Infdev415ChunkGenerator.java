@@ -150,7 +150,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                                 double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
                                 int var56 = 0;
                                 if((var8 << 2) + var25 < 64) {
-                                    if (!this.theme.equals("Hell") && (var53 < temp && !this.oldFeatures || this.theme.equals("Winter")) && var8 * 8 + var25 >= 63) {
+                                    if (!this.theme.equals("Hell") && (var53 < temp && !this.oldFeatures || this.theme.equals("Winter")) && var8 * 4 + var25 >= 63) {
                                         var56 = Block.ICE.id;
                                     } else {
                                         var56 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
