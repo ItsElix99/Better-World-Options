@@ -18,6 +18,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.gen.Generator;
 import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.PlantPatchFeature;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -36,11 +37,13 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     @Unique private Generator ravine = new RavineWorldCarver();
     @Unique private String worldType;
     @Unique private String theme;
+    @Unique private boolean infiniteWorld;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void initWorldTypeAndTheme(World world, long seed, CallbackInfo ci) {
+    private void initBWOProperties(World world, long seed, CallbackInfo ci) {
         this.worldType = ((BWOProperties) world.getProperties()).bwo_getWorldType();
         this.theme = ((BWOProperties) world.getProperties()).bwo_getTheme();
+        this.infiniteWorld = ((BWOProperties) world.getProperties()).bwo_isInfiniteWorld();
 
         ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
         ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
@@ -197,6 +200,22 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         return original;
     }
 
+    @WrapOperation(
+            method = "decorate",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/biome/Biome;getRandomTreeFeature(Ljava/util/Random;)Lnet/minecraft/world/gen/feature/Feature;",
+                    ordinal = 0
+            )
+    )
+    private Feature infdevTrees(Biome instance, Random random, Operation<Feature> original) {
+        if (this.worldType.equals("Infdev 415") || this.worldType.equals("Infdev 420")) {
+            return ((BWOWorld) instance).bwo_getRandomTreeFeatureInfdev(random);
+        }
+
+        return original.call(instance, random);
+    }
+
     @ModifyConstant(method = "decorate", constant = @Constant(intValue = 0, ordinal = 12))
     private int paradiseTheme(int constant) {
         return this.theme.equals("Paradise") ? 8 : constant;
@@ -283,5 +302,175 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     )
     private int modifyFlowingWater(Block block, Operation<Integer> original) {
         return this.theme.equals("Hell") ? Block.FLOWING_LAVA.id : original.call(block);
+    }
+
+    @ModifyConstant(
+            method = "decorate",
+            constant = @Constant(intValue = 8),
+            slice = @Slice(
+                    to = @At(
+                            value = "INVOKE",
+                            target = "Lnet/minecraft/world/gen/feature/LakeFeature;generate(Lnet/minecraft/world/World;Ljava/util/Random;III)Z",
+                            ordinal = 0
+                    )
+            )
+    )
+    private int removeOffsetInIndevFiniteWorld(int original) {
+        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+            return 0;
+        }
+
+        return original;
+    }
+
+    @ModifyConstant(
+            method = "decorate",
+            constant = @Constant(intValue = 8, ordinal = 3)
+    )
+    private int removeOffsetInIndevFiniteWorld2(int original) {
+        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+            return 0;
+        }
+
+        return original;
+    }
+
+    @ModifyConstant(
+            method = "decorate",
+            constant = @Constant(intValue = 8, ordinal = 5)
+    )
+    private int removeOffsetInIndevFiniteWorld3(int original) {
+        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+            return 0;
+        }
+
+        return original;
+    }
+
+    @ModifyConstant(
+            method = "decorate",
+            constant = @Constant(intValue = 8),
+            slice = @Slice(
+                    from = @At(
+                            value = "INVOKE",
+                            target = "Ljava/util/Random;nextInt(I)I",
+                            ordinal = 10
+                    ),
+                    to = @At(
+                            value = "INVOKE",
+                            target = "Ljava/util/Random;nextInt(I)I",
+                            ordinal = 14
+                    )
+            )
+    )
+    private int removeOffsetInIndevFiniteWorld4(int original) {
+        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+            return 0;
+        }
+
+        return original;
+    }
+
+    @ModifyConstant(
+            method = "decorate",
+            constant = @Constant(intValue = 8),
+            slice = @Slice(
+                    from = @At(
+                            value = "INVOKE",
+                            target = "Ljava/util/Random;nextInt(I)I",
+                            ordinal = 42
+                    ),
+                    to = @At(
+                            value = "INVOKE",
+                            target = "Lnet/minecraft/world/gen/feature/PlantPatchFeature;generate(Lnet/minecraft/world/World;Ljava/util/Random;III)Z",
+                            ordinal = 2
+                    )
+            )
+    )
+    private int removeOffsetInIndevFiniteWorld5(int original) {
+        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+            return 0;
+        }
+
+        return original;
+    }
+
+    @ModifyConstant(
+            method = "decorate",
+            constant = @Constant(intValue = 8),
+            slice = @Slice(
+                    from = @At(
+                            value = "INVOKE",
+                            target = "Ljava/util/Random;nextInt(I)I",
+                            ordinal = 63
+                    ),
+                    to = @At(
+                            value = "INVOKE",
+                            target = "Ljava/util/Random;nextInt(I)I",
+                            ordinal = 77
+                    )
+            )
+    )
+    private int removeOffsetInIndevFiniteWorld6(int original) {
+        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+            return 0;
+        }
+
+        return original;
+    }
+
+    @ModifyConstant(
+            method = "decorate",
+            constant = @Constant(intValue = 8),
+            slice = @Slice(
+                    from = @At(
+                            value = "INVOKE",
+                            target = "Ljava/util/Random;nextInt(I)I",
+                            ordinal = 78
+                    ),
+                    to = @At(
+                            value = "INVOKE",
+                            target = "Ljava/util/Random;nextInt(I)I",
+                            ordinal = 81
+                    )
+            )
+    )
+    private int removeOffsetInIndevFiniteWorld7(int original) {
+        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+            return 0;
+        }
+
+        return original;
+    }
+
+    @ModifyConstant(
+            method = "decorate",
+            constant = @Constant(intValue = 8, ordinal = 39)
+    )
+    private int removeOffsetInIndevFiniteWorld8(int original) {
+        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+            return 0;
+        }
+
+        return original;
+    }
+
+    @ModifyConstant(
+            method = "decorate",
+            constant = @Constant(intValue = 8),
+            slice = @Slice(
+                    from = @At(
+                            value = "CONSTANT",
+                            args = "intValue=16",
+                            ordinal = 58
+                    )
+            )
+    )
+    private int removeOffsetInIndevFiniteWorld9(int original) {
+        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+            return 0;
+        }
+
+        return original;
     }
 }
