@@ -8,7 +8,6 @@ import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.feature.OldOreFeature;
-import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.carver.CaveWorldCarverEarlyInfdev;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.util.math.noise.OctavePerlinNoiseSamplerEarlyInfdev;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -40,7 +39,6 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
     private double[] sandBuffer = new double[256];
     private double[] gravelBuffer = new double[256];
     private final Generator cave = new CaveWorldCarver();
-    private final Generator caveEarlyInfdev = new CaveWorldCarverEarlyInfdev();
     private final Generator ravine = new RavineWorldCarver();
     private Biome[] biomes;
     private OverworldChunkGenerator defaultChunkGenerator;
@@ -245,8 +243,6 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
 
         if (!this.oldFeatures){
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
-        } else {
-            this.caveEarlyInfdev.place(this, this.world, chunkX, chunkZ, var3);
         }
 
         if (Config.BWOConfig.world.ravineGeneration) {
