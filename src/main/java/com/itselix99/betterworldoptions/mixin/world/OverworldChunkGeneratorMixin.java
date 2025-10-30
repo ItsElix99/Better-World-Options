@@ -192,8 +192,10 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     private int woodsThemeTrees(int original, @Local(ordinal = 0) Biome var6, @Share("var37") LocalDoubleRef var37) {
         if (this.theme.equals("Woods")) {
             int var38 = (int) (var37.get());
-            if (var6 == Biome.DESERT || var6 == Biome.TUNDRA || var6 == Biome.PLAINS || var6 == Biome.SWAMPLAND || var6 == Biome.SHRUBLAND || var6 == Biome.SAVANNA) {
+            if (var6 == Biome.DESERT || var6 == Biome.TUNDRA || var6 == Biome.PLAINS) {
                 return 20 + (var38 + 5);
+            } else if (var6 == Biome.SWAMPLAND || var6 == Biome.SHRUBLAND || var6 == Biome.SAVANNA) {
+                return var38 + 5;
             }
         }
 
