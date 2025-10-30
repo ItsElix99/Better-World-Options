@@ -589,7 +589,7 @@ public class Alpha112ChunkGenerator implements ChunkSource {
             for(var14 = var4 + 8; var14 < var4 + 8 + 16; ++var14) {
                 for(var15 = var5 + 8; var15 < var5 + 8 + 16; ++var15) {
                     var16 = this.world.getTopSolidBlockY(var14, var15);
-                    if(this.theme.equals("Winter") && var16 > 0 && var16 < 128 && this.world.getBlockId(var14, var16, var15) == 0 && this.world.getMaterial(var14, var16 - 1, var15).isSolid() && this.world.getMaterial(var14, var16 - 1, var15) != Material.ICE) {
+                    if(this.theme.equals("Winter") && var16 > 0 && var16 < this.world.dimension.getHeight() && this.world.getBlockId(var14, var16, var15) == 0 && this.world.getMaterial(var14, var16 - 1, var15).isSolid() && this.world.getMaterial(var14, var16 - 1, var15) != Material.ICE) {
                         this.world.setBlock(var14, var16, var15, Block.SNOW.id);
                     }
                 }

@@ -584,7 +584,7 @@ public class Alpha120ChunkGenerator implements ChunkSource {
                 int var22 = this.world.getTopSolidBlockY(var96, var107);
                 double var23 = this.temperatures[var113 * 16 + var117] - (double)(var22 - 64) / (double)64.0F * 0.3;
                 float temp = this.theme.equals("Winter") ? 1.1F : 0.5F;
-                if (!this.theme.equals("Hell") && var23 < (double)temp && var22 > 0 && var22 < 128 && this.world.getBlockId(var96, var22, var107) == 0 && this.world.getMaterial(var96, var22 - 1, var107).blocksMovement() && this.world.getMaterial(var96, var22 - 1, var107) != Material.ICE) {
+                if (!this.theme.equals("Hell") && var23 < (double)temp && var22 > 0 && var22 < this.world.dimension.getHeight() && this.world.getBlockId(var96, var22, var107) == 0 && this.world.getMaterial(var96, var22 - 1, var107).blocksMovement() && this.world.getMaterial(var96, var22 - 1, var107) != Material.ICE) {
                     this.world.setBlock(var96, var22, var107, Block.SNOW.id);
                 }
             }

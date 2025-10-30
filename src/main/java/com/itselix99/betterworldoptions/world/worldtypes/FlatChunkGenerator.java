@@ -118,7 +118,7 @@ public class FlatChunkGenerator implements ChunkSource {
             for(int var10 = var4 + 8; var10 < var4 + 8 + 16; ++var10) {
                 for(int var12 = var5 + 8; var12 < var5 + 8 + 16; ++var12) {
                     int var11 = this.world.getTopSolidBlockY(var10, var12);
-                    if(this.theme.equals("Winter") && var11 > 0 && var11 < 128 && this.world.getBlockId(var10, var11, var12) == 0 && this.world.getMaterial(var10, var11 - 1, var12).isSolid() && this.world.getMaterial(var10, var11 - 1, var12) != Material.ICE) {
+                    if(this.theme.equals("Winter") && var11 > 0 && var11 < this.world.dimension.getHeight() && this.world.getBlockId(var10, var11, var12) == 0 && this.world.getMaterial(var10, var11 - 1, var12).isSolid() && this.world.getMaterial(var10, var11 - 1, var12) != Material.ICE) {
                         this.world.setBlock(var10, var11, var12, Block.SNOW.id);
                     }
                 }

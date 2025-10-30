@@ -530,7 +530,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
             for(int var6 = var4; var6 < var4 + 16; ++var6) {
                 for(int var7 = var5; var7 < var5 + 16; ++var7) {
                     int var8 = this.world.getTopSolidBlockY(var6, var7);
-                    if(this.theme.equals("Winter") && var8 > 0 && var8 < 128 && this.world.getBlockId(var6, var8, var7) == 0 && this.world.getMaterial(var6, var8 - 1, var7).isSolid() && this.world.getMaterial(var6, var8 - 1, var7) != Material.ICE) {
+                    if(this.theme.equals("Winter") && var8 > 0 && var8 < this.world.dimension.getHeight() && this.world.getBlockId(var6, var8, var7) == 0 && this.world.getMaterial(var6, var8 - 1, var7).isSolid() && this.world.getMaterial(var6, var8 - 1, var7) != Material.ICE) {
                         this.world.setBlock(var6, var8, var7, Block.SNOW.id);
                     }
                 }
