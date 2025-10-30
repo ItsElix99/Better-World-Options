@@ -83,7 +83,7 @@ public class WorldType {
         Alpha120.OVERWORLD_CHUNK_GENERATOR = Alpha120ChunkGenerator.class;
         Alpha120.DISPLAY_NAME = "Alpha 1.2.0";
         Alpha120.NAME = Alpha120.DISPLAY_NAME;
-        Alpha120.ICON = "pack.png";
+        Alpha120.ICON = "/assets/betterworldoptions/gui/alpha_1.2.0.png";
         Alpha120.DESCRIPTION = "Start the world with Alpha 1.2.0";
         Alpha120.DESCRIPTION_2 = "generation";
         Alpha120.LIGHTING_MODE = "Overworld";
