@@ -5,7 +5,9 @@ import com.itselix99.betterworldoptions.network.WorldGenerationOptionsPacket;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.Connection;
 import net.minecraft.network.NetworkHandler;
+import net.minecraft.network.packet.handshake.HandshakePacket;
 import net.minecraft.network.packet.login.LoginHelloPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
@@ -21,18 +23,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerLoginNetworkHandler.class)
 public abstract class ServerLoginNetworkHandlerMixin extends NetworkHandler {
     @Shadow private MinecraftServer server;
+    @Shadow public Connection connection;
 
-    @Inject(
-            method = "accept",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V",
-                    ordinal = 0
-            )
-    )
-    private void worldGenerationOptionsPacket(LoginHelloPacket packet, CallbackInfo ci, @Local ServerPlayNetworkHandler var5){
+    @Inject(method = "onHandshake", at = @At("TAIL"))
+    private void sendWorldGenerationOptionsPacket(HandshakePacket packet, CallbackInfo ci){
         World world = this.server.getWorld(0);
         BWOProperties properties = (BWOProperties) world.getProperties();
-        var5.sendPacket(new WorldGenerationOptionsPacket(properties));
+        this.connection.sendPacket(new WorldGenerationOptionsPacket(properties));
     }
 }
