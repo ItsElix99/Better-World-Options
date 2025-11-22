@@ -20,6 +20,8 @@ public class WorldGenerationOptions {
     public static Set<Biome> defaultBiomesSetPrecipitation = Set.of(Biome.RAINFOREST, Biome.SWAMPLAND, Biome.SEASONAL_FOREST, Biome.FOREST, Biome.SAVANNA, Biome.SHRUBLAND, Biome.TAIGA, Biome.PLAINS, Biome.TUNDRA);
     public static Set<Biome> defaultBiomesSetPrecipitationNoSnow = Set.of(Biome.TAIGA, Biome.TUNDRA, Biome.ICE_DESERT);
 
+    public boolean isBWOServer = false;
+
     public String worldType;
     public boolean hardcore;
     public boolean oldFeatures;

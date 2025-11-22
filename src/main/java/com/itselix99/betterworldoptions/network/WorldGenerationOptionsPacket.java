@@ -127,6 +127,8 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
     public void handleClient(NetworkHandler networkHandler) {
         WorldGenerationOptions worldGenerationOptions = new WorldGenerationOptions();
 
+        worldGenerationOptions.isBWOServer = true;
+
         worldGenerationOptions.worldType = this.worldType;
         worldGenerationOptions.hardcore = this.hardcore;
         worldGenerationOptions.oldFeatures = this.oldFeatures;
