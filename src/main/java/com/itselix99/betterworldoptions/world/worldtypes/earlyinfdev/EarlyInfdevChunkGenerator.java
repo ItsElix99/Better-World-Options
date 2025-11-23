@@ -36,8 +36,6 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
     private final OctavePerlinNoiseSamplerEarlyInfdev noiseGen6;
     public final OctavePerlinNoiseSamplerEarlyInfdev forestNoise;
     private final World world;
-    private double[] sandBuffer = new double[256];
-    private double[] gravelBuffer = new double[256];
     private final Generator cave = new CaveWorldCarver();
     private final Generator ravine = new RavineWorldCarver();
     private Biome[] biomes;
@@ -110,16 +108,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         chunkX <<= 4;
         chunkZ <<= 4;
         int var5 = 0;
-
         double scale = 0.03125D;
-
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                int idx = x + z * 16;
-                this.sandBuffer[idx] = this.noiseGen4.sample((chunkX + x) * scale, (chunkZ + z) * scale);
-                this.gravelBuffer[idx] = this.noiseGen4.sample((chunkZ + x) * scale, (chunkZ + z) * scale);
-            }
-        }
 
         for (int var6 = chunkX; var6 < chunkX + 16; ++var6) {
             for (int var7 = chunkZ; var7 < chunkZ + 16; ++var7) {
@@ -139,8 +128,8 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                     }
                 }
 
-                boolean sandBeach = this.sandBuffer[(var6 - chunkX) + (var7 - chunkZ) * 16] + this.random.nextDouble() * 0.2D > 0.0D;
-                boolean gravelBeach = this.gravelBuffer[(var6 - chunkX) + (var7 - chunkZ) * 16] + this.random.nextDouble() * 0.2D > 3.0D;
+                boolean sandBeach = this.noiseGen4.sample(var6 * scale, var7 * scale) + this.random.nextDouble() * 0.2D > 0.0D;
+                boolean gravelBeach = this.noiseGen4.sample(var7 * scale, var6 * scale) + this.random.nextDouble() * 0.2D > 3.0D;
 
                 for (int var14 = 0; var14 < Config.BWOConfig.world.worldHeightLimit.getIntValue(); ++var14) {
                     int index = (var6 - chunkX) * 16 + var7 - chunkZ;
@@ -168,15 +157,9 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                     } else if (var14 <= var13 - 2) {
                         var15 = Block.STONE.id;
 
-                        if (!this.oldFeatures && ((var18 == Biome.DESERT || var18 == Biome.ICE_DESERT) || (sandBeach && var14 >= 59 && var14 <= 63))) {
+                        if (!this.oldFeatures && ((var18 == Biome.DESERT || var18 == Biome.ICE_DESERT))) {
                             if (var13 - var14 <= 3) {
-                                if (var18 == Biome.DESERT || var18 == Biome.ICE_DESERT) {
-                                    var15 = Block.SANDSTONE.id;
-                                } else if (this.theme.equals("Hell") && sandBeach) {
-                                    var15 = Block.STONE.id;
-                                } else {
-                                    var15 = gravelBeach ? Block.STONE.id : Block.SANDSTONE.id;
-                                }
+                                var15 = Block.SANDSTONE.id;
                             }
                         }
                     } else if (var14 <= var13) {

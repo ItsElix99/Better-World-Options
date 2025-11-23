@@ -171,13 +171,15 @@ public class Infdev415ChunkGenerator implements ChunkSource {
             }
         }
 
+        boolean beachFix = Config.BWOConfig.world.beachFix;
+
         for(var5 = 0; var5 < 16; ++var5) {
             for(var6 = 0; var6 < 16; ++var6) {
                 double var49 = (chunkX << 4) + var5;
                 var50 = (chunkZ << 4) + var6;
-                Biome var55 = biomes[var5 + var6 * 16];
-                boolean var51 = this.noiseGen4.create(var49 * (1.0 / 32.0), var50 * (1.0 / 32.0), 0.0) + this.random.nextDouble() * 0.2D > 0.0;
-                boolean var14 = this.noiseGen4.create(var50 * (1.0 / 32.0), 109.0134D, var49 * (1.0 / 32.0)) + this.random.nextDouble() * 0.2D > 0.0;
+                Biome var55 = biomes[var6 + var5 * 16];
+                boolean var51 = this.noiseGen4.create(var49 * (1.0D / 32.0D), var50 * (1.0D / 32.0D), 0.0D) + this.random.nextDouble() * 0.2D > 0.0D;
+                boolean var14 = this.noiseGen4.create(var50 * (1.0D / 32.0D), 109.0134D, var49 * (1.0D / 32.0D)) + this.random.nextDouble() * 0.2D > 3.0D;
                 int var52 = (int)(this.noiseGen5.sample(var49 * (1.0D / 32.0D) * 2.0D, var50 * (1.0D / 32.0D) * 2.0D) / 3.0D + 3.0D + this.random.nextDouble() * 0.25D);
                 int var53 = -1;
                 int var18;
@@ -192,7 +194,7 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                 }
 
                 for(int var20 = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1; var20 >= 0; --var20) {
-                    int var16 = (var6 * 16 + var5) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var20;
+                    int var16 = (var5 * 16 + var6) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var20;
                     if(blocks[var16] == 0) {
                         var53 = -1;
                     } else if(blocks[var16] == Block.STONE.id) {
@@ -225,8 +227,16 @@ public class Infdev415ChunkGenerator implements ChunkSource {
                                 }
                             }
 
+                            double[] temperatureMap = this.world.method_1781().temperatureMap;
+                            double temperature = temperatureMap[var6 + var5 * 16];
+
                             if(var20 < 64 && var18 == 0) {
-                                var18 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                                double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
+                                if (beachFix && !this.theme.equals("Hell") && (temperature < temp && !this.oldFeatures || this.theme.equals("Winter")) && var20 == 63) {
+                                    var18 = Block.ICE.id;
+                                } else {
+                                    var18 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                                }
                             }
 
                             var53 = var52;

@@ -6,8 +6,8 @@ import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import java.util.Random;
 
 public class OctavePerlinNoiseSamplerMCPE extends NoiseSampler {
-    private PerlinNoiseSampler[] octaveSamplers;
-    private int octaves;
+    private final PerlinNoiseSampler[] octaveSamplers;
+    private final int octaves;
 
     public OctavePerlinNoiseSamplerMCPE(Random random, int i) {
         this.octaves = i;
@@ -26,6 +26,19 @@ public class OctavePerlinNoiseSamplerMCPE extends NoiseSampler {
         for(int var9 = 0; var9 < this.octaves; ++var9) {
             var5 += this.octaveSamplers[var9].sample(x * var7, y * var7) / var7;
             var7 /= (double)2.0F;
+        }
+
+        return var5;
+    }
+
+
+    public double bwo_generateNoise(double x, double y, double z) {
+        double var5 = 0.0D;
+        double var7 = 1.0D;
+
+        for(int var9 = 0; var9 < this.octaves; ++var9) {
+            var5 += this.octaveSamplers[var9].sample(x * var7, y * var7, z * var7) / var7;
+            var7 /= 2.0D;
         }
 
         return var5;

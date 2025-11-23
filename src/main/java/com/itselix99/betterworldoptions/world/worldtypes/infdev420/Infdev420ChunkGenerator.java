@@ -208,11 +208,13 @@ public class Infdev420ChunkGenerator implements ChunkSource {
             }
         }
 
+        boolean beachFix = Config.BWOConfig.world.beachFix;
+
         for(var72 = 0; var72 < 16; ++var72) {
             for(var73 = 0; var73 < 16; ++var73) {
                 double var74 = (chunkX << 4) + var72;
                 double var76 = (chunkZ << 4) + var73;
-                Biome var82 = biomes[var72 + var73 * 16];
+                Biome var82 = biomes[var73 + var72 * 16];
                 boolean var13 = this.noiseGen4.create(var74 * (1.0D / 32.0D), var76 * (1.0D / 32.0D), 0.0D) + this.random.nextDouble() * 0.2D > 0.0D;
                 boolean var78 = this.noiseGen4.create(var76 * (1.0D / 32.0D), 109.0134D, var74 * (1.0D / 32.0D)) + this.random.nextDouble() * 0.2D > 3.0D;
                 int var15 = (int)(this.noiseGen5.sample(var74 * (1.0D / 32.0D) * 2.0D, var76 * (1.0D / 32.0D) * 2.0D) / 3.0D + 3.0D + this.random.nextDouble() * 0.25D);
@@ -229,7 +231,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
                 }
 
                 for(int var81 = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1; var81 >= 0; --var81) {
-                    int var79 = (var73 * 16 + var72) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var81;
+                    int var79 = (var72 * 16 + var73) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var81;
                     if(blocks[var79] == 0) {
                         var17 = -1;
                     } else if(blocks[var79] == Block.STONE.id) {
@@ -262,8 +264,16 @@ public class Infdev420ChunkGenerator implements ChunkSource {
                                 }
                             }
 
+                            double[] temperatureMap = this.world.method_1781().temperatureMap;
+                            double temperature = temperatureMap[var73 + var72 * 16];
+
                             if(var81 < 64 && var80 == 0) {
-                                var80 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                                double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
+                                if (beachFix && !this.theme.equals("Hell") && (temperature < temp && !this.oldFeatures || this.theme.equals("Winter")) && var81 == 63) {
+                                    var80 = Block.ICE.id;
+                                } else {
+                                    var80 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                                }
                             }
 
                             var17 = var15;

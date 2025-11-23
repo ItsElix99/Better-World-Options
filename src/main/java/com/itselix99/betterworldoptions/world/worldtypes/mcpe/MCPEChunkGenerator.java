@@ -171,22 +171,37 @@ public class MCPEChunkGenerator implements ChunkSource {
     public void buildSurfaces(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes) {
         byte var5 = 64;
         double var6 = 0.03125F;
-        this.sandBuffer = this.perlinNoise2.create(this.sandBuffer, chunkX * 16, chunkZ * 16, 0.0F, 16, 16, 1, var6, var6, 1.0F);
-        this.gravelBuffer = this.perlinNoise2.create(this.gravelBuffer, chunkX * 16, 109.0134, chunkZ * 16, 16, 1, 16, var6, 1.0F, var6);
-        this.depthBuffer = this.perlinNoise3.create(this.depthBuffer, chunkX * 16, chunkZ * 16, 0.0F, 16, 16, 1, var6 * (double)2.0F, var6 * (double)2.0F, var6 * (double)2.0F);
+        boolean beachFix = Config.BWOConfig.world.beachFix;
+
+        if (!beachFix) {
+            this.sandBuffer = this.perlinNoise2.create(this.sandBuffer, chunkX * 16, chunkZ * 16, 0.0F, 16, 16, 1, var6, var6, 1.0F);
+            this.gravelBuffer = this.perlinNoise2.create(this.gravelBuffer, chunkX * 16, 109.0134, chunkZ * 16, 16, 1, 16, var6, 1.0F, var6);
+            this.depthBuffer = this.perlinNoise3.create(this.depthBuffer, chunkX * 16, chunkZ * 16, 0.0F, 16, 16, 1, var6 * (double) 2.0F, var6 * (double) 2.0F, var6 * (double) 2.0F);
+        }
 
         for(int var8 = 0; var8 < 16; ++var8) {
             for(int var9 = 0; var9 < 16; ++var9) {
-                Biome var10 = biomes[var8 + var9 * 16];
-                boolean var11 = this.sandBuffer[var8 + var9 * 16] + this.random.nextDouble() * 0.2 > (double)0.0F;
-                boolean var12 = this.gravelBuffer[var8 + var9 * 16] + this.random.nextDouble() * 0.2 > (double)3.0F;
-                int var13 = (int)(this.depthBuffer[var8 + var9 * 16] / (double)3.0F + (double)3.0F + this.random.nextDouble() * (double)0.25F);
+                Biome var10 = biomes[beachFix ? var9 + var8 * 16 : var8 + var9 * 16];
+                double x2 = (chunkX << 4) + var8;
+                double z2 = (chunkZ << 4) + var9;
+                boolean var11;
+                boolean var12;
+                int var13;
+                if (beachFix) {
+                    var11 = this.perlinNoise2.bwo_generateNoise(x2 * var6, z2 * var6, 0.0D) + this.random.nextDouble() * 0.2 > (double) 0.0F;
+                    var12 = this.perlinNoise2.bwo_generateNoise(z2 * var6, var6, x2 * var6) + this.random.nextDouble() * 0.2 > (double) 3.0F;
+                    var13 = (int) (this.perlinNoise3.sample(x2 * var6 * 2.0D, z2 * var6 * 2.0D) / (double) 3.0F + (double) 3.0F + this.random.nextDouble() * (double) 0.25F);
+                } else {
+                    var11 = this.sandBuffer[var8 + var9 * 16] + this.random.nextDouble() * 0.2 > (double) 0.0F;
+                    var12 = this.gravelBuffer[var8 + var9 * 16] + this.random.nextDouble() * 0.2 > (double) 3.0F;
+                    var13 = (int) (this.depthBuffer[var8 + var9 * 16] / (double) 3.0F + (double) 3.0F + this.random.nextDouble() * (double) 0.25F);
+                }
                 int var14 = -1;
                 byte var15 = this.theme.equals("Hell") ? (byte) (var10.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var10.topBlockId) : var10.topBlockId;
                 byte var16 = var10.soilBlockId;
 
                 for(int var17 = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1; var17 >= 0; --var17) {
-                    int var18 = (var9 * 16 + var8) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var17;
+                    int var18 = (beachFix ? var8 * 16 + var9 : var9 * 16 + var8) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var17;
                     if (var17 <= this.random.nextInt(5)) {
                         blocks[var18] = (byte)Block.BEDROCK.id;
                     } else {
@@ -218,8 +233,16 @@ public class MCPEChunkGenerator implements ChunkSource {
                                     }
                                 }
 
+                                double[] temperatureMap = this.world.method_1781().temperatureMap;
+                                double temperature = temperatureMap[var9 + var8 * 16];
+
                                 if (var17 < var5 && var15 == 0) {
-                                    var15 = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
+                                    double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
+                                    if (beachFix && !this.theme.equals("Hell") && (temperature < temp && !this.oldFeatures || this.theme.equals("Winter")) && var17 >= var5 - 1) {
+                                        var15 = (byte) Block.ICE.id;
+                                    } else {
+                                        var15 = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
+                                    }
                                 }
 
                                 var14 = var13;

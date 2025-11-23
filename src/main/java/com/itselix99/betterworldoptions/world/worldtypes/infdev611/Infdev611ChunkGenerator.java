@@ -243,13 +243,15 @@ public class Infdev611ChunkGenerator implements ChunkSource {
             }
         }
 
+        boolean beachFix = Config.BWOConfig.world.beachFix;
+
         for(int var83 = 0; var83 < 16; ++var83) {
             for(int var42 = 0; var42 < 16; ++var42) {
                 double var88 = (chunkX << 4) + var83;
                 double var91 = (chunkZ << 4) + var42;
-                Biome var82 = biomes[var83 + var42 * 16];
-                boolean var43 = this.perlinNoise2.create(var88 * (double)0.03125F, var91 * (double)0.03125F, 0.0F) + this.random.nextDouble() * 0.2 > (double)0.0F;
-                boolean var44 = this.perlinNoise2.create(var91 * (double)0.03125F, 109.0134, var88 * (double)0.03125F) + this.random.nextDouble() * 0.2 > (double)3.0F;
+                Biome var82 = biomes[var42 + var83 * 16];
+                boolean var43 = this.perlinNoise2.create(var88 * (double)0.03125F, var91 * (double)0.03125F, 0.0F) + this.random.nextDouble() * 0.2D > (double)0.0F;
+                boolean var44 = this.perlinNoise2.create(var91 * (double)0.03125F, 109.0134D, var88 * (double)0.03125F) + this.random.nextDouble() * 0.2D > (double)3.0F;
                 int var45 = (int)(this.perlinNoise3.sample(var88 * (double)0.03125F * (double)2.0F, var91 * (double)0.03125F * (double)2.0F) / (double)3.0F + (double)3.0F + this.random.nextDouble() * (double)0.25F);
                 int var47 = -1;
                 int var48;
@@ -264,7 +266,7 @@ public class Infdev611ChunkGenerator implements ChunkSource {
                 }
 
                 for(int var50 = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1; var50 >= 0; --var50) {
-                    int var46 = (var42 * 16 + var83) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var50;
+                    int var46 = (var83 * 16 + var42) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var50;
                     if (blocks[var46] == 0) {
                         var47 = -1;
                     } else if (blocks[var46] == Block.STONE.id) {
@@ -297,8 +299,16 @@ public class Infdev611ChunkGenerator implements ChunkSource {
                                 }
                             }
 
+                            double[] temperatureMap = this.world.method_1781().temperatureMap;
+                            double temperature = temperatureMap[var42 + var83 * 16];
+
                             if (var50 < 64 && var48 == 0) {
-                                var48 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                                double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
+                                if (beachFix && !this.theme.equals("Hell") && (temperature < temp && !this.oldFeatures || this.theme.equals("Winter")) && var50 == 63) {
+                                    var48 = Block.ICE.id;
+                                } else {
+                                    var48 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                                }
                             }
 
                             var47 = var45;

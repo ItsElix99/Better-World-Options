@@ -33,6 +33,12 @@ public class Config {
         )
         public WorldHeightConfigEnum worldHeightLimit = WorldHeightConfigEnum.H128;
 
+        @ConfigEntry(name = "Cave Fix", multiplayerSynced = true)
+        public Boolean caveFix = true;
+
+        @ConfigEntry(name = "Beach Fix", multiplayerSynced = true)
+        public Boolean beachFix = true;
+
         @ConfigEntry(name = "Allow generation of these features with Old Features enabled", multiplayerSynced = true)
         public Boolean allowGenWithOldFeaturesOn = false;
 

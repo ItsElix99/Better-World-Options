@@ -14,8 +14,10 @@
     "dimensions.NetherDimensionMixin",
     "dimensions.OverworldDimensionMixin",
     "world.AlphaWorldStorageAccessor",
+    "world.CaveWorldCarverMixin",
     "world.DimensionDataAccessor",
     "world.FlattenedWorldStorageMixin",
+    "world.OctavePerlinNoiseSamplerMixin",
     "world.OverworldChunkGeneratorMixin",
     "world.WorldMixin",
     "world.WorldPropertiesMixin"
