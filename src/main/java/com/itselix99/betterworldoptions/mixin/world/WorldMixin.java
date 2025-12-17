@@ -30,6 +30,7 @@ public abstract class WorldMixin implements BWOWorld {
     @Shadow public boolean newWorld;
     @Shadow protected WorldProperties properties;
     @Shadow @Final @Mutable public final Dimension dimension;
+    @Shadow public int difficulty;
 
     @Shadow public abstract int getBlockId(int x, int y, int z);
     @Shadow public abstract boolean setBlock(int x, int y, int z, int blockId);
@@ -247,6 +248,13 @@ public abstract class WorldMixin implements BWOWorld {
 
 
         return original.call(world);
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void hardcoreDifficulty(CallbackInfo ci) {
+        if (((BWOProperties) this.getProperties()).bwo_isHardcore() && this.difficulty < 3) {
+            this.difficulty = 3;
+        }
     }
 
     @ModifyReturnValue(method = "getRainGradient", at = @At("RETURN"))

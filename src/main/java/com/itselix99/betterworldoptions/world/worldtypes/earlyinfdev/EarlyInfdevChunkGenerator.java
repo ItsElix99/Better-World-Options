@@ -140,6 +140,12 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
 
                     if ((var6 == 0 || var7 == 0) && var14 <= var13 + 2) {
                         var15 = Block.OBSIDIAN.id;
+                    } else if (var14 == var13 && var13 >= 64) {
+                        if (!this.oldFeatures) {
+                            var15 = this.theme.equals("Hell") ? (var18.topBlockId != Block.SAND.id ? Block.DIRT.id : var18.topBlockId) : var18.topBlockId;
+                        } else {
+                            var15 = this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id;
+                        }
                     } else if (var14 == var13 + 1 && var13 >= 64 && Math.random() < 0.02D && this.oldFeatures) {
                         int index2 = (index) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + (var14 - 1);
                         if (blocks[index2] == Block.GRASS_BLOCK.id || blocks[index2] == Block.DIRT.id) {
@@ -147,12 +153,6 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                             if (this.theme.equals("Paradise") && this.random.nextInt(2) == 0) {
                                 var15 = Block.ROSE.id;
                             }
-                        }
-                    } else if (var14 == var13 && var13 >= 64) {
-                        if (!this.oldFeatures) {
-                            var15 = this.theme.equals("Hell") ? (var18.topBlockId != Block.SAND.id ? Block.DIRT.id : var18.topBlockId) : var18.topBlockId;
-                        } else {
-                            var15 = this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id;
                         }
                     } else if (var14 <= var13 - 2) {
                         var15 = Block.STONE.id;
