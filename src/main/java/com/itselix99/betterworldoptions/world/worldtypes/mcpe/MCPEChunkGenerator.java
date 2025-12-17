@@ -238,7 +238,7 @@ public class MCPEChunkGenerator implements ChunkSource {
 
                                 if (var17 < var5 && var15 == 0) {
                                     double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
-                                    if (beachFix && !this.theme.equals("Hell") && (temperature < temp && !this.oldFeatures || this.theme.equals("Winter")) && var17 >= var5 - 1) {
+                                    if (beachFix && !this.theme.equals("Hell") && (temperature < temp) && var17 >= var5 - 1) {
                                         var15 = (byte) Block.ICE.id;
                                     } else {
                                         var15 = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
