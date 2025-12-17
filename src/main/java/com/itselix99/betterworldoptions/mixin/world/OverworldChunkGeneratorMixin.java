@@ -102,102 +102,99 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         return this.theme.equals("Hell") ? Block.LAVA.id : original.call(block);
     }
 
-    @Inject(
+    @ModifyVariable(
             method = "buildSurfaces",
-            at = @At("HEAD"),
-            cancellable = true
+            at = @At("STORE"),
+            ordinal = 0
     )
-    private void beachFix(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, CallbackInfo ci) {
+    private Biome modifyBiomeArray(Biome original, @Local(ordinal = 0, argsOnly = true)Biome[] biomes, @Local(name = "var8")int var8, @Local(name = "var9")int var9) {
         if (Config.BWOConfig.world.beachFix) {
-            this.buildSurfacesWithBeachFix(chunkX, chunkZ, blocks, biomes);
-            ci.cancel();
+            return biomes[var9 + var8 * 16];
         }
+
+        return original;
     }
 
-    @Unique
-    private void buildSurfacesWithBeachFix(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes) {
-        byte var5 = 64;
-        double var6 = 0.03125F;
+    @ModifyVariable(
+            method = "buildSurfaces",
+            at = @At("STORE"),
+            name = "var11"
+    )
+    private int modifySandBeachBoolean(int original, @Local(ordinal = 0, argsOnly = true)int chunkX, @Local(ordinal = 1, argsOnly = true)int chunkZ, @Local(name = "var6")double var6, @Local(name = "var8")int var8, @Local(name = "var9")int var9) {
+        if (Config.BWOConfig.world.beachFix) {
+            double x = (chunkX << 4) + var8;
+            double z = (chunkZ << 4) + var9;
+            return ((BWONoise)this.perlinNoise2).bwo_generateNoise(x * var6, z * var6, 0.0D) + this.random.nextDouble() * 0.2 > (double)0.0F ? 1 : 0;
+        }
 
-        for(int var8 = 0; var8 < 16; ++var8) {
-            for(int var9 = 0; var9 < 16; ++var9) {
-                Biome var10 = biomes[var9 + var8 * 16];
-                double x2 = (chunkX << 4) + var8;
-                double z2 = (chunkZ << 4) + var9;
-                boolean var11 = ((BWONoise)this.perlinNoise2).bwo_generateNoise(x2 * var6, z2 * var6, 0.0D) + this.random.nextDouble() * 0.2 > (double)0.0F;
-                boolean var12 = ((BWONoise)this.perlinNoise2).bwo_generateNoise(z2 * var6, var6, x2 * var6) + this.random.nextDouble() * 0.2 > (double)3.0F;
-                int var13 = (int)(this.perlinNoise3.sample(x2 * var6 * 2.0D, z2 * var6 * 2.0D) / (double)3.0F + (double)3.0F + this.random.nextDouble() * (double)0.25F);
-                int var14 = -1;
-                byte var15 = (byte) (this.theme.equals("Hell") ? (var10.topBlockId != Block.SAND.id ? Block.DIRT.id : var10.topBlockId) : var10.topBlockId);
-                byte var16 = var10.soilBlockId;
+        return original;
+    }
 
-                for(int var17 = this.world.getTopY() - 1; var17 >= this.world.getBottomY(); --var17) {
-                    int var18 = ((var8 * 16 + var9) * MathHelper.smallestEncompassingPowerOfTwo(this.world.getHeight()) + var17) - this.world.getBottomY();
-                    if (var17 <= 0 + this.random.nextInt(5)) {
-                        blocks[var18] = (byte)Block.BEDROCK.id;
-                    } else {
-                        byte var19 = blocks[var18];
-                        if (var19 == 0) {
-                            var14 = -1;
-                        } else if (var19 == Block.STONE.id) {
-                            if (var14 == -1) {
-                                if (var13 <= 0) {
-                                    var15 = 0;
-                                    var16 = (byte)Block.STONE.id;
-                                } else if (var17 >= var5 - 4 && var17 <= var5 + 1) {
-                                    var15 = (byte) (this.theme.equals("Hell") ? (var10.topBlockId != Block.SAND.id ? Block.DIRT.id : var10.topBlockId) : var10.topBlockId);
-                                    var16 = var10.soilBlockId;
-                                    if (var12) {
-                                        var15 = 0;
-                                    }
+    @ModifyVariable(
+            method = "buildSurfaces",
+            at = @At("STORE"),
+            name = "var12"
+    )
+    private int modifyGravelBeachBoolean(int original, @Local(ordinal = 0, argsOnly = true)int chunkX, @Local(ordinal = 1, argsOnly = true)int chunkZ, @Local(name = "var6")double var6, @Local(name = "var8")int var8, @Local(name = "var9")int var9) {
+        if (Config.BWOConfig.world.beachFix) {
+            double x = (chunkX << 4) + var8;
+            double z = (chunkZ << 4) + var9;
+            return ((BWONoise)this.perlinNoise2).bwo_generateNoise(z * var6, var6, x * var6) + this.random.nextDouble() * 0.2 > (double)3.0F ? 1 : 0;
+        }
 
-                                    if (var12) {
-                                        var16 = (byte)Block.GRAVEL.id;
-                                    }
+        return original;
+    }
 
-                                    if (var11) {
-                                        var15 = (byte) (this.theme.equals("Hell") ? Block.GRASS_BLOCK.id : Block.SAND.id);
-                                    }
+    @ModifyVariable(
+            method = "buildSurfaces",
+            at = @At("STORE"),
+            name = "var13"
+    )
+    private int modifyDepthBuffer(int original, @Local(ordinal = 0, argsOnly = true)int chunkX, @Local(ordinal = 1, argsOnly = true)int chunkZ, @Local(name = "var6")double var6, @Local(name = "var8")int var8, @Local(name = "var9")int var9) {
+        if (Config.BWOConfig.world.beachFix) {
+            double x = (chunkX << 4) + var8;
+            double z = (chunkZ << 4) + var9;
+            return (int)(this.perlinNoise3.sample(x * var6 * 2.0D, z * var6 * 2.0D) / (double)3.0F + (double)3.0F + this.random.nextDouble() * (double)0.25F);
+        }
 
-                                    if (var11) {
-                                        var16 = (byte) (this.theme.equals("Hell") ? Block.DIRT.id : Block.SAND.id);
-                                    }
-                                }
+        return original;
+    }
 
-                                double[] temperatureMap = this.world.method_1781().temperatureMap;
-                                double temperature = temperatureMap[var9 + var8 * 16];
+    @ModifyVariable(
+            method = "buildSurfaces",
+            at = @At("STORE"),
+            name = "var18"
+    )
+    private int modifyIndex(int original, @Local(name = "var8")int var8, @Local(name = "var9")int var9, @Local(name = "var17")int var17) {
+        if (Config.BWOConfig.world.beachFix) {
+            return (var8 * 16 + var9) * MathHelper.smallestEncompassingPowerOfTwo(this.world.getHeight()) + var17;
+        }
 
-                                if (var17 < var5 && var15 == 0) {
-                                    double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
-                                    if (!this.theme.equals("Hell") && (temperature < temp) && var17 >= var5 - 1) {
-                                        var15 = (byte) Block.ICE.id;
-                                    } else {
-                                        var15 = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
-                                    }
-                                }
+        return original;
+    }
 
-                                var14 = var13;
-                                if (var17 >= var5 - 1) {
-                                    blocks[var18] = var15;
-                                } else {
-                                    blocks[var18] = var16;
-                                }
-                            } else if (var14 > 0) {
-                                --var14;
-                                blocks[var18] = var16;
-                                if (var14 == 0 && var16 == Block.SAND.id) {
-                                    var14 = this.random.nextInt(4);
-                                    var16 = (byte)Block.SANDSTONE.id;
-                                }
-                            }
-                        }
-                    }
-                }
+    @WrapOperation(
+            method = "buildSurfaces",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/block/Block;id:I",
+                    ordinal = 6
+            )
+    )
+    private int fixWaterInColdTemp(Block block, Operation<Integer> original, @Local(name = "var5")int var5, @Local(name = "var8")int var8, @Local(name = "var9")int var9, @Local(name = "var17")int var17) {
+        if (Config.BWOConfig.world.beachFix) {
+            double[] temperatureMap = this.world.method_1781().temperatureMap;
+            double temperature = temperatureMap[var9 + var8 * 16];
+            double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
+            if (!this.theme.equals("Hell") && (temperature < temp) && var17 >= var5 - 1) {
+                return (byte) (Block.ICE.id);
+            } else {
+                return original.call(block);
             }
         }
 
+        return original.call(block);
     }
-
 
     @ModifyExpressionValue(
             method = "buildSurfaces",
@@ -207,11 +204,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             )
     )
     private byte modifyTopBlockId(byte original) {
-        if (!Config.BWOConfig.world.beachFix) {
-            return (byte) (this.theme.equals("Hell") ? (original != Block.SAND.id ? Block.DIRT.id : original) : original);
-        } else {
-            return original;
-        }
+        return (byte) (this.theme.equals("Hell") ? (original != Block.SAND.id ? Block.DIRT.id : original) : original);
     }
 
     @WrapOperation(
@@ -223,11 +216,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             )
     )
     private int modifySand1(Block block, Operation<Integer> original) {
-        if (!Config.BWOConfig.world.beachFix) {
-            return (byte) (this.theme.equals("Hell") ? Block.GRASS_BLOCK.id : original.call(block));
-        } else {
-            return original.call(block);
-        }
+        return (byte) (this.theme.equals("Hell") ? Block.GRASS_BLOCK.id : original.call(block));
     }
 
     @WrapOperation(
@@ -239,11 +228,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             )
     )
     private int modifySand2(Block block, Operation<Integer> original) {
-        if (!Config.BWOConfig.world.beachFix) {
-            return (byte) (this.theme.equals("Hell") ? Block.DIRT.id : original.call(block));
-        } else {
-            return original.call(block);
-        }
+        return (byte) (this.theme.equals("Hell") ? Block.DIRT.id : original.call(block));
     }
 
     @WrapOperation(
@@ -255,11 +240,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             )
     )
     private int modifyWater1(Block block, Operation<Integer> original) {
-        if (!Config.BWOConfig.world.beachFix) {
-            return (byte) (this.theme.equals("Hell") ? Block.LAVA.id : original.call(block));
-        } else {
-            return original.call(block);
-        }
+        return (byte) (this.theme.equals("Hell") ? Block.LAVA.id : original.call(block));
     }
 
     @Inject(
