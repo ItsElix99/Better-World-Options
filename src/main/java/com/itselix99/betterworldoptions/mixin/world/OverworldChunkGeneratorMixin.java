@@ -29,6 +29,7 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Arrays;
 import java.util.Random;
 
 @Mixin(OverworldChunkGenerator.class)
@@ -181,12 +182,9 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
                     ordinal = 6
             )
     )
-    private int fixWaterInColdTemp(Block block, Operation<Integer> original, @Local(name = "var5")int var5, @Local(name = "var8")int var8, @Local(name = "var9")int var9, @Local(name = "var17")int var17) {
+    private int fixWaterInColdBiomes(Block block, Operation<Integer> original, @Local(name = "var5")int var5, @Local(ordinal = 0)Biome var10, @Local(name = "var17")int var17) {
         if (Config.BWOConfig.world.beachFix) {
-            double[] temperatureMap = this.world.method_1781().temperatureMap;
-            double temperature = temperatureMap[var9 + var8 * 16];
-            double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
-            if (!this.theme.equals("Hell") && (temperature < temp) && var17 >= var5 - 1) {
+            if (!this.theme.equals("Hell") && (this.theme.equals("Winter") || (var10 == Biome.TAIGA || var10 == Biome.TUNDRA || var10 == Biome.ICE_DESERT)) && var17 >= var5 - 1) {
                 return (byte) (Block.ICE.id);
             } else {
                 return original.call(block);
