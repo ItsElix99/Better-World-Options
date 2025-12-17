@@ -14,7 +14,7 @@ public class Config {
         @ConfigCategory(name = "World")
         public BWOWorld world = new BWOWorld();
 
-        @ConfigCategory(name = "Environment", hidden = true)
+        @ConfigCategory(name = "Environment")
         public BWOEnvironment environment = new BWOEnvironment();
 
         @ConfigCategory(name = "Player")
@@ -47,7 +47,8 @@ public class Config {
     }
 
     public static class BWOEnvironment {
-
+        @ConfigEntry(name = "Always Snow in Winter Worlds")
+        public Boolean alwaysSnowInWinterWorlds = true;
     }
 
     public static class BWOPlayer {

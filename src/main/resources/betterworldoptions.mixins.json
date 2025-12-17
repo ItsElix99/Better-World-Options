@@ -39,6 +39,7 @@
     "network.ClientNetworkHandlerMixin",
     "player.BipedEntityModelMixin",
     "player.ClientPlayerEntityMixin",
+    "render.GameRendererMixin",
     "screen.CreateWorldScreenMixin",
     "screen.DeathScreenMixin",
     "screen.InGameHudMixin",
