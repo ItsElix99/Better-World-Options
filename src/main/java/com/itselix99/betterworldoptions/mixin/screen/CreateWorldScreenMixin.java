@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.screen;
 
 import com.itselix99.betterworldoptions.compat.CompatMods;
+import com.itselix99.betterworldoptions.gui.screen.BiomeListScreen;
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.gui.screen.IndevOptionsScreen;
 import com.itselix99.betterworldoptions.gui.screen.McpeOptionsScreen;
@@ -35,6 +36,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Unique private ButtonWidget moreWorldOptionsButton;
     @Unique private ButtonWidget worldTypeButton;
     @Unique private ButtonWidget oldFeaturesButton;
+    @Unique private ButtonWidget singleBiomeButton;
     @Unique private ButtonWidget themeButton;
     @Unique private ButtonWidget worldTypeOptionsButton;
     @Unique private ButtonWidget superflatButton;
@@ -104,14 +106,19 @@ public abstract class CreateWorldScreenMixin extends Screen {
         this.buttons.add(this.moreWorldOptionsButton = new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions")));
         this.buttons.add(this.worldTypeButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, this.translation.get("selectWorld.worldtype") + " " + this.worldGenerationOptions.worldType));
         this.buttons.add(this.oldFeaturesButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, this.translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? this.translation.get("options.on") : this.translation.get("options.off"))));
-        this.buttons.add(this.themeButton = new ButtonWidget(14, this.width / 2 - 75, 150, 150, 20, this.translation.get("selectWorld.theme") + " " + this.worldGenerationOptions.theme));
-        this.buttons.add(this.worldTypeOptionsButton = new ButtonWidget(15, this.width / 2 + 5, 100, 150, 20, this.getWorldTypeOptionsButtonName()));
-        this.buttons.add(this.superflatButton = new ButtonWidget(16, this.width / 2 + 5, 100, 150, 20, this.translation.get("selectWorld.superflat") + " " + (this.worldGenerationOptions.superflat ? this.translation.get("options.on") : this.translation.get("options.off"))));
+        this.buttons.add(this.singleBiomeButton = new ButtonWidget(14, this.width / 2 - 155, 150, 150, 20, this.translation.get("selectWorld.singleBiome") + " " + (!this.worldGenerationOptions.singleBiome.equals("0ff") ? this.worldGenerationOptions.singleBiome : this.translation.get("options.off"))));
+        this.buttons.add(this.themeButton = new ButtonWidget(15, this.width / 2 + 5, 150, 150, 20, this.translation.get("selectWorld.theme") + " " + this.worldGenerationOptions.theme));
+        this.buttons.add(this.worldTypeOptionsButton = new ButtonWidget(16, this.width / 2 + 5, 100, 150, 20, this.getWorldTypeOptionsButtonName()));
+        this.buttons.add(this.superflatButton = new ButtonWidget(17, this.width / 2 + 5, 100, 150, 20, this.translation.get("selectWorld.superflat") + " " + (this.worldGenerationOptions.superflat ? this.translation.get("options.on") : this.translation.get("options.off"))));
 
         if (this.worldGenerationOptions.worldType.equals("MCPE")) {
             this.worldGenerationOptions.resetIndevOptions();
         } else if (!this.worldGenerationOptions.worldType.equals("Indev 223")) {
             this.worldGenerationOptions.resetFiniteOptions();
+        }
+
+        if (!(this.worldGenerationOptions.worldType.equals("Alpha 1.2.0") || this.worldGenerationOptions.worldType.equals("MCPE")) && this.worldGenerationOptions.oldFeatures && !this.worldGenerationOptions.singleBiome.equals("Off")) {
+            this.worldGenerationOptions.singleBiome = "0ff";
         }
 
         if (WorldGenerationOptions.disableThemeWorldTypes.contains(this.worldGenerationOptions.worldType)) {
@@ -142,10 +149,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.oldFeaturesButton.active = true;
         }
 
-        if (this.worldGenerationOptions.worldType.equals("Indev 223") || this.worldGenerationOptions.worldType.equals("MCPE")) {
-            this.oldFeaturesButton.visible = false;
-            this.themeButton.visible = false;
-        } else if (this.worldGenerationOptions.worldType.equals("Flat")) {
+        if (this.worldGenerationOptions.worldType.equals("Indev 223") || this.worldGenerationOptions.worldType.equals("MCPE") || this.worldGenerationOptions.worldType.equals("Flat")) {
             this.oldFeaturesButton.visible = false;
         }
 
@@ -220,8 +224,15 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 this.minecraft.setScreen(new WorldTypeListScreen(this, this.worldGenerationOptions));
             } else if (button.id == 13) {
                 this.worldGenerationOptions.oldFeatures = !this.worldGenerationOptions.oldFeatures;
+
+                if (!(this.worldGenerationOptions.worldType.equals("Alpha 1.2.0") || this.worldGenerationOptions.worldType.equals("MCPE")) && this.worldGenerationOptions.oldFeatures && !this.worldGenerationOptions.singleBiome.equals("Off")) {
+                    this.worldGenerationOptions.singleBiome = "Off";
+                }
+
                 this.oldFeaturesButton.text = this.translation.get("selectWorld.oldFeatures") + " " + (this.worldGenerationOptions.oldFeatures ? this.translation.get("options.on") : this.translation.get("options.off"));
             } else if (button.id == 14) {
+                this.minecraft.setScreen(new BiomeListScreen(this, this.worldGenerationOptions));
+            } else if (button.id == 15) {
                 switch (this.themeButton.text) {
                     case "Theme: Normal" -> this.worldGenerationOptions.theme = "Hell";
                     case "Theme: Hell" -> this.worldGenerationOptions.theme = "Paradise";
@@ -231,7 +242,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 }
 
                 this.themeButton.text = this.translation.get("selectWorld.theme") + " " + this.worldGenerationOptions.theme;
-            } else if (button.id == 15) {
+            } else if (button.id == 16) {
                 this.lastEnteredWorldName = this.worldNameField.getText();
                 this.lastEnteredSeed = this.seedField.getText();
 
@@ -240,7 +251,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 } else if (this.worldGenerationOptions.worldType.equals("MCPE")) {
                     this.minecraft.setScreen(new McpeOptionsScreen(this, this.worldGenerationOptions));
                 }
-            } else if (button.id == 16) {
+            } else if (button.id == 17) {
                 this.worldGenerationOptions.superflat = !this.worldGenerationOptions.superflat;
 
                 this.superflatButton.text = this.translation.get("selectWorld.superflat") + " " + (this.worldGenerationOptions.superflat ? this.translation.get("options.on") : this.translation.get("options.off"));
@@ -361,6 +372,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.worldTypeButton.visible = false;
             this.oldFeaturesButton.visible = false;
             this.worldTypeOptionsButton.visible = false;
+            this.singleBiomeButton.visible = false;
             this.themeButton.visible = false;
             this.superflatButton.visible = false;
             this.gamemodeButton.visible = true;
@@ -388,20 +400,19 @@ public abstract class CreateWorldScreenMixin extends Screen {
             }
         } else {
             this.worldTypeButton.visible = true;
+            this.singleBiomeButton.visible = true;
+            this.themeButton.visible = true;
             this.gamemodeButton.visible = false;
 
             if (this.worldGenerationOptions.worldType.equals("Indev 223") || this.worldGenerationOptions.worldType.equals("MCPE")) {
                 this.oldFeaturesButton.visible = false;
-                this.themeButton.visible = false;
                 this.worldTypeOptionsButton.visible = true;
                 this.superflatButton.visible = false;
             } else if (this.worldGenerationOptions.worldType.equals("Flat")) {
                 this.oldFeaturesButton.visible = false;
                 this.superflatButton.visible = true;
-                this.themeButton.visible = true;
             } else {
                 this.oldFeaturesButton.visible = true;
-                this.themeButton.visible = true;
                 this.worldTypeOptionsButton.visible = false;
                 this.superflatButton.visible = false;
             }
@@ -409,6 +420,11 @@ public abstract class CreateWorldScreenMixin extends Screen {
             if (this.oldFeaturesButton.visible) {
                 this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.oldFeatures.info.line1"), this.width / 2 + 5, 122, 10526880);
                 this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.oldFeatures.info.line2"), this.width / 2 + 5, 134, 10526880);
+            }
+
+            this.singleBiomeButton.text = this.translation.get("selectWorld.singleBiome") + " " + (!this.worldGenerationOptions.singleBiome.equals("Off") ? this.worldGenerationOptions.singleBiome : this.translation.get("options.off"));
+            if (!(this.worldGenerationOptions.worldType.equals("Alpha 1.2.0") || this.worldGenerationOptions.worldType.equals("MCPE"))) {
+                this.singleBiomeButton.active = !this.worldGenerationOptions.oldFeatures;
             }
         }
         super.render(mouseX, mouseY, delta);
