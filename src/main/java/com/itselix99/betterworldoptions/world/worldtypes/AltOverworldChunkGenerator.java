@@ -342,6 +342,13 @@ public class AltOverworldChunkGenerator implements ChunkSource {
                 }
 
                 var27 += 0.5F;
+                if (this.worldType.equals("Amplified")) {
+                    double factor = 1.0D + (var29 * ((this.world.getHeight() >> 4) * 2));
+
+                    var27 = var27 * factor;
+
+                    if (var27 < 0.0D) var27 = var27 * -1.0D;
+                }
                 var29 = var29 * (double) 17 / (double) 16.0F;
                 double var31 = (double) 17 / (double) 2.0F + var29 * (double) 4.0F;
                 ++var15;

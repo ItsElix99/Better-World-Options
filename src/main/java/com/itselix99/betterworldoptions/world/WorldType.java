@@ -36,6 +36,7 @@ public class WorldType {
         WORLD_TYPE_LIST.add(Default);
 
         WorldTypeEntry Amplified = new WorldTypeEntry();
+        Amplified.OVERWORLD_CHUNK_GENERATOR = AltOverworldChunkGenerator.class;
         Amplified.DISPLAY_NAME = "Amplified";
         Amplified.NAME = Amplified.DISPLAY_NAME;
         Amplified.ICON = "/assets/betterworldoptions/gui/default.png";
