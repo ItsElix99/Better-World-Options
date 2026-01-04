@@ -53,22 +53,22 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
     }
 
-    @ModifyVariable(
-            method = "buildTerrain",
-            at = @At("HEAD"),
-            ordinal = 0,
-            argsOnly = true
-    )
-    private int modifyChunkXForFarlands(int chunkX) {
-        if (this.worldType.equals("Farlands")) {
-            if (chunkX >= 8) {
-                return chunkX + 784426;
-            } else {
-                return chunkX - 784426;
-            }
-        }
-        return chunkX;
-    }
+//    @ModifyVariable(
+//            method = "buildTerrain",
+//            at = @At("HEAD"),
+//            ordinal = 0,
+//            argsOnly = true
+//    )
+//    private int modifyChunkXForFarlands(int chunkX) {
+//        if (this.worldType.equals("Farlands")) {
+//            if (chunkX >= 8) {
+//                return chunkX + 784426;
+//            } else {
+//                return chunkX - 784426;
+//            }
+//        }
+//        return chunkX;
+//    }
 
     @WrapOperation(
             method = "buildTerrain",

@@ -73,6 +73,14 @@ public class AltOverworldChunkGenerator implements ChunkSource {
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, double[] temperatures) {
+        if (this.worldType.equals("Farlands")) {
+            if (chunkX >= 8) {
+                chunkX += 784426;
+            } else {
+                chunkX -= 784426;
+            }
+        }
+
         byte var6 = 4;
         byte var7 = 64;
         int var8 = var6 + 1;

@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.world;
 
 import com.itselix99.betterworldoptions.compat.CompatMods;
 import com.itselix99.betterworldoptions.event.TextureListener;
+import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.FlatChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.alpha112.Alpha112ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.Alpha120ChunkGenerator;
@@ -33,6 +34,17 @@ public class WorldType {
         Default.BIOME = null;
         Default.BLOCK_TO_SPAWN_ON = Block.SAND.id;
         WORLD_TYPE_LIST.add(Default);
+
+        WorldTypeEntry Amplified = new WorldTypeEntry();
+        Amplified.DISPLAY_NAME = "Amplified";
+        Amplified.NAME = Amplified.DISPLAY_NAME;
+        Amplified.ICON = "/assets/betterworldoptions/gui/default.png";
+        Amplified.DESCRIPTION = "Minecraft's default world generator";
+        Amplified.DESCRIPTION_2 = "but AMPLIFIED";
+        Amplified.LIGHTING_MODE = "Overworld";
+        Amplified.BIOME = null;
+        Amplified.BLOCK_TO_SPAWN_ON = Block.SAND.id;
+        WORLD_TYPE_LIST.add(Amplified);
 
         WorldTypeEntry Nether = new WorldTypeEntry();
         Nether.DISPLAY_NAME = "Nether";
@@ -69,6 +81,7 @@ public class WorldType {
         WORLD_TYPE_LIST.add(Flat);
 
         WorldTypeEntry Farlands = new WorldTypeEntry();
+        Farlands.OVERWORLD_CHUNK_GENERATOR = AltOverworldChunkGenerator.class;
         Farlands.DISPLAY_NAME = "Farlands";
         Farlands.NAME = Farlands.DISPLAY_NAME;
         Farlands.ICON = "/assets/betterworldoptions/gui/farlands.png";
