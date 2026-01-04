@@ -33,6 +33,9 @@ public class Config {
         )
         public WorldHeightConfigEnum worldHeightLimit = WorldHeightConfigEnum.H128;
 
+        @ConfigEntry(name = "Fix terrain gen in Default world type", description = "Fix terrain gen above height 128 in Default world type (may cause incompatibilities with other mods)", multiplayerSynced = true)
+        public Boolean fixTerrainGenDefault = false;
+
         @ConfigEntry(name = "Cave Fix", multiplayerSynced = true)
         public Boolean caveFix = true;
 

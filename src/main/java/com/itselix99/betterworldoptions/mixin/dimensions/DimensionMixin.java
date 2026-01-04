@@ -1,9 +1,11 @@
 package com.itselix99.betterworldoptions.mixin.dimensions;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.WorldType;
+import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenerator;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -69,9 +71,13 @@ public class DimensionMixin {
         List<WorldType.WorldTypeEntry> worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldGenerationOptions.worldType.equals(worldTypeEntry.NAME)).toList();
         Class<? extends ChunkSource> chunkGenerator;
 
-        if (!worldType.isEmpty() && worldType.get(0).OVERWORLD_CHUNK_GENERATOR != null) {
-            chunkGenerator = worldType.get(0).OVERWORLD_CHUNK_GENERATOR;
-            return chunkGenerator.getDeclaredConstructor(World.class, long.class).newInstance(this.world, this.world.getSeed());
+        if (!worldType.isEmpty()) {
+            if (worldType.get(0).NAME.equals("Default") && Config.BWOConfig.world.fixTerrainGenDefault) {
+                return new AltOverworldChunkGenerator(this.world, this.world.getSeed());
+            } else if (worldType.get(0).OVERWORLD_CHUNK_GENERATOR != null) {
+                chunkGenerator = worldType.get(0).OVERWORLD_CHUNK_GENERATOR;
+                return chunkGenerator.getDeclaredConstructor(World.class, long.class).newInstance(this.world, this.world.getSeed());
+            }
         }
 
         return original;
