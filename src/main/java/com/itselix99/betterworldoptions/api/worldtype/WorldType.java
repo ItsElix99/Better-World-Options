@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.world;
+package com.itselix99.betterworldoptions.api.worldtype;
 
 import com.itselix99.betterworldoptions.compat.CompatMods;
 import com.itselix99.betterworldoptions.event.TextureListener;
@@ -13,15 +13,24 @@ import com.itselix99.betterworldoptions.world.worldtypes.infdev420.Infdev420Chun
 import com.itselix99.betterworldoptions.world.worldtypes.infdev611.Infdev611ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.MCPEChunkGenerator;
 import net.minecraft.block.Block;
-import net.minecraft.world.chunk.ChunkSource;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class WorldType {
     private static final List<WorldTypeEntry> WORLD_TYPE_LIST = new ArrayList<>();
+
+    public static List<WorldTypeEntry> getList() {
+        return WORLD_TYPE_LIST;
+    }
+
+    public static WorldTypeEntry getWorldTypeByName(String worldTypeName) {
+        return getList().stream().filter(worldTypeEntry -> worldTypeName.equals(worldTypeEntry.NAME)).toList().get(0);
+    }
+
+    public static boolean getWorldTypePropertyValue(String worldTypeName, String propertyName) {
+        return getWorldTypeByName(worldTypeName).PROPERTIES.get(propertyName);
+    }
 
     static {
         WorldTypeEntry Default = new WorldTypeEntry();
@@ -396,28 +405,5 @@ public class WorldType {
 
             WORLD_TYPE_LIST.add(Aether);
         }
-    }
-
-    public static List<WorldTypeEntry> getList() {
-        return WORLD_TYPE_LIST;
-    }
-
-    public static WorldTypeEntry getWorldTypeByName(String worldTypeName) {
-        return getList().stream().filter(worldTypeEntry -> worldTypeName.equals(worldTypeEntry.NAME)).toList().get(0);
-    }
-
-    public static boolean getWorldTypePropertyValue(String worldTypeName, String propertyName) {
-        return getWorldTypeByName(worldTypeName).PROPERTIES.get(propertyName);
-    }
-
-    public static class WorldTypeEntry {
-        public Class<? extends ChunkSource> OVERWORLD_CHUNK_GENERATOR;
-        public String DISPLAY_NAME;
-        public String NAME;
-        public String ICON;
-        public String DESCRIPTION;
-        public String DESCRIPTION_2;
-        public Map<String, Integer> OLD_TEXTURES = new HashMap<>();
-        public Map<String, Boolean> PROPERTIES = new HashMap<>();
     }
 }

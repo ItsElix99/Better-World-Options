@@ -1,10 +1,11 @@
 package com.itselix99.betterworldoptions.mixin.dimensions;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.world.WorldType;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenerator;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -68,7 +69,7 @@ public class DimensionMixin {
     @ModifyReturnValue(method = "createChunkGenerator", at = @At("RETURN"))
     public ChunkSource createChunkGenerator(ChunkSource original) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
-        List<WorldType.WorldTypeEntry> worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldGenerationOptions.worldType.equals(worldTypeEntry.NAME)).toList();
+        List<WorldTypeEntry> worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldGenerationOptions.worldType.equals(worldTypeEntry.NAME)).toList();
         Class<? extends ChunkSource> chunkGenerator;
 
         if (!worldType.isEmpty()) {

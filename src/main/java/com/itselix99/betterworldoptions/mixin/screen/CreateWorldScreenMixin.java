@@ -4,7 +4,7 @@ import com.itselix99.betterworldoptions.compat.CompatMods;
 import com.itselix99.betterworldoptions.gui.screen.BiomeListScreen;
 import com.itselix99.betterworldoptions.gui.widget.ButtonWidgetWithIcon;
 import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
-import com.itselix99.betterworldoptions.world.WorldType;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.itselix99.betterworldoptions.gui.screen.WorldTypeListScreen;
