@@ -1,4 +1,5 @@
 selectWorld.gameMode=Game Mode:
+selectWorld.mapFeatures=Generate Structures:
 selectWorld.worldtype=World Type:
 selectWorld.singleBiome=Single Biome:
 selectWorld.moreWorldOptions=More World Options...
@@ -22,9 +23,8 @@ selectWorld.gameMode.creative.info.line1=Unlimited resources, free flying and
 selectWorld.gameMode.creative.info.line2=destroy blocks instantly
 selectWorld.gameMode.hardcore.info.line1=Same as survival mode, locked at hardest
 selectWorld.gameMode.hardcore.info.line2=difficulty, and one life only
+selectWorld.mapFeatures.info=Villages, dungeons etc
 selectWorld.oldFeatures.info.line1=Generates worlds using older
 selectWorld.oldFeatures.info.line2=version terrain features
 deathScreen.deleteWorld=Delete world
 deathScreen.hardcore.info=You cannot respawn in hardcore mode!
-tile.betterworldoptions.alpha_leaves.name=Alpha Leaves
-tab.betterworldoptions.bwo.name=Better World Options

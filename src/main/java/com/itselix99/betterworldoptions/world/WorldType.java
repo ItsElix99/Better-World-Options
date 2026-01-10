@@ -13,7 +13,6 @@ import com.itselix99.betterworldoptions.world.worldtypes.infdev420.Infdev420Chun
 import com.itselix99.betterworldoptions.world.worldtypes.infdev611.Infdev611ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.MCPEChunkGenerator;
 import net.minecraft.block.Block;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkSource;
 
 import java.util.ArrayList;
@@ -30,9 +29,14 @@ public class WorldType {
         Default.NAME = Default.DISPLAY_NAME;
         Default.ICON = "/assets/betterworldoptions/gui/default.png";
         Default.DESCRIPTION = "Minecraft's default world generator";
-        Default.LIGHTING_MODE = "Overworld";
-        Default.BIOME = null;
-        Default.BLOCK_TO_SPAWN_ON = Block.SAND.id;
+
+        Default.PROPERTIES.put("Enable Structures", true);
+        Default.PROPERTIES.put("Enable Single Biome", true);
+        Default.PROPERTIES.put("Enable Themes", true);
+        Default.PROPERTIES.put("Enable Old Features", false);
+        Default.PROPERTIES.put("Old Features Has Biomes", false);
+        Default.PROPERTIES.put("Enable Finite World", true);
+
         WORLD_TYPE_LIST.add(Default);
 
         WorldTypeEntry Amplified = new WorldTypeEntry();
@@ -42,9 +46,14 @@ public class WorldType {
         Amplified.ICON = "/assets/betterworldoptions/gui/default.png";
         Amplified.DESCRIPTION = "Minecraft's default world generator";
         Amplified.DESCRIPTION_2 = "but AMPLIFIED";
-        Amplified.LIGHTING_MODE = "Overworld";
-        Amplified.BIOME = null;
-        Amplified.BLOCK_TO_SPAWN_ON = Block.SAND.id;
+
+        Amplified.PROPERTIES.put("Enable Structures", true);
+        Amplified.PROPERTIES.put("Enable Single Biome", true);
+        Amplified.PROPERTIES.put("Enable Themes", true);
+        Amplified.PROPERTIES.put("Enable Old Features", false);
+        Amplified.PROPERTIES.put("Old Features Has Biomes", false);
+        Amplified.PROPERTIES.put("Enable Finite World", true);
+
         WORLD_TYPE_LIST.add(Amplified);
 
         WorldTypeEntry Nether = new WorldTypeEntry();
@@ -53,9 +62,14 @@ public class WorldType {
         Nether.ICON = "/assets/betterworldoptions/gui/nether.png";
         Nether.DESCRIPTION = "Start the world in the Nether";
         Nether.DESCRIPTION_2 = "dimension";
-        Nether.LIGHTING_MODE = "Overworld";
-        Nether.BIOME = null;
-        Nether.BLOCK_TO_SPAWN_ON = Block.SAND.id;
+
+        Nether.PROPERTIES.put("Enable Structures", false);
+        Nether.PROPERTIES.put("Enable Single Biome", false);
+        Nether.PROPERTIES.put("Enable Themes", false);
+        Nether.PROPERTIES.put("Enable Old Features", false);
+        Nether.PROPERTIES.put("Old Features Has Biomes", false);
+        Nether.PROPERTIES.put("Enable Finite World", false);
+
         WORLD_TYPE_LIST.add(Nether);
 
         WorldTypeEntry Skylands = new WorldTypeEntry();
@@ -64,9 +78,14 @@ public class WorldType {
         Skylands.ICON = "/assets/betterworldoptions/gui/skylands.png";
         Skylands.DESCRIPTION = "Start the world on the floating";
         Skylands.DESCRIPTION_2 = "islands";
-        Skylands.LIGHTING_MODE = "Overworld";
-        Skylands.BIOME = null;
-        Skylands.BLOCK_TO_SPAWN_ON = Block.SAND.id;
+
+        Skylands.PROPERTIES.put("Enable Structures", false);
+        Skylands.PROPERTIES.put("Enable Single Biome", false);
+        Skylands.PROPERTIES.put("Enable Themes", false);
+        Skylands.PROPERTIES.put("Enable Old Features", false);
+        Skylands.PROPERTIES.put("Old Features Has Biomes", false);
+        Skylands.PROPERTIES.put("Enable Finite World", false);
+
         WORLD_TYPE_LIST.add(Skylands);
 
         WorldTypeEntry Flat = new WorldTypeEntry();
@@ -76,9 +95,14 @@ public class WorldType {
         Flat.ICON = "/assets/betterworldoptions/gui/flat.png";
         Flat.DESCRIPTION = "A completely flat world, perfect for";
         Flat.DESCRIPTION_2 = "building";
-        Flat.LIGHTING_MODE = "Overworld";
-        Flat.BIOME = null;
-        Flat.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
+
+        Flat.PROPERTIES.put("Enable Structures", true);
+        Flat.PROPERTIES.put("Enable Single Biome", true);
+        Flat.PROPERTIES.put("Enable Themes", true);
+        Flat.PROPERTIES.put("Enable Old Features", false);
+        Flat.PROPERTIES.put("Old Features Has Biomes", false);
+        Flat.PROPERTIES.put("Enable Finite World", true);
+
         WORLD_TYPE_LIST.add(Flat);
 
         WorldTypeEntry Farlands = new WorldTypeEntry();
@@ -88,9 +112,14 @@ public class WorldType {
         Farlands.ICON = "/assets/betterworldoptions/gui/farlands.png";
         Farlands.DESCRIPTION = "Explore the Farlands, where terrain";
         Farlands.DESCRIPTION_2 = "generation becomes distorted";
-        Farlands.LIGHTING_MODE = "Overworld";
-        Farlands.BIOME = null;
-        Farlands.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
+
+        Farlands.PROPERTIES.put("Enable Structures", true);
+        Farlands.PROPERTIES.put("Enable Single Biome", true);
+        Farlands.PROPERTIES.put("Enable Themes", true);
+        Farlands.PROPERTIES.put("Enable Old Features", false);
+        Farlands.PROPERTIES.put("Old Features Has Biomes", false);
+        Farlands.PROPERTIES.put("Enable Finite World", true);
+
         WORLD_TYPE_LIST.add(Farlands);
 
         WorldTypeEntry Alpha120 = new WorldTypeEntry();
@@ -100,9 +129,13 @@ public class WorldType {
         Alpha120.ICON = "/assets/betterworldoptions/gui/alpha_1.2.0.png";
         Alpha120.DESCRIPTION = "Start the world with Alpha 1.2.0";
         Alpha120.DESCRIPTION_2 = "generation";
-        Alpha120.LIGHTING_MODE = "Overworld";
-        Alpha120.BIOME = null;
-        Alpha120.BLOCK_TO_SPAWN_ON = Block.SAND.id;
+
+        Alpha120.PROPERTIES.put("Enable Structures", true);
+        Alpha120.PROPERTIES.put("Enable Single Biome", true);
+        Alpha120.PROPERTIES.put("Enable Themes", true);
+        Alpha120.PROPERTIES.put("Enable Old Features", true);
+        Alpha120.PROPERTIES.put("Old Features Has Biomes", true);
+        Alpha120.PROPERTIES.put("Enable Finite World", true);
 
         Alpha120.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
         Alpha120.OLD_TEXTURES.put("Cobblestone", TextureListener.alphaCobblestone);
@@ -116,9 +149,13 @@ public class WorldType {
         Alpha112.ICON = "/assets/betterworldoptions/gui/alpha_1.1.2_01.png";
         Alpha112.DESCRIPTION = "Start the world with Alpha 1.1.2_01";
         Alpha112.DESCRIPTION_2 = "generation";
-        Alpha112.LIGHTING_MODE = "Overworld";
-        Alpha112.BIOME = null;
-        Alpha112.BLOCK_TO_SPAWN_ON = Block.SAND.id;
+
+        Alpha112.PROPERTIES.put("Enable Structures", true);
+        Alpha112.PROPERTIES.put("Enable Single Biome", true);
+        Alpha112.PROPERTIES.put("Enable Themes", true);
+        Alpha112.PROPERTIES.put("Enable Old Features", true);
+        Alpha112.PROPERTIES.put("Old Features Has Biomes", false);
+        Alpha112.PROPERTIES.put("Enable Finite World", true);
 
         Alpha112.OLD_TEXTURES.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
         Alpha112.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
@@ -147,9 +184,13 @@ public class WorldType {
         Infdev611.ICON = "/assets/betterworldoptions/gui/infdev_20100611.png";
         Infdev611.DESCRIPTION = "Start the world with Infdev 611";
         Infdev611.DESCRIPTION_2 = "generation";
-        Infdev611.LIGHTING_MODE = "Overworld";
-        Infdev611.BIOME = null;
-        Infdev611.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
+
+        Infdev611.PROPERTIES.put("Enable Structures", true);
+        Infdev611.PROPERTIES.put("Enable Single Biome", true);
+        Infdev611.PROPERTIES.put("Enable Themes", true);
+        Infdev611.PROPERTIES.put("Enable Old Features", true);
+        Infdev611.PROPERTIES.put("Old Features Has Biomes", false);
+        Infdev611.PROPERTIES.put("Enable Finite World", true);
 
         Infdev611.OLD_TEXTURES.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
         Infdev611.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
@@ -179,9 +220,13 @@ public class WorldType {
         Infdev420.ICON = "/assets/betterworldoptions/gui/infdev_20100420.png";
         Infdev420.DESCRIPTION = "Start the world with Infdev 420";
         Infdev420.DESCRIPTION_2 = "generation";
-        Infdev420.LIGHTING_MODE = "Overworld";
-        Infdev420.BIOME = null;
-        Infdev420.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
+
+        Infdev420.PROPERTIES.put("Enable Structures", true);
+        Infdev420.PROPERTIES.put("Enable Single Biome", true);
+        Infdev420.PROPERTIES.put("Enable Themes", true);
+        Infdev420.PROPERTIES.put("Enable Old Features", true);
+        Infdev420.PROPERTIES.put("Old Features Has Biomes", false);
+        Infdev420.PROPERTIES.put("Enable Finite World", true);
 
         Infdev420.OLD_TEXTURES.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
         Infdev420.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
@@ -211,9 +256,13 @@ public class WorldType {
         Infdev415.ICON = "/assets/betterworldoptions/gui/infdev_20100415.png";
         Infdev415.DESCRIPTION = "Start the world with Infdev 415";
         Infdev415.DESCRIPTION_2 = "generation";
-        Infdev415.LIGHTING_MODE = "Overworld";
-        Infdev415.BIOME = null;
-        Infdev415.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
+
+        Infdev415.PROPERTIES.put("Enable Structures", true);
+        Infdev415.PROPERTIES.put("Enable Single Biome", true);
+        Infdev415.PROPERTIES.put("Enable Themes", true);
+        Infdev415.PROPERTIES.put("Enable Old Features", true);
+        Infdev415.PROPERTIES.put("Old Features Has Biomes", false);
+        Infdev415.PROPERTIES.put("Enable Finite World", true);
 
         Infdev415.OLD_TEXTURES.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
         Infdev415.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
@@ -243,9 +292,13 @@ public class WorldType {
         EarlyInfdev.ICON = "/assets/betterworldoptions/gui/early_infdev.png";
         EarlyInfdev.DESCRIPTION = "Start the world with Infdev 227-325";
         EarlyInfdev.DESCRIPTION_2 = "generation";
-        EarlyInfdev.LIGHTING_MODE = "Overworld";
-        EarlyInfdev.BIOME = null;
-        EarlyInfdev.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
+
+        EarlyInfdev.PROPERTIES.put("Enable Structures", true);
+        EarlyInfdev.PROPERTIES.put("Enable Single Biome", true);
+        EarlyInfdev.PROPERTIES.put("Enable Themes", true);
+        EarlyInfdev.PROPERTIES.put("Enable Old Features", true);
+        EarlyInfdev.PROPERTIES.put("Old Features Has Biomes", false);
+        EarlyInfdev.PROPERTIES.put("Enable Finite World", true);
 
         EarlyInfdev.OLD_TEXTURES.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
         EarlyInfdev.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
@@ -275,9 +328,13 @@ public class WorldType {
         Indev223.ICON = "/assets/betterworldoptions/gui/indev_20100223.png";
         Indev223.DESCRIPTION = "Start the world with Indev 223";
         Indev223.DESCRIPTION_2 = "generation";
-        Indev223.LIGHTING_MODE = "Overworld";
-        Indev223.BIOME = null;
-        Indev223.BLOCK_TO_SPAWN_ON = Block.GRASS_BLOCK.id;
+
+        Indev223.PROPERTIES.put("Enable Structures", true);
+        Indev223.PROPERTIES.put("Enable Single Biome", true);
+        Indev223.PROPERTIES.put("Enable Themes", true);
+        Indev223.PROPERTIES.put("Enable Old Features", true);
+        Indev223.PROPERTIES.put("Old Features Has Biomes", false);
+        Indev223.PROPERTIES.put("Enable Finite World", true);
 
         Indev223.OLD_TEXTURES.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
         Indev223.OLD_TEXTURES.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
@@ -307,9 +364,13 @@ public class WorldType {
         MCPE.ICON = "/assets/betterworldoptions/gui/mcpe.png";
         MCPE.DESCRIPTION = "Start the world with MCPE 0.1.0-0.8.1";
         MCPE.DESCRIPTION_2 = "generation";
-        MCPE.LIGHTING_MODE = "Overworld";
-        MCPE.BIOME = null;
-        MCPE.BLOCK_TO_SPAWN_ON = Block.SAND.id;
+
+        MCPE.PROPERTIES.put("Enable Structures", true);
+        MCPE.PROPERTIES.put("Enable Single Biome", true);
+        MCPE.PROPERTIES.put("Enable Themes", true);
+        MCPE.PROPERTIES.put("Enable Old Features", true);
+        MCPE.PROPERTIES.put("Old Features Has Biomes", true);
+        MCPE.PROPERTIES.put("Enable Finite World", true);
 
         MCPE.OLD_TEXTURES.put("GrassBlockSide", TextureListener.mcpeGrassBlockSide);
         MCPE.OLD_TEXTURES.put("Leaves", TextureListener.alphaLeaves);
@@ -325,15 +386,28 @@ public class WorldType {
             Aether.NAME = Aether.DISPLAY_NAME;
             Aether.ICON = "/assets/betterworldoptions/gui/aether.png";
             Aether.DESCRIPTION = "Start the world in a hostile paradise";
-            Aether.LIGHTING_MODE = "Overworld";
-            Aether.BIOME = null;
-            Aether.BLOCK_TO_SPAWN_ON = 0;
+
+            Aether.PROPERTIES.put("Enable Structures", false);
+            Aether.PROPERTIES.put("Enable Single Biome", false);
+            Aether.PROPERTIES.put("Enable Themes", false);
+            Aether.PROPERTIES.put("Enable Old Features", false);
+            Aether.PROPERTIES.put("Old Features Has Biomes", false);
+            Aether.PROPERTIES.put("Enable Finite World", false);
+
             WORLD_TYPE_LIST.add(Aether);
         }
     }
 
     public static List<WorldTypeEntry> getList() {
         return WORLD_TYPE_LIST;
+    }
+
+    public static WorldTypeEntry getWorldTypeByName(String worldTypeName) {
+        return getList().stream().filter(worldTypeEntry -> worldTypeName.equals(worldTypeEntry.NAME)).toList().get(0);
+    }
+
+    public static boolean getWorldTypePropertyValue(String worldTypeName, String propertyName) {
+        return getWorldTypeByName(worldTypeName).PROPERTIES.get(propertyName);
     }
 
     public static class WorldTypeEntry {
@@ -343,9 +417,7 @@ public class WorldType {
         public String ICON;
         public String DESCRIPTION;
         public String DESCRIPTION_2;
-        public String LIGHTING_MODE;
-        public Biome BIOME;
-        public int BLOCK_TO_SPAWN_ON;
         public Map<String, Integer> OLD_TEXTURES = new HashMap<>();
+        public Map<String, Boolean> PROPERTIES = new HashMap<>();
     }
 }
