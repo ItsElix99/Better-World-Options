@@ -22,6 +22,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
+import java.util.List;
+
 @Mixin(CreateWorldScreen.class)
 public class CreateWorldScreenMixin extends Screen {
     @Shadow private TextFieldWidget worldNameField;
@@ -46,18 +48,22 @@ public class CreateWorldScreenMixin extends Screen {
     @WrapOperation(
             method = "init",
             at = @At(
-                    value = "NEW",
-                    target = "(IIILjava/lang/String;)Lnet/minecraft/client/gui/widget/ButtonWidget;"
+                    value = "INVOKE",
+                    target = "Ljava/util/List;add(Ljava/lang/Object;)Z"
             )
     )
-    private ButtonWidget bwo_wrapNewButton(int buttonId, int x, int y, String text, Operation<ButtonWidget> original) {
-        if (buttonId == 0) {
-            return new ButtonWidget(buttonId, this.width / 2 - 155, this.height - 28, 150, 20, text);
-        } else if (buttonId == 1) {
-            return new ButtonWidget(buttonId, this.width / 2 + 5, this.height - 28, 150, 20, text);
+    private boolean bwo_wrapAddButton(List<Object> buttons, Object widget, Operation<Boolean> original) {
+        if (widget instanceof ButtonWidget button) {
+            if (button.id == 0) {
+                ButtonWidget newCreateWorldButton = new ButtonWidget(button.id, this.width / 2 - 155, this.height - 28, 150, 20, button.text);
+                return original.call(buttons, newCreateWorldButton);
+            } else if (button.id == 1) {
+                ButtonWidget newCancelButton = new ButtonWidget(button.id, this.width / 2 + 5, this.height - 28, 150, 20, button.text);
+                return original.call(buttons, newCancelButton);
+            }
         }
 
-        return original.call(buttonId, x, y, text);
+        return original.call(buttons, widget);
     }
 
     @ModifyArgs(
