@@ -119,11 +119,11 @@ public class CreateWorldScreenMixin extends Screen {
             this.worldGenerationOptions.resetFiniteOptions();
         }
 
-        if (WorldType.getWorldTypePropertyValue(this.worldGenerationOptions.worldType, "Old Features Has Biomes") && this.worldGenerationOptions.oldFeatures && !this.worldGenerationOptions.singleBiome.equals("Off")) {
+        if (!WorldType.getWorldTypePropertyValue(this.worldGenerationOptions.worldType, "Old Features Has Biomes") && this.worldGenerationOptions.oldFeatures && !this.worldGenerationOptions.singleBiome.equals("Off")) {
             this.worldGenerationOptions.singleBiome = "Off";
         }
 
-        if (WorldType.getWorldTypePropertyValue(this.worldGenerationOptions.worldType, "Enable Themes")) {
+        if (!WorldType.getWorldTypePropertyValue(this.worldGenerationOptions.worldType, "Enable Themes")) {
             this.themeButton.active = false;
 
             if (!this.worldGenerationOptions.theme.equals("Normal")) {
