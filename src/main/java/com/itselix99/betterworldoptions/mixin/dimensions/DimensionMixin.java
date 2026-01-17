@@ -1,11 +1,13 @@
 package com.itselix99.betterworldoptions.mixin.dimensions;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
 import com.itselix99.betterworldoptions.config.Config;
-import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.api.worldtype.WorldType;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenerator;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -29,11 +31,11 @@ public class DimensionMixin {
     @Shadow public World world;
 
     @WrapOperation(method = "initBiomeSource", at = @At(value = "NEW", target = "(Lnet/minecraft/world/World;)Lnet/minecraft/world/biome/source/BiomeSource;"))
-    private BiomeSource initBiomeSource(World world, Operation<BiomeSource> original) {
+    private BiomeSource bwo_initBiomeSource(World world, Operation<BiomeSource> original) {
         String worldType = ((BWOProperties) world.getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) world.getProperties()).bwo_isOldFeatures();
         String singleBiome = ((BWOProperties) world.getProperties()).bwo_getSingleBiome();
-        boolean superflat = ((BWOProperties) world.getProperties()).bwo_isSuperflat();
+        boolean superflat = ((BWOProperties) world.getProperties()).bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
 
         if (oldFeatures && !worldType.equals("MCPE")) {
             switch (worldType) {
@@ -57,7 +59,7 @@ public class DimensionMixin {
 
             if (!biomesList.isEmpty()) {
                 Biome biome = biomesList.get(0);
-                double[] climate = WorldGenerationOptions.getClimateForBiome(biome);
+                double[] climate = BWOWorldPropertiesStorage.getClimateForBiome(biome);
 
                 return new FixedBiomeSource(biome, climate[0], climate[1]);
             }
@@ -67,25 +69,23 @@ public class DimensionMixin {
     }
 
     @ModifyReturnValue(method = "createChunkGenerator", at = @At("RETURN"))
-    public ChunkSource createChunkGenerator(ChunkSource original) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
-        List<WorldTypeEntry> worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldGenerationOptions.worldType.equals(worldTypeEntry.NAME)).toList();
+    public ChunkSource bwo_createChunkGenerator(ChunkSource original) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
+        WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(((StringOptionStorage) bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION)).value);
         Class<? extends ChunkSource> chunkGenerator;
 
-        if (!worldType.isEmpty()) {
-            if (worldType.get(0).NAME.equals("Default") && Config.BWOConfig.world.fixTerrainGenDefault) {
-                return new AltOverworldChunkGenerator(this.world, this.world.getSeed());
-            } else if (worldType.get(0).OVERWORLD_CHUNK_GENERATOR != null) {
-                chunkGenerator = worldType.get(0).OVERWORLD_CHUNK_GENERATOR;
-                return chunkGenerator.getDeclaredConstructor(World.class, long.class).newInstance(this.world, this.world.getSeed());
-            }
+        if (worldType.name.equals("Default") && Config.BWOConfig.world.fixTerrainGenDefault) {
+            return new AltOverworldChunkGenerator(this.world, this.world.getSeed());
+        } else if (worldType.overworldChunkGenerator != null) {
+            chunkGenerator = worldType.overworldChunkGenerator;
+            return chunkGenerator.getDeclaredConstructor(World.class, long.class).newInstance(this.world, this.world.getSeed());
         }
 
         return original;
     }
 
     @ModifyReturnValue(method = "getTimeOfDay", at = @At("RETURN"))
-    public float paradiseThemeGetTimeOfDay(float original, long time, float tickDelta) {
+    public float bwo_stopTimeInParadiseTheme(float original, long time, float tickDelta) {
         String theme = ((BWOProperties) world.getProperties()).bwo_getTheme();
 
         if (theme.equals("Paradise")) {

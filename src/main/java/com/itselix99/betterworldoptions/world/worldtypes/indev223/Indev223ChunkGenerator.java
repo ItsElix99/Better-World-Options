@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.world.worldtypes.indev223;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
@@ -11,7 +12,6 @@ import com.itselix99.betterworldoptions.world.worldtypes.indev223.util.math.nois
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
-import net.minecraft.block.SandBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.screen.LoadingDisplay;
 import net.minecraft.util.math.MathHelper;
@@ -62,9 +62,9 @@ public class Indev223ChunkGenerator implements ChunkSource {
         this.oldFeatures = ((BWOProperties) this.world.getProperties()).bwo_isOldFeatures();
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
         this.singleBiome = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
-        this.infiniteWorld = ((BWOProperties) this.world.getProperties()).bwo_isInfiniteWorld();
-        this.worldSizeX = ((BWOProperties) this.world.getProperties()).bwo_getWorldSizeX();
-        this.worldSizeZ = ((BWOProperties) this.world.getProperties()).bwo_getWorldSizeZ();
+        this.infiniteWorld = false;
+        this.worldSizeX = 256;
+        this.worldSizeZ = 256;
 
         if (this.theme.equals("Winter")) {
             if (this.oldFeatures) {
@@ -119,7 +119,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, double[] temperatures) {
         int[] heightMap = new int[16 * 16];
-        String indevWorldType = ((BWOProperties) this.world.getProperties()).bwo_getIndevWorldType();
+        String indevWorldType = ((BWOProperties) this.world.getProperties()).bwo_getStringOptionValue("IndevWorldType", OptionType.WORLD_TYPE_OPTION);
         int surroundingWaterHeight = 65;
 
         if (indevWorldType.equals("Flat")) {

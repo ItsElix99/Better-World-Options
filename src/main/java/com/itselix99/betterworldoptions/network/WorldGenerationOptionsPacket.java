@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.network;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.NetworkHandler;
@@ -42,21 +42,21 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
         this.singleBiome = properties.bwo_getSingleBiome();
         this.theme = properties.bwo_getTheme();
 
-        if (this.worldType.equals("Flat")) {
-            this.superflat = properties.bwo_isSuperflat();
-        }
-
-        if (this.worldType.equals("Indev 223") || this.worldType.equals("MCPE")) {
-            if (this.worldType.equals("Indev 223")) {
-                this.indevWorldType = properties.bwo_getIndevWorldType();
-                this.indevShape = properties.bwo_getIndevShape();
-                this.generateIndevHouse = properties.bwo_isGenerateIndevHouse();
-            }
-
-            this.worldSizeX = properties.bwo_getWorldSizeX();
-            this.worldSizeZ = properties.bwo_getWorldSizeZ();
-            this.infiniteWorld = properties.bwo_isInfiniteWorld();
-        }
+//        if (this.worldType.equals("Flat")) {
+//            this.superflat = properties.bwo_isSuperflat();
+//        }
+//
+//        if (this.worldType.equals("Indev 223") || this.worldType.equals("MCPE")) {
+//            if (this.worldType.equals("Indev 223")) {
+//                this.indevWorldType = properties.bwo_getIndevWorldType();
+//                this.indevShape = properties.bwo_getIndevShape();
+//                this.generateIndevHouse = properties.bwo_isGenerateIndevHouse();
+//            }
+//
+//            this.worldSizeX = properties.bwo_getWorldSizeX();
+//            this.worldSizeZ = properties.bwo_getWorldSizeZ();
+//            this.infiniteWorld = properties.bwo_isInfiniteWorld();
+//        }
     }
 
     @Override
@@ -125,32 +125,32 @@ public class WorldGenerationOptionsPacket extends Packet implements ManagedPacke
 
     @Environment(EnvType.CLIENT)
     public void handleClient(NetworkHandler networkHandler) {
-        WorldGenerationOptions worldGenerationOptions = new WorldGenerationOptions();
+        BWOWorldPropertiesStorage worldGenerationOptions = new BWOWorldPropertiesStorage();
 
         worldGenerationOptions.isBWOServer = true;
 
-        worldGenerationOptions.worldType = this.worldType;
-        worldGenerationOptions.hardcore = this.hardcore;
-        worldGenerationOptions.oldFeatures = this.oldFeatures;
-        worldGenerationOptions.singleBiome = this.singleBiome;
-        worldGenerationOptions.theme = this.theme;
-
-        if (worldGenerationOptions.worldType.equals("Flat")) {
-            worldGenerationOptions.superflat = this.superflat;
-        }
-
-        if (worldGenerationOptions.worldType.equals("Indev 223") || worldGenerationOptions.worldType.equals("MCPE")) {
-            if (worldGenerationOptions.worldType.equals("Indev 223")) {
-                worldGenerationOptions.indevWorldType = this.indevWorldType;
-                worldGenerationOptions.indevShape = this.indevShape;
-                worldGenerationOptions.generateIndevHouse = this.generateIndevHouse;
-            }
-
-
-            worldGenerationOptions.worldSizeX = this.worldSizeX;
-            worldGenerationOptions.worldSizeZ = this.worldSizeZ;
-            worldGenerationOptions.infiniteWorld = this.infiniteWorld;
-        }
+//        worldGenerationOptions.worldType = this.worldType;
+//        worldGenerationOptions.hardcore = this.hardcore;
+//        worldGenerationOptions.oldFeatures = this.oldFeatures;
+//        worldGenerationOptions.singleBiome = this.singleBiome;
+//        worldGenerationOptions.theme = this.theme;
+//
+//        if (worldGenerationOptions.worldType.equals("Flat")) {
+//            worldGenerationOptions.superflat = this.superflat;
+//        }
+//
+//        if (worldGenerationOptions.worldType.equals("Indev 223") || worldGenerationOptions.worldType.equals("MCPE")) {
+//            if (worldGenerationOptions.worldType.equals("Indev 223")) {
+//                worldGenerationOptions.indevWorldType = this.indevWorldType;
+//                worldGenerationOptions.indevShape = this.indevShape;
+//                worldGenerationOptions.generateIndevHouse = this.generateIndevHouse;
+//            }
+//
+//
+//            worldGenerationOptions.worldSizeX = this.worldSizeX;
+//            worldGenerationOptions.worldSizeZ = this.worldSizeZ;
+//            worldGenerationOptions.infiniteWorld = this.infiniteWorld;
+//        }
     }
 
     @Override

@@ -1,7 +1,8 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
-import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
+import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.IndevFeatures;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -27,8 +28,6 @@ import java.util.Random;
 @Mixin(World.class)
 public abstract class WorldMixin implements BWOWorld {
     @Shadow public Random random;
-    @Shadow public boolean newWorld;
-    @Shadow protected WorldProperties properties;
     @Shadow @Final @Mutable public final Dimension dimension;
     @Shadow public int difficulty;
 
@@ -46,7 +45,7 @@ public abstract class WorldMixin implements BWOWorld {
         OverworldBiomeProviderImpl.getInstance()
                 .getBiomes()
                 .stream()
-                .filter(biome -> WorldGenerationOptions.defaultBiomesSetSnow.contains(biome))
+                .filter(biome -> BWOWorldPropertiesStorage.defaultBiomesSetSnow.contains(biome))
                 .forEach(biome -> biome.setSnow(bl));
     }
 
@@ -55,20 +54,20 @@ public abstract class WorldMixin implements BWOWorld {
         OverworldBiomeProviderImpl.getInstance()
                 .getBiomes()
                 .stream()
-                .filter(biome -> WorldGenerationOptions.defaultBiomesSetPrecipitation.contains(biome))
+                .filter(biome -> BWOWorldPropertiesStorage.defaultBiomesSetPrecipitation.contains(biome))
                 .forEach(biome -> biome.setPrecipitation(bl));
 
         if (!bl) {
             OverworldBiomeProviderImpl.getInstance()
                     .getBiomes()
                     .stream()
-                    .filter(biome -> WorldGenerationOptions.defaultBiomesSetPrecipitationNoSnow.contains(biome))
+                    .filter(biome -> BWOWorldPropertiesStorage.defaultBiomesSetPrecipitationNoSnow.contains(biome))
                     .forEach(biome -> biome.setSnow(false));
         } else {
             OverworldBiomeProviderImpl.getInstance()
                     .getBiomes()
                     .stream()
-                    .filter(biome -> WorldGenerationOptions.defaultBiomesSetPrecipitationNoSnow.contains(biome))
+                    .filter(biome -> BWOWorldPropertiesStorage.defaultBiomesSetPrecipitationNoSnow.contains(biome))
                     .forEach(biome -> biome.setSnow(true));
         }
     }
@@ -93,44 +92,31 @@ public abstract class WorldMixin implements BWOWorld {
         }
     }
 
-    @Inject(
-            method = "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;JLnet/minecraft/world/dimension/Dimension;)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/dimension/Dimension;setWorld(Lnet/minecraft/world/World;)V"
-            )
-    )
-    private void loadProperties(WorldStorage storage, String name, long seed, Dimension dimension, CallbackInfo ci) {
-        if (!this.newWorld) {
-            new WorldGenerationOptions(this.properties);
-        }
-    }
-
     @Environment(EnvType.CLIENT)
     @Inject(method = "<init>(Lnet/minecraft/world/World;Lnet/minecraft/world/dimension/Dimension;)V", at = @At("TAIL"))
-    private void oldTexturesChangingDimension(World world, Dimension dimension, CallbackInfo ci) {
-        WorldGenerationOptions.getInstance().setOldTextures(dimension.id == 0 && ((BWOProperties) world.getProperties()).bwo_isOldFeatures());
+    private void bwo_setOldTexturesChangingDimension(World world, Dimension dimension, CallbackInfo ci) {
+        BWOWorldPropertiesStorage.getInstance().setOldTextures(dimension.id == 0 && ((BWOProperties) world.getProperties()).bwo_isOldFeatures());
     }
 
     @Environment(EnvType.CLIENT)
     @Inject(method = "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;JLnet/minecraft/world/dimension/Dimension;)V", at = @At("TAIL"))
-    private void oldTexturesSetWorld(WorldStorage worldStorage, String name, long seed, Dimension dimension, CallbackInfo ci) {
-        WorldGenerationOptions.getInstance().setOldTextures(this.getProperties().getDimensionId() == 0 && ((BWOProperties) this.getProperties()).bwo_isOldFeatures());
+    private void bwo_setOldTexturesSetWorld(WorldStorage worldStorage, String name, long seed, Dimension dimension, CallbackInfo ci) {
+        BWOWorldPropertiesStorage.getInstance().setOldTextures(this.getProperties().getDimensionId() == 0 && ((BWOProperties) this.getProperties()).bwo_isOldFeatures());
     }
 
     @Environment(EnvType.CLIENT)
     @Inject(method = "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;Lnet/minecraft/world/dimension/Dimension;J)V", at = @At("TAIL"))
-    private void oldTexturesSetWorld2(WorldStorage worldStorage, String name, Dimension dimension, long seed, CallbackInfo ci) {
-        WorldGenerationOptions.getInstance().setOldTextures(this.getProperties().getDimensionId() == 0 && ((BWOProperties) this.getProperties()).bwo_isOldFeatures());
+    private void bwo_setOldTexturesSetWorld2(WorldStorage worldStorage, String name, Dimension dimension, long seed, CallbackInfo ci) {
+        BWOWorldPropertiesStorage.getInstance().setOldTextures(this.getProperties().getDimensionId() == 0 && ((BWOProperties) this.getProperties()).bwo_isOldFeatures());
     }
 
     @WrapOperation(method = "initializeSpawnPoint", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldProperties;setSpawn(III)V"))
-    private void initializeSpawnPointIndev(WorldProperties properties, int x, int y, int z, Operation<Void> original) {
+    private void bwo_initializeSpawnPoint(WorldProperties properties, int x, int y, int z, Operation<Void> original) {
         String worldType = ((BWOProperties) properties).bwo_getWorldType();
-        boolean generateIndevHouse = ((BWOProperties) properties).bwo_isGenerateIndevHouse();
-        boolean infinite = ((BWOProperties) properties).bwo_isInfiniteWorld();
-        int worldSizeX = ((BWOProperties) properties).bwo_getWorldSizeX();
-        int worldSizeZ = ((BWOProperties) properties).bwo_getWorldSizeZ();
+        boolean generateIndevHouse = ((BWOProperties) properties).bwo_getBooleanOptionValue("GenerateIndevHouse", OptionType.WORLD_TYPE_OPTION);
+        boolean infinite = false;
+        int worldSizeX = 256;
+        int worldSizeZ = 256;
 
         if (worldType.equals("Indev 223")) {
             boolean isValidSpawnArea = false;
@@ -201,7 +187,7 @@ public abstract class WorldMixin implements BWOWorld {
             method = "getAmbientDarkness",
             at = @At("RETURN")
     )
-    private int modifySkylight(int original) {
+    private int bwo_modifySkylight(int original) {
         String theme = ((BWOProperties) this.getProperties()).bwo_getTheme();
 
         if (this.dimension.id == 0) {
@@ -229,7 +215,7 @@ public abstract class WorldMixin implements BWOWorld {
                     target = "Lnet/minecraft/world/World;worldTimeMask:J"
             )
     )
-    private long indevHellCloudsColor(World world, Operation<Long> original) {
+    private long bwo_themeCloudsColor(World world, Operation<Long> original) {
         String theme = ((BWOProperties) world.getProperties()).bwo_getTheme();
 
         if (world.dimension.id == 0) {
@@ -251,14 +237,14 @@ public abstract class WorldMixin implements BWOWorld {
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
-    private void hardcoreDifficulty(CallbackInfo ci) {
+    private void bwo_hardcoreDifficulty(CallbackInfo ci) {
         if (((BWOProperties) this.getProperties()).bwo_isHardcore() && this.difficulty < 3) {
             this.difficulty = 3;
         }
     }
 
     @ModifyReturnValue(method = "getRainGradient", at = @At("RETURN"))
-    private float noRainGradientInHellAndParadise(float original) {
+    private float bwo_noRainGradientInHellAndParadise(float original) {
         String theme = ((BWOProperties) this.getProperties()).bwo_getTheme();
 
         if (this.dimension.id == 0) {
@@ -271,7 +257,7 @@ public abstract class WorldMixin implements BWOWorld {
     }
 
     @ModifyReturnValue(method = "getThunderGradient", at = @At("RETURN"))
-    private float noThunderGradientInHellAndParadise(float original) {
+    private float bwo_noThunderGradientInHellAndParadise(float original) {
         String theme = ((BWOProperties) this.getProperties()).bwo_getTheme();
 
         if (this.dimension.id == 0) {

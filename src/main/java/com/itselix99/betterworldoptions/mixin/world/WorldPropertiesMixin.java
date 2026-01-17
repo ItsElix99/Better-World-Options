@@ -1,6 +1,15 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
-import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
+import com.itselix99.betterworldoptions.api.options.GeneralOptions;
+import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
+import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
+import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
+import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
+import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
+import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;
@@ -9,179 +18,170 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Mixin(net.minecraft.world.WorldProperties.class)
 public class WorldPropertiesMixin implements BWOProperties {
-    @Unique private String worldType;
-    @Unique private boolean hardcore;
-    @Unique private boolean oldFeatures;
-    @Unique private String theme;
-    @Unique private String singleBiome;
-    @Unique private boolean superflat;
-
-    @Unique private String indevWorldType;
-    @Unique private String indevShape;
-    @Unique private int worldSizeX;
-    @Unique private int worldSizeZ;
-    @Unique private boolean generateIndevHouse;
-    @Unique private boolean infiniteWorld;
+    @Unique private Map<String, OptionStorage> generalOptions = new LinkedHashMap<>();
+    @Unique private Map<String, OptionStorage> worldTypeOptions = new LinkedHashMap<>();
 
     @Override public void bwo_setWorldType(String name) {
-        this.worldType = name;
+        this.generalOptions.put("WorldType", new StringOptionStorage("WorldType", name));
     }
+
     @Override public String bwo_getWorldType() {
-        return this.worldType;
+        return bwo_getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
     }
 
     @Override public void bwo_setHardcore(boolean hardcore) {
-        this.hardcore = hardcore;
+        this.generalOptions.put("Hardcore", new BooleanOptionStorage("Hardcore", hardcore));
     }
+
     @Override public boolean bwo_isHardcore() {
-        return this.hardcore;
+        return bwo_getBooleanOptionValue("Hardcore", OptionType.GENERAL_OPTION);
     }
 
     @Override public boolean bwo_isOldFeatures() {
-        return this.oldFeatures;
-    }
-    @Override public String bwo_getSingleBiome() {
-        return this.singleBiome;
-    }
-    @Override public String bwo_getTheme() {
-        return this.theme;
-    }
-    @Override public boolean bwo_isSuperflat() {
-        return this.superflat;
+        return bwo_getBooleanOptionValue("OldFeatures", OptionType.GENERAL_OPTION);
     }
 
-    @Override public String bwo_getIndevWorldType() {
-        return this.indevWorldType;
+    @Override public String bwo_getSingleBiome() {
+        return bwo_getStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION);
     }
-    @Override public String bwo_getIndevShape() {
-        return this.indevShape;
+
+    @Override public String bwo_getTheme() {
+        return bwo_getStringOptionValue("Theme", OptionType.GENERAL_OPTION);
     }
-    @Override public int bwo_getWorldSizeX() {
-        return this.worldSizeX;
+
+    @Override
+    public String bwo_getStringOptionValue(String optionName, OptionType optionType) {
+        if (optionType == OptionType.GENERAL_OPTION) {
+            return ((StringOptionStorage) this.generalOptions.getOrDefault(optionName, new StringOptionStorage(optionName, ((StringOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
+        } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
+            if (!this.worldTypeOptions.isEmpty()) {
+                return ((StringOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new StringOptionStorage(optionName, ((StringOptionEntry) WorldTypes.getWorldTypeByName(this.bwo_getWorldType()).worldTypeOptions.get(optionName)).defaultValue))).value;
+            }
+        }
+
+        return null;
     }
-    @Override public int bwo_getWorldSizeZ() {
-        return this.worldSizeZ;
-    }
-    @Override public boolean bwo_isGenerateIndevHouse() {
-        return this.generateIndevHouse;
-    }
-    @Override public boolean bwo_isInfiniteWorld() {
-        return this.infiniteWorld;
+
+    @Override
+    public boolean bwo_getBooleanOptionValue(String optionName, OptionType optionType) {
+        if (optionType == OptionType.GENERAL_OPTION) {
+            return ((BooleanOptionStorage) this.generalOptions.getOrDefault(optionName, new BooleanOptionStorage(optionName, ((BooleanOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
+        } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
+            if (!this.worldTypeOptions.isEmpty()) {
+                return ((BooleanOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new BooleanOptionStorage(optionName, ((BooleanOptionEntry) WorldTypes.getWorldTypeByName(this.bwo_getWorldType()).worldTypeOptions.get(optionName)).defaultValue))).value;
+            }
+        }
+
+        return false;
     }
 
     @Inject(method = "<init>(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("TAIL"))
-    private void onLoadFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        this.worldType = nbt.getString("WorldType");
-        this.hardcore = nbt.getBoolean("Hardcore");
-        this.oldFeatures = nbt.getBoolean("OldFeatures");
-        this.singleBiome = nbt.getString("SingleBiome");
-        this.theme = nbt.getString("Theme");
+    private void bwo_loadFromNbt(NbtCompound nbt, CallbackInfo ci) {
+        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = new BWOWorldPropertiesStorage();
 
-        if (bwo_getWorldType().equals("Flat")) {
-            this.superflat = nbt.getBoolean("Superflat");
-        }
+        if (nbt.contains("BetterWorldOptions")) {
+            NbtCompound betterWorldOptionsNbt = nbt.getCompound("BetterWorldOptions");
 
-        if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
-            if (bwo_getWorldType().equals("Indev 223")) {
-                this.indevWorldType = nbt.getString("IndevWorldType");
-                this.indevShape = nbt.getString("IndevShape");
-                this.generateIndevHouse = nbt.getBoolean("GenerateIndevHouse");
+            for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
+                if (option instanceof StringOptionStorage) {
+                    this.generalOptions.put(option.name, new StringOptionStorage(option.name, betterWorldOptionsNbt.getString(option.name)));
+                } else if (option instanceof BooleanOptionStorage) {
+                    this.generalOptions.put(option.name, new BooleanOptionStorage(option.name, betterWorldOptionsNbt.getBoolean(option.name)));
+                }
             }
 
-            this.infiniteWorld = nbt.getBoolean("InfiniteWorld");
+            bwoWorldPropertiesStorage.setOptionsMap(this.generalOptions, OptionType.GENERAL_OPTION);
 
-            if (!bwo_isInfiniteWorld()) {
-                this.worldSizeX = nbt.getInt("WorldSizeX");
-                this.worldSizeZ = nbt.getInt("WorldSizeZ");
+            Map<String, OptionEntry> worldTypeOptions = WorldTypes.getWorldTypeByName(betterWorldOptionsNbt.getString("WorldType")).worldTypeOptions;
+            if (worldTypeOptions != null) {
+                NbtCompound worldTypeOptionsNbt = betterWorldOptionsNbt.getCompound("WorldTypeOptions");
+
+                Map<String, OptionStorage> worldTypeOptionsMap = new LinkedHashMap<>();
+
+                for (OptionEntry option : worldTypeOptions.values()) {
+                    if (option instanceof StringOptionEntry) {
+                        worldTypeOptionsMap.put(option.name, new StringOptionStorage(option.name, worldTypeOptionsNbt.getString(option.name)));
+                    } else if (option instanceof BooleanOptionEntry) {
+                        worldTypeOptionsMap.put(option.name, new BooleanOptionStorage(option.name, worldTypeOptionsNbt.getBoolean(option.name)));
+                    }
+                }
+
+                bwoWorldPropertiesStorage.setOptionsMap(worldTypeOptionsMap, OptionType.WORLD_TYPE_OPTION);
+
+                for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.WORLD_TYPE_OPTION).values()) {
+                    if (option instanceof StringOptionStorage stringOption) {
+                        this.worldTypeOptions.put(option.name, new StringOptionStorage(option.name, stringOption.value));
+                    } else if (option instanceof BooleanOptionStorage booleanOption) {
+                        this.worldTypeOptions.put(option.name, new BooleanOptionStorage(option.name, booleanOption.value));
+                    }
+                }
+
+                bwoWorldPropertiesStorage.setOptionsMap(this.worldTypeOptions, OptionType.WORLD_TYPE_OPTION);
             }
+
+            BWOWorldPropertiesStorage.setInstance(bwoWorldPropertiesStorage);
         }
     }
 
     @Inject(method = "<init>(JLjava/lang/String;)V", at = @At("TAIL"))
-    private void newWorld(long seed, String name, CallbackInfo ci) {
-        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
-        this.worldType = worldGenerationOptions.worldType;
-        this.hardcore = worldGenerationOptions.hardcore;
-        this.oldFeatures = worldGenerationOptions.oldFeatures;
-        this.singleBiome = worldGenerationOptions.singleBiome;
-        this.theme = worldGenerationOptions.theme;
+    private void bwo_initBWOProperties(long seed, String name, CallbackInfo ci) {
+        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
 
-        if (bwo_getWorldType().equals("Flat")) {
-            this.superflat = worldGenerationOptions.superflat;
-        }
-
-        if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
-            if (bwo_getWorldType().equals("Indev 223")) {
-                this.indevWorldType = worldGenerationOptions.indevWorldType;
-                this.indevShape = worldGenerationOptions.indevShape;
-                this.generateIndevHouse = worldGenerationOptions.generateIndevHouse;
-            }
-
-            this.infiniteWorld = worldGenerationOptions.infiniteWorld;
-
-            if (!bwo_isInfiniteWorld()) {
-                this.worldSizeX = worldGenerationOptions.worldSizeX;
-                this.worldSizeZ = worldGenerationOptions.worldSizeZ;
+        for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
+            if (option instanceof StringOptionStorage stringOption) {
+                this.generalOptions.put(option.name, new StringOptionStorage(option.name, stringOption.value));
+            } else if (option instanceof BooleanOptionStorage booleanOption) {
+                this.generalOptions.put(option.name, new BooleanOptionStorage(option.name, booleanOption.value));
             }
         }
-    }
 
-    @Inject(method = "<init>(Lnet/minecraft/world/WorldProperties;)V", at = @At("TAIL"))
-    private void onCopyConstructor(net.minecraft.world.WorldProperties source, CallbackInfo ci) {
-        this.worldType = ((BWOProperties) source).bwo_getWorldType();
-        this.hardcore = ((BWOProperties) source).bwo_isHardcore();
-        this.oldFeatures = ((BWOProperties) source).bwo_isOldFeatures();
-        this.singleBiome = ((BWOProperties) source).bwo_getSingleBiome();
-        this.theme = ((BWOProperties) source).bwo_getTheme();
-
-        if (bwo_getWorldType().equals("Flat")) {
-            this.superflat = ((BWOProperties) source).bwo_isSuperflat();
-        }
-
-        if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
-            if (bwo_getWorldType().equals("Indev 223")) {
-                this.indevWorldType = ((BWOProperties) source).bwo_getIndevWorldType();
-                this.indevShape = ((BWOProperties) source).bwo_getIndevShape();
-                this.generateIndevHouse = ((BWOProperties) source).bwo_isGenerateIndevHouse();
-            }
-
-            this.infiniteWorld = ((BWOProperties) source).bwo_isInfiniteWorld();
-
-            if (!bwo_isInfiniteWorld()) {
-                this.worldSizeX = ((BWOProperties) source).bwo_getWorldSizeX();
-                this.worldSizeZ = ((BWOProperties) source).bwo_getWorldSizeZ();
+        if (WorldTypes.getWorldTypeByName(((StringOptionStorage) bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION)).value).worldTypeOptions != null) {
+            for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.WORLD_TYPE_OPTION).values()) {
+                if (option instanceof StringOptionStorage stringOption) {
+                    this.worldTypeOptions.put(option.name, new StringOptionStorage(option.name, stringOption.value));
+                } else if (option instanceof BooleanOptionStorage booleanOption) {
+                    this.worldTypeOptions.put(option.name, new BooleanOptionStorage(option.name, booleanOption.value));
+                }
             }
         }
     }
 
     @Inject(method = "updateProperties", at = @At("TAIL"))
-    private void onUpdateProperties(NbtCompound nbt, NbtCompound playerNbt, CallbackInfo ci) {
-        nbt.putString("WorldType", this.worldType);
-        nbt.putBoolean("Hardcore", this.hardcore);
-        nbt.putBoolean("OldFeatures", this.oldFeatures);
-        nbt.putString("SingleBiome", this.singleBiome);
-        nbt.putString("Theme", this.theme);
+    private void bwo_updateProperties(NbtCompound nbt, NbtCompound playerNbt, CallbackInfo ci) {
+        NbtCompound betterWorldOptionsNbt = new NbtCompound();
+        NbtCompound worldTypeOptionsNbt = new NbtCompound();
 
-        if (bwo_getWorldType().equals("Flat")) {
-            nbt.putBoolean("Superflat", this.superflat);
+        if (this.generalOptions.isEmpty()) {
+            this.generalOptions = BWOWorldPropertiesStorage.getInstance().getOptionsMap(OptionType.GENERAL_OPTION);
         }
 
-        if (bwo_getWorldType().equals("Indev 223") || bwo_getWorldType().equals("MCPE")) {
-            if (bwo_getWorldType().equals("Indev 223")) {
-                nbt.putString("IndevWorldType", this.indevWorldType);
-                nbt.putString("IndevShape", this.indevShape);
-                nbt.putBoolean("GenerateIndevHouse", this.generateIndevHouse);
-            }
-
-            nbt.putBoolean("InfiniteWorld", this.infiniteWorld);
-
-            if (!bwo_isInfiniteWorld()) {
-                nbt.putInt("WorldSizeX", this.worldSizeX);
-                nbt.putInt("WorldSizeZ", this.worldSizeZ);
+        for (OptionStorage option : this.generalOptions.values()) {
+            if (option instanceof StringOptionStorage stringOption) {
+                betterWorldOptionsNbt.putString(option.name, stringOption.value);
+            } else if (option instanceof BooleanOptionStorage booleanOption) {
+                betterWorldOptionsNbt.putBoolean(option.name, booleanOption.value);
             }
         }
+
+        if (WorldTypes.getWorldTypeByName(bwo_getWorldType()).worldTypeOptions != null) {
+            for (OptionStorage option : this.worldTypeOptions.values()) {
+                if (option instanceof StringOptionStorage stringOption) {
+                    worldTypeOptionsNbt.putString(option.name, stringOption.value);
+                } else if (option instanceof BooleanOptionStorage booleanOption) {
+                    worldTypeOptionsNbt.putBoolean(option.name, booleanOption.value);
+                }
+            }
+
+            betterWorldOptionsNbt.put("WorldTypeOptions", worldTypeOptionsNbt);
+        }
+
+        betterWorldOptionsNbt.putString("BWOVersion", "0.4.0");
+        nbt.put("BetterWorldOptions", betterWorldOptionsNbt);
     }
 }
 

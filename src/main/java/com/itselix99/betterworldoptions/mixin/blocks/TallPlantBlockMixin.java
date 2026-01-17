@@ -1,36 +1,35 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
-import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
-import com.itselix99.betterworldoptions.api.worldtype.WorldType;
+import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
+import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.PlantBlock;
 import net.minecraft.block.TallPlantBlock;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Environment(EnvType.CLIENT)
 @Mixin(TallPlantBlock.class)
-public class TallPlantBlockMixin extends PlantBlock {
-    public TallPlantBlockMixin(int id, int textureId) {
-        super(id, textureId);
-    }
+public class TallPlantBlockMixin {
 
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
-    public int getTexture(int original, int side, int meta) {
-        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+    public int bwo_getOldTextureTallPlant(int original, int side, int meta) {
+        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
 
-        if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
-            WorldTypeEntry worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldType)).toList().get(0);
+        String worldType = ((StringOptionStorage) bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION)).value;
+        boolean oldFeatures = ((BooleanOptionStorage) bwoWorldPropertiesStorage.getOptionValue("OldFeatures", OptionType.GENERAL_OPTION)).value;
 
+        if (oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
             if (meta == 1) {
-                return worldType.OLD_TEXTURES.get("Grass") != null ? worldType.OLD_TEXTURES.get("Grass") : original;
+                return WorldTypes.getOldTexture(worldType, "Grass", original);
             } else if (meta == 2) {
-                return worldType.OLD_TEXTURES.get("Fern") != null ? worldType.OLD_TEXTURES.get("Fern") : original;
+                return WorldTypes.getOldTexture(worldType, "Fern", original);
             } else {
-                return meta == 0 ? (worldType.OLD_TEXTURES.get("Fern") != null ? worldType.OLD_TEXTURES.get("Fern") : original) : (worldType.OLD_TEXTURES.get("Grass") != null ? worldType.OLD_TEXTURES.get("Grass") : original);
+                return meta == 0 ? WorldTypes.getOldTexture(worldType, "Fern", original) : WorldTypes.getOldTexture(worldType, "Grass", original);
             }
         }
 

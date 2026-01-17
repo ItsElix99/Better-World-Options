@@ -1,10 +1,17 @@
 package com.itselix99.betterworldoptions.mixin.screen;
 
+import com.itselix99.betterworldoptions.api.options.GeneralOptions;
+import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
+import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
+import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
 import com.itselix99.betterworldoptions.compat.CompatMods;
+import com.itselix99.betterworldoptions.gui.screen.BWOMoreOptionsScreen;
 import com.itselix99.betterworldoptions.gui.screen.BiomeListScreen;
+import com.itselix99.betterworldoptions.gui.widget.BWOButtonWidget;
 import com.itselix99.betterworldoptions.gui.widget.ButtonWidgetWithIcon;
-import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
-import com.itselix99.betterworldoptions.api.worldtype.WorldType;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.itselix99.betterworldoptions.gui.screen.WorldTypeListScreen;
@@ -22,28 +29,38 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-@Mixin(CreateWorldScreen.class)
+@Mixin(value = CreateWorldScreen.class, priority = 1100)
 public class CreateWorldScreenMixin extends Screen {
     @Shadow private TextFieldWidget worldNameField;
     @Shadow private TextFieldWidget seedField;
     @Unique private TranslationStorage translation = TranslationStorage.getInstance();
 
-    @Unique private WorldGenerationOptions worldGenerationOptions = new WorldGenerationOptions();
+    @Unique private BWOWorldPropertiesStorage bwoWorldPropertiesStorage = new BWOWorldPropertiesStorage();
 
     @Unique private ButtonWidget gamemodeButton;
-    @Unique private ButtonWidget moreWorldOptionsButton;
     @Unique private ButtonWidget generateStructuresButton;
     @Unique private ButtonWidget worldTypeButton;
     @Unique private ButtonWidget singleBiomeButton;
     @Unique private ButtonWidget themeButton;
     @Unique private ButtonWidget generalOptionsButton;
 
-    @Unique private String gamemode = "Survival";
     @Unique private boolean moreOptions = false;
     @Unique private String lastEnteredWorldName = translation.get("selectWorld.newWorld");
     @Unique private String lastEnteredSeed = "";
+
+    @Unique private List<String> gamemode = new ArrayList<>(Arrays.asList("Survival", "Hardcore"));
+    @Unique int selectedGamemode = 0;
+
+    @Inject(method = "init", at = @At("TAIL"))
+    private void bwo_addCreativeSupport(CallbackInfo ci) {
+        if (CompatMods.BHCreativeLoaded()) {
+            this.gamemode.add("Creative");
+        }
+    }
 
     @WrapOperation(
             method = "init",
@@ -94,12 +111,13 @@ public class CreateWorldScreenMixin extends Screen {
     @SuppressWarnings("unchecked")
     @Inject(method = "init", at = @At("TAIL"))
     private void bwo_initButtons(CallbackInfo ci) {
-        this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, this.translation.get("selectWorld.gameMode") + " " + this.gamemode));
-        this.buttons.add(this.moreWorldOptionsButton = new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions")));
+        List<OptionEntry> generalOptions = GeneralOptions.getList();
+        this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, this.translation.get("selectWorld.gameMode") + " " + this.gamemode.get(this.selectedGamemode)));
+        this.buttons.add(new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions")));
         this.buttons.add(this.generateStructuresButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, this.translation.get("selectWorld.mapFeatures") + " " + this.translation.get("options.off")));
-        this.buttons.add(this.worldTypeButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, this.translation.get("selectWorld.worldtype") + " " + this.worldGenerationOptions.worldType));
-        this.buttons.add(this.singleBiomeButton = new ButtonWidget(14, this.width / 2 - 155, 150, 150, 20, this.translation.get("selectWorld.singleBiome") + " " + (!this.worldGenerationOptions.singleBiome.equals("Off") ? this.worldGenerationOptions.singleBiome : this.translation.get("options.off"))));
-        this.buttons.add(this.themeButton = new ButtonWidget(15, this.width / 2 + 5, 150, 150, 20, this.translation.get("selectWorld.theme") + " " + this.worldGenerationOptions.theme));
+        this.buttons.add(this.worldTypeButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, this.translation.get("selectWorld.worldtype") + " " + ((StringOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION)).value));
+        this.buttons.add(this.singleBiomeButton = new ButtonWidget(14, this.width / 2 - 155, 150, 150, 20, this.translation.get("selectWorld.singleBiome") + " " + (!((StringOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("SingleBiome", OptionType.GENERAL_OPTION)).value.equals("Off") ? ((StringOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("SingleBiome", OptionType.GENERAL_OPTION)).value : this.translation.get("options.off"))));
+        this.buttons.add(this.themeButton = new BWOButtonWidget(15, this.width / 2 + 5, 150, 150, 20, this.translation.get(generalOptions.get(3).displayName) + " " + ((StringOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("Theme", OptionType.GENERAL_OPTION)).value, generalOptions.get(3), this.bwoWorldPropertiesStorage));
         this.buttons.add(this.generalOptionsButton = new ButtonWidgetWithIcon(16, this.width / 2 + 160, 100, "/assets/betterworldoptions/stationapi/textures/gui/settings_icon.png"));
         this.generateStructuresButton.active = false;
 
@@ -119,65 +137,62 @@ public class CreateWorldScreenMixin extends Screen {
             this.generalOptionsButton.visible = false;
         }
 
-        if (this.worldGenerationOptions.worldType.equals("MCPE")) {
-            this.worldGenerationOptions.resetIndevOptions();
-        } else if (!this.worldGenerationOptions.worldType.equals("Indev 223")) {
-            this.worldGenerationOptions.resetFiniteOptions();
+        String worldType = ((StringOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION)).value;
+        if (!WorldTypes.getWorldTypePropertyValue(worldType, "Enable Old Features") && ((BooleanOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("OldFeatures", OptionType.GENERAL_OPTION)).value) {
+            this.bwoWorldPropertiesStorage.setOptionValue("OldFeatures", OptionType.GENERAL_OPTION, new BooleanOptionStorage("Old Features", false));
         }
 
-        if (!WorldType.getWorldTypePropertyValue(this.worldGenerationOptions.worldType, "Old Features Has Biomes") && this.worldGenerationOptions.oldFeatures && !this.worldGenerationOptions.singleBiome.equals("Off")) {
-            this.worldGenerationOptions.singleBiome = "Off";
+        if (!WorldTypes.getWorldTypePropertyValue(worldType, "Enable Single Biome") || !WorldTypes.getWorldTypePropertyValue(worldType, "Old Features Has Biomes") && ((BooleanOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("OldFeatures", OptionType.GENERAL_OPTION)).value) {
+            this.bwoWorldPropertiesStorage.setOptionValue("SingleBiome", OptionType.GENERAL_OPTION, new StringOptionStorage("SingleBiome", "Off"));
+            this.singleBiomeButton.active = false;
+            String singleBiome = ((StringOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("SingleBiome", OptionType.GENERAL_OPTION)).value;
+            this.singleBiomeButton.text = this.translation.get("selectWorld.singleBiome") + " " + (!singleBiome.equals("Off") ? singleBiome : this.translation.get("options.off"));
         }
 
-        if (!WorldType.getWorldTypePropertyValue(this.worldGenerationOptions.worldType, "Enable Themes")) {
+        if (!WorldTypes.getWorldTypePropertyValue(worldType, "Enable Themes")) {
             this.themeButton.active = false;
 
-            if (!this.worldGenerationOptions.theme.equals("Normal")) {
-                this.worldGenerationOptions.theme = "Normal";
+            if (!((StringOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("Theme", OptionType.GENERAL_OPTION)).value.equals("Normal")) {
+                this.bwoWorldPropertiesStorage.setSelectedValue("Theme", OptionType.GENERAL_OPTION, 0);
+                this.bwoWorldPropertiesStorage.setOptionValue("Theme", OptionType.GENERAL_OPTION, new StringOptionStorage("Theme", "Normal"));
             }
 
-            this.themeButton.text = this.translation.get("selectWorld.theme") + " " + this.worldGenerationOptions.theme;
+            this.themeButton.text = this.translation.get("selectWorld.theme") + " " + ((StringOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("Theme", OptionType.GENERAL_OPTION)).value;
         } else {
             this.themeButton.active = true;
         }
     }
 
+    @Inject(
+            method = "buttonClicked",
+            at = @At
+                    (
+                            value = "INVOKE",
+                            target = "Lnet/minecraft/client/Minecraft;setScreen(Lnet/minecraft/client/gui/screen/Screen;)V",
+                            ordinal = 1
+                    )
+    )
+    private void bwo_setCurrentBWOWorldProperties(ButtonWidget button, CallbackInfo ci) {
+        BWOWorldPropertiesStorage.setInstance(this.bwoWorldPropertiesStorage);
+    }
+
     @Inject(method = "buttonClicked", at = @At("TAIL"))
     private void bwo_buttonClicked(ButtonWidget button, CallbackInfo ci) {
         if (button.active && button.visible) {
+            if (button instanceof BWOButtonWidget) {
+                ((BWOButtonWidget) button).onButtonClicked();
+            }
+
             if (button.id == 0) {
                 if (CompatMods.BHCreativeLoaded()) {
-                    if (minecraft.player != null && this.gamemode.equals("Creative")) {
-                        minecraft.player.creative_setCreative(true);
+                    if (minecraft.player != null) {
+                        minecraft.player.creative_setCreative(this.gamemode.get(this.selectedGamemode).equals("Creative"));
                     }
                 }
             } else if (button.id == 10) {
-                if (CompatMods.BHCreativeLoaded()) {
-                    switch (this.gamemodeButton.text) {
-                        case "Game Mode: Survival" -> {
-                            this.gamemode = "Hardcore";
-                            this.worldGenerationOptions.hardcore = true;
-                        }
-                        case "Game Mode: Hardcore" -> {
-                            this.gamemode = "Creative";
-                            this.worldGenerationOptions.hardcore = false;
-                        }
-                        case "Game Mode: Creative" -> this.gamemode = "Survival";
-                    }
-                } else {
-                    switch (this.gamemodeButton.text) {
-                        case "Game Mode: Survival" -> {
-                            this.gamemode = "Hardcore";
-                            this.worldGenerationOptions.hardcore = true;
-                        }
-                        case "Game Mode: Hardcore" -> {
-                            this.gamemode = "Survival";
-                            this.worldGenerationOptions.hardcore = false;
-                        }
-                    }
-                }
-
-                this.gamemodeButton.text = this.translation.get("selectWorld.gameMode") + " " + this.gamemode;
+                this.selectedGamemode = (this.selectedGamemode + 1) % this.gamemode.size();
+                this.bwoWorldPropertiesStorage.setOptionValue("Hardcore", OptionType.GENERAL_OPTION, new BooleanOptionStorage("Hardcore", this.gamemode.get(this.selectedGamemode).equals("Hardcore")));
+                button.text = this.translation.get("selectWorld.gameMode") + " " + this.gamemode.get(this.selectedGamemode);
             } else if (button.id == 11) {
                 this.moreOptions = !this.moreOptions;
 
@@ -197,32 +212,22 @@ public class CreateWorldScreenMixin extends Screen {
                     this.generalOptionsButton.visible = false;
                 }
 
-                this.moreWorldOptionsButton.text = this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions");
+                button.text = this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions");
             } else if (button.id == 13) {
                 this.lastEnteredWorldName = this.worldNameField.getText();
                 this.lastEnteredSeed = this.seedField.getText();
 
-                this.minecraft.setScreen(new WorldTypeListScreen(this, this.worldGenerationOptions));
+                this.minecraft.setScreen(new WorldTypeListScreen(this, this.bwoWorldPropertiesStorage));
             } else if (button.id == 14) {
                 this.lastEnteredWorldName = this.worldNameField.getText();
                 this.lastEnteredSeed = this.seedField.getText();
 
-                this.minecraft.setScreen(new BiomeListScreen(this, this.worldGenerationOptions));
-            } else if (button.id == 15) {
-                switch (this.themeButton.text) {
-                    case "Theme: Normal" -> this.worldGenerationOptions.theme = "Hell";
-                    case "Theme: Hell" -> this.worldGenerationOptions.theme = "Paradise";
-                    case "Theme: Paradise" -> this.worldGenerationOptions.theme = "Woods";
-                    case "Theme: Woods" -> this.worldGenerationOptions.theme = "Winter";
-                    case "Theme: Winter" -> this.worldGenerationOptions.theme = "Normal";
-                }
-
-                this.themeButton.text = this.translation.get("selectWorld.theme") + " " + this.worldGenerationOptions.theme;
+                this.minecraft.setScreen(new BiomeListScreen(this, this.bwoWorldPropertiesStorage));
             } else if (button.id == 16) {
                 this.lastEnteredWorldName = this.worldNameField.getText();
                 this.lastEnteredSeed = this.seedField.getText();
 
-                //this.minecraft.setScreen();
+                this.minecraft.setScreen(new BWOMoreOptionsScreen(this, this.bwoWorldPropertiesStorage));
             }
         }
     }
@@ -353,31 +358,28 @@ public class CreateWorldScreenMixin extends Screen {
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    private void bwo_renderGamemodeAndOldFeaturesText(int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void bwo_renderText(int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if(this.moreOptions) {
             if (this.generateStructuresButton.visible) {
                 this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.mapFeatures.info"), this.width / 2 - 150, 122, 10526880);
             }
         } else {
             if (CompatMods.BHCreativeLoaded()) {
-                switch (this.gamemodeButton.text) {
-                    case "Game Mode: Survival" -> this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.survival.info"), this.width / 2, 122, 10526880);
-                    case "Game Mode: Hardcore" -> {
-                        this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.hardcore.info.line1"), this.width / 2 - 100, 122, 10526880);
-                        this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.hardcore.info.line2"), this.width / 2 - 100, 134, 10526880);
-                    }
-                    case "Game Mode: Creative" -> {
-                        this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.creative.info.line1"), this.width / 2 - 100, 122, 10526880);
-                        this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.creative.info.line2"), this.width / 2 - 100, 134, 10526880);
-                    }
+                if (this.gamemodeButton.text.equals(this.translation.get("selectWorld.gameMode") + " " + "Survival")) {
+                    this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.survival.line1"), this.width / 2, 122, 10526880);
+                } else if (this.gamemodeButton.text.equals(this.translation.get("selectWorld.gameMode") + " " + "Hardcore")) {
+                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.hardcore.line1"), this.width / 2 - 100, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.hardcore.line2"), this.width / 2 - 100, 134, 10526880);
+                } else if (this.gamemodeButton.text.equals(this.translation.get("selectWorld.gameMode") + " " + "Creative")) {
+                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.creative.line1"), this.width / 2 - 100, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.creative.line2"), this.width / 2 - 100, 134, 10526880);
                 }
             } else {
-                switch (this.gamemodeButton.text) {
-                    case "Game Mode: Survival" -> this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.survival.info"), this.width / 2, 122, 10526880);
-                    case "Game Mode: Hardcore" -> {
-                        this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.hardcore.info.line1"), this.width / 2 - 100, 122, 10526880);
-                        this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.hardcore.info.line2"), this.width / 2 - 100, 134, 10526880);
-                    }
+                if (this.gamemodeButton.text.equals(this.translation.get("selectWorld.gameMode") + " " + "Survival")) {
+                    this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.survival.line1"), this.width / 2, 122, 10526880);
+                } else if (this.gamemodeButton.text.equals(this.translation.get("selectWorld.gameMode") + " " + "Hardcore")) {
+                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.hardcore.line1"), this.width / 2 - 100, 122, 10526880);
+                    this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.gameMode.hardcore.line2"), this.width / 2 - 100, 134, 10526880);
                 }
             }
         }

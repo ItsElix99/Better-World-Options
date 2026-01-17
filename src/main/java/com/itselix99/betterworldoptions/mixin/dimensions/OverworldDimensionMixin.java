@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.dimensions;
 
 import com.itselix99.betterworldoptions.config.Config;
-import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.OverworldDimension;
 import net.modificationstation.stationapi.api.world.dimension.StationDimension;
@@ -12,8 +12,8 @@ public class OverworldDimensionMixin extends Dimension implements StationDimensi
 
     @Override
     public int getHeight() {
-        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
-        if (this.world.isRemote && !worldGenerationOptions.isBWOServer) {
+        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
+        if (this.world.isRemote && !bwoWorldPropertiesStorage.isBWOServer) {
             return 128;
         }
 

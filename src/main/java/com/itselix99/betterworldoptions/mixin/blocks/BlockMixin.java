@@ -1,8 +1,10 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
-import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
-import com.itselix99.betterworldoptions.api.worldtype.WorldType;
+import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
+import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,20 +22,21 @@ public abstract class BlockMixin {
     }
 
     @ModifyReturnValue(method = "getTexture*", at = @At("RETURN"))
-    public int getTexture(int original, int side) {
-        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+    public int bwo_getOldTexture(int original, int side) {
+        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
 
-        if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
-            WorldTypeEntry worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldType)).toList().get(0);
+        String worldType = ((StringOptionStorage) bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION)).value;
+        boolean oldFeatures = ((BooleanOptionStorage) bwoWorldPropertiesStorage.getOptionValue("OldFeatures", OptionType.GENERAL_OPTION)).value;
 
+        if (oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
             if (this.id == 4) {
-                return worldType.OLD_TEXTURES.get("Cobblestone") != null ? worldType.OLD_TEXTURES.get("Cobblestone") : original;
+                return WorldTypes.getOldTexture(worldType, "Cobblestone", original);
             }else if (this.id == 45) {
-                return worldType.OLD_TEXTURES.get("BrickBlock") != null ? worldType.OLD_TEXTURES.get("BrickBlock") : original;
+                return WorldTypes.getOldTexture(worldType, "BrickBlock", original);
             } else if (this.id == 38) {
-                return worldType.OLD_TEXTURES.get("Rose") != null ? worldType.OLD_TEXTURES.get("Rose") : original;
+                return WorldTypes.getOldTexture(worldType, "Rose", original);
             } else if (this.id == 79) {
-                return worldType.OLD_TEXTURES.get("IceBlock") != null ? worldType.OLD_TEXTURES.get("IceBlock") : original;
+                return WorldTypes.getOldTexture(worldType, "IceBlock", original);
             }
         }
 

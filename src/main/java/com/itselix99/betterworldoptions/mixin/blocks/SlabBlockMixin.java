@@ -1,33 +1,30 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
-import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
-import com.itselix99.betterworldoptions.api.worldtype.WorldType;
+import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
+import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
-import net.minecraft.block.material.Material;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Environment(EnvType.CLIENT)
 @Mixin(SlabBlock.class)
-public class SlabBlockMixin extends Block {
-
-    public SlabBlockMixin(int id, int textureId, Material material) {
-        super(id, textureId, material);
-    }
+public class SlabBlockMixin {
 
     @ModifyReturnValue(method = "getTexture(II)I", at = @At("RETURN"))
-    public int getTexture(int original, int side, int meta) {
-        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+    public int bwo_getOldTextureSlab(int original, int side, int meta) {
+        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
 
-        if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
-            WorldTypeEntry worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldType)).toList().get(0);
+        String worldType = ((StringOptionStorage) bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION)).value;
+        boolean oldFeatures = ((BooleanOptionStorage) bwoWorldPropertiesStorage.getOptionValue("OldFeatures", OptionType.GENERAL_OPTION)).value;
 
-            return meta == 3 ? (worldType.OLD_TEXTURES.get("Cobblestone") != null ? worldType.OLD_TEXTURES.get("Cobblestone") : original) : original;
+        if (oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
+            return meta == 3 ? WorldTypes.getOldTexture(worldType, "Cobblestone", original) : original;
         }
 
         return original;

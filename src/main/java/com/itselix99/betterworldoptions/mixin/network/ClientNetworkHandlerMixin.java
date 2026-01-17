@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.network;
 
-import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ClientNetworkHandlerMixin extends NetworkHandler {
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private static void newWorldGenerationOptions(Minecraft address, String port, int par3, CallbackInfo ci){
-        new WorldGenerationOptions();
+    private static void bwo_initBWOWorldPropertiesStorageMultiplayer(Minecraft address, String port, int par3, CallbackInfo ci){
+        new BWOWorldPropertiesStorage();
     }
 }

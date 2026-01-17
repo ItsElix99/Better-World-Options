@@ -2,29 +2,36 @@ selectWorld.gameMode=Game Mode:
 selectWorld.mapFeatures=Generate Structures:
 selectWorld.worldtype=World Type:
 selectWorld.singleBiome=Single Biome:
-selectWorld.moreWorldOptions=More World Options...
-selectWorld.oldFeatures=Old Features:
 selectWorld.theme=Theme:
-selectWorld.superflat=Superflat:
-selectWorld.indevOptions=Indev Options
-selectWorld.mcpeOptions=MCPE Options
-selectWorld.allBiomes=All Biomes
-indevOptions.type=Type:
-indevOptions.shape=Shape:
-indevOptions.size=Size:
-indevOptions.indevHouse=Indev House:
-indevOptions.infiniteWorld=Infinite World:
-indevOptions.infiniteWorld.info=Infinite World is not compatible with Island and Floating
-options.difficulty.hardcore=Hardcore
-selectWorld.gameMode.survival=Survival
-selectWorld.gameMode.hardcore=Hardcore
-selectWorld.gameMode.survival.info=Search for resources, crafting and health
-selectWorld.gameMode.creative.info.line1=Unlimited resources, free flying and
-selectWorld.gameMode.creative.info.line2=destroy blocks instantly
-selectWorld.gameMode.hardcore.info.line1=Same as survival mode, locked at hardest
-selectWorld.gameMode.hardcore.info.line2=difficulty, and one life only
+selectWorld.oldFeatures=Old Features:
+selectWorld.moreWorldOptions=More World Options...
+
+selectWorld.gameMode.survival.line1=Search for resources, crafting and health
+
+selectWorld.gameMode.creative.line1=Unlimited resources, free flying and
+selectWorld.gameMode.creative.line2=destroy blocks instantly
+
+selectWorld.gameMode.hardcore.line1=Same as survival mode, locked at hardest
+selectWorld.gameMode.hardcore.line2=difficulty, and one life only
+
 selectWorld.mapFeatures.info=Villages, dungeons etc
-selectWorld.oldFeatures.info.line1=Generates worlds using older
-selectWorld.oldFeatures.info.line2=version terrain features
+
+selectWorld.oldFeatures.line1=Generates worlds using older
+selectWorld.oldFeatures.line2=version terrain features
+
+selectWorldType.title=Select World Type
+
+selectBiome.title=Select Biome
+selectBiome.allBiomes=All Biomes
+
+bwoMoreOptions.title.generalOptions=General Options
+bwoMoreOptions.title.worldTypeOptions=World Type Options
+
+bwoMoreOptions.superflat=Superflat:
+bwoMoreOptions.indevWorldType=Indev World Type:
+bwoMoreOptions.generateIndevHouse=Generate Indev House:
+
+options.difficulty.hardcore=Hardcore
+
 deathScreen.deleteWorld=Delete world
-deathScreen.hardcore.info=You cannot respawn in hardcore mode!
+deathScreen.hardcoreInfo=You cannot respawn in hardcore mode!

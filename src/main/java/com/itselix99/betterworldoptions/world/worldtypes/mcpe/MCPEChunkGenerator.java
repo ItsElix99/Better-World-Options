@@ -69,9 +69,9 @@ public class MCPEChunkGenerator implements ChunkSource {
         this.oldFeatures = ((BWOProperties) this.world.getProperties()).bwo_isOldFeatures();
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
         this.singleBiome = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
-        this.infiniteWorld = ((BWOProperties) this.world.getProperties()).bwo_isInfiniteWorld();
-        this.worldSizeX = ((BWOProperties) this.world.getProperties()).bwo_getWorldSizeX();
-        this.worldSizeZ = ((BWOProperties) this.world.getProperties()).bwo_getWorldSizeZ();
+        this.infiniteWorld = true;
+        this.worldSizeX = 0;
+        this.worldSizeZ = 0;
 
         ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
         ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));

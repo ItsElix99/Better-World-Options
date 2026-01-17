@@ -1,10 +1,13 @@
 package com.itselix99.betterworldoptions.gui.widget;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.Tessellator;
 import org.lwjgl.opengl.GL11;
 
+@Environment(EnvType.CLIENT)
 public class ButtonWidgetWithIcon extends ButtonWidget {
     public String icon;
 

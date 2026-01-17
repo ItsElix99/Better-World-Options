@@ -1,12 +1,12 @@
 package com.itselix99.betterworldoptions.mixin;
 
+import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
 import com.itselix99.betterworldoptions.compat.CompatMods;
-import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ClientPlayerEntity;
 import net.minecraft.world.World;
@@ -18,8 +18,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Objects;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
@@ -35,7 +33,7 @@ public class MinecraftMixin {
                     ordinal = 0
             )
     )
-    private void hardcoreDifficulty(World world, int difficulty, Operation<Void> original) {
+    private void bwo_hardcoreDifficulty(World world, int difficulty, Operation<Void> original) {
         if (((BWOProperties) world.getProperties()).bwo_isHardcore()) {
             original.call(world, 3);
         } else {
@@ -44,7 +42,7 @@ public class MinecraftMixin {
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
-    private void notChangeGamemodeInHardcore(CallbackInfo ci) {
+    private void bwo_notChangeGamemodeInHardcore(CallbackInfo ci) {
         if (this.world != null && ((BWOProperties) this.world.getProperties()).bwo_isHardcore() && this.player != null && CompatMods.BHCreativeLoaded()) {
             this.player.creative_setCreative(false);
         }
@@ -57,9 +55,9 @@ public class MinecraftMixin {
                     target = "Lnet/minecraft/world/dimension/Dimension;hasWorldSpawn()Z"
             )
     )
-    private boolean respawnPlayerInOtherDimensions(Dimension instance, Operation<Boolean> original) {
+    private boolean bwo_respawnPlayerInOtherDimensions(Dimension instance, Operation<Boolean> original) {
         String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        if (Objects.equals(worldType, "Aether")) {
+        if (worldType.equals("Aether")) {
             return true;
         } else {
             return original.call(instance);
@@ -73,14 +71,15 @@ public class MinecraftMixin {
                     target = "(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;J)Lnet/minecraft/world/World;"
             )
     )
-    private World startGameInOtherDimensions(WorldStorage storage, String name, long seed, Operation<World> original) {
-        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+    private World bwo_startGameInOtherDimensions(WorldStorage storage, String name, long seed, Operation<World> original) {
+        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
 
-        if (worldGenerationOptions.worldType.equals("Nether") && storage.loadProperties() == null) {
+        String worldType = ((StringOptionStorage) bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION)).value;
+        if (worldType.equals("Nether") && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(-1));
-        } else if (worldGenerationOptions.worldType.equals("Skylands") && storage.loadProperties() == null) {
+        } else if (worldType.equals("Skylands") && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(1));
-        } else if (worldGenerationOptions.worldType.equals("Aether") && storage.loadProperties() == null) {
+        } else if (worldType.equals("Aether") && storage.loadProperties() == null) {
             return new World(storage, name, seed, CompatMods.startWorldInAether());
         }
 

@@ -1,8 +1,10 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
-import com.itselix99.betterworldoptions.world.WorldGenerationOptions;
-import com.itselix99.betterworldoptions.api.worldtype.WorldType;
+import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
+import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,35 +22,36 @@ public class OreStorageBlockMixin extends Block {
     }
 
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
-    public int getTexture(int original, int side) {
-        WorldGenerationOptions worldGenerationOptions = WorldGenerationOptions.getInstance();
+    public int bwo_getOldTextureOreStorage(int original, int side) {
+        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
 
-        if (worldGenerationOptions.oldFeatures && worldGenerationOptions.oldTextures) {
-            WorldTypeEntry worldType = WorldType.getList().stream().filter(worldTypeEntry -> worldTypeEntry.NAME.equals(worldGenerationOptions.worldType)).toList().get(0);
+        String worldType = ((StringOptionStorage) bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION)).value;
+        boolean oldFeatures = ((BooleanOptionStorage) bwoWorldPropertiesStorage.getOptionValue("OldFeatures", OptionType.GENERAL_OPTION)).value;
 
+        if (oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
             if (side == 1) {
                 if (this.id == 57) {
-                    return worldType.OLD_TEXTURES.get("DiamondBlockTop") != null ? worldType.OLD_TEXTURES.get("DiamondBlockTop") : original;
+                    return WorldTypes.getOldTexture(worldType, "DiamondBlockTop", original);
                 } else if (this.id == 41) {
-                    return worldType.OLD_TEXTURES.get("GoldBlockTop") != null ? worldType.OLD_TEXTURES.get("GoldBlockTop") : original;
+                    return WorldTypes.getOldTexture(worldType, "GoldBlockTop", original);
                 } else if (this.id == 42) {
-                    return worldType.OLD_TEXTURES.get("IronBlockTop") != null ? worldType.OLD_TEXTURES.get("IronBlockTop") : original;
+                    return WorldTypes.getOldTexture(worldType, "IronBlockTop", original);
                 }
             } else if (side == 0) {
                 if (this.id == 57) {
-                    return worldType.OLD_TEXTURES.get("DiamondBlockBottom") != null ? worldType.OLD_TEXTURES.get("DiamondBlockBottom") : original;
+                    return WorldTypes.getOldTexture(worldType, "DiamondBlockBottom", original);
                 } else if (this.id == 41) {
-                    return worldType.OLD_TEXTURES.get("GoldBlockBottom") != null ? worldType.OLD_TEXTURES.get("GoldBlockBottom") : original;
+                    return WorldTypes.getOldTexture(worldType, "GoldBlockBottom", original);
                 } else if (this.id == 42) {
-                    return worldType.OLD_TEXTURES.get("IronBlockBottom") != null ? worldType.OLD_TEXTURES.get("IronBlockBottom") : original;
+                    return WorldTypes.getOldTexture(worldType, "IronBlockBottom", original);
                 }
             } else {
                 if (this.id == 57) {
-                    return worldType.OLD_TEXTURES.get("DiamondBlockSide") != null ? worldType.OLD_TEXTURES.get("DiamondBlockSide") : original;
+                    return WorldTypes.getOldTexture(worldType, "DiamondBlockSide", original);
                 } else if (this.id == 41) {
-                    return worldType.OLD_TEXTURES.get("GoldBlockSide") != null ? worldType.OLD_TEXTURES.get("GoldBlockSide") : original;
+                    return WorldTypes.getOldTexture(worldType, "GoldBlockSide", original);
                 } else if (this.id == 42) {
-                    return worldType.OLD_TEXTURES.get("IronBlockSide") != null ? worldType.OLD_TEXTURES.get("IronBlockSide") : original;
+                    return WorldTypes.getOldTexture(worldType, "IronBlockSide", original);
                 }
             }
         }

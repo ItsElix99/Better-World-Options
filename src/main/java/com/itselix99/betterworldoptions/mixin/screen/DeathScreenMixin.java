@@ -26,7 +26,7 @@ public class DeathScreenMixin extends Screen {
 
     @SuppressWarnings("unchecked")
     @Inject(method = "init", at = @At("TAIL"))
-    public void init(CallbackInfo ci) {
+    public void bwo_initBWOProperties(CallbackInfo ci) {
         this.world = this.minecraft.world;
         this.hardcore = ((BWOProperties) this.world.getProperties()).bwo_isHardcore();
 
@@ -34,7 +34,7 @@ public class DeathScreenMixin extends Screen {
     }
 
     @Inject(method = "buttonClicked", at = @At("TAIL"))
-    protected void buttonClicked(ButtonWidget button, CallbackInfo ci) {
+    protected void bwo_buttonClicked(ButtonWidget button, CallbackInfo ci) {
         if (button.id == 3) {
             if (this.hardcore) {
                 if (!this.world.isRemote) {
@@ -54,14 +54,14 @@ public class DeathScreenMixin extends Screen {
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    public void render(int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    public void bwo_render(int mouseX, int mouseY, float delta, CallbackInfo ci) {
         TranslationStorage translation = TranslationStorage.getInstance();
         if (this.hardcore) {
             ((ButtonWidget) this.buttons.get(0)).active = false;
             ((ButtonWidget) this.buttons.get(0)).visible = false;
             ((ButtonWidget) this.buttons.get(1)).active = false;
             ((ButtonWidget) this.buttons.get(1)).visible = false;
-            this.drawCenteredTextWithShadow(this.textRenderer, translation.get("deathScreen.hardcore.info"), this.width / 2, 144, 16777215);
+            this.drawCenteredTextWithShadow(this.textRenderer, translation.get("deathScreen.hardcoreInfo"), this.width / 2, 144, 16777215);
         } else {
             this.deleteWorldButton.active = false;
             this.deleteWorldButton.visible = false;

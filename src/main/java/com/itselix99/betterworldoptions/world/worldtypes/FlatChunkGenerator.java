@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes;
 
+import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
@@ -37,7 +38,7 @@ public class FlatChunkGenerator implements ChunkSource {
     public FlatChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
-        this.superflat = ((BWOProperties) this.world.getProperties()).bwo_isSuperflat();
+        this.superflat = ((BWOProperties) this.world.getProperties()).bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
         this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
 
         ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
