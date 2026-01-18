@@ -36,7 +36,6 @@
     "blocks.OreStorageBlockMixin",
     "blocks.SlabBlockMixin",
     "blocks.TallPlantBlockMixin",
-    "network.ClientNetworkHandlerMixin",
     "player.BipedEntityModelMixin",
     "player.ClientPlayerEntityMixin",
     "render.GameRendererMixin",

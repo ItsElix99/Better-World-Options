@@ -1,17 +1,14 @@
 package com.itselix99.betterworldoptions.mixin.network;
 
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.network.WorldGenerationOptionsPacket;
-import com.llamalad7.mixinextras.sugar.Local;
+import com.itselix99.betterworldoptions.network.BWOWorldPropertiesStoragePacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.Connection;
 import net.minecraft.network.NetworkHandler;
 import net.minecraft.network.packet.handshake.HandshakePacket;
-import net.minecraft.network.packet.login.LoginHelloPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,9 +23,9 @@ public abstract class ServerLoginNetworkHandlerMixin extends NetworkHandler {
     @Shadow public Connection connection;
 
     @Inject(method = "onHandshake", at = @At("TAIL"))
-    private void sendWorldGenerationOptionsPacket(HandshakePacket packet, CallbackInfo ci){
+    private void bwo_sendBWOWorldPropertiesStoragePacket(HandshakePacket packet, CallbackInfo ci){
         World world = this.server.getWorld(0);
-        BWOProperties properties = (BWOProperties) world.getProperties();
-        this.connection.sendPacket(new WorldGenerationOptionsPacket(properties));
+        BWOProperties bwoProperties = (BWOProperties) world.getProperties();
+        this.connection.sendPacket(new BWOWorldPropertiesStoragePacket(bwoProperties));
     }
 }

@@ -87,6 +87,17 @@ public class WorldPropertiesMixin implements BWOProperties {
         return false;
     }
 
+    @Override
+    public Map<String, OptionStorage> bwo_getOptionsMap(OptionType optionType) {
+        if (optionType == OptionType.GENERAL_OPTION) {
+            return this.generalOptions;
+        } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
+            return this.worldTypeOptions;
+        }
+
+        return null;
+    }
+
     @Inject(method = "<init>(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("TAIL"))
     private void bwo_loadFromNbt(NbtCompound nbt, CallbackInfo ci) {
         BWOWorldPropertiesStorage bwoWorldPropertiesStorage = new BWOWorldPropertiesStorage();

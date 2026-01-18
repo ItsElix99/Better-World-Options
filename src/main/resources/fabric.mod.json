@@ -27,6 +27,7 @@
       "com.itselix99.betterworldoptions.event.TextureListener"
     ],
     "stationapi:event_bus_server": [
+      "com.itselix99.betterworldoptions.event.BWOServerListener"
     ],
     "gcapi3": [
       "com.itselix99.betterworldoptions.config.Config"

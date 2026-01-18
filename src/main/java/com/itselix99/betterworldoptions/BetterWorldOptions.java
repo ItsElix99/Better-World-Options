@@ -2,7 +2,7 @@ package com.itselix99.betterworldoptions;
 
 import com.itselix99.betterworldoptions.block.InvisibleBedrock;
 import com.itselix99.betterworldoptions.event.TextureListener;
-import com.itselix99.betterworldoptions.network.WorldGenerationOptionsPacket;
+import com.itselix99.betterworldoptions.network.BWOWorldPropertiesStoragePacket;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -37,7 +37,7 @@ public class BetterWorldOptions {
 
     @EventListener
     public void registerPackets(PacketRegisterEvent event) {
-        Registry.register(PacketTypeRegistry.INSTANCE, NAMESPACE.id("world_generation_options_packet"), WorldGenerationOptionsPacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, NAMESPACE.id("bwo_world_properties_storage_packet"), BWOWorldPropertiesStoragePacket.TYPE);
     }
 
     @EventListener
