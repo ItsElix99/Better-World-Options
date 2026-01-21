@@ -14,8 +14,8 @@ import net.minecraft.client.resource.language.TranslationStorage;
 @Environment(EnvType.CLIENT)
 public class BWOButtonWidget extends ButtonWidget {
     private final TranslationStorage translation = TranslationStorage.getInstance();
-    public OptionEntry option;
-    public BWOWorldPropertiesStorage bwoWorldPropertiesStorage;
+    private final OptionEntry option;
+    private final BWOWorldPropertiesStorage bwoWorldPropertiesStorage;
     public int selected;
 
     public BWOButtonWidget(int id, int x, int y, int width, int height, String text, OptionEntry option, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {

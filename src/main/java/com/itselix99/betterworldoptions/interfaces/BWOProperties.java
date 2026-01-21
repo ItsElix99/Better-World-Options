@@ -18,6 +18,7 @@ public interface BWOProperties {
 
     String bwo_getStringOptionValue(String optionName, OptionType optionType);
     boolean bwo_getBooleanOptionValue(String optionName, OptionType optionType);
+    int bwo_getIntOptionValue(String optionName, OptionType optionType);
 
     Map<String, OptionStorage> bwo_getOptionsMap(OptionType optionType);
 }

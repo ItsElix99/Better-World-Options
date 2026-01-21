@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.api.options;
 
 import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
+import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
@@ -31,14 +32,14 @@ public class GeneralOptions {
         return stringOption;
     }
 
-    public static StringOptionEntry createStringGeneralOptionWithStringList(String displayName, String name, String[] description, List<String> stringList) {
+    public static StringOptionEntry createStringGeneralOptionWithStringList(String displayName, String name, String[] description, List<String> stringList, int defaultValue) {
         StringOptionEntry stringOption = new StringOptionEntry();
         stringOption.displayName = displayName;
         stringOption.name = name;
         stringOption.description = description;
         stringOption.optionType = OptionType.GENERAL_OPTION;
         stringOption.stringList = stringList;
-        stringOption.defaultValue = stringOption.stringList.get(0);
+        stringOption.defaultValue = stringOption.stringList.get(defaultValue);
         return stringOption;
     }
 
@@ -50,6 +51,18 @@ public class GeneralOptions {
         booleanOption.optionType = OptionType.GENERAL_OPTION;
         booleanOption.defaultValue = defaultValue;
         return booleanOption;
+    }
+
+    public static IntOptionEntry createIntGeneralOption(String displayName, String name, String[] description, int defaultValue, int minValue, int maxValue) {
+        IntOptionEntry intOption = new IntOptionEntry();
+        intOption.displayName = displayName;
+        intOption.name = name;
+        intOption.description = description;
+        intOption.optionType = OptionType.GENERAL_OPTION;
+        intOption.defaultValue = defaultValue;
+        intOption.minValue = minValue;
+        intOption.maxValue = maxValue;
+        return intOption;
     }
 
     static {
@@ -65,7 +78,7 @@ public class GeneralOptions {
         SingleBiome.visible = false;
         GENERAL_OPTIONS_LIST.add(SingleBiome);
 
-        StringOptionEntry Theme = createStringGeneralOptionWithStringList("selectWorld.theme", "Theme", null, new ArrayList<>(Arrays.asList("Normal", "Hell", "Paradise", "Woods", "Winter")));
+        StringOptionEntry Theme = createStringGeneralOptionWithStringList("selectWorld.theme", "Theme", null, new ArrayList<>(Arrays.asList("Normal", "Hell", "Paradise", "Woods", "Winter")), 0);
         Theme.visible = false;
         GENERAL_OPTIONS_LIST.add(Theme);
 
@@ -73,5 +86,31 @@ public class GeneralOptions {
         OldFeatures.worldTypeDefaultValue = new HashMap<>();
         OldFeatures.worldTypeDefaultValue.put("Alpha 1.2.0", true);
         GENERAL_OPTIONS_LIST.add(OldFeatures);
+
+        BooleanOptionEntry FiniteWorld = createBooleanGeneralOption("bwoMoreOptions.finiteWorld", "FiniteWorld", null, false);
+        FiniteWorld.visible = false;
+        GENERAL_OPTIONS_LIST.add(FiniteWorld);
+
+        StringOptionEntry FiniteType = createStringGeneralOptionWithStringList("bwoMoreOptions.finiteType", "FiniteType", null, new ArrayList<>(Arrays.asList("MCPE", "Indev")), 0);
+        FiniteType.visible = false;
+        GENERAL_OPTIONS_LIST.add(FiniteType);
+
+        StringOptionEntry Size = createStringGeneralOptionWithStringList("bwoMoreOptions.size", "Size", null, new ArrayList<>(Arrays.asList("Small", "Normal", "Huge", "Gigantic", "Enormous")), 1);
+        Size.visible = false;
+        Size.save = false;
+        GENERAL_OPTIONS_LIST.add(Size);
+
+        StringOptionEntry Shape = createStringGeneralOptionWithStringList("bwoMoreOptions.shape", "Shape", null, new ArrayList<>(Arrays.asList("Square", "Long")), 0);
+        Shape.visible = false;
+        Shape.save = false;
+        GENERAL_OPTIONS_LIST.add(Shape);
+
+        IntOptionEntry SizeX = createIntGeneralOption("bwoMoreOptions.sizeX", "SizeX", null, 256, 64, 10000);
+        SizeX.visible = false;
+        GENERAL_OPTIONS_LIST.add(SizeX);
+
+        IntOptionEntry SizeZ = createIntGeneralOption("bwoMoreOptions.sizeZ", "SizeZ", null, 256, 64, 10000);
+        SizeZ.visible = false;
+        GENERAL_OPTIONS_LIST.add(SizeZ);
     }
 }

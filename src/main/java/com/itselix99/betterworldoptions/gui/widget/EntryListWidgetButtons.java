@@ -28,6 +28,18 @@ public abstract class EntryListWidgetButtons extends ListWidget {
         this.getEntry(index).renderOutOfBounds(index, x, y, tickDelta);
     }
 
+    public void tick() {
+        for(int var1 = 0; var1 < this.getEntryCount(); ++var1) {
+            this.getEntry(var1).tick();
+        }
+    }
+
+    public void keyPressed(char character, int keyCode) {
+        for(int var1 = 0; var1 < this.getEntryCount(); ++var1) {
+            this.getEntry(var1).keyPressed(character, keyCode);
+        }
+    }
+
     public void mouseClicked(int mouseX, int mouseY, int button) {
         if (this.isMouseInList(mouseY)) {
             int var1 = this.getEntryAt(mouseX, mouseY);
@@ -60,6 +72,10 @@ public abstract class EntryListWidgetButtons extends ListWidget {
 
     @Environment(EnvType.CLIENT)
     public interface Entry {
+        void tick();
+
+        void keyPressed(char character, int keyCode);
+
         void renderOutOfBounds(int index, int x, int y, float tickDelta);
 
         void render(int index, int x, int y, int width, int height, int mouseX, int mouseY, boolean hovered, float tickDelta);

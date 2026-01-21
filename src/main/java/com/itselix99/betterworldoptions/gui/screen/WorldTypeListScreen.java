@@ -1,10 +1,12 @@
 package com.itselix99.betterworldoptions.gui.screen;
 
 import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
+import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
 import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
+import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
@@ -98,6 +100,8 @@ public class WorldTypeListScreen extends Screen {
                             }
                         } else if (option instanceof BooleanOptionEntry booleanOption) {
                             worldTypeOptionsMap.put(booleanOption.name, new BooleanOptionStorage(booleanOption.name, booleanOption.defaultValue));
+                        } else if (option instanceof IntOptionEntry intOption) {
+                            worldTypeOptionsMap.put(intOption.name, new IntOptionStorage(intOption.name, intOption.defaultValue));
                         }
                     }
 

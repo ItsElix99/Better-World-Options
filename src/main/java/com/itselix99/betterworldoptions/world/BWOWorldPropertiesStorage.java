@@ -2,10 +2,12 @@ package com.itselix99.betterworldoptions.world;
 
 import com.itselix99.betterworldoptions.api.options.GeneralOptions;
 import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
+import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
 import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
+import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
@@ -50,6 +52,8 @@ public class BWOWorldPropertiesStorage {
                 }
             } else if (generalOption instanceof BooleanOptionEntry booleanGeneralOption) {
                 this.generalOptions.put(generalOption.name, new BooleanOptionStorage(booleanGeneralOption.name, booleanGeneralOption.defaultValue));
+            } else if (generalOption instanceof IntOptionEntry intGeneralOption) {
+                this.generalOptions.put(generalOption.name, new IntOptionStorage(intGeneralOption.name, intGeneralOption.defaultValue));
             }
         }
     }
@@ -191,56 +195,6 @@ public class BWOWorldPropertiesStorage {
         worldType.oldTextures.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
         worldType.oldTextures.put("FurnaceTop", Block.STONE.textureId);
         worldType.oldTextures.put("BrickBlock", TextureListener.infdevBricksBlock);
-    }
-
-    public void setSizeXZ() {
-//        if (this.indevShape.equals("Long")) {
-//            switch (this.size) {
-//                case "Small" -> {
-//                    this.worldSizeX = 256;
-//                    this.worldSizeZ = 64;
-//                }
-//                case "Normal" -> {
-//                    this.worldSizeX = 512;
-//                    this.worldSizeZ = 128;
-//                }
-//                case "Huge" -> {
-//                    this.worldSizeX = 1024;
-//                    this.worldSizeZ = 256;
-//                }
-//                case "Gigantic" -> {
-//                    this.worldSizeX = 2048;
-//                    this.worldSizeZ = 512;
-//                }
-//                case "Enormous" -> {
-//                    this.worldSizeX = 4096;
-//                    this.worldSizeZ = 1024;
-//                }
-//            }
-//        } else {
-//            switch (this.size) {
-//                case "Small" -> {
-//                    this.worldSizeX = 128;
-//                    this.worldSizeZ = 128;
-//                }
-//                case "Normal" -> {
-//                    this.worldSizeX = 256;
-//                    this.worldSizeZ = 256;
-//                }
-//                case "Huge" -> {
-//                    this.worldSizeX = 512;
-//                    this.worldSizeZ = 512;
-//                }
-//                case "Gigantic" -> {
-//                    this.worldSizeX = 1024;
-//                    this.worldSizeZ = 1024;
-//                }
-//                case "Enormous" -> {
-//                    this.worldSizeX = 2048;
-//                    this.worldSizeZ = 2048;
-//                }
-//            }
-//        }
     }
 
     public static double[] getClimateForBiome(Biome biome) {

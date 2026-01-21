@@ -26,7 +26,18 @@ selectBiome.allBiomes=All Biomes
 
 bwoMoreOptions.title.generalOptions=General Options
 bwoMoreOptions.title.worldTypeOptions=World Type Options
+bwoMoreOptions.title.finiteWorldOptions=Finite World Options
 
+bwoMoreOptions.button.general=General
+bwoMoreOptions.button.worldType=World Type
+bwoMoreOptions.button.finiteWorld=Finite World
+
+bwoMoreOptions.finiteWorld=Finite World:
+bwoMoreOptions.size=Size:
+bwoMoreOptions.finiteType=Finite Type:
+bwoMoreOptions.shape=Shape:
+bwoMoreOptions.sizeX=Size X
+bwoMoreOptions.sizeZ=Size Z
 bwoMoreOptions.superflat=Superflat:
 bwoMoreOptions.indevWorldType=Indev World Type:
 bwoMoreOptions.generateIndevHouse=Generate Indev House:

@@ -1,11 +1,14 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
+import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWONoise;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
+import com.itselix99.betterworldoptions.world.chunk.EmptyFlattenedChunk;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -40,13 +43,20 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     @Unique private Generator ravine = new RavineWorldCarver();
     @Unique private String worldType;
     @Unique private String theme;
-    @Unique private boolean infiniteWorld;
+    @Unique private boolean finiteWorld;
+    @Unique private String finiteType;
+    @Unique private int sizeX;
+    @Unique private int sizeZ;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void bwo_initBWOProperties(World world, long seed, CallbackInfo ci) {
-        this.worldType = ((BWOProperties) world.getProperties()).bwo_getWorldType();
-        this.theme = ((BWOProperties) world.getProperties()).bwo_getTheme();
-        this.infiniteWorld = true;
+        BWOProperties bwoProperties = (BWOProperties) world.getProperties();
+        this.worldType = bwoProperties.bwo_getWorldType();
+        this.theme = bwoProperties.bwo_getTheme();
+        this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
+        this.sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
+        this.sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
 
         ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
         ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
@@ -254,6 +264,32 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         }
     }
 
+    @ModifyReturnValue(method = "getChunk", at = @At(value = "RETURN"))
+    private Chunk bwo_finiteWorld(Chunk original, @Local(ordinal = 0, argsOnly = true) int chunkX,  @Local(ordinal = 1, argsOnly = true) int chunkZ) {
+        if (this.finiteWorld && this.finiteType.equals("MCPE")) {
+            int blockX = chunkX * 16;
+            int blockZ = chunkZ * 16;
+
+            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
+                return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
+            }
+        }
+
+        return original;
+    }
+
+    @Inject(method = "decorate", at = @At(value = "HEAD"), cancellable = true)
+    private void bwo_cancelDecorateInFiniteWorld(ChunkSource source, int x, int z, CallbackInfo ci) {
+        if (this.finiteWorld && this.finiteType.equals("MCPE")) {
+            int blockX = x * 16;
+            int blockZ = z * 16;
+
+            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
+                ci.cancel();
+            }
+        }
+    }
+
     @WrapOperation(
             method = "decorate",
             at = @At(
@@ -411,8 +447,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
                     )
             )
     )
-    private int bwo_removeOffsetInIndevFiniteWorld(int original) {
-        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+    private int bwo_removeOffsetInFiniteWorld(int original) {
+        if (this.finiteWorld) {
             return 0;
         }
 
@@ -423,8 +459,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             method = "decorate",
             constant = @Constant(intValue = 8, ordinal = 3)
     )
-    private int bwo_removeOffsetInIndevFiniteWorld2(int original) {
-        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+    private int bwo_removeOffsetInFiniteWorld2(int original) {
+        if (this.finiteWorld) {
             return 0;
         }
 
@@ -435,8 +471,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             method = "decorate",
             constant = @Constant(intValue = 8, ordinal = 5)
     )
-    private int bwo_removeOffsetInIndevFiniteWorld3(int original) {
-        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+    private int bwo_removeOffsetInFiniteWorld3(int original) {
+        if (this.finiteWorld) {
             return 0;
         }
 
@@ -459,8 +495,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
                     )
             )
     )
-    private int bwo_removeOffsetInIndevFiniteWorld4(int original) {
-        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+    private int bwo_removeOffsetInFiniteWorld4(int original) {
+        if (this.finiteWorld) {
             return 0;
         }
 
@@ -483,8 +519,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
                     )
             )
     )
-    private int bwo_removeOffsetInIndevFiniteWorld5(int original) {
-        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+    private int bwo_removeOffsetInFiniteWorld5(int original) {
+        if (this.finiteWorld) {
             return 0;
         }
 
@@ -507,8 +543,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
                     )
             )
     )
-    private int bwo_removeOffsetInIndevFiniteWorld6(int original) {
-        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+    private int bwo_removeOffsetInFiniteWorld6(int original) {
+        if (this.finiteWorld) {
             return 0;
         }
 
@@ -531,8 +567,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
                     )
             )
     )
-    private int bwo_removeOffsetInIndevFiniteWorld7(int original) {
-        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+    private int bwo_removeOffsetInFiniteWorld7(int original) {
+        if (this.finiteWorld) {
             return 0;
         }
 
@@ -543,8 +579,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             method = "decorate",
             constant = @Constant(intValue = 8, ordinal = 39)
     )
-    private int bwo_removeOffsetInIndevFiniteWorld8(int original) {
-        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+    private int bwo_removeOffsetInFiniteWorld8(int original) {
+        if (this.finiteWorld) {
             return 0;
         }
 
@@ -562,8 +598,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
                     )
             )
     )
-    private int bwo_removeOffsetInIndevFiniteWorld9(int original) {
-        if (this.worldType.equals("Indev 223") && !this.infiniteWorld) {
+    private int bwo_removeOffsetInFiniteWorld9(int original) {
+        if (this.finiteWorld) {
             return 0;
         }
 

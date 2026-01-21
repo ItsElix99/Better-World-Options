@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.network;
 
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
+import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
@@ -51,6 +52,7 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
                 switch (valueType) {
                     case "String" -> option = new StringOptionStorage(generalOptionName, stream.readUTF());
                     case "Boolean" -> option = new BooleanOptionStorage(generalOptionName, stream.readBoolean());
+                    case "Int" -> option = new IntOptionStorage(generalOptionName, stream.readInt());
                 }
 
                 this.generalOptions.put(generalOptionName, option);
@@ -70,6 +72,7 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
                     switch (valueType) {
                         case "String" -> option = new StringOptionStorage(worldTypeOptionName, stream.readUTF());
                         case "Boolean" -> option = new BooleanOptionStorage(worldTypeOptionName, stream.readBoolean());
+                        case "Int" -> option = new IntOptionStorage(worldTypeOptionName, stream.readInt());
                     }
 
                     this.worldTypeOptions.put(worldTypeOptionName, option);
@@ -94,6 +97,9 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
                 } else if (generalOptions instanceof BooleanOptionStorage booleanGeneralOptions) {
                     stream.writeUTF("Boolean");
                     stream.writeBoolean(booleanGeneralOptions.value);
+                } else if (generalOptions instanceof IntOptionStorage intGeneralOptions) {
+                    stream.writeUTF("Int");
+                    stream.writeInt(intGeneralOptions.value);
                 }
             }
 
@@ -112,6 +118,9 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
                     } else if (worldTypeOptions instanceof BooleanOptionStorage booleanWorldTypeOptions) {
                         stream.writeUTF("Boolean");
                         stream.writeBoolean(booleanWorldTypeOptions.value);
+                    } else if (worldTypeOptions instanceof IntOptionStorage intWorldTypeOptions) {
+                        stream.writeUTF("Int");
+                        stream.writeInt(intWorldTypeOptions.value);
                     }
                 }
             }
@@ -150,6 +159,9 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
             } else if (generalOption instanceof BooleanOptionStorage) {
                 size += "Boolean".length();
                 size += 1;
+            } else if (generalOption instanceof IntOptionStorage) {
+                size += "Int".length();
+                size += 4;
             }
         }
 
@@ -167,6 +179,9 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
                 } else if (worldTypeOption instanceof BooleanOptionStorage) {
                     size += "Boolean".length();
                     size += 1;
+                } else if (worldTypeOption instanceof IntOptionStorage) {
+                    size += "Int".length();
+                    size += 4;
                 }
             }
         }

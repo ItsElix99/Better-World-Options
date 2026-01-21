@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.mcpe;
 
+import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
@@ -53,25 +54,23 @@ public class MCPEChunkGenerator implements ChunkSource {
     private double[] temperatures;
     private OverworldChunkGenerator defaultChunkGenerator;
 
-    private final String worldType;
     private final boolean oldFeatures;
     private final String theme;
-    private final String singleBiome;
-    private final boolean infiniteWorld;
-
-    private int worldSizeX;
-    private int worldSizeZ;
+    private final boolean finiteWorld;
+    private String finiteType;
+    private int sizeX;
+    private int sizeZ;
 
     public MCPEChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new MTRandom((int) seed);
-        this.worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        this.oldFeatures = ((BWOProperties) this.world.getProperties()).bwo_isOldFeatures();
-        this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
-        this.singleBiome = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
-        this.infiniteWorld = true;
-        this.worldSizeX = 0;
-        this.worldSizeZ = 0;
+        BWOProperties bwoProperties = (BWOProperties) world.getProperties();
+        this.oldFeatures = bwoProperties.bwo_isOldFeatures();
+        this.theme = bwoProperties.bwo_getTheme();
+        this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
+        this.sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
+        this.sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
 
         ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
         ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
@@ -293,17 +292,12 @@ public class MCPEChunkGenerator implements ChunkSource {
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
 
-        for (int var1 = 0; var1 < 16; var1++) {
-            int blockX = chunkX * 16 + var1;
-            if ((blockX < 0 || blockX >= worldSizeX) && !this.infiniteWorld) {
-                return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
-            }
+        if (this.finiteWorld) {
+            int blockX = chunkX * 16;
+            int blockZ = chunkZ * 16;
 
-            for (int var2 = 0; var2 < 16; var2++) {
-                int blockZ = chunkZ * 16 + var2;
-                if ((blockZ < 0 || blockZ >= worldSizeZ) && !this.infiniteWorld) {
-                    return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
-                }
+            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
+                return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
             }
         }
 
@@ -415,17 +409,12 @@ public class MCPEChunkGenerator implements ChunkSource {
     }
 
     public void decorate(ChunkSource source, int x, int z) {
-        for (int var1 = 0; var1 < 16; var1++) {
-            int blockX = x * 16 + var1;
-            if ((blockX < 0 || blockX >= worldSizeX) && !this.infiniteWorld) {
-                return;
-            }
+        if (this.finiteWorld) {
+            int blockX = x * 16;
+            int blockZ = z * 16;
 
-            for (int var2 = 0; var2 < 16; var2++) {
-                int blockZ = z * 16 + var2;
-                if ((blockZ < 0 || blockZ >= worldSizeZ) && !this.infiniteWorld) {
-                    return;
-                }
+            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
+                return;
             }
         }
 

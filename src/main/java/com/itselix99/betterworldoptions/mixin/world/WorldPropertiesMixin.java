@@ -2,10 +2,12 @@ package com.itselix99.betterworldoptions.mixin.world;
 
 import com.itselix99.betterworldoptions.api.options.GeneralOptions;
 import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
+import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
 import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
+import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
@@ -88,6 +90,22 @@ public class WorldPropertiesMixin implements BWOProperties {
     }
 
     @Override
+    public int bwo_getIntOptionValue(String optionName, OptionType optionType) {
+        if (optionType == OptionType.GENERAL_OPTION) {
+            return ((IntOptionStorage) this.generalOptions.getOrDefault(optionName, new IntOptionStorage(optionName, ((IntOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
+        } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
+            if (!this.worldTypeOptions.isEmpty()) {
+                WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.bwo_getWorldType());
+                if (worldType.worldTypeOptions.containsKey(optionName)) {
+                    return ((IntOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new IntOptionStorage(optionName, ((IntOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    @Override
     public Map<String, OptionStorage> bwo_getOptionsMap(OptionType optionType) {
         if (optionType == OptionType.GENERAL_OPTION) {
             return this.generalOptions;
@@ -106,10 +124,14 @@ public class WorldPropertiesMixin implements BWOProperties {
             NbtCompound betterWorldOptionsNbt = nbt.getCompound("BetterWorldOptions");
 
             for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
-                if (option instanceof StringOptionStorage) {
-                    this.generalOptions.put(option.name, new StringOptionStorage(option.name, betterWorldOptionsNbt.getString(option.name)));
-                } else if (option instanceof BooleanOptionStorage) {
-                    this.generalOptions.put(option.name, new BooleanOptionStorage(option.name, betterWorldOptionsNbt.getBoolean(option.name)));
+                if (GeneralOptions.getOptionByName(option.name).save) {
+                    if (option instanceof StringOptionStorage) {
+                        this.generalOptions.put(option.name, new StringOptionStorage(option.name, betterWorldOptionsNbt.getString(option.name)));
+                    } else if (option instanceof BooleanOptionStorage) {
+                        this.generalOptions.put(option.name, new BooleanOptionStorage(option.name, betterWorldOptionsNbt.getBoolean(option.name)));
+                    } else if (option instanceof IntOptionStorage) {
+                        this.generalOptions.put(option.name, new IntOptionStorage(option.name, betterWorldOptionsNbt.getInt(option.name)));
+                    }
                 }
             }
 
@@ -126,6 +148,8 @@ public class WorldPropertiesMixin implements BWOProperties {
                         worldTypeOptionsMap.put(option.name, new StringOptionStorage(option.name, worldTypeOptionsNbt.getString(option.name)));
                     } else if (option instanceof BooleanOptionEntry) {
                         worldTypeOptionsMap.put(option.name, new BooleanOptionStorage(option.name, worldTypeOptionsNbt.getBoolean(option.name)));
+                    } else if (option instanceof IntOptionEntry) {
+                        worldTypeOptionsMap.put(option.name, new IntOptionStorage(option.name, worldTypeOptionsNbt.getInt(option.name)));
                     }
                 }
 
@@ -136,6 +160,8 @@ public class WorldPropertiesMixin implements BWOProperties {
                         this.worldTypeOptions.put(option.name, new StringOptionStorage(option.name, stringOption.value));
                     } else if (option instanceof BooleanOptionStorage booleanOption) {
                         this.worldTypeOptions.put(option.name, new BooleanOptionStorage(option.name, booleanOption.value));
+                    } else if (option instanceof IntOptionStorage intOption) {
+                        this.worldTypeOptions.put(option.name, new IntOptionStorage(option.name, intOption.value));
                     }
                 }
 
@@ -151,10 +177,14 @@ public class WorldPropertiesMixin implements BWOProperties {
         BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
 
         for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
-            if (option instanceof StringOptionStorage stringOption) {
-                this.generalOptions.put(option.name, new StringOptionStorage(option.name, stringOption.value));
-            } else if (option instanceof BooleanOptionStorage booleanOption) {
-                this.generalOptions.put(option.name, new BooleanOptionStorage(option.name, booleanOption.value));
+            if (GeneralOptions.getOptionByName(option.name).save) {
+                if (option instanceof StringOptionStorage stringOption) {
+                    this.generalOptions.put(option.name, new StringOptionStorage(option.name, stringOption.value));
+                } else if (option instanceof BooleanOptionStorage booleanOption) {
+                    this.generalOptions.put(option.name, new BooleanOptionStorage(option.name, booleanOption.value));
+                } else if (option instanceof IntOptionStorage intOption) {
+                    this.generalOptions.put(option.name, new IntOptionStorage(option.name, intOption.value));
+                }
             }
         }
 
@@ -164,6 +194,8 @@ public class WorldPropertiesMixin implements BWOProperties {
                     this.worldTypeOptions.put(option.name, new StringOptionStorage(option.name, stringOption.value));
                 } else if (option instanceof BooleanOptionStorage booleanOption) {
                     this.worldTypeOptions.put(option.name, new BooleanOptionStorage(option.name, booleanOption.value));
+                } else if (option instanceof IntOptionStorage intOption) {
+                    this.worldTypeOptions.put(option.name, new IntOptionStorage(option.name, intOption.value));
                 }
             }
         }
@@ -183,6 +215,8 @@ public class WorldPropertiesMixin implements BWOProperties {
                 betterWorldOptionsNbt.putString(option.name, stringOption.value);
             } else if (option instanceof BooleanOptionStorage booleanOption) {
                 betterWorldOptionsNbt.putBoolean(option.name, booleanOption.value);
+            } else if (option instanceof IntOptionStorage intOption) {
+                betterWorldOptionsNbt.putInt(option.name, intOption.value);
             }
         }
 
@@ -192,6 +226,8 @@ public class WorldPropertiesMixin implements BWOProperties {
                     worldTypeOptionsNbt.putString(option.name, stringOption.value);
                 } else if (option instanceof BooleanOptionStorage booleanOption) {
                     worldTypeOptionsNbt.putBoolean(option.name, booleanOption.value);
+                } else if (option instanceof IntOptionStorage intOption) {
+                    worldTypeOptionsNbt.putInt(option.name, intOption.value);
                 }
             }
 

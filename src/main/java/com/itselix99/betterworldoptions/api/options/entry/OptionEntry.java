@@ -10,4 +10,5 @@ public class OptionEntry {
     public String[] description;
     public OptionType optionType;
     public boolean visible = true;
+    public boolean save = true;
 }

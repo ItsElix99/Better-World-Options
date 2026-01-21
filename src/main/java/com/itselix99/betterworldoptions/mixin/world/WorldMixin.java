@@ -112,11 +112,13 @@ public abstract class WorldMixin implements BWOWorld {
 
     @WrapOperation(method = "initializeSpawnPoint", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldProperties;setSpawn(III)V"))
     private void bwo_initializeSpawnPoint(WorldProperties properties, int x, int y, int z, Operation<Void> original) {
-        String worldType = ((BWOProperties) properties).bwo_getWorldType();
-        boolean generateIndevHouse = ((BWOProperties) properties).bwo_getBooleanOptionValue("GenerateIndevHouse", OptionType.WORLD_TYPE_OPTION);
-        boolean infinite = false;
-        int worldSizeX = 256;
-        int worldSizeZ = 256;
+        BWOProperties bwoProperties = (BWOProperties) properties;
+        String worldType = bwoProperties.bwo_getWorldType();
+        boolean generateIndevHouse = bwoProperties.bwo_getBooleanOptionValue("GenerateIndevHouse", OptionType.WORLD_TYPE_OPTION);
+        boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        String finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
+        int sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
+        int sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
 
         if (worldType.equals("Indev 223")) {
             boolean isValidSpawnArea = false;
@@ -125,12 +127,12 @@ public abstract class WorldMixin implements BWOWorld {
             int var3 = 0;
 
             while (!isValidSpawnArea) {
-                if (infinite) {
+                if (!finiteWorld) {
                     var1 += this.random.nextInt(64) - this.random.nextInt(64);
                     var3 += this.random.nextInt(64) - this.random.nextInt(64);
                 } else {
-                    var1 = this.random.nextInt(worldSizeX / 2) + worldSizeX / 4;
-                    var3 = this.random.nextInt(worldSizeZ / 2) + worldSizeZ / 4;
+                    var1 = this.random.nextInt(sizeX / 2) + sizeX / 4;
+                    var3 = this.random.nextInt(sizeZ / 2) + sizeZ / 4;
                 }
 
                 var2 = random.nextInt(64, 67);
@@ -144,12 +146,12 @@ public abstract class WorldMixin implements BWOWorld {
             if (generateIndevHouse) {
                 IndevFeatures.placeSpawnBuilding(World.class.cast(this));
             }
-        } else if (worldType.equals("MCPE")) {
-            int var1 = infinite ? 128 : worldSizeX / 2;
+        } else if (finiteWorld) {
+            int var1 = sizeX / 2;
             int var2 = 64;
             int var3;
 
-            for(var3 = infinite ? 128 : worldSizeZ / 2; !this.dimension.isValidSpawnPoint(var1, var3); var3 += this.random.nextInt(64) - this.random.nextInt(64)) {
+            for (var3 = sizeZ / 2; !this.dimension.isValidSpawnPoint(var1, var3); var3 += this.random.nextInt(64) - this.random.nextInt(64)) {
                 var1 += this.random.nextInt(64) - this.random.nextInt(64);
             }
 

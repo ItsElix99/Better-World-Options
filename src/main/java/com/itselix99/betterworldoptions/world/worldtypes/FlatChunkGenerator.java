@@ -5,6 +5,7 @@ import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
+import com.itselix99.betterworldoptions.world.chunk.EmptyFlattenedChunk;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
@@ -34,12 +35,21 @@ public class FlatChunkGenerator implements ChunkSource {
 
     private final boolean superflat;
     private final String theme;
+    private final boolean finiteWorld;
+    private final String finiteType;
+    private final int sizeX;
+    private final int sizeZ;
 
     public FlatChunkGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
-        this.superflat = ((BWOProperties) this.world.getProperties()).bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
-        this.theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
+        BWOProperties bwoProperties = (BWOProperties) world.getProperties();
+        this.superflat = bwoProperties.bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
+        this.theme = bwoProperties.bwo_getTheme();
+        this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
+        this.sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
+        this.sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
 
         ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
         ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
@@ -104,6 +114,16 @@ public class FlatChunkGenerator implements ChunkSource {
         FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
+
+        if (this.finiteWorld) {
+            int blockX = chunkX * 16;
+            int blockZ = chunkZ * 16;
+
+            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
+                return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
+            }
+        }
+
         return flattenedChunk;
     }
 
@@ -112,6 +132,15 @@ public class FlatChunkGenerator implements ChunkSource {
     }
 
     public void decorate(ChunkSource source, int x, int z) {
+        if (this.finiteWorld) {
+            int blockX = x * 16;
+            int blockZ = z * 16;
+
+            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
+                return;
+            }
+        }
+
         if (!this.superflat) {
             int var4 = x * 16;
             int var5 = z * 16;
