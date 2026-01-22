@@ -17,7 +17,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
@@ -84,5 +86,51 @@ public class MinecraftMixin {
         }
 
         return original.call(storage, name, seed);
+    }
+
+    @ModifyArgs(
+            method = "changeDimension",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/player/ClientPlayerEntity;setPositionAndAnglesKeepPrevAngles(DDDFF)V",
+                    ordinal = 1
+            )
+    )
+    private void bwo_fixSpawnInFiniteWorld(Args args) {
+        BWOProperties bwoProperties = (BWOProperties) this.world.getProperties();
+        boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+
+        if (finiteWorld) {
+            double sizeX = (double) bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION) / 2;
+            double sizeZ = (double) bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION) / 2;
+            sizeX = this.world.random.nextDouble(0, sizeX);
+            sizeZ = this.world.random.nextDouble(0, sizeZ);
+
+            args.set(0, sizeX);
+            args.set(2, sizeZ);
+        }
+    }
+
+    @ModifyArgs(
+            method = "changeDimension",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/player/ClientPlayerEntity;setPositionAndAnglesKeepPrevAngles(DDDFF)V",
+                    ordinal = 2
+            )
+    )
+    private void bwo_fixSpawnInFiniteWorld2(Args args) {
+        BWOProperties bwoProperties = (BWOProperties) this.world.getProperties();
+        boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+
+        if (finiteWorld && this.player.dimensionId == 0) {
+            double sizeX = (double) bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION) / 2;
+            double sizeZ = (double) bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION) / 2;
+            sizeX = this.world.random.nextDouble(0, sizeX);
+            sizeZ = this.world.random.nextDouble(0, sizeZ);
+
+            args.set(0, sizeX);
+            args.set(2, sizeZ);
+        }
     }
 }

@@ -10,6 +10,8 @@
     "biomes.RainforestBiomeMixin",
     "biomes.TaigaBiomeMixin",
     "blocks.SaplingBlockMixin",
+    "dimensions.DimensionHelperClientImplMixin",
+    "dimensions.DimensionHelperServerImplMixin",
     "dimensions.DimensionMixin",
     "dimensions.NetherDimensionMixin",
     "dimensions.OverworldDimensionMixin",
