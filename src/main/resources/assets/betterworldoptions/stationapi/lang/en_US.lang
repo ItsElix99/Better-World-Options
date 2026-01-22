@@ -38,6 +38,7 @@ bwoMoreOptions.finiteType=Finite Type:
 bwoMoreOptions.shape=Shape:
 bwoMoreOptions.sizeX=Size X
 bwoMoreOptions.sizeZ=Size Z
+bwoMoreOptions.skyDimension=Sky Dimension:
 bwoMoreOptions.superflat=Superflat:
 bwoMoreOptions.indevWorldType=Indev World Type:
 bwoMoreOptions.generateIndevHouse=Generate Indev House:

@@ -6,6 +6,7 @@ import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
 import com.itselix99.betterworldoptions.compat.CompatMods;
 import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.FlatChunkGenerator;
+import com.itselix99.betterworldoptions.world.worldtypes.SkylandsChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.alpha112.Alpha112ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.Alpha120ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.EarlyInfdevChunkGenerator;
@@ -101,13 +102,15 @@ public class WorldTypes {
         Nether.properties.put("Enable Finite World", false);
         WORLD_TYPE_LIST.add(Nether);
 
-        WorldTypeEntry Skylands = createWorldType(null, "Skylands", "Skylands", "/assets/betterworldoptions/gui/skylands.png", new String[]{"Start the world on the floating", "islands"});
-        Skylands.properties.put("Enable Structures", false);
-        Skylands.properties.put("Enable Single Biome", false);
-        Skylands.properties.put("Enable Themes", false);
+        WorldTypeEntry Skylands = createWorldType(SkylandsChunkGenerator.class, "Skylands", "Skylands", "/assets/betterworldoptions/gui/skylands.png", new String[]{"Start the world on the floating", "islands"});
+        Skylands.properties.put("Enable Structures", true);
+        Skylands.properties.put("Enable Single Biome", true);
+        Skylands.properties.put("Enable Themes", true);
         Skylands.properties.put("Enable Old Features", false);
         Skylands.properties.put("Old Features Has Biomes", false);
-        Skylands.properties.put("Enable Finite World", false);
+        Skylands.properties.put("Enable Finite World", true);
+        Skylands.worldTypeOptions = new LinkedHashMap<>();
+        Skylands.worldTypeOptions.put("Sky Dimension", createBooleanOption(Skylands.worldTypeOptions.size(), "bwoMoreOptions.skyDimension", "SkyDimension", null, false));
         WORLD_TYPE_LIST.add(Skylands);
 
         WorldTypeEntry Flat = createWorldType(FlatChunkGenerator.class, "Flat", "Flat", "/assets/betterworldoptions/gui/flat.png", new String[]{"A completely flat world, perfect for", "building"});

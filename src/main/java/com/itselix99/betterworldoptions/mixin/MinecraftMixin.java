@@ -76,9 +76,11 @@ public class MinecraftMixin {
         BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
 
         String worldType = bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
+        boolean skyDimension = bwoWorldPropertiesStorage.getBooleanOptionValue("SkyDimension", OptionType.WORLD_TYPE_OPTION);
+
         if (worldType.equals("Nether") && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(-1));
-        } else if (worldType.equals("Skylands") && storage.loadProperties() == null) {
+        } else if (worldType.equals("Skylands") && skyDimension && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(1));
         } else if (worldType.equals("Aether") && storage.loadProperties() == null) {
             return new World(storage, name, seed, CompatMods.startWorldInAether());
