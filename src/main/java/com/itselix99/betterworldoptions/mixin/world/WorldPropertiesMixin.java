@@ -15,6 +15,7 @@ import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.WorldProperties;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -199,6 +200,14 @@ public class WorldPropertiesMixin implements BWOProperties {
                 }
             }
         }
+    }
+
+    @Inject(method = "<init>(Lnet/minecraft/world/WorldProperties;)V", at = @At("TAIL"))
+    private void bwo_copyProperties(WorldProperties worldProperties, CallbackInfo ci) {
+        BWOProperties bwoProperties = (BWOProperties) worldProperties;
+
+        this.generalOptions = bwoProperties.bwo_getOptionsMap(OptionType.GENERAL_OPTION);
+        this.worldTypeOptions = bwoProperties.bwo_getOptionsMap(OptionType.WORLD_TYPE_OPTION);
     }
 
     @Inject(method = "updateProperties", at = @At("TAIL"))
