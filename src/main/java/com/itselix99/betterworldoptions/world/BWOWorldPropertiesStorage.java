@@ -84,22 +84,58 @@ public class BWOWorldPropertiesStorage {
         return null;
     }
 
-    public void setOptionValue(String optionName, OptionType optionType, OptionStorage value) {
+    public void setStringOptionValue(String optionName, OptionType optionType, String value) {
         if (optionType == OptionType.GENERAL_OPTION) {
-            this.generalOptions.put(optionName, value);
+            this.generalOptions.put(optionName, new StringOptionStorage(optionName, value));
         } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
-            this.worldTypeOptions.put(optionName, value);
+            this.worldTypeOptions.put(optionName, new StringOptionStorage(optionName, value));
         }
     }
 
-    public OptionStorage getOptionValue(String optionName, OptionType optionType) {
+    public void setBooleanOptionValue(String optionName, OptionType optionType, boolean value) {
         if (optionType == OptionType.GENERAL_OPTION) {
-            return this.generalOptions.get(optionName);
+            this.generalOptions.put(optionName, new BooleanOptionStorage(optionName, value));
+        } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
+            this.worldTypeOptions.put(optionName, new BooleanOptionStorage(optionName, value));
+        }
+    }
+
+    public void setIntOptionValue(String optionName, OptionType optionType, int value) {
+        if (optionType == OptionType.GENERAL_OPTION) {
+            this.generalOptions.put(optionName, new IntOptionStorage(optionName, value));
+        } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
+            this.worldTypeOptions.put(optionName, new IntOptionStorage(optionName, value));
+        }
+    }
+
+    public String getStringOptionValue(String optionName, OptionType optionType) {
+        if (optionType == OptionType.GENERAL_OPTION) {
+            return ((StringOptionStorage) this.generalOptions.get(optionName)).value;
         } else if (optionType == OptionType.WORLD_TYPE_OPTION){
-            return this.worldTypeOptions.get(optionName);
+            return ((StringOptionStorage) this.worldTypeOptions.get(optionName)).value;
         }
 
-        return null;
+        return "";
+    }
+
+    public boolean getBooleanOptionValue(String optionName, OptionType optionType) {
+        if (optionType == OptionType.GENERAL_OPTION) {
+            return ((BooleanOptionStorage) this.generalOptions.get(optionName)).value;
+        } else if (optionType == OptionType.WORLD_TYPE_OPTION){
+            return ((BooleanOptionStorage) this.worldTypeOptions.get(optionName)).value;
+        }
+
+        return false;
+    }
+
+    public int getIntOptionValue(String optionName, OptionType optionType) {
+        if (optionType == OptionType.GENERAL_OPTION) {
+            return ((IntOptionStorage) this.generalOptions.get(optionName)).value;
+        } else if (optionType == OptionType.WORLD_TYPE_OPTION){
+            return ((IntOptionStorage) this.worldTypeOptions.get(optionName)).value;
+        }
+
+        return 0;
     }
 
     public void setSelectedValue(String optionName, OptionType optionType, int value) {

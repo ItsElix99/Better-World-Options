@@ -6,9 +6,6 @@ import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
-import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
-import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
-import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
@@ -39,50 +36,50 @@ public class BWOOptionListWidget extends EntryListWidgetButtons {
             for (int var1 = 0; var1 < options.length; var1 += 2) {
                 OptionEntry option = options[var1];
                 OptionEntry option2 = var1 < options.length - 1 ? options[var1 + 1] : null;
-                DrawContext buttonWidget = this.createWidget(width / 2 - 155, 0, option);
-                DrawContext buttonWidget2 = this.createWidget(width / 2 - 155 + 160, 0, option2);
+                DrawContext buttonWidget = this.createWidget(width / 2 - 155, option);
+                DrawContext buttonWidget2 = this.createWidget(width / 2 - 155 + 160, option2);
                 this.entries.add(new Entry(buttonWidget, buttonWidget2));
             }
         }
 
     }
 
-    private DrawContext createWidget(int x, int y, OptionEntry option) {
+    private DrawContext createWidget(int x, OptionEntry option) {
         if (option == null) {
             return null;
         } else {
             int var1 = option.id;
             DrawContext button;
             if (option instanceof StringOptionEntry stringOption && stringOption.stringList != null) {
-                StringOptionStorage stringOptionStorage = (StringOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue(option.name, option.optionType);
-                button = new BWOButtonWidget(var1, x, y, this.translation.get(option.displayName) + " " + stringOptionStorage.value, option, this.bwoWorldPropertiesStorage);
+                String stringOptionValue = this.bwoWorldPropertiesStorage.getStringOptionValue(option.name, option.optionType);
+                button = new BWOButtonWidget(var1, x, 0, this.translation.get(option.displayName) + " " + stringOptionValue, option, this.bwoWorldPropertiesStorage);
                 return button;
             } else if (option instanceof BooleanOptionEntry booleanOption) {
-                BooleanOptionStorage booleanOptionStorage = (BooleanOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue(option.name, option.optionType);
-                button = new BWOButtonWidget(var1, x, y, this.translation.get(option.displayName) + " " + (booleanOptionStorage.value ? this.translation.get("options.on") : this.translation.get("options.off")), option, this.bwoWorldPropertiesStorage);
+                boolean booleanOptionValue = this.bwoWorldPropertiesStorage.getBooleanOptionValue(option.name, option.optionType);
+                button = new BWOButtonWidget(var1, x, 0, this.translation.get(option.displayName) + " " + (booleanOptionValue ? this.translation.get("options.on") : this.translation.get("options.off")), option, this.bwoWorldPropertiesStorage);
 
                 if (option.name.equals("OldFeatures")) {
-                    if (!WorldTypes.getWorldTypePropertyValue(((StringOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION)).value, "Enable Old Features")) {
-                        this.bwoWorldPropertiesStorage.setOptionValue(option.name, option.optionType, new BooleanOptionStorage(option.name, false));
+                    if (!WorldTypes.getWorldTypePropertyValue(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION), "Enable Old Features")) {
+                        this.bwoWorldPropertiesStorage.setBooleanOptionValue(option.name, option.optionType, false);
                         ((BWOButtonWidget) button).active = false;
-                        ((BWOButtonWidget) button).text = this.translation.get(option.displayName) + " " + (((BooleanOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue(option.name, option.optionType)).value ? this.translation.get("options.on") : this.translation.get("options.off"));
+                        ((BWOButtonWidget) button).text = this.translation.get(option.displayName) + " " + (this.bwoWorldPropertiesStorage.getBooleanOptionValue(option.name, option.optionType) ? this.translation.get("options.on") : this.translation.get("options.off"));
                     }
                 }
 
                 if (booleanOption.worldTypeDefaultValue != null) {
                     for (Map.Entry<String, Boolean> entry : booleanOption.worldTypeDefaultValue.entrySet()) {
-                        if (entry.getKey().equals(((StringOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION)).value)) {
-                            this.bwoWorldPropertiesStorage.setOptionValue(option.name, option.optionType, new BooleanOptionStorage(option.name, entry.getValue()));
+                        if (entry.getKey().equals(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION))) {
+                            this.bwoWorldPropertiesStorage.setBooleanOptionValue(option.name, option.optionType, entry.getValue());
                             ((BWOButtonWidget) button).active = false;
-                            ((BWOButtonWidget) button).text = this.translation.get(option.displayName) + " " + (((BooleanOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue(option.name, option.optionType)).value ? this.translation.get("options.on") : this.translation.get("options.off"));
+                            ((BWOButtonWidget) button).text = this.translation.get(option.displayName) + " " + (this.bwoWorldPropertiesStorage.getBooleanOptionValue(option.name, option.optionType) ? this.translation.get("options.on") : this.translation.get("options.off"));
                         }
                     }
                 }
 
                 return button;
             } else if (option instanceof IntOptionEntry) {
-                IntOptionStorage intOptionStorage = (IntOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue(option.name, option.optionType);
-                button = new BWOTextFieldWidget(this.parent, this.minecraft.textRenderer, x, y, 150, 20, String.valueOf(intOptionStorage.value), option, this.bwoWorldPropertiesStorage);
+                int intOptionValue = this.bwoWorldPropertiesStorage.getIntOptionValue(option.name, option.optionType);
+                button = new BWOTextFieldWidget(this.parent, this.minecraft.textRenderer, x, 0, 150, 20, String.valueOf(intOptionValue), option, this.bwoWorldPropertiesStorage);
                 ((BWOTextFieldWidget) button).setMaxLength(32);
                 return button;
             }

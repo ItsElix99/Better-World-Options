@@ -189,7 +189,7 @@ public class WorldPropertiesMixin implements BWOProperties {
             }
         }
 
-        if (WorldTypes.getWorldTypeByName(((StringOptionStorage) bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION)).value).worldTypeOptions != null) {
+        if (WorldTypes.getWorldTypeByName(bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)).worldTypeOptions != null) {
             for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.WORLD_TYPE_OPTION).values()) {
                 if (option instanceof StringOptionStorage stringOption) {
                     this.worldTypeOptions.put(option.name, new StringOptionStorage(option.name, stringOption.value));

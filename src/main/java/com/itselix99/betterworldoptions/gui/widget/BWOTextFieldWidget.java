@@ -2,7 +2,6 @@ package com.itselix99.betterworldoptions.gui.widget;
 
 import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
-import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -57,7 +56,7 @@ public class BWOTextFieldWidget extends TextFieldWidget {
                 this.setText(this.getText().substring(0, this.getText().length() - 1));
             }
 
-            if (Character.isDigit(character) && (this.getText().length() < 32 || 32 == 0)) {
+            if (Character.isDigit(character) && (this.getText().length() < 32)) {
                 this.setText(this.getText() + character);
             }
 
@@ -67,7 +66,7 @@ public class BWOTextFieldWidget extends TextFieldWidget {
                 int value = Integer.parseInt(this.getText());
 
                 if (value >= intOptionEntry.minValue && value <= intOptionEntry.maxValue) {
-                    this.bwoWorldPropertiesStorage.setOptionValue(this.option.name, this.option.optionType, new IntOptionStorage(this.option.name, value));
+                    this.bwoWorldPropertiesStorage.setIntOptionValue(this.option.name, this.option.optionType, value);
                 }
             }
         }

@@ -46,8 +46,8 @@ public class WorldTypeListScreen extends Screen {
         this.worldTypeListWidget.registerButtons(this.buttons, 4, 5);
         this.buttons.add(this.doneButton = new ButtonWidget(0, this.width / 2 - 75, this.height - 28, 150, 20, translation.get("gui.cancel")));
 
-        StringOptionStorage optionStorage = (StringOptionStorage) this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION);
-        selectedWorldType = WorldTypes.getWorldTypeByName(optionStorage.value);
+        String currentWorldType = this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
+        selectedWorldType = WorldTypes.getWorldTypeByName(currentWorldType);
     }
 
     protected void buttonClicked(ButtonWidget button) {
@@ -83,9 +83,9 @@ public class WorldTypeListScreen extends Screen {
             List<WorldTypeEntry> var3 = WorldTypes.getList();
             WorldTypeListScreen.selectWorldType(var3.get(index));
 
-            StringOptionStorage optionStorage = (StringOptionStorage) WorldTypeListScreen.this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION);
-            if (!optionStorage.value.equals(var3.get(index).name)) {
-                WorldTypeListScreen.this.bwoWorldPropertiesStorage.setOptionValue("WorldType", OptionType.GENERAL_OPTION, new StringOptionStorage("WorldType", var3.get(index).name));
+            String currentWorldType = WorldTypeListScreen.this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
+            if (!currentWorldType.equals(var3.get(index).name)) {
+                WorldTypeListScreen.this.bwoWorldPropertiesStorage.setStringOptionValue("WorldType", OptionType.GENERAL_OPTION, var3.get(index).name);
 
                 Map<String, OptionEntry> worldTypeOptions = WorldTypes.getWorldTypeByName(var3.get(index).name).worldTypeOptions;
                 if (worldTypeOptions != null) {
