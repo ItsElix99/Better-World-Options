@@ -96,7 +96,7 @@ public class WorldTypeListScreen extends Screen {
                             worldTypeOptionsMap.put(stringOption.name, new StringOptionStorage(stringOption.name, stringOption.defaultValue));
 
                             if (stringOption.stringList != null) {
-                                WorldTypeListScreen.this.bwoWorldPropertiesStorage.setSelectedValue(option.name, OptionType.WORLD_TYPE_OPTION, 0);
+                                WorldTypeListScreen.this.bwoWorldPropertiesStorage.setSelectedValue(option.name, OptionType.WORLD_TYPE_OPTION, stringOption.ordinalDefaultValue);
                             }
                         } else if (option instanceof BooleanOptionEntry booleanOption) {
                             worldTypeOptionsMap.put(booleanOption.name, new BooleanOptionStorage(booleanOption.name, booleanOption.defaultValue));

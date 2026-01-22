@@ -48,7 +48,7 @@ public class BWOWorldPropertiesStorage {
                 this.generalOptions.put(generalOption.name, new StringOptionStorage(stringGeneralOption.name, stringGeneralOption.defaultValue));
 
                 if (stringGeneralOption.stringList != null) {
-                    this.selectedGeneralOption.put(generalOption.name, 0);
+                    this.selectedGeneralOption.put(generalOption.name, stringGeneralOption.ordinalDefaultValue);
                 }
             } else if (generalOption instanceof BooleanOptionEntry booleanGeneralOption) {
                 this.generalOptions.put(generalOption.name, new BooleanOptionStorage(booleanGeneralOption.name, booleanGeneralOption.defaultValue));

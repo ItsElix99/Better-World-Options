@@ -110,6 +110,8 @@ public class CreateWorldScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void bwo_initButtons(CallbackInfo ci) {
         List<OptionEntry> generalOptions = GeneralOptions.getList();
+
+
         this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, this.translation.get("selectWorld.gameMode") + " " + this.gamemode.get(this.selectedGamemode)));
         this.buttons.add(new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions")));
         this.buttons.add(this.generateStructuresButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, this.translation.get("selectWorld.mapFeatures") + " " + this.translation.get("options.off")));
@@ -158,6 +160,22 @@ public class CreateWorldScreenMixin extends Screen {
             this.themeButton.text = this.translation.get("selectWorld.theme") + " " + this.bwoWorldPropertiesStorage.getStringOptionValue("Theme", OptionType.GENERAL_OPTION);
         } else {
             this.themeButton.active = true;
+        }
+
+        if (!WorldTypes.getWorldTypePropertyValue(worldType, "Enable Finite World") && this.bwoWorldPropertiesStorage.getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION)) {
+            this.bwoWorldPropertiesStorage.setBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
+
+            this.bwoWorldPropertiesStorage.setStringOptionValue("FiniteType", OptionType.GENERAL_OPTION, "MCPE");
+            this.bwoWorldPropertiesStorage.setSelectedValue("FiniteType", OptionType.GENERAL_OPTION, 0);
+
+            this.bwoWorldPropertiesStorage.setStringOptionValue("Size", OptionType.GENERAL_OPTION, "Normal");
+            this.bwoWorldPropertiesStorage.setSelectedValue("Size", OptionType.GENERAL_OPTION, 1);
+
+            this.bwoWorldPropertiesStorage.setStringOptionValue("Shape", OptionType.GENERAL_OPTION, "Square");
+            this.bwoWorldPropertiesStorage.setSelectedValue("Shape", OptionType.GENERAL_OPTION, 0);
+
+            this.bwoWorldPropertiesStorage.setIntOptionValue("SizeX", OptionType.GENERAL_OPTION, 256);
+            this.bwoWorldPropertiesStorage.setIntOptionValue("SizeZ", OptionType.GENERAL_OPTION, 256);
         }
     }
 

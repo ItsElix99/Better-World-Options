@@ -5,4 +5,5 @@ import java.util.List;
 public class StringOptionEntry extends OptionEntry {
     public String defaultValue;
     public List<String> stringList;
+    public int ordinalDefaultValue = 0;
 }

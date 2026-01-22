@@ -40,6 +40,7 @@ public class GeneralOptions {
         stringOption.optionType = OptionType.GENERAL_OPTION;
         stringOption.stringList = stringList;
         stringOption.defaultValue = stringOption.stringList.get(defaultValue);
+        stringOption.ordinalDefaultValue = defaultValue;
         return stringOption;
     }
 
