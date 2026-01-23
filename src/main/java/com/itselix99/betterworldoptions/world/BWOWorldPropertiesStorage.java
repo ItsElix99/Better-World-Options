@@ -110,9 +110,12 @@ public class BWOWorldPropertiesStorage {
 
     public String getStringOptionValue(String optionName, OptionType optionType) {
         if (optionType == OptionType.GENERAL_OPTION) {
-            return ((StringOptionStorage) this.generalOptions.get(optionName)).value;
+            return ((StringOptionStorage) this.generalOptions.getOrDefault(optionName, new StringOptionStorage(optionName, ((StringOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
         } else if (optionType == OptionType.WORLD_TYPE_OPTION){
-            return ((StringOptionStorage) this.worldTypeOptions.get(optionName)).value;
+            WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
+            if (worldType.worldTypeOptions != null && worldType.worldTypeOptions.containsKey(optionName)) {
+                return ((StringOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new StringOptionStorage(optionName, ((StringOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
+            }
         }
 
         return "";
@@ -120,9 +123,12 @@ public class BWOWorldPropertiesStorage {
 
     public boolean getBooleanOptionValue(String optionName, OptionType optionType) {
         if (optionType == OptionType.GENERAL_OPTION) {
-            return ((BooleanOptionStorage) this.generalOptions.get(optionName)).value;
+            return ((BooleanOptionStorage) this.generalOptions.getOrDefault(optionName, new BooleanOptionStorage(optionName, ((BooleanOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
         } else if (optionType == OptionType.WORLD_TYPE_OPTION){
-            return ((BooleanOptionStorage) this.worldTypeOptions.get(optionName)).value;
+            WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
+            if (worldType.worldTypeOptions != null && worldType.worldTypeOptions.containsKey(optionName)) {
+                return ((BooleanOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new BooleanOptionStorage(optionName, ((BooleanOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
+            }
         }
 
         return false;
@@ -130,9 +136,12 @@ public class BWOWorldPropertiesStorage {
 
     public int getIntOptionValue(String optionName, OptionType optionType) {
         if (optionType == OptionType.GENERAL_OPTION) {
-            return ((IntOptionStorage) this.generalOptions.get(optionName)).value;
+            return ((IntOptionStorage) this.generalOptions.getOrDefault(optionName, new IntOptionStorage(optionName, ((IntOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
         } else if (optionType == OptionType.WORLD_TYPE_OPTION){
-            return ((IntOptionStorage) this.worldTypeOptions.get(optionName)).value;
+            WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
+            if (worldType.worldTypeOptions != null && worldType.worldTypeOptions.containsKey(optionName)) {
+                return ((IntOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new IntOptionStorage(optionName, ((IntOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
+            }
         }
 
         return 0;

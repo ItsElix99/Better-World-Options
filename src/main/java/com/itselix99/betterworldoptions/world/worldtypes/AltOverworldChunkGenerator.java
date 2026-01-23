@@ -417,7 +417,7 @@ public class AltOverworldChunkGenerator implements ChunkSource {
     }
 
     public void decorate(ChunkSource source, int x, int z) {
-        if (this.finiteWorld && this.finiteType.equals("MCPE")) {
+        if (this.finiteWorld) {
             int blockX = x * 16;
             int blockZ = z * 16;
 

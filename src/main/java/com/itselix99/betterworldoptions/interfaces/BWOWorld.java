@@ -5,7 +5,6 @@ import net.minecraft.world.gen.feature.Feature;
 import java.util.Random;
 
 public interface BWOWorld {
-    Feature bwo_getRandomTreeFeatureInfdev(Random random);
     Feature bwo_getRandomTreeFeatureMCPE(Random random);
 
     void bwo_setSnow(boolean bl);

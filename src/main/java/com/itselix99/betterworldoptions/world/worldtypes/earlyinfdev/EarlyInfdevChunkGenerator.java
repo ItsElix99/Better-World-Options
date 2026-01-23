@@ -253,7 +253,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             int blockX = chunkX * 16;
             int blockZ = chunkZ * 16;
 
-            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
+            if (blockX < -this.sizeX / 2 || blockX >= this.sizeX / 2 || blockZ < -this.sizeZ / 2 || blockZ >= this.sizeZ / 2) {
                 return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
             }
         }
@@ -270,7 +270,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             int blockX = x * 16;
             int blockZ = z * 16;
 
-            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
+            if (blockX < -this.sizeX / 2 || blockX >= this.sizeX / 2 || blockZ < -this.sizeZ / 2 || blockZ >= this.sizeZ / 2) {
                 return;
             }
         }

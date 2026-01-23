@@ -1,9 +1,12 @@
 package com.itselix99.betterworldoptions.mixin.biomes;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
-import com.itselix99.betterworldoptions.interfaces.BWOWorld;
+import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
+import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
@@ -12,18 +15,19 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.LargeOakTreeFeature;
 import net.minecraft.world.gen.feature.OakTreeFeature;
-import net.modificationstation.stationapi.api.worldgen.biome.StationBiome;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Random;
 
 @Mixin(Biome.class)
-public abstract class BiomeMixin implements BWOWorld, StationBiome {
+public abstract class BiomeMixin implements BWOWorld {
 
     @Environment(EnvType.CLIENT)
     @ModifyReturnValue(method = "getSkyColor", at = @At("RETURN"))
-    public int getSkyColor(int original) {
+    public int bwo_getSkyColor(int original) {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
@@ -50,8 +54,17 @@ public abstract class BiomeMixin implements BWOWorld, StationBiome {
         }
     }
 
-    @Override
-    public Feature bwo_getRandomTreeFeatureInfdev(Random random) { return random.nextInt(10) == 0 ? new OakTreeFeature() : new LargeOakTreeFeature(); }
+    @ModifyReturnValue(method = "getRandomTreeFeature", at = @At("RETURN"))
+    public Feature bwo_getRandomTreeFeatureInfdev(Feature original, @Local(ordinal = 0, argsOnly = true) Random random) {
+        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
+        String worldType = bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
+
+        if (worldType.equals("Infdev 415") || worldType.equals("Infdev 420")) {
+            return random.nextInt(10) == 0 ? new LargeOakTreeFeature() : new OakTreeFeature();
+        } else {
+            return original;
+        }
+    }
 
     @Override
     public Feature bwo_getRandomTreeFeatureMCPE(Random random) {

@@ -22,7 +22,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.gen.Generator;
 import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.PlantPatchFeature;
 import net.modificationstation.stationapi.api.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,7 +40,6 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     @Shadow private OctavePerlinNoiseSampler perlinNoise2;
     @Shadow private OctavePerlinNoiseSampler perlinNoise3;
     @Unique private Generator ravine = new RavineWorldCarver();
-    @Unique private String worldType;
     @Unique private String theme;
     @Unique private boolean finiteWorld;
     @Unique private String finiteType;
@@ -51,7 +49,6 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     @Inject(method = "<init>", at = @At("TAIL"))
     private void bwo_initBWOProperties(World world, long seed, CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
-        this.worldType = bwoProperties.bwo_getWorldType();
         this.theme = bwoProperties.bwo_getTheme();
         this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
         this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
@@ -330,22 +327,6 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         }
 
         return original;
-    }
-
-    @WrapOperation(
-            method = "decorate",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/biome/Biome;getRandomTreeFeature(Ljava/util/Random;)Lnet/minecraft/world/gen/feature/Feature;",
-                    ordinal = 0
-            )
-    )
-    private Feature bwo_infdevTrees(Biome instance, Random random, Operation<Feature> original) {
-        if (this.worldType.equals("Infdev 415") || this.worldType.equals("Infdev 420")) {
-            return ((BWOWorld) instance).bwo_getRandomTreeFeatureInfdev(random);
-        }
-
-        return original.call(instance, random);
     }
 
     @ModifyConstant(method = "decorate", constant = @Constant(intValue = 0, ordinal = 12))

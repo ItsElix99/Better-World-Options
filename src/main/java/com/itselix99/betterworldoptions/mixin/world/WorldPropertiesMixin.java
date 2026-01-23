@@ -65,7 +65,7 @@ public class WorldPropertiesMixin implements BWOProperties {
         } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
             if (!this.worldTypeOptions.isEmpty()) {
                 WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.bwo_getWorldType());
-                if (worldType.worldTypeOptions.containsKey(optionName)) {
+                if (worldType.worldTypeOptions != null && worldType.worldTypeOptions.containsKey(optionName)) {
                     return ((StringOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new StringOptionStorage(optionName, ((StringOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
                 }
             }
@@ -81,7 +81,7 @@ public class WorldPropertiesMixin implements BWOProperties {
         } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
             if (!this.worldTypeOptions.isEmpty()) {
                 WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.bwo_getWorldType());
-                if (worldType.worldTypeOptions.containsKey(optionName)) {
+                if (worldType.worldTypeOptions != null && worldType.worldTypeOptions.containsKey(optionName)) {
                     return ((BooleanOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new BooleanOptionStorage(optionName, ((BooleanOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
                 }
             }
@@ -97,7 +97,7 @@ public class WorldPropertiesMixin implements BWOProperties {
         } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
             if (!this.worldTypeOptions.isEmpty()) {
                 WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.bwo_getWorldType());
-                if (worldType.worldTypeOptions.containsKey(optionName)) {
+                if (worldType.worldTypeOptions != null && worldType.worldTypeOptions.containsKey(optionName)) {
                     return ((IntOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new IntOptionStorage(optionName, ((IntOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
                 }
             }

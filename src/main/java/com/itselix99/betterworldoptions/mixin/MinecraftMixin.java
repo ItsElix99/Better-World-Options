@@ -104,8 +104,8 @@ public class MinecraftMixin {
         if (finiteWorld) {
             double sizeX = (double) bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION) / 2;
             double sizeZ = (double) bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION) / 2;
-            sizeX = this.world.random.nextDouble(0, sizeX);
-            sizeZ = this.world.random.nextDouble(0, sizeZ);
+            sizeX += this.world.random.nextDouble(0, sizeX);
+            sizeZ += this.world.random.nextDouble(0, sizeZ);
 
             args.set(0, sizeX);
             args.set(2, sizeZ);
@@ -127,8 +127,8 @@ public class MinecraftMixin {
         if (finiteWorld && this.player.dimensionId == 0) {
             double sizeX = (double) bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION) / 2;
             double sizeZ = (double) bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION) / 2;
-            sizeX = this.world.random.nextDouble(0, sizeX);
-            sizeZ = this.world.random.nextDouble(0, sizeZ);
+            sizeX += this.world.random.nextDouble(0, sizeX);
+            sizeZ += this.world.random.nextDouble(0, sizeZ);
 
             args.set(0, sizeX);
             args.set(2, sizeZ);

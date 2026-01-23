@@ -8,12 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import java.util.Random;
 
 @Mixin(TaigaBiome.class)
-public abstract class TaigaBiomeMixin extends BiomeMixin implements BWOWorld {
-
-    @Override
-    public Feature bwo_getRandomTreeFeatureInfdev(Random random) {
-        return random.nextInt(3) == 0 ? new PineTreeFeature() : new SpruceTreeFeature();
-    }
+public abstract class TaigaBiomeMixin implements BWOWorld {
 
     @Override
     public Feature bwo_getRandomTreeFeatureMCPE(Random random) {
