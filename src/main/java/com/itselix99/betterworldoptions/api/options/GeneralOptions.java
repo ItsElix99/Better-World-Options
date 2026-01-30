@@ -96,7 +96,7 @@ public class GeneralOptions {
         FiniteType.visible = false;
         GENERAL_OPTIONS_LIST.add(FiniteType);
 
-        StringOptionEntry Size = createStringGeneralOptionWithStringList("bwoMoreOptions.size", "Size", null, new ArrayList<>(Arrays.asList("Small", "Normal", "Huge", "Gigantic", "Enormous")), 1);
+        StringOptionEntry Size = createStringGeneralOptionWithStringList("bwoMoreOptions.size", "Size", null, new ArrayList<>(Arrays.asList("Small", "Normal", "Huge", "Classic LCE", "Small LCE", "Medium LCE", "Large LCE")), 1);
         Size.visible = false;
         Size.save = false;
         GENERAL_OPTIONS_LIST.add(Size);
@@ -106,11 +106,11 @@ public class GeneralOptions {
         Shape.save = false;
         GENERAL_OPTIONS_LIST.add(Shape);
 
-        IntOptionEntry SizeX = createIntGeneralOption("bwoMoreOptions.sizeX", "SizeX", null, 256, 64, 10000);
+        IntOptionEntry SizeX = createIntGeneralOption("bwoMoreOptions.sizeX", "SizeX", null, 256, 64, 10240);
         SizeX.visible = false;
         GENERAL_OPTIONS_LIST.add(SizeX);
 
-        IntOptionEntry SizeZ = createIntGeneralOption("bwoMoreOptions.sizeZ", "SizeZ", null, 256, 64, 10000);
+        IntOptionEntry SizeZ = createIntGeneralOption("bwoMoreOptions.sizeZ", "SizeZ", null, 256, 64, 10240);
         SizeZ.visible = false;
         GENERAL_OPTIONS_LIST.add(SizeZ);
     }

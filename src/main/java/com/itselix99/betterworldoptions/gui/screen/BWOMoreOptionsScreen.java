@@ -38,8 +38,8 @@ public class BWOMoreOptionsScreen extends Screen {
     private BWOTextFieldWidget sizeXField;
     private BWOTextFieldWidget sizeZField;
 
-    private final List<int[]> sizeSquare = new ArrayList<>(Arrays.asList(new int[]{128, 128}, new int[]{256, 256}, new int[]{512, 512}, new int[]{1024, 1024}, new int[]{2048, 2048}));
-    private final List<int[]> sizeLong = new ArrayList<>(Arrays.asList(new int[]{256, 64}, new int[]{512, 128}, new int[]{1024, 256}, new int[]{2048, 512}, new int[]{4096, 1024}));
+    private final List<int[]> sizeSquare = new ArrayList<>(Arrays.asList(new int[]{128, 128}, new int[]{256, 256}, new int[]{512, 512}, new int[]{864, 864}, new int[]{1024, 1024}, new int[]{3072, 3072}, new int[]{5120, 5120}));
+    private final List<int[]> sizeLong = new ArrayList<>(Arrays.asList(new int[]{256, 64}, new int[]{512, 128}, new int[]{1024, 256}, new int[]{1728, 432}, new int[]{2048, 512}, new int[]{6144, 1536}, new int[]{10240, 2560}));
 
     public BWOMoreOptionsScreen(Screen parent, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {
         this.parent = parent;
