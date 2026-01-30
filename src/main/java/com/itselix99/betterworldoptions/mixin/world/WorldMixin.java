@@ -146,7 +146,7 @@ public abstract class WorldMixin implements BWOWorld {
             if (generateIndevHouse) {
                 IndevFeatures.placeSpawnBuilding(World.class.cast(this));
             }
-        } else if (finiteWorld) {
+        } else if (finiteType.equals("MCPE")) {
             int var1 = sizeX / 2;
             int var2 = 64;
             int var3;

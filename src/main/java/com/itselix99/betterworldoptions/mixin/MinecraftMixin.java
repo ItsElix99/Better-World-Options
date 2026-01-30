@@ -99,13 +99,26 @@ public class MinecraftMixin {
     )
     private void bwo_fixSpawnInFiniteWorld(Args args) {
         BWOProperties bwoProperties = (BWOProperties) this.world.getProperties();
+        String worldType = bwoProperties.bwo_getWorldType();
         boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        String finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
 
         if (finiteWorld) {
             double sizeX = (double) bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION) / 2;
             double sizeZ = (double) bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION) / 2;
-            sizeX += this.world.random.nextDouble(0, sizeX);
-            sizeZ += this.world.random.nextDouble(0, sizeZ);
+
+            if (finiteType.equals("MCPE") || worldType.equals("Indev 223")) {
+                if (worldType.equals("Early Infdev")) {
+                    sizeX += this.world.random.nextDouble(-sizeX, sizeX);
+                    sizeZ += this.world.random.nextDouble(-sizeX, sizeZ);
+                } else {
+                    sizeX += this.world.random.nextDouble(0, sizeX);
+                    sizeZ += this.world.random.nextDouble(0, sizeZ);
+                }
+            } else {
+                sizeX += this.world.random.nextDouble(-sizeX, sizeX);
+                sizeZ += this.world.random.nextDouble(-sizeX, sizeZ);
+            }
 
             args.set(0, sizeX);
             args.set(2, sizeZ);
@@ -122,13 +135,26 @@ public class MinecraftMixin {
     )
     private void bwo_fixSpawnInFiniteWorld2(Args args) {
         BWOProperties bwoProperties = (BWOProperties) this.world.getProperties();
+        String worldType = bwoProperties.bwo_getWorldType();
         boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        String finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
 
         if (finiteWorld && this.player.dimensionId == 0) {
             double sizeX = (double) bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION) / 2;
             double sizeZ = (double) bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION) / 2;
-            sizeX += this.world.random.nextDouble(0, sizeX);
-            sizeZ += this.world.random.nextDouble(0, sizeZ);
+
+            if (finiteType.equals("MCPE") || worldType.equals("Indev 223")) {
+                if (worldType.equals("Early Infdev")) {
+                    sizeX += this.world.random.nextDouble(-sizeX, sizeX);
+                    sizeZ += this.world.random.nextDouble(-sizeX, sizeZ);
+                } else {
+                    sizeX += this.world.random.nextDouble(0, sizeX);
+                    sizeZ += this.world.random.nextDouble(0, sizeZ);
+                }
+            } else {
+                sizeX += this.world.random.nextDouble(-sizeX, sizeX);
+                sizeZ += this.world.random.nextDouble(-sizeX, sizeZ);
+            }
 
             args.set(0, sizeX);
             args.set(2, sizeZ);
