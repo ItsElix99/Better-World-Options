@@ -522,15 +522,6 @@ public class AltOverworldChunkGenerator implements ChunkSource {
     }
 
     public void decorate(ChunkSource source, int x, int z) {
-        if (this.finiteWorld) {
-            int blockX = x * 16;
-            int blockZ = z * 16;
-
-            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
-                return;
-            }
-        }
-
         this.defaultChunkGenerator.decorate(source, x, z);
     }
 

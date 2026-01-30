@@ -480,15 +480,6 @@ public class Indev223ChunkGenerator implements ChunkSource {
     }
 
     public void decorate(ChunkSource source, int x, int z) {
-        if (this.finiteWorld) {
-            int blockX = x * 16;
-            int blockZ = z * 16;
-
-            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
-                return;
-            }
-        }
-
         if (this.oldFeatures) {
             this.random.setSeed((long)x * 318279123L + (long)z * 919871212L);
             int var4 = x << 4;

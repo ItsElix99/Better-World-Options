@@ -498,15 +498,6 @@ public class Alpha120ChunkGenerator implements ChunkSource {
     }
 
     public void decorate(ChunkSource source, int x, int z) {
-        if (this.finiteWorld) {
-            int blockX = x * 16;
-            int blockZ = z * 16;
-
-            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
-                return;
-            }
-        }
-
         SandBlock.fallInstantly = true;
         int var4 = x * 16;
         int var5 = z * 16;

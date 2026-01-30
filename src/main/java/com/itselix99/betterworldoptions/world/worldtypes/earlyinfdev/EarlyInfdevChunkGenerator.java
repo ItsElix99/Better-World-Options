@@ -266,15 +266,6 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
     }
 
     public void decorate(ChunkSource source, int x, int z) {
-        if (this.finiteWorld) {
-            int blockX = x * 16;
-            int blockZ = z * 16;
-
-            if (blockX < -this.sizeX / 2 || blockX >= this.sizeX / 2 || blockZ < -this.sizeZ / 2 || blockZ >= this.sizeZ / 2) {
-                return;
-            }
-        }
-
         if (this.oldFeatures) {
             this.random.setSeed((long)x * 318279123L + (long)z * 919871212L);
             int var4 = x << 4;

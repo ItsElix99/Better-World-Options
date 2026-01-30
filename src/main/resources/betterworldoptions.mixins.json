@@ -17,6 +17,7 @@
     "dimensions.OverworldDimensionMixin",
     "world.AlphaWorldStorageAccessor",
     "world.CaveWorldCarverMixin",
+    "world.ChunkCacheMixin",
     "world.DimensionDataAccessor",
     "world.FlattenedWorldStorageMixin",
     "world.OctavePerlinNoiseSamplerMixin",
@@ -26,7 +27,8 @@
   ],
   "server": [
     "biomes.BiomeColorsImplServerMixin",
-    "network.ServerLoginNetworkHandlerMixin"
+    "network.ServerLoginNetworkHandlerMixin",
+    "world.ServerChunkCacheMixin"
   ],
   "client": [
     "MinecraftMixin",
