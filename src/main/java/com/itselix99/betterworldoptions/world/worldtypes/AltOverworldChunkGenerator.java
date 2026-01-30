@@ -261,6 +261,49 @@ public class AltOverworldChunkGenerator implements ChunkSource {
                             }
                         }
                     }
+
+                    if (this.finiteWorld && this.finiteType.equals("LCE")) {
+                        int index = (var8 * 16 + var9) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var17;
+                        double minX = -this.sizeX / 2.0D;
+                        double maxX = this.sizeX / 2.0D - 1.0D;
+                        double minZ = -this.sizeZ / 2.0D;
+                        double maxZ = this.sizeZ / 2.0D - 1.0D;
+
+                        boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
+                        boolean limit2 = x2 < minX || x2 > maxX || z2 < minZ || z2 > maxZ;
+                        if (var17 <= 55) {
+                            if (limit) {
+                                if (var17 >= 53) {
+                                    blocks[index] = var10.soilBlockId;
+                                } else {
+                                    blocks[index] = (byte) Block.STONE.id;
+                                }
+                            } else if (limit2) {
+                                blocks[index] = (byte) Block.STONE.id;
+                            }
+                        }
+
+                        if (var17 <= this.random.nextInt(5)) {
+                            if (limit) {
+                                blocks[index] = (byte) Block.BEDROCK.id;
+                            } else if (limit2) {
+                                blocks[index] = (byte) Block.BEDROCK.id;
+                            }
+                        }
+
+                        boolean limit3 = x2 <= minX || x2 >= maxX || z2 <= minZ || z2 >= maxZ;
+                        if (var17 > 55 && var17 <= 63 && limit3) {
+                            blocks[index] = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
+
+                            if (this.theme.equals("Winter") && var17 == 63) {
+                                blocks[index] = (byte) Block.ICE.id;
+                            }
+                        }
+
+                        if (var17 >= 64 && limit3) {
+                            blocks[index] = (byte) 0;
+                        }
+                    }
                 }
             }
         }
@@ -288,7 +331,7 @@ public class AltOverworldChunkGenerator implements ChunkSource {
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
 
-        if (this.finiteWorld) {
+        if (this.finiteWorld && this.finiteType.equals("MCPE")) {
             int blockX = chunkX * 16;
             int blockZ = chunkZ * 16;
 
@@ -323,6 +366,55 @@ public class AltOverworldChunkGenerator implements ChunkSource {
             int var18 = var17 * var16 + var16 / 2;
 
             for (int var19 = 0; var19 < sizeZ; ++var19) {
+                double worldEdgeFactor = 1.0D;
+
+                int nx = (x + var17) * 4;
+                int nz = (z + var19) * 4;
+
+                double dx = Math.abs(nx);
+                double dz = Math.abs(nz);
+
+                int halfSizeX = this.sizeX / 2;
+                int halfSizeZ = this.sizeZ / 2;
+
+                double limitX = halfSizeX + 18.0D;
+                double limitZ = halfSizeZ + 18.0D;
+
+                if (halfSizeX == 32) limitX += 12.0D;
+                if (halfSizeZ == 32) limitZ += 12.0D;
+
+                double falloff = 50.0D;
+
+                if (this.finiteType.equals("LCE")) {
+                    double edgeX = limitX - dx;
+                    double edgeZ = limitZ - dz;
+
+                    double factorX = edgeX / falloff;
+                    double factorZ = edgeZ / falloff;
+
+                    factorX = Math.max(0.0D, Math.min(1.0D, factorX));
+                    factorZ = Math.max(0.0D, Math.min(1.0D, factorZ));
+
+                    worldEdgeFactor = Math.min(factorX, factorZ);
+                } else if (this.finiteType.equals("Indev Island")) {
+                    falloff = 100.0D;
+
+                    double nxNorm = dx / limitX;
+                    double nzNorm = dz / limitZ;
+
+                    double radial = Math.sqrt(nxNorm * nxNorm + nzNorm * nzNorm);
+                    double falloffRadial = falloff / (Math.sqrt(limitX * limitX + limitZ * limitZ));
+
+                    double start = 1.0D - falloffRadial;
+
+                    double t = (radial - start) / (1.0D - start);
+                    t = Math.max(0.0D, Math.min(1.0D, t));
+
+                    worldEdgeFactor = 1.0D - t;
+                }
+
+                double islandOffset = -200.0D * (1.0D - worldEdgeFactor);
+
                 int var20 = var19 * var16 + var16 / 2;
                 double var21 = var12[var18 * 16 + var20];
                 double var23 = var13[var18 * 16 + var20] * var21;
@@ -391,9 +483,22 @@ public class AltOverworldChunkGenerator implements ChunkSource {
                     double var42 = (this.perlinNoiseBuffer[var14] / (double) 10.0F + (double) 1.0F) / (double) 2.0F;
                     if (var42 < (double) 0.0F) {
                         var34 = var38;
+
+                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                            var34 += islandOffset;
+                        }
                     } else if (var42 > (double) 1.0F) {
                         var34 = var40;
+
+                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                            var34 += islandOffset;
+                        }
                     } else {
+                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                            var38 += islandOffset;
+                            var40 += islandOffset;
+                        }
+
                         var34 = var38 + (var40 - var38) * var42;
                     }
 

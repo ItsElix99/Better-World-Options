@@ -143,6 +143,55 @@ public class Infdev611ChunkGenerator implements ChunkSource {
 
         for(int var8 = 0; var8 < 5; ++var8) {
             for(int var9 = 0; var9 < 5; ++var9) {
+                double worldEdgeFactor = 1.0D;
+
+                int nx = ((chunkX << 2) + var8) * 4;
+                int nz = ((chunkZ << 2) + var9) * 4;
+
+                double dx = Math.abs(nx);
+                double dz = Math.abs(nz);
+
+                int halfSizeX = this.sizeX / 2;
+                int halfSizeZ = this.sizeZ / 2;
+
+                double limitX = halfSizeX + 18.0D;
+                double limitZ = halfSizeZ + 18.0D;
+
+                if (halfSizeX == 32) limitX += 12.0D;
+                if (halfSizeZ == 32) limitZ += 12.0D;
+
+                double falloff = 50.0D;
+
+                if (this.finiteType.equals("LCE")) {
+                    double edgeX = limitX - dx;
+                    double edgeZ = limitZ - dz;
+
+                    double factorX = edgeX / falloff;
+                    double factorZ = edgeZ / falloff;
+
+                    factorX = Math.max(0.0D, Math.min(1.0D, factorX));
+                    factorZ = Math.max(0.0D, Math.min(1.0D, factorZ));
+
+                    worldEdgeFactor = Math.min(factorX, factorZ);
+                } else if (this.finiteType.equals("Indev Island")) {
+                    falloff = 100.0D;
+
+                    double nxNorm = dx / limitX;
+                    double nzNorm = dz / limitZ;
+
+                    double radial = Math.sqrt(nxNorm * nxNorm + nzNorm * nzNorm);
+                    double falloffRadial = falloff / (Math.sqrt(limitX * limitX + limitZ * limitZ));
+
+                    double start = 1.0D - falloffRadial;
+
+                    double t = (radial - start) / (1.0D - start);
+                    t = Math.max(0.0D, Math.min(1.0D, t));
+
+                    worldEdgeFactor = 1.0D - t;
+                }
+
+                double islandOffset = -200.0D * (1.0D - worldEdgeFactor);
+
                 double var10;
                 if ((var10 = (var81.scaleNoiseBuffer[var7] + (double)256.0F) / (double)512.0F) > (double)1.0F) {
                     var10 = 1.0F;
@@ -185,9 +234,22 @@ public class Infdev611ChunkGenerator implements ChunkSource {
                     double var18;
                     if ((var18 = (var81.perlinNoiseBuffer[m11] / (double)10.0F + (double)1.0F) / (double)2.0F) < (double)0.0F) {
                         var17 = var15;
+
+                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                            var17 += islandOffset;
+                        }
                     } else if (var18 > (double)1.0F) {
                         var17 = var16;
+
+                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                            var17 += islandOffset;
+                        }
                     } else {
+                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                            var15 += islandOffset;
+                            var16 += islandOffset;
+                        }
+
                         var17 = var15 + (var16 - var15) * var18;
                     }
 
@@ -339,6 +401,49 @@ public class Infdev611ChunkGenerator implements ChunkSource {
                     }
 
                     --var46;
+
+                    if (this.finiteWorld && this.finiteType.equals("LCE")) {
+                        int index = (var83 * 16 + var42) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var50;
+                        double minX = -this.sizeX / 2.0D;
+                        double maxX = this.sizeX / 2.0D - 1.0D;
+                        double minZ = -this.sizeZ / 2.0D;
+                        double maxZ = this.sizeZ / 2.0D - 1.0D;
+
+                        boolean limit = (var88 == minX && var91 >= minZ && var91 <= maxZ) || (var88 == maxX && var91 >= minZ && var91 <= maxZ) || (var91 == minZ && var88 >= minX && var88 <= maxX) || (var91 == maxZ && var88 >= minX && var88 <= maxX);
+                        boolean limit2 = var88 < minX || var88 > maxX || var91 < minZ || var91 > maxZ;
+                        if (var50 <= 55) {
+                            if (limit) {
+                                if (var50 >= 53) {
+                                    blocks[index] = this.oldFeatures ? (byte) Block.DIRT.id : var82.soilBlockId;
+                                } else {
+                                    blocks[index] = (byte) Block.STONE.id;
+                                }
+                            } else if (limit2) {
+                                blocks[index] = (byte) Block.STONE.id;
+                            }
+                        }
+
+                        if (var50 <= this.random.nextInt(5)) {
+                            if (limit) {
+                                blocks[index] = (byte) Block.BEDROCK.id;
+                            } else if (limit2) {
+                                blocks[index] = (byte) Block.BEDROCK.id;
+                            }
+                        }
+
+                        boolean limit3 = var88 <= minX || var88 >= maxX || var91 <= minZ || var91 >= maxZ;
+                        if (var50 > 55 && var50 <= 63 && limit3) {
+                            blocks[index] = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
+
+                            if (this.theme.equals("Winter") && var50 == 63) {
+                                blocks[index] = (byte) Block.ICE.id;
+                            }
+                        }
+
+                        if (var50 >= 64 && limit3) {
+                            blocks[index] = (byte) 0;
+                        }
+                    }
                 }
             }
         }
@@ -369,7 +474,7 @@ public class Infdev611ChunkGenerator implements ChunkSource {
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
 
-        if (this.finiteWorld) {
+        if (this.finiteWorld && this.finiteType.equals("MCPE")) {
             int blockX = chunkX * 16;
             int blockZ = chunkZ * 16;
 

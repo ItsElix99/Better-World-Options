@@ -92,7 +92,7 @@ public class GeneralOptions {
         FiniteWorld.visible = false;
         GENERAL_OPTIONS_LIST.add(FiniteWorld);
 
-        StringOptionEntry FiniteType = createStringGeneralOptionWithStringList("bwoMoreOptions.finiteType", "FiniteType", null, new ArrayList<>(Arrays.asList("MCPE", "Indev")), 0);
+        StringOptionEntry FiniteType = createStringGeneralOptionWithStringList("bwoMoreOptions.finiteType", "FiniteType", null, new ArrayList<>(Arrays.asList("MCPE", "LCE", "Indev Island")), 0);
         FiniteType.visible = false;
         GENERAL_OPTIONS_LIST.add(FiniteType);
 

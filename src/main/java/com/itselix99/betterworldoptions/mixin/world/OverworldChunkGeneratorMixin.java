@@ -41,6 +41,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     @Shadow private OctavePerlinNoiseSampler perlinNoise3;
     @Unique private Generator ravine = new RavineWorldCarver();
     @Unique private String theme;
+    @Unique private String worldType;
     @Unique private boolean finiteWorld;
     @Unique private String finiteType;
     @Unique private int sizeX;
@@ -50,6 +51,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     private void bwo_initBWOProperties(World world, long seed, CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
         this.theme = bwoProperties.bwo_getTheme();
+        this.worldType = bwoProperties.bwo_getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
         this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
         this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
         this.sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
@@ -248,6 +250,104 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     }
 
     @Inject(
+            method = "buildSurfaces",
+            at = @At(
+                    value = "CONSTANT",
+                    args = "intValue=0",
+                    ordinal = 4
+            )
+    )
+    private void bwo_lceFiniteWorldLimit(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, CallbackInfo ci, @Local (name = "var8") int var8, @Local (name = "var9") int var9, @Local (name = "var10") Biome var10, @Local (name = "var17") int var17) {
+        if (this.finiteWorld && this.finiteType.equals("LCE")) {
+            double x2 = (chunkX << 4) + var8;
+            double z2 = (chunkZ << 4) + var9;
+            int index = (var8 * 16 + var9) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var17;
+            double minX = -this.sizeX / 2.0D;
+            double maxX = this.sizeX / 2.0D - 1.0D;
+            double minZ = -this.sizeZ / 2.0D;
+            double maxZ = this.sizeZ / 2.0D - 1.0D;
+
+            boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
+            boolean limit2 = x2 < minX || x2 > maxX || z2 < minZ || z2 > maxZ;
+            if (var17 <= 55) {
+                if (limit) {
+                    if (var17 >= 53) {
+                        blocks[index] = var10.soilBlockId;
+                    } else {
+                        blocks[index] = (byte) Block.STONE.id;
+                    }
+                } else if (limit2) {
+                    blocks[index] = (byte) Block.STONE.id;
+                }
+            }
+
+            boolean limit3 = x2 <= minX || x2 >= maxX || z2 <= minZ || z2 >= maxZ;
+            if (var17 > 55 && var17 <= 63 && limit3) {
+                blocks[index] = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
+
+                if (this.theme.equals("Winter") && var17 == 63) {
+                    blocks[index] = (byte) Block.ICE.id;
+                }
+            }
+
+            if (var17 >= 64 && limit3) {
+                blocks[index] = (byte) 0;
+            }
+        }
+    }
+
+
+    @ModifyConstant(
+            method = "buildSurfaces",
+            constant = @Constant(intValue = -1, ordinal = 0)
+    )
+    private int bwo_lceFiniteWorldLimit2(int constant, @Local (ordinal = 0, argsOnly = true) int chunkX, @Local (ordinal = 1, argsOnly = true) int chunkZ, @Local (name = "var8") int var8, @Local (name = "var9") int var9) {
+        if (this.finiteWorld && this.finiteType.equals("LCE")) {
+            double x2 = (chunkX << 4) + var8;
+            double z2 = (chunkZ << 4) + var9;
+            double minX = -this.sizeX / 2.0D;
+            double maxX = this.sizeX / 2.0D - 1.0D;
+            double minZ = -this.sizeZ / 2.0D;
+            double maxZ = this.sizeZ / 2.0D - 1.0D;
+
+            boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
+            boolean limit2 = x2 < minX || x2 > maxX || z2 < minZ || z2 > maxZ;
+
+            if (limit || limit2) {
+                return -2;
+            }
+
+        }
+
+        return constant;
+    }
+
+    @ModifyConstant(
+            method = "buildSurfaces",
+            constant = @Constant(intValue = -1, ordinal = 1)
+    )
+    private int bwo_lceFiniteWorldLimit3(int constant, @Local (ordinal = 0, argsOnly = true) int chunkX, @Local (ordinal = 1, argsOnly = true) int chunkZ, @Local (name = "var8") int var8, @Local (name = "var9") int var9) {
+        if (this.finiteWorld && this.finiteType.equals("LCE")) {
+            double x2 = (chunkX << 4) + var8;
+            double z2 = (chunkZ << 4) + var9;
+            double minX = -this.sizeX / 2.0D;
+            double maxX = this.sizeX / 2.0D - 1.0D;
+            double minZ = -this.sizeZ / 2.0D;
+            double maxZ = this.sizeZ / 2.0D - 1.0D;
+
+            boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
+            boolean limit2 = x2 < minX || x2 > maxX || z2 < minZ || z2 > maxZ;
+
+            if (limit || limit2) {
+                return -2;
+            }
+
+        }
+
+        return constant;
+    }
+
+    @Inject(
             method = "getChunk",
             at = @At
                     (
@@ -275,16 +375,117 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         return original;
     }
 
-    @Inject(method = "decorate", at = @At(value = "HEAD"), cancellable = true)
-    private void bwo_cancelDecorateInFiniteWorld(ChunkSource source, int x, int z, CallbackInfo ci) {
-        if (this.finiteWorld && this.finiteType.equals("MCPE")) {
-            int blockX = x * 16;
-            int blockZ = z * 16;
+    @Inject(
+            method = "generateHeightMap",
+            at = @At(
+                    value = "CONSTANT",
+                    args = "intValue=2",
+                    ordinal = 1
+            )
+    )
+    private void bwo_getIslandOffset(double[] heightMap, int x, int y, int z, int sizeX, int sizeY, int sizeZ, CallbackInfoReturnable<double[]> cir, @Local(ordinal = 9) int var17, @Local(ordinal = 11) int var19, @Share("islandOffset") LocalDoubleRef islandOffset) {
+        double worldEdgeFactor = 1.0D;
 
-            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
-                ci.cancel();
-            }
+        int nx = (x + var17) * 4;
+        int nz = (z + var19) * 4;
+
+        double dx = Math.abs(nx);
+        double dz = Math.abs(nz);
+
+        int halfSizeX = this.sizeX / 2;
+        int halfSizeZ = this.sizeZ / 2;
+
+        double limitX = halfSizeX + 18.0D;
+        double limitZ = halfSizeZ + 18.0D;
+
+        if (halfSizeX == 32) limitX += 12.0D;
+        if (halfSizeZ == 32) limitZ += 12.0D;
+
+        double falloff = 50.0D;
+
+        if (this.finiteType.equals("LCE")) {
+            double edgeX = limitX - dx;
+            double edgeZ = limitZ - dz;
+
+            double factorX = edgeX / falloff;
+            double factorZ = edgeZ / falloff;
+
+            factorX = Math.max(0.0D, Math.min(1.0D, factorX));
+            factorZ = Math.max(0.0D, Math.min(1.0D, factorZ));
+
+            worldEdgeFactor = Math.min(factorX, factorZ);
+        } else if (this.finiteType.equals("Indev Island")) {
+            falloff = 100.0D;
+
+            double nxNorm = dx / limitX;
+            double nzNorm = dz / limitZ;
+
+            double radial = Math.sqrt(nxNorm * nxNorm + nzNorm * nzNorm);
+            double falloffRadial = falloff / (Math.sqrt(limitX * limitX + limitZ * limitZ));
+
+            double start = 1.0D - falloffRadial;
+
+            double t = (radial - start) / (1.0D - start);
+            t = Math.max(0.0D, Math.min(1.0D, t));
+
+            worldEdgeFactor = 1.0D - t;
         }
+
+        islandOffset.set(-200.0D * (1.0D - worldEdgeFactor));
+    }
+
+    @ModifyVariable(
+            method = "generateHeightMap",
+            at = @At(value = "STORE"),
+            name = "var34",
+            ordinal = 1
+    )
+    private double bwo_applyIslandOffset(double original, @Share("islandOffset") LocalDoubleRef islandOffset) {
+        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+            return original + islandOffset.get();
+        }
+
+        return original;
+    }
+
+    @ModifyVariable(
+            method = "generateHeightMap",
+            at = @At(value = "STORE"),
+            name = "var34",
+            ordinal = 2
+    )
+    private double bwo_applyIslandOffset2(double original, @Share("islandOffset") LocalDoubleRef islandOffset) {
+        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+            return original + islandOffset.get();
+        }
+
+        return original;
+    }
+
+    @ModifyVariable(
+            method = "generateHeightMap",
+            at = @At(value = "STORE"),
+            ordinal = 10
+    )
+    private double bwo_applyIslandOffset3(double original, @Share("islandOffset") LocalDoubleRef islandOffset) {
+        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+            return original + islandOffset.get();
+        }
+
+        return original;
+    }
+
+    @ModifyVariable(
+            method = "generateHeightMap",
+            at = @At(value = "STORE"),
+            ordinal = 11
+    )
+    private double bwo_applyIslandOffset4(double original, @Share("islandOffset") LocalDoubleRef islandOffset) {
+        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+            return original + islandOffset.get();
+        }
+
+        return original;
     }
 
     @WrapOperation(
@@ -429,7 +630,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             )
     )
     private int bwo_removeOffsetInFiniteWorld(int original) {
-        if (this.finiteWorld) {
+        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
             return 0;
         }
 
@@ -441,7 +642,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             constant = @Constant(intValue = 8, ordinal = 3)
     )
     private int bwo_removeOffsetInFiniteWorld2(int original) {
-        if (this.finiteWorld) {
+        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
             return 0;
         }
 
@@ -453,7 +654,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             constant = @Constant(intValue = 8, ordinal = 5)
     )
     private int bwo_removeOffsetInFiniteWorld3(int original) {
-        if (this.finiteWorld) {
+        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
             return 0;
         }
 
@@ -477,7 +678,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             )
     )
     private int bwo_removeOffsetInFiniteWorld4(int original) {
-        if (this.finiteWorld) {
+        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
             return 0;
         }
 
@@ -501,7 +702,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             )
     )
     private int bwo_removeOffsetInFiniteWorld5(int original) {
-        if (this.finiteWorld) {
+        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
             return 0;
         }
 
@@ -525,7 +726,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             )
     )
     private int bwo_removeOffsetInFiniteWorld6(int original) {
-        if (this.finiteWorld) {
+        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
             return 0;
         }
 
@@ -549,7 +750,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             )
     )
     private int bwo_removeOffsetInFiniteWorld7(int original) {
-        if (this.finiteWorld) {
+        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
             return 0;
         }
 
@@ -561,7 +762,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             constant = @Constant(intValue = 8, ordinal = 39)
     )
     private int bwo_removeOffsetInFiniteWorld8(int original) {
-        if (this.finiteWorld) {
+        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
             return 0;
         }
 
@@ -580,7 +781,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             )
     )
     private int bwo_removeOffsetInFiniteWorld9(int original) {
-        if (this.finiteWorld) {
+        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
             return 0;
         }
 
