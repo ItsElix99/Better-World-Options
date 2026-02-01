@@ -1,37 +1,25 @@
 package com.itselix99.betterworldoptions.world.worldtypes.indev223;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
-import com.itselix99.betterworldoptions.world.chunk.EmptyFlattenedChunk;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.IndevFeatures;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.util.math.noise.Distort;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.util.math.noise.OctavePerlinNoiseSamplerIndev223;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.gui.screen.LoadingDisplay;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
-import net.minecraft.world.gen.Generator;
-import net.minecraft.world.gen.carver.CaveWorldCarver;
-import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
 import net.minecraft.world.gen.feature.*;
-import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
-import java.util.*;
-
-public class Indev223ChunkGenerator implements ChunkSource {
-    private final Random random;
-    private final World world;
+public class Indev223ChunkGenerator extends BWOChunkGenerator {
     private final Distort distortA;
     private final Distort distortB;
     private final OctavePerlinNoiseSamplerIndev223 noiseGen1;
@@ -41,33 +29,13 @@ public class Indev223ChunkGenerator implements ChunkSource {
     private final OctavePerlinNoiseSamplerIndev223 noiseGen4;
     private final OctavePerlinNoiseSamplerIndev223 noiseGen5;
     private final OctavePerlinNoiseSamplerIndev223 noiseGen6;
-    private final Generator cave = new CaveWorldCarver();
-    private final Generator ravine = new RavineWorldCarver();
     private Biome[] biomes;
-    private double[] temperatures;
-    private OverworldChunkGenerator defaultChunkGenerator;
 
-    private final String worldType;
-    private final boolean oldFeatures;
-    private final String theme;
     private final String singleBiome;
-    private final boolean finiteWorld;
-    private final String finiteType;
-    private final int sizeX;
-    private final int sizeZ;
 
     public Indev223ChunkGenerator(World world, long seed) {
-        this.world = world;
-        this.random = new Random(seed);
-        BWOProperties bwoProperties = (BWOProperties) world.getProperties();
-        this.worldType = bwoProperties.bwo_getWorldType();
-        this.oldFeatures = bwoProperties.bwo_isOldFeatures();
-        this.theme = bwoProperties.bwo_getTheme();
-        this.singleBiome = bwoProperties.bwo_getSingleBiome();
-        this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-        this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
-        this.sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
-        this.sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
+        super(world, seed);
+        this.singleBiome = this.bwoProperties.bwo_getSingleBiome();
 
         if (this.theme.equals("Winter")) {
             if (this.oldFeatures) {
@@ -97,9 +65,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
             }
         }
 
-        if (!this.oldFeatures) {
-            ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
-        } else {
+        if (this.oldFeatures) {
             switch (this.theme) {
                 case "Hell" -> BetterWorldOptions.Indev.setFogColor(1049600);
                 case "Paradise" -> BetterWorldOptions.Indev.setFogColor(13033215);
@@ -117,7 +83,6 @@ public class Indev223ChunkGenerator implements ChunkSource {
         this.noiseGen4 = new OctavePerlinNoiseSamplerIndev223(this.random, 8);
         this.noiseGen5 = new OctavePerlinNoiseSamplerIndev223(this.random, 8);
         this.noiseGen6 = new OctavePerlinNoiseSamplerIndev223(this.random, 8);
-        this.defaultChunkGenerator = new OverworldChunkGenerator(world, seed);
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, double[] temperatures) {
@@ -424,16 +389,16 @@ public class Indev223ChunkGenerator implements ChunkSource {
         }
     }
 
-    public Chunk loadChunk(int chunkX, int chunkZ) {
-        return this.getChunk(chunkX, chunkZ);
-    }
-
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
         byte[] var3 = new byte[16 * Config.BWOConfig.world.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var4 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var4);
+
+        if (this.finiteWorld && !this.finiteType.equals("MCPE")) {
+            BWOChunkGenerator.setSizeLimits(0, this.sizeX, 0, this.sizeZ);
+        }
 
         double centerX = ((double)(chunkX * 16) / (this.sizeX - 1) - 0.5) * 2.0;
         double centerZ = ((double)(chunkZ * 16) / (this.sizeZ - 1) - 0.5) * 2.0;
@@ -463,20 +428,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
 
-        if (this.finiteWorld && this.finiteType.equals("MCPE")) {
-            int blockX = chunkX * 16;
-            int blockZ = chunkZ * 16;
-
-            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
-                return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
-            }
-        }
-
-        return flattenedChunk;
-    }
-
-    public boolean isChunkLoaded(int x, int z) {
-        return true;
+        return this.getEmptyChunkMCPEFiniteWorld(chunkX, chunkZ, 0, this.sizeX, 0, this.sizeZ, flattenedChunk);
     }
 
     public void decorate(ChunkSource source, int x, int z) {
@@ -535,24 +487,7 @@ public class Indev223ChunkGenerator implements ChunkSource {
                 }
             }
         } else {
-            this.defaultChunkGenerator.decorate(source, x, z);
+            super.decorate(source, x, z);
         }
-    }
-
-    public boolean save(boolean saveEntities, LoadingDisplay display) {
-        return true;
-    }
-
-    public boolean tick() {
-        return false;
-    }
-
-    public boolean canSave() {
-        return true;
-    }
-
-    @Environment(EnvType.CLIENT)
-    public String getDebugInfo() {
-        return "RandomLevelSource";
     }
 }

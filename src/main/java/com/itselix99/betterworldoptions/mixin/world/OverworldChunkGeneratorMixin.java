@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
+import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWONoise;
@@ -366,6 +367,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         if (this.finiteWorld && this.finiteType.equals("MCPE")) {
             int blockX = chunkX * 16;
             int blockZ = chunkZ * 16;
+            BWOChunkGenerator.setSizeLimits(0, this.sizeX, 0, this.sizeZ);
 
             if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
                 return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
@@ -394,6 +396,12 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
 
         int halfSizeX = this.sizeX / 2;
         int halfSizeZ = this.sizeZ / 2;
+
+        if (this.finiteType.equals("LCE")) {
+            BWOChunkGenerator.setSizeLimits(-halfSizeX - 16, halfSizeX, -halfSizeZ - 16, halfSizeZ);
+        } else if (this.finiteType.equals("Indev Island")) {
+            BWOChunkGenerator.setSizeLimits((int) (-halfSizeX * 1.2D), (int) (halfSizeX * 1.2D), (int) (-halfSizeZ * 1.2D), (int) (halfSizeZ * 1.2D));
+        }
 
         double limitX = halfSizeX + 18.0D;
         double limitZ = halfSizeZ + 18.0D;

@@ -1,0 +1,184 @@
+package com.itselix99.betterworldoptions.api.chunk;
+
+import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.config.Config;
+import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
+import com.itselix99.betterworldoptions.world.chunk.EmptyFlattenedChunk;
+import net.minecraft.block.Block;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.Generator;
+import net.minecraft.world.gen.carver.CaveWorldCarver;
+import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
+import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
+
+import java.util.Random;
+
+public class BWOChunkGenerator extends OverworldChunkGenerator {
+    protected Random random;
+    protected final World world;
+
+    protected final Generator cave = new CaveWorldCarver();
+    protected final Generator ravine = new RavineWorldCarver();
+
+    protected final BWOProperties bwoProperties;
+    protected final String worldType;
+    protected final boolean oldFeatures;
+    protected final String theme;
+    protected final boolean finiteWorld;
+    protected final String finiteType;
+    protected final int sizeX;
+    protected final int sizeZ;
+
+    private static int[] sizeLimits;
+
+    public BWOChunkGenerator(World world, long seed) {
+        super(world, seed);
+        this.world = world;
+        this.random = new Random(seed);
+
+        this.bwoProperties = (BWOProperties) world.getProperties();
+        this.worldType = this.bwoProperties.bwo_getWorldType();
+        this.oldFeatures = this.bwoProperties.bwo_isOldFeatures();
+        this.theme = this.bwoProperties.bwo_getTheme();
+        this.finiteWorld = this.bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        this.finiteType = this.bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
+        this.sizeX = this.bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
+        this.sizeZ = this.bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
+
+        ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
+    }
+
+    protected Chunk getEmptyChunkMCPEFiniteWorld(int chunkX, int chunkZ, int startX, int endX, int startZ, int endZ, Chunk defaultChunk) {
+        if (this.finiteWorld && this.finiteType.equals("MCPE")) {
+            int blockX = chunkX * 16;
+            int blockZ = chunkZ * 16;
+            setSizeLimits(startX, endX, startZ, endZ);
+
+            if (blockX < startX || blockX >= endX || blockZ < startZ || blockZ >= endZ) {
+                return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
+            }
+        }
+
+        return defaultChunk;
+    }
+
+    protected void buildLCEFiniteWorldLimit(int chunkX, int chunkZ, int x, int y, int z, byte[] blocks, Biome biome) {
+        if (this.finiteWorld && this.finiteType.equals("LCE")) {
+            double x2 = (chunkX << 4) + x;
+            double z2 = (chunkZ << 4) + z;
+            int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
+            double minX = -this.sizeX / 2.0D;
+            double maxX = this.sizeX / 2.0D - 1.0D;
+            double minZ = -this.sizeZ / 2.0D;
+            double maxZ = this.sizeZ / 2.0D - 1.0D;
+
+            boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
+            boolean limit2 = x2 < minX || x2 > maxX || z2 < minZ || z2 > maxZ;
+            if (y <= 55) {
+                if (limit) {
+                    if (y >= 53) {
+                        if (WorldTypes.getWorldTypePropertyValue(this.worldType, "Old Features Has Biomes")) {
+                            blocks[index] = biome.soilBlockId;
+                        } else {
+                            blocks[index] = this.oldFeatures ? (byte) Block.DIRT.id : biome.soilBlockId;
+                        }
+                    } else {
+                        blocks[index] = (byte) Block.STONE.id;
+                    }
+                } else if (limit2) {
+                    blocks[index] = (byte) Block.STONE.id;
+                }
+            }
+
+            if (y <= this.random.nextInt(5)) {
+                if (limit) {
+                    blocks[index] = (byte) Block.BEDROCK.id;
+                } else if (limit2) {
+                    blocks[index] = (byte) Block.BEDROCK.id;
+                }
+            }
+
+            boolean limit3 = x2 <= minX || x2 >= maxX || z2 <= minZ || z2 >= maxZ;
+            if (y > 55 && y <= 63 && limit3) {
+                blocks[index] = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
+
+                if (this.theme.equals("Winter") && y == 63) {
+                    blocks[index] = (byte) Block.ICE.id;
+                }
+            }
+
+            if (y >= 64 && limit3) {
+                blocks[index] = (byte) 0;
+            }
+        }
+    }
+
+    protected double getIslandOffset(int x, int z, double offset) {
+        double worldEdgeFactor = 1.0D;
+
+        int nx = x * 4;
+        int nz = z * 4;
+
+        double dx = Math.abs(nx);
+        double dz = Math.abs(nz);
+
+        int halfSizeX = this.sizeX / 2;
+        int halfSizeZ = this.sizeZ / 2;
+
+        if (this.finiteType.equals("LCE")) {
+            setSizeLimits(-halfSizeX - 16, halfSizeX, -halfSizeZ - 16, halfSizeZ);
+        } else if (this.finiteType.equals("Indev Island")) {
+            setSizeLimits((int) (-halfSizeX * 1.2D), (int) (halfSizeX * 1.2D), (int) (-halfSizeZ * 1.2D), (int) (halfSizeZ * 1.2D));
+        }
+
+        double limitX = halfSizeX + 18.0D;
+        double limitZ = halfSizeZ + 18.0D;
+
+        if (halfSizeX == 32) limitX += 12.0D;
+        if (halfSizeZ == 32) limitZ += 12.0D;
+
+        double falloff = 50.0D;
+
+        if (this.finiteType.equals("LCE")) {
+            double edgeX = limitX - dx;
+            double edgeZ = limitZ - dz;
+
+            double factorX = edgeX / falloff;
+            double factorZ = edgeZ / falloff;
+
+            factorX = Math.max(0.0D, Math.min(1.0D, factorX));
+            factorZ = Math.max(0.0D, Math.min(1.0D, factorZ));
+
+            worldEdgeFactor = Math.min(factorX, factorZ);
+        } else if (this.finiteType.equals("Indev Island")) {
+            falloff = 100.0D;
+
+            double nxNorm = dx / limitX;
+            double nzNorm = dz / limitZ;
+
+            double radial = Math.sqrt(nxNorm * nxNorm + nzNorm * nzNorm);
+            double falloffRadial = falloff / (Math.sqrt(limitX * limitX + limitZ * limitZ));
+
+            double start = 1.0D - falloffRadial;
+
+            double t = (radial - start) / (1.0D - start);
+            t = Math.max(0.0D, Math.min(1.0D, t));
+
+            worldEdgeFactor = 1.0D - t;
+        }
+
+        return offset * (1.0D - worldEdgeFactor);
+    }
+
+    public static void setSizeLimits(int startX, int endX, int startZ, int endZ) {
+        sizeLimits = new int[]{startX, endX, startZ, endZ};
+    }
+
+    public static int[] getSizeLimits() {
+        return sizeLimits;
+    }
+}

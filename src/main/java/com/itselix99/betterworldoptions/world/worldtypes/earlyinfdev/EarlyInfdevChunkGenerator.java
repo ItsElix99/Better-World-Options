@@ -3,32 +3,21 @@ package com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev;
 import java.util.Random;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
-import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.config.Config;
-import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
-import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
-import com.itselix99.betterworldoptions.world.chunk.EmptyFlattenedChunk;
 import com.itselix99.betterworldoptions.world.feature.OldOreFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.util.math.noise.OctavePerlinNoiseSamplerEarlyInfdev;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.gui.screen.LoadingDisplay;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
-import net.minecraft.world.gen.Generator;
-import net.minecraft.world.gen.carver.CaveWorldCarver;
-import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
 import net.minecraft.world.gen.feature.*;
-import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
-public class EarlyInfdevChunkGenerator implements ChunkSource {
-    private final Random random;
+public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
     private final Random brickRandom = new Random();
     private final OctavePerlinNoiseSamplerEarlyInfdev noiseGen1;
     private final OctavePerlinNoiseSamplerEarlyInfdev noiseGen2;
@@ -37,31 +26,10 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
     private final OctavePerlinNoiseSamplerEarlyInfdev noiseGen5;
     private final OctavePerlinNoiseSamplerEarlyInfdev noiseGen6;
     public final OctavePerlinNoiseSamplerEarlyInfdev forestNoise;
-    private final World world;
-    private final Generator cave = new CaveWorldCarver();
-    private final Generator ravine = new RavineWorldCarver();
     private Biome[] biomes;
-    private OverworldChunkGenerator defaultChunkGenerator;
-
-    private final String worldType;
-    private final boolean oldFeatures;
-    private final String theme;
-    private final boolean finiteWorld;
-    private final String finiteType;
-    private final int sizeX;
-    private final int sizeZ;
 
     public EarlyInfdevChunkGenerator(World world, long seed) {
-        this.world = world;
-        this.random = new Random(seed);
-        BWOProperties bwoProperties = (BWOProperties) world.getProperties();
-        this.worldType = bwoProperties.bwo_getWorldType();
-        this.oldFeatures = bwoProperties.bwo_isOldFeatures();
-        this.theme = bwoProperties.bwo_getTheme();
-        this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-        this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
-        this.sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
-        this.sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
+        super(world, seed);
 
         if (this.theme.equals("Winter")) {
             if (this.oldFeatures) {
@@ -91,9 +59,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
             }
         }
 
-        if (!this.oldFeatures) {
-            ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
-        } else {
+        if (this.oldFeatures) {
             switch (this.theme) {
                 case "Hell" -> BetterWorldOptions.EarlyInfdev.setFogColor(1049600);
                 case "Paradise" -> BetterWorldOptions.EarlyInfdev.setFogColor(13033215);
@@ -112,7 +78,6 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 3);
         new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 3);
         this.forestNoise = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 5);
-        this.defaultChunkGenerator = new OverworldChunkGenerator(world, seed);
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, double[] temperatures) {
@@ -224,10 +189,6 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         }
     }
 
-    public Chunk loadChunk(int chunkX, int chunkZ) {
-        return this.getChunk(chunkX, chunkZ);
-    }
-
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
         byte[] var3 = new byte[16 * Config.BWOConfig.world.worldHeightLimit.getIntValue() * 16];
@@ -249,20 +210,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
 
-        if (this.finiteWorld) {
-            int blockX = chunkX * 16;
-            int blockZ = chunkZ * 16;
-
-            if (blockX < -this.sizeX / 2 || blockX >= this.sizeX / 2 || blockZ < -this.sizeZ / 2 || blockZ >= this.sizeZ / 2) {
-                return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
-            }
-        }
-
-        return flattenedChunk;
-    }
-
-    public boolean isChunkLoaded(int x, int z) {
-        return true;
+        return this.getEmptyChunkMCPEFiniteWorld(chunkX, chunkZ, -this.sizeX / 2, this.sizeX / 2, -this.sizeZ / 2, this.sizeZ / 2, flattenedChunk);
     }
 
     public void decorate(ChunkSource source, int x, int z) {
@@ -322,24 +270,7 @@ public class EarlyInfdevChunkGenerator implements ChunkSource {
                 }
             }
         } else {
-            this.defaultChunkGenerator.decorate(source, x, z);
+            super.decorate(source, x, z);
         }
-    }
-
-    public boolean save(boolean saveEntities, LoadingDisplay display) {
-        return true;
-    }
-
-    public boolean tick() {
-        return false;
-    }
-
-    public boolean canSave() {
-        return true;
-    }
-
-    @Environment(EnvType.CLIENT)
-    public String getDebugInfo() {
-        return "RandomLevelSource";
     }
 }

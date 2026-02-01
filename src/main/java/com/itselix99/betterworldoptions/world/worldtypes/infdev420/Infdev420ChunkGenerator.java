@@ -1,71 +1,39 @@
 package com.itselix99.betterworldoptions.world.worldtypes.infdev420;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
-import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.config.Config;
-import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
-import com.itselix99.betterworldoptions.world.chunk.EmptyFlattenedChunk;
 import com.itselix99.betterworldoptions.world.feature.OldOreFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev420.util.math.noise.OctavePerlinNoiseSamplerInfdev420;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.gui.screen.LoadingDisplay;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
-import net.minecraft.world.gen.Generator;
-import net.minecraft.world.gen.carver.CaveWorldCarver;
-import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
 import net.minecraft.world.gen.feature.*;
 import net.modificationstation.stationapi.api.util.math.MathHelper;
-import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
 import java.util.Random;
 
-public class Infdev420ChunkGenerator implements ChunkSource {
-    private final Random random;
+public class Infdev420ChunkGenerator extends BWOChunkGenerator {
     private final OctavePerlinNoiseSamplerInfdev420 noiseGen1;
     private final OctavePerlinNoiseSamplerInfdev420 noiseGen2;
     private final OctavePerlinNoiseSamplerInfdev420 noiseGen3;
     private final OctavePerlinNoiseSamplerInfdev420 noiseGen4;
     private final OctavePerlinNoiseSamplerInfdev420 noiseGen5;
     private final OctavePerlinNoiseSamplerInfdev420 forestNoise;
-    private final World world;
-    private final Generator cave = new CaveWorldCarver();
-    private final Generator ravine = new RavineWorldCarver();
     private double[] noiseArray;
     private double[] noise3;
     private double[] noise1;
     private double[] noise2;
     private Biome[] biomes;
-    private OverworldChunkGenerator defaultChunkGenerator;
-
-    private final String worldType;
-    private final boolean oldFeatures;
-    private final String theme;
-    private final boolean finiteWorld;
-    private final String finiteType;
-    private final int sizeX;
-    private final int sizeZ;
 
     public Infdev420ChunkGenerator(World world, long seed) {
-        this.world = world;
-        this.random = new Random(seed);
+        super(world, seed);
         new Random(seed);
-        BWOProperties bwoProperties = (BWOProperties) world.getProperties();
-        this.worldType = bwoProperties.bwo_getWorldType();
-        this.oldFeatures = bwoProperties.bwo_isOldFeatures();
-        this.theme = bwoProperties.bwo_getTheme();
-        this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-        this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
-        this.sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
-        this.sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
 
         if (this.theme.equals("Winter")) {
             if (this.oldFeatures) {
@@ -95,9 +63,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
             }
         }
 
-        if (!this.oldFeatures) {
-            ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
-        } else {
+        if (this.oldFeatures) {
             switch (this.theme) {
                 case "Hell" -> BetterWorldOptions.Infdev.setFogColor(1049600);
                 case "Paradise" -> BetterWorldOptions.Infdev.setFogColor(13033215);
@@ -113,7 +79,6 @@ public class Infdev420ChunkGenerator implements ChunkSource {
         this.noiseGen5 = new OctavePerlinNoiseSamplerInfdev420(this.random, 4);
         new OctavePerlinNoiseSamplerInfdev420(this.random, 5);
         this.forestNoise = new OctavePerlinNoiseSamplerInfdev420(this.random, 5);
-        this.defaultChunkGenerator = new OverworldChunkGenerator(world, seed);
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, double[] temperatures) {
@@ -141,54 +106,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
                         var63 *= 2.0D;
                     }
 
-                    double worldEdgeFactor = 1.0D;
-
-                    int nx = ((chunkX << 2) + var8) * 4;
-                    int nz = ((chunkZ << 2) + var9) * 4;
-
-                    double dx = Math.abs(nx);
-                    double dz = Math.abs(nz);
-
-                    int halfSizeX = this.sizeX / 2;
-                    int halfSizeZ = this.sizeZ / 2;
-
-                    double limitX = halfSizeX + 18.0D;
-                    double limitZ = halfSizeZ + 18.0D;
-
-                    if (halfSizeX == 32) limitX += 12.0D;
-                    if (halfSizeZ == 32) limitZ += 12.0D;
-
-                    double falloff = 50.0D;
-
-                    if (this.finiteType.equals("LCE")) {
-                        double edgeX = limitX - dx;
-                        double edgeZ = limitZ - dz;
-
-                        double factorX = edgeX / falloff;
-                        double factorZ = edgeZ / falloff;
-
-                        factorX = Math.max(0.0D, Math.min(1.0D, factorX));
-                        factorZ = Math.max(0.0D, Math.min(1.0D, factorZ));
-
-                        worldEdgeFactor = Math.min(factorX, factorZ);
-                    } else if (this.finiteType.equals("Indev Island")) {
-                        falloff = 100.0D;
-
-                        double nxNorm = dx / limitX;
-                        double nzNorm = dz / limitZ;
-
-                        double radial = Math.sqrt(nxNorm * nxNorm + nzNorm * nzNorm);
-                        double falloffRadial = falloff / (Math.sqrt(limitX * limitX + limitZ * limitZ));
-
-                        double start = 1.0D - falloffRadial;
-
-                        double t = (radial - start) / (1.0D - start);
-                        t = Math.max(0.0D, Math.min(1.0D, t));
-
-                        worldEdgeFactor = 1.0D - t;
-                    }
-
-                    double islandOffset = -100.0D * (1.0D - worldEdgeFactor);
+                    double islandOffset = this.getIslandOffset((chunkX << 2) + var8, (chunkZ << 2) + var9, -100.0D);
 
                     double var65 = var71.noise1[var7] / 512.0D;
                     double var67 = var71.noise2[var7] / 512.0D;
@@ -367,55 +285,10 @@ public class Infdev420ChunkGenerator implements ChunkSource {
 
                     --var79;
 
-                    if (this.finiteWorld && this.finiteType.equals("LCE")) {
-                        int index = (var72 * 16 + var73) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var81;
-                        double minX = -this.sizeX / 2.0D;
-                        double maxX = this.sizeX / 2.0D - 1.0D;
-                        double minZ = -this.sizeZ / 2.0D;
-                        double maxZ = this.sizeZ / 2.0D - 1.0D;
-
-                        boolean limit = (var74 == minX && var76 >= minZ && var76 <= maxZ) || (var74 == maxX && var76 >= minZ && var76 <= maxZ) || (var76 == minZ && var74 >= minX && var74 <= maxX) || (var76 == maxZ && var74 >= minX && var74 <= maxX);
-                        boolean limit2 = var74 < minX || var74 > maxX || var76 < minZ || var76 > maxZ;
-                        if (var81 <= 55) {
-                            if (limit) {
-                                if (var81 >= 53) {
-                                    blocks[index] = this.oldFeatures ? (byte) Block.DIRT.id : var82.soilBlockId;
-                                } else {
-                                    blocks[index] = (byte) Block.STONE.id;
-                                }
-                            } else if (limit2) {
-                                blocks[index] = (byte) Block.STONE.id;
-                            }
-                        }
-
-                        if (var81 <= this.random.nextInt(5)) {
-                            if (limit) {
-                                blocks[index] = (byte) Block.BEDROCK.id;
-                            } else if (limit2) {
-                                blocks[index] = (byte) Block.BEDROCK.id;
-                            }
-                        }
-
-                        boolean limit3 = var74 <= minX || var74 >= maxX || var76 <= minZ || var76 >= maxZ;
-                        if (var81 > 55 && var81 <= 63 && limit3) {
-                            blocks[index] = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
-
-                            if (this.theme.equals("Winter") && var81 == 63) {
-                                blocks[index] = (byte) Block.ICE.id;
-                            }
-                        }
-
-                        if (var81 >= 64 && limit3) {
-                            blocks[index] = (byte) 0;
-                        }
-                    }
+                    this.buildLCEFiniteWorldLimit(chunkX, chunkZ, var72, var81, var73, blocks, var82);
                 }
             }
         }
-    }
-
-    public Chunk loadChunk(int chunkX, int chunkZ) {
-        return this.getChunk(chunkX, chunkZ);
     }
 
     public Chunk getChunk(int chunkX, int chunkZ) {
@@ -439,20 +312,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
 
-        if (this.finiteWorld && this.finiteType.equals("MCPE")) {
-            int blockX = chunkX * 16;
-            int blockZ = chunkZ * 16;
-
-            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
-                return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
-            }
-        }
-
-        return flattenedChunk;
-    }
-
-    public boolean isChunkLoaded(int x, int z) {
-        return true;
+        return this.getEmptyChunkMCPEFiniteWorld(chunkX, chunkZ, 0, this.sizeX, 0, this.sizeZ, flattenedChunk);
     }
 
     public void decorate(ChunkSource source, int x, int z) {
@@ -540,24 +400,7 @@ public class Infdev420ChunkGenerator implements ChunkSource {
                 }
             }
         } else {
-            this.defaultChunkGenerator.decorate(source, x, z);
+            super.decorate(source, x, z);
         }
-    }
-
-    public boolean save(boolean saveEntities, LoadingDisplay display) {
-        return true;
-    }
-
-    public boolean tick() {
-        return false;
-    }
-
-    public boolean canSave() {
-        return true;
-    }
-
-    @Environment(EnvType.CLIENT)
-    public String getDebugInfo() {
-        return "RandomLevelSource";
     }
 }

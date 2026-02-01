@@ -1,35 +1,22 @@
 package com.itselix99.betterworldoptions.world.worldtypes.mcpe;
 
-import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
-import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.world.chunk.EmptyFlattenedChunk;
-import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.util.MTRandom;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.util.math.noise.OctavePerlinNoiseSamplerMCPE;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.gui.screen.LoadingDisplay;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
-import net.minecraft.world.gen.Generator;
-import net.minecraft.world.gen.carver.CaveWorldCarver;
-import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
 import net.minecraft.world.gen.feature.*;
 import net.modificationstation.stationapi.api.util.math.MathHelper;
-import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
-import java.util.Random;
-
-public class MCPEChunkGenerator implements ChunkSource {
-    private final Random random;
+public class MCPEChunkGenerator extends BWOChunkGenerator {
     private final OctavePerlinNoiseSamplerMCPE minLimitPerlinNoise;
     private final OctavePerlinNoiseSamplerMCPE maxLimitPerlinNoise;
     private final OctavePerlinNoiseSamplerMCPE perlinNoise1;
@@ -38,13 +25,10 @@ public class MCPEChunkGenerator implements ChunkSource {
     public OctavePerlinNoiseSamplerMCPE floatingIslandScale;
     public OctavePerlinNoiseSamplerMCPE floatingIslandNoise;
     public OctavePerlinNoiseSamplerMCPE forestNoise;
-    private final World world;
     private double[] heightMap;
     private double[] sandBuffer = new double[256];
     private double[] gravelBuffer = new double[256];
     private double[] depthBuffer = new double[256];
-    private final Generator cave = new CaveWorldCarver();
-    private final Generator ravine = new RavineWorldCarver();
     private Biome[] biomes;
     double[] perlinNoiseBuffer;
     double[] minLimitPerlinNoiseBuffer;
@@ -52,32 +36,13 @@ public class MCPEChunkGenerator implements ChunkSource {
     double[] scaleNoiseBuffer;
     double[] depthNoiseBuffer;
     private double[] temperatures;
-    private OverworldChunkGenerator defaultChunkGenerator;
-
-    private final boolean oldFeatures;
-    private final String theme;
-    private final boolean finiteWorld;
-    private String finiteType;
-    private int sizeX;
-    private int sizeZ;
 
     public MCPEChunkGenerator(World world, long seed) {
-        this.world = world;
+        super(world, seed);
         this.random = new MTRandom((int) seed);
-        BWOProperties bwoProperties = (BWOProperties) world.getProperties();
-        this.oldFeatures = bwoProperties.bwo_isOldFeatures();
-        this.theme = bwoProperties.bwo_getTheme();
-        this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-        this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
-        this.sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
-        this.sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
 
         ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
         ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
-
-        if (!this.oldFeatures) {
-            ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
-        }
 
         this.minLimitPerlinNoise = new OctavePerlinNoiseSamplerMCPE(this.random, 16);
         this.maxLimitPerlinNoise = new OctavePerlinNoiseSamplerMCPE(this.random, 16);
@@ -87,7 +52,6 @@ public class MCPEChunkGenerator implements ChunkSource {
         this.floatingIslandScale = new OctavePerlinNoiseSamplerMCPE(this.random, 10);
         this.floatingIslandNoise = new OctavePerlinNoiseSamplerMCPE(this.random, 16);
         this.forestNoise = new OctavePerlinNoiseSamplerMCPE(this.random, 8);
-        this.defaultChunkGenerator = new OverworldChunkGenerator(world, seed);
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, double[] temperatures) {
@@ -261,56 +225,11 @@ public class MCPEChunkGenerator implements ChunkSource {
                         }
                     }
 
-                    if (this.finiteWorld && this.finiteType.equals("LCE")) {
-                        int index = (var8 * 16 + var9) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var17;
-                        double minX = -this.sizeX / 2.0D;
-                        double maxX = this.sizeX / 2.0D - 1.0D;
-                        double minZ = -this.sizeZ / 2.0D;
-                        double maxZ = this.sizeZ / 2.0D - 1.0D;
-
-                        boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
-                        boolean limit2 = x2 < minX || x2 > maxX || z2 < minZ || z2 > maxZ;
-                        if (var17 <= 55) {
-                            if (limit) {
-                                if (var17 >= 53) {
-                                    blocks[index] = var10.soilBlockId;
-                                } else {
-                                    blocks[index] = (byte) Block.STONE.id;
-                                }
-                            } else if (limit2) {
-                                blocks[index] = (byte) Block.STONE.id;
-                            }
-                        }
-
-                        if (var17 <= this.random.nextInt(5)) {
-                            if (limit) {
-                                blocks[index] = (byte) Block.BEDROCK.id;
-                            } else if (limit2) {
-                                blocks[index] = (byte) Block.BEDROCK.id;
-                            }
-                        }
-
-                        boolean limit3 = x2 <= minX || x2 >= maxX || z2 <= minZ || z2 >= maxZ;
-                        if (var17 > 55 && var17 <= 63 && limit3) {
-                            blocks[index] = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
-
-                            if (this.theme.equals("Winter") && var17 == 63) {
-                                blocks[index] = (byte) Block.ICE.id;
-                            }
-                        }
-
-                        if (var17 >= 64 && limit3) {
-                            blocks[index] = (byte) 0;
-                        }
-                    }
+                    this.buildLCEFiniteWorldLimit(chunkX, chunkZ, var8, var17, var9, blocks, var10);
                 }
             }
         }
 
-    }
-
-    public Chunk loadChunk(int chunkX, int chunkZ) {
-        return this.getChunk(chunkX, chunkZ);
     }
 
     public Chunk getChunk(int chunkX, int chunkZ) {
@@ -335,16 +254,7 @@ public class MCPEChunkGenerator implements ChunkSource {
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
 
-        if (this.finiteWorld && this.finiteType.equals("MCPE")) {
-            int blockX = chunkX * 16;
-            int blockZ = chunkZ * 16;
-
-            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
-                return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
-            }
-        }
-
-        return flattenedChunk;
+        return this.getEmptyChunkMCPEFiniteWorld(chunkX, chunkZ, 0, this.sizeX, 0, this.sizeZ, flattenedChunk);
     }
 
     private double[] generateHeightMap(double[] heightMap, int x, int z, int sizeX, int sizeY, int sizeZ) {
@@ -369,54 +279,7 @@ public class MCPEChunkGenerator implements ChunkSource {
             int var18 = var17 * var16 + var16 / 2;
 
             for(int var19 = 0; var19 < sizeZ; ++var19) {
-                double worldEdgeFactor = 1.0D;
-
-                int nx = (x + var17) * 4;
-                int nz = (z + var19) * 4;
-
-                double dx = Math.abs(nx);
-                double dz = Math.abs(nz);
-
-                int halfSizeX = this.sizeX / 2;
-                int halfSizeZ = this.sizeZ / 2;
-
-                double limitX = halfSizeX + 18.0D;
-                double limitZ = halfSizeZ + 18.0D;
-
-                if (halfSizeX == 32) limitX += 12.0D;
-                if (halfSizeZ == 32) limitZ += 12.0D;
-
-                double falloff = 50.0D;
-
-                if (this.finiteType.equals("LCE")) {
-                    double edgeX = limitX - dx;
-                    double edgeZ = limitZ - dz;
-
-                    double factorX = edgeX / falloff;
-                    double factorZ = edgeZ / falloff;
-
-                    factorX = Math.max(0.0D, Math.min(1.0D, factorX));
-                    factorZ = Math.max(0.0D, Math.min(1.0D, factorZ));
-
-                    worldEdgeFactor = Math.min(factorX, factorZ);
-                } else if (this.finiteType.equals("Indev Island")) {
-                    falloff = 100.0D;
-
-                    double nxNorm = dx / limitX;
-                    double nzNorm = dz / limitZ;
-
-                    double radial = Math.sqrt(nxNorm * nxNorm + nzNorm * nzNorm);
-                    double falloffRadial = falloff / (Math.sqrt(limitX * limitX + limitZ * limitZ));
-
-                    double start = 1.0D - falloffRadial;
-
-                    double t = (radial - start) / (1.0D - start);
-                    t = Math.max(0.0D, Math.min(1.0D, t));
-
-                    worldEdgeFactor = 1.0D - t;
-                }
-
-                double islandOffset = -200.0D * (1.0D - worldEdgeFactor);
+                double islandOffset = this.getIslandOffset(x + var17, z + var19, -200.0D);
 
                 int var20 = var19 * var16 + var16 / 2;
                 double var21 = var12[var18 * 16 + var20];
@@ -507,10 +370,6 @@ public class MCPEChunkGenerator implements ChunkSource {
         }
 
         return heightMap;
-    }
-
-    public boolean isChunkLoaded(int x, int z) {
-        return true;
     }
 
     public void decorate(ChunkSource source, int x, int z) {
@@ -742,24 +601,7 @@ public class MCPEChunkGenerator implements ChunkSource {
 
             SandBlock.fallInstantly = false;
         } else {
-            this.defaultChunkGenerator.decorate(source, x, z);
+            super.decorate(source, x, z);
         }
-    }
-
-    public boolean save(boolean saveEntities, LoadingDisplay display) {
-        return true;
-    }
-
-    public boolean tick() {
-        return false;
-    }
-
-    public boolean canSave() {
-        return true;
-    }
-
-    @Environment(EnvType.CLIENT)
-    public String getDebugInfo() {
-        return "RandomLevelSource";
     }
 }

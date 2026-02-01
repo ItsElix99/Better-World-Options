@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
+import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -21,9 +22,6 @@ public class ServerChunkCacheMixin {
     @Unique private String worldType;
     @Unique private boolean superflat;
     @Unique private boolean finiteWorld;
-    @Unique private String finiteType;
-    @Unique private int sizeX;
-    @Unique private int sizeZ;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void bwo_init(ServerWorld world, ChunkStorage storage, ChunkSource generator, CallbackInfo ci) {
@@ -31,9 +29,6 @@ public class ServerChunkCacheMixin {
         this.worldType = bwoProperties.bwo_getWorldType();
         this.superflat = bwoProperties.bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
         this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-        this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
-        this.sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
-        this.sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
     }
 
     @WrapOperation(
@@ -51,30 +46,11 @@ public class ServerChunkCacheMixin {
         } else if (this.finiteWorld) {
             int blockX = x * 16;
             int blockZ = z * 16;
+            int[] sizeLimits = BWOChunkGenerator.getSizeLimits();
 
-            if (this.worldType.equals("Indev 223")) {
-                if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
+            if (sizeLimits != null) {
+                if (blockX < sizeLimits[0] || blockX >= sizeLimits[1] || blockZ < sizeLimits[2] || blockZ >= sizeLimits[3]) {
                     return true;
-                }
-            } else if (this.finiteType.equals("MCPE")) {
-                if (this.worldType.equals("Early Infdev")) {
-                    if (blockX < -this.sizeX / 2 || blockX >= this.sizeX / 2 || blockZ < -this.sizeZ / 2 || blockZ >= this.sizeZ / 2) {
-                        return true;
-                    }
-                } else {
-                    if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
-                        return true;
-                    }
-                }
-            } else {
-                if (this.finiteType.equals("LCE")) {
-                    if (blockX < -this.sizeX / 2 || blockX >= this.sizeX / 2 || blockZ < -this.sizeZ / 2 || blockZ >= this.sizeZ / 2) {
-                        return true;
-                    }
-                } else {
-                    if (blockX < -((double) this.sizeX / 2) * 1.2D || blockX >= ((double) this.sizeX / 2) * 1.2D || blockZ < -((double) this.sizeZ / 2) * 1.2D || blockZ >= ((double) this.sizeZ / 2) * 1.2D) {
-                        return true;
-                    }
                 }
             }
         }
