@@ -57,9 +57,6 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
         this.sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
         this.sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
-
-        ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
-        ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
     }
 
 //    @ModifyVariable(

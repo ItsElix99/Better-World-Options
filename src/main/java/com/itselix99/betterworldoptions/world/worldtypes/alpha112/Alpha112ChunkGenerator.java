@@ -1,9 +1,7 @@
 package com.itselix99.betterworldoptions.world.worldtypes.alpha112;
 
-import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.config.Config;
-import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.worldtypes.alpha112.util.math.noise.OctavePerlinNoiseSamplerAlpha112;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
@@ -38,44 +36,6 @@ public class Alpha112ChunkGenerator extends BWOChunkGenerator {
 
     public Alpha112ChunkGenerator(World world, long seed) {
         super(world, seed);
-
-        if (this.theme.equals("Winter")) {
-            if (this.oldFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
-            } else {
-                ((BWOWorld) this.world).bwo_setSnow(true);
-            }
-        } else {
-            if (this.oldFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
-            } else {
-                ((BWOWorld) this.world).bwo_setSnow(false);
-            }
-        }
-
-        if (this.theme.equals("Hell") || this.theme.equals("Paradise")) {
-            if (this.oldFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, false);
-            } else {
-                ((BWOWorld) this.world).bwo_setPrecipitation(false);
-            }
-        } else {
-            if (this.oldFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, true);
-            } else {
-                ((BWOWorld) this.world).bwo_setPrecipitation(true);
-            }
-        }
-
-        if (this.oldFeatures) {
-            switch (this.theme) {
-                case "Hell" -> BetterWorldOptions.Alpha.setFogColor(1049600);
-                case "Paradise" -> BetterWorldOptions.Alpha.setFogColor(13033215);
-                case "Woods" -> BetterWorldOptions.Alpha.setFogColor(5069403);
-                default -> BetterWorldOptions.Alpha.setFogColor(12638463);
-            }
-        }
-
         this.minLimitPerlinNoise = new OctavePerlinNoiseSamplerAlpha112(this.random, 16);
         this.maxLimitPerlinNoise = new OctavePerlinNoiseSamplerAlpha112(this.random, 16);
         this.perlinNoise1 = new OctavePerlinNoiseSamplerAlpha112(this.random, 8);

@@ -3,7 +3,6 @@ package com.itselix99.betterworldoptions.world.worldtypes;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
-import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 import net.minecraft.world.World;
@@ -20,10 +19,6 @@ public class FlatChunkGenerator extends BWOChunkGenerator {
     public FlatChunkGenerator(World world, long seed) {
         super(world, seed);
         this.superflat = this.bwoProperties.bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
-
-        ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
-        ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
-
         this.forestNoise = new OctavePerlinNoiseSampler(this.random, 8);
     }
 

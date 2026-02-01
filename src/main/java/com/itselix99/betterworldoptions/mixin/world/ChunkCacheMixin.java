@@ -12,6 +12,7 @@ import net.minecraft.world.chunk.ChunkCache;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.chunk.storage.ChunkStorage;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ChunkCache.class)
 public class ChunkCacheMixin {
+    @Shadow private World world;
     @Unique private String worldType;
     @Unique private boolean superflat;
     @Unique private boolean finiteWorld;
@@ -43,7 +45,7 @@ public class ChunkCacheMixin {
     private boolean bwo_cancelDecorateInFiniteAndFlatWorld(Chunk chunk, Operation<Boolean> original, @Local(ordinal = 0, argsOnly = true) int x, @Local(ordinal = 1, argsOnly = true) int z) {
         if (this.worldType.equals("Flat") && !this.superflat) {
             return true;
-        } else if (this.finiteWorld) {
+        } else if (this.finiteWorld && this.world.dimension.id == 0) {
             int blockX = x * 16;
             int blockZ = z * 16;
             int[] sizeLimits = BWOChunkGenerator.getSizeLimits();

@@ -104,11 +104,11 @@ public class MinecraftMixin {
 
         if (finiteWorld) {
             int[] sizeLimits = BWOChunkGenerator.getSizeLimits();
-            double sizeX = (double) sizeLimits[0] / 2;
+            double sizeX = (double) sizeLimits[1] / 2;
             double sizeZ = (double) sizeLimits[3] / 2;
 
             sizeX += this.world.random.nextDouble(-sizeX, sizeX);
-            sizeZ += this.world.random.nextDouble(-sizeX, sizeZ);
+            sizeZ += this.world.random.nextDouble(-sizeZ, sizeZ);
 
             args.set(0, sizeX);
             args.set(2, sizeZ);
@@ -129,11 +129,11 @@ public class MinecraftMixin {
 
         if (finiteWorld && this.player.dimensionId == 0) {
             int[] sizeLimits = BWOChunkGenerator.getSizeLimits();
-            double sizeX = (double) sizeLimits[0] / 2;
+            double sizeX = (double) sizeLimits[1] / 2;
             double sizeZ = (double) sizeLimits[3] / 2;
 
             sizeX += this.world.random.nextDouble(-sizeX, sizeX);
-            sizeZ += this.world.random.nextDouble(-sizeX, sizeZ);
+            sizeZ += this.world.random.nextDouble(-sizeZ, sizeZ);
 
             args.set(0, sizeX);
             args.set(2, sizeZ);

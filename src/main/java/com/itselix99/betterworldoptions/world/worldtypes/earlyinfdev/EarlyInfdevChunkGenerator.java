@@ -2,10 +2,8 @@ package com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev;
 
 import java.util.Random;
 
-import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.config.Config;
-import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.feature.OldOreFeature;
 import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.util.math.noise.OctavePerlinNoiseSamplerEarlyInfdev;
 import net.minecraft.block.Block;
@@ -30,44 +28,6 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
 
     public EarlyInfdevChunkGenerator(World world, long seed) {
         super(world, seed);
-
-        if (this.theme.equals("Winter")) {
-            if (this.oldFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
-            } else {
-                ((BWOWorld) this.world).bwo_setSnow(true);
-            }
-        } else {
-            if (this.oldFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
-            } else {
-                ((BWOWorld) this.world).bwo_setSnow(false);
-            }
-        }
-
-        if (this.theme.equals("Hell") || this.theme.equals("Paradise")) {
-            if (this.oldFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, false);
-            } else {
-                ((BWOWorld) this.world).bwo_setPrecipitation(false);
-            }
-        } else {
-            if (this.oldFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, true);
-            } else {
-                ((BWOWorld) this.world).bwo_setPrecipitation(true);
-            }
-        }
-
-        if (this.oldFeatures) {
-            switch (this.theme) {
-                case "Hell" -> BetterWorldOptions.EarlyInfdev.setFogColor(1049600);
-                case "Paradise" -> BetterWorldOptions.EarlyInfdev.setFogColor(13033215);
-                case "Woods" -> BetterWorldOptions.EarlyInfdev.setFogColor(5069403);
-                default -> BetterWorldOptions.EarlyInfdev.setFogColor(11842815);
-            }
-        }
-
         this.noiseGen1 = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 16);
         this.noiseGen2 = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 16);
         this.noiseGen3 = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 8);

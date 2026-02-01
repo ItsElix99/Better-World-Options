@@ -40,10 +40,6 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
     public MCPEChunkGenerator(World world, long seed) {
         super(world, seed);
         this.random = new MTRandom((int) seed);
-
-        ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
-        ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
-
         this.minLimitPerlinNoise = new OctavePerlinNoiseSamplerMCPE(this.random, 16);
         this.maxLimitPerlinNoise = new OctavePerlinNoiseSamplerMCPE(this.random, 16);
         this.perlinNoise1 = new OctavePerlinNoiseSamplerMCPE(this.random, 8);

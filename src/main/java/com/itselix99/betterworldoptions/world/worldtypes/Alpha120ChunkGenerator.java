@@ -3,7 +3,6 @@ package com.itselix99.betterworldoptions.world.worldtypes;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWONoise;
-import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import net.minecraft.block.Block;
 import net.minecraft.block.SandBlock;
 import net.minecraft.block.material.Material;
@@ -39,10 +38,6 @@ public class Alpha120ChunkGenerator extends BWOChunkGenerator {
 
     public Alpha120ChunkGenerator(World world, long seed) {
         super(world, seed);
-
-        ((BWOWorld) this.world).bwo_setSnow(this.theme.equals("Winter"));
-        ((BWOWorld) this.world).bwo_setPrecipitation(!this.theme.equals("Hell") && !this.theme.equals("Paradise"));
-
         this.minLimitPerlinNoise = new OctavePerlinNoiseSampler(this.random, 16);
         this.maxLimitPerlinNoise = new OctavePerlinNoiseSampler(this.random, 16);
         this.perlinNoise1 = new OctavePerlinNoiseSampler(this.random, 8);

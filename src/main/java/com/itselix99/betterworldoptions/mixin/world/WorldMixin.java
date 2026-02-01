@@ -16,98 +16,152 @@ import net.minecraft.world.World;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.world.WorldProperties;
 import net.minecraft.world.dimension.Dimension;
-import net.minecraft.world.storage.WorldStorage;
 import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 @Mixin(World.class)
 public abstract class WorldMixin implements BWOWorld {
     @Shadow public Random random;
-    @Shadow @Final @Mutable public final Dimension dimension;
+    @Shadow @Final public Dimension dimension;
     @Shadow public int difficulty;
+    @Shadow protected WorldProperties properties;
+    @Unique private static Map<String, Boolean> storageSnowBiomes;
+    @Unique private static Map<String, Boolean> storagePrecipitationBiomes;
 
     @Shadow public abstract int getBlockId(int x, int y, int z);
     @Shadow public abstract boolean setBlock(int x, int y, int z, int blockId);
     @Shadow public abstract WorldProperties getProperties();
     @Shadow public abstract Material getMaterial(int x, int y, int z);
 
-    protected WorldMixin(Dimension dimension) {
-        this.dimension = dimension;
-    }
+    @Inject(
+            method = {
+                    "<init>(Lnet/minecraft/world/World;Lnet/minecraft/world/dimension/Dimension;)V",
+                    "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;Lnet/minecraft/world/dimension/Dimension;J)V",
+                    "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;JLnet/minecraft/world/dimension/Dimension;)V"
+            },
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/dimension/Dimension;setWorld(Lnet/minecraft/world/World;)V"
+            )
+    )
+    private void bwo_saveBiomesAndSetSnowAndPrecipitation(CallbackInfo ci) {
+        if (storageSnowBiomes == null && storagePrecipitationBiomes == null) {
+            storageSnowBiomes = new HashMap<>();
+            storagePrecipitationBiomes = new HashMap<>();
 
-    @Override
-    public void bwo_setSnow(boolean bl) {
-        OverworldBiomeProviderImpl.getInstance()
-                .getBiomes()
-                .stream()
-                .filter(biome -> BWOWorldPropertiesStorage.defaultBiomesSetSnow.contains(biome))
-                .forEach(biome -> biome.setSnow(bl));
-    }
+            OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> storageSnowBiomes.put(biome.name, biome.canSnow()));
+            OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> storagePrecipitationBiomes.put(biome.name, biome.canRain()));
+        }
 
-    @Override
-    public void bwo_setPrecipitation(boolean bl) {
-        OverworldBiomeProviderImpl.getInstance()
-                .getBiomes()
-                .stream()
-                .filter(biome -> BWOWorldPropertiesStorage.defaultBiomesSetPrecipitation.contains(biome))
-                .forEach(biome -> biome.setPrecipitation(bl));
+        BWOProperties bwoProperties = (BWOProperties) this.properties;
+        String worldType = bwoProperties.bwo_getWorldType();
+        boolean oldFeatures =  bwoProperties.bwo_isOldFeatures();
+        String theme = bwoProperties.bwo_getTheme();
 
-        if (!bl) {
-            OverworldBiomeProviderImpl.getInstance()
-                    .getBiomes()
-                    .stream()
-                    .filter(biome -> BWOWorldPropertiesStorage.defaultBiomesSetPrecipitationNoSnow.contains(biome))
-                    .forEach(biome -> biome.setSnow(false));
+        if (oldFeatures) {
+            if (theme.equals("Winter")) {
+                switch (worldType) {
+                    case "Alpha 1.1.2_01" -> {
+                        BetterWorldOptions.Alpha.setSnow(true);
+                        BetterWorldOptions.Alpha.setPrecipitation(true);
+                        BetterWorldOptions.Alpha.setFogColor(12638463);
+                    }
+                    case "Infdev 611", "Infdev 420", "Infdev 415" -> {
+                        BetterWorldOptions.Infdev.setSnow(true);
+                        BetterWorldOptions.Infdev.setPrecipitation(true);
+                        BetterWorldOptions.Infdev.setFogColor(11587839);
+                    }
+                    case "Early Infdev" -> {
+                        BetterWorldOptions.EarlyInfdev.setSnow(true);
+                        BetterWorldOptions.EarlyInfdev.setPrecipitation(true);
+                        BetterWorldOptions.EarlyInfdev.setFogColor(11842815);
+                    }
+                    case "Indev 223" -> {
+                        BetterWorldOptions.Indev.setSnow(true);
+                        BetterWorldOptions.Indev.setPrecipitation(true);
+                        BetterWorldOptions.Indev.setFogColor(16777215);
+                    }
+                }
+            } else if (theme.equals("Hell") || theme.equals("Paradise")) {
+                switch (worldType) {
+                    case "Alpha 1.1.2_01" -> {
+                        BetterWorldOptions.Alpha.setSnow(false);
+                        BetterWorldOptions.Alpha.setPrecipitation(false);
+                        BetterWorldOptions.Alpha.setFogColor(theme.equals("Hell") ? 1049600 : 13033215);
+                    }
+                    case "Infdev 611", "Infdev 420", "Infdev 415" -> {
+                        BetterWorldOptions.Infdev.setSnow(false);
+                        BetterWorldOptions.Infdev.setPrecipitation(false);
+                        BetterWorldOptions.Infdev.setFogColor(theme.equals("Hell") ? 1049600 : 13033215);
+                    }
+                    case "Early Infdev" -> {
+                        BetterWorldOptions.EarlyInfdev.setSnow(false);
+                        BetterWorldOptions.EarlyInfdev.setPrecipitation(false);
+                        BetterWorldOptions.EarlyInfdev.setFogColor(theme.equals("Hell") ? 1049600 : 13033215);
+                    }
+                    case "Indev 223" -> {
+                        BetterWorldOptions.Indev.setSnow(false);
+                        BetterWorldOptions.Indev.setPrecipitation(false);
+                        BetterWorldOptions.Indev.setFogColor(theme.equals("Hell") ? 1049600 : 13033215);
+                    }
+                }
+            } else {
+                switch (worldType) {
+                    case "Alpha 1.1.2_01" -> {
+                        BetterWorldOptions.Alpha.setSnow(false);
+                        BetterWorldOptions.Alpha.setPrecipitation(true);
+                        BetterWorldOptions.Alpha.setFogColor(theme.equals("Woods") ? 5069403 : 12638463);
+                    }
+                    case "Infdev 611", "Infdev 420", "Infdev 415" -> {
+                        BetterWorldOptions.Infdev.setSnow(false);
+                        BetterWorldOptions.Infdev.setPrecipitation(true);
+                        BetterWorldOptions.Infdev.setFogColor(theme.equals("Woods") ? 5069403 : 11587839);
+                    }
+                    case "Early Infdev" -> {
+                        BetterWorldOptions.EarlyInfdev.setSnow(false);
+                        BetterWorldOptions.EarlyInfdev.setPrecipitation(true);
+                        BetterWorldOptions.EarlyInfdev.setFogColor(theme.equals("Woods") ? 5069403 : 11842815);
+                    }
+                    case "Indev 223" -> {
+                        BetterWorldOptions.Indev.setSnow(false);
+                        BetterWorldOptions.Indev.setPrecipitation(true);
+                        BetterWorldOptions.Indev.setFogColor(theme.equals("Woods") ? 5069403 : 16777215);
+                    }
+                }
+            }
         } else {
-            OverworldBiomeProviderImpl.getInstance()
-                    .getBiomes()
-                    .stream()
-                    .filter(biome -> BWOWorldPropertiesStorage.defaultBiomesSetPrecipitationNoSnow.contains(biome))
-                    .forEach(biome -> biome.setSnow(true));
+            if (theme.equals("Winter")) {
+                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setSnow(true));
+                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setPrecipitation(storagePrecipitationBiomes.get(biome.name)));
+            } else if (theme.equals("Hell") || theme.equals("Paradise")) {
+                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setSnow(theme.equals("Hell") ? false : storageSnowBiomes.get(biome.name)));
+                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setPrecipitation(false));
+            } else {
+                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setSnow(storageSnowBiomes.get(biome.name)));
+                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setPrecipitation(storagePrecipitationBiomes.get(biome.name)));
+            }
         }
-    }
 
-    @Override
-    public void bwo_oldBiomeSetSnow(String worldType, boolean bl) {
-        switch (worldType) {
-            case "Alpha 1.1.2_01" -> BetterWorldOptions.Alpha.setSnow(bl);
-            case "Infdev 611", "Infdev 420", "Infdev 415" -> BetterWorldOptions.Infdev.setSnow(bl);
-            case "Early Infdev" -> BetterWorldOptions.EarlyInfdev.setSnow(bl);
-            case "Indev 223" -> BetterWorldOptions.Indev.setSnow(bl);
-        }
-    }
-
-    @Override
-    public void bwo_oldBiomeSetPrecipitation(String worldType, boolean bl) {
-        switch (worldType) {
-            case "Alpha 1.1.2_01" -> BetterWorldOptions.Alpha.setPrecipitation(bl);
-            case "Infdev 611", "Infdev 420", "Infdev 415" -> BetterWorldOptions.Infdev.setPrecipitation(bl);
-            case "Early Infdev" -> BetterWorldOptions.EarlyInfdev.setPrecipitation(bl);
-            case "Indev 223" -> BetterWorldOptions.Indev.setPrecipitation(bl);
-        }
     }
 
     @Environment(EnvType.CLIENT)
-    @Inject(method = "<init>(Lnet/minecraft/world/World;Lnet/minecraft/world/dimension/Dimension;)V", at = @At("TAIL"))
-    private void bwo_setOldTexturesChangingDimension(World world, Dimension dimension, CallbackInfo ci) {
-        BWOWorldPropertiesStorage.getInstance().setOldTextures(dimension.id == 0 && ((BWOProperties) world.getProperties()).bwo_isOldFeatures());
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Inject(method = "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;JLnet/minecraft/world/dimension/Dimension;)V", at = @At("TAIL"))
-    private void bwo_setOldTexturesSetWorld(WorldStorage worldStorage, String name, long seed, Dimension dimension, CallbackInfo ci) {
-        BWOWorldPropertiesStorage.getInstance().setOldTextures(this.getProperties().getDimensionId() == 0 && ((BWOProperties) this.getProperties()).bwo_isOldFeatures());
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Inject(method = "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;Lnet/minecraft/world/dimension/Dimension;J)V", at = @At("TAIL"))
-    private void bwo_setOldTexturesSetWorld2(WorldStorage worldStorage, String name, Dimension dimension, long seed, CallbackInfo ci) {
-        BWOWorldPropertiesStorage.getInstance().setOldTextures(this.getProperties().getDimensionId() == 0 && ((BWOProperties) this.getProperties()).bwo_isOldFeatures());
+    @Inject(
+            method = {
+                    "<init>(Lnet/minecraft/world/World;Lnet/minecraft/world/dimension/Dimension;)V",
+                    "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;Lnet/minecraft/world/dimension/Dimension;J)V",
+                    "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;JLnet/minecraft/world/dimension/Dimension;)V"
+            },
+            at = @At("TAIL")
+    )
+    private void bwo_setOldTextures(CallbackInfo ci) {
+        BWOWorldPropertiesStorage.getInstance().setOldTextures(this.dimension.id == 0 && ((BWOProperties) this.getProperties()).bwo_isOldFeatures());
     }
 
     @WrapOperation(method = "initializeSpawnPoint", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldProperties;setSpawn(III)V"))

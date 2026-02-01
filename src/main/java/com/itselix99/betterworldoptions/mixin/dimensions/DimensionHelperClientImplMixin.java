@@ -31,11 +31,11 @@ public class DimensionHelperClientImplMixin {
 
         if (finiteWorld) {
             int[] sizeLimits = BWOChunkGenerator.getSizeLimits();
-            double sizeX = (double) sizeLimits[0] / 2;
+            double sizeX = (double) sizeLimits[1] / 2;
             double sizeZ = (double) sizeLimits[3] / 2;
 
             sizeX += world.random.nextDouble(-sizeX, sizeX);
-            sizeZ += world.random.nextDouble(-sizeX, sizeZ);
+            sizeZ += world.random.nextDouble(-sizeZ, sizeZ);
 
             args.set(0, sizeX);
             args.set(2, sizeZ);
@@ -58,11 +58,11 @@ public class DimensionHelperClientImplMixin {
 
         if (finiteWorld && minecraft.player.dimensionId == 0) {
             int[] sizeLimits = BWOChunkGenerator.getSizeLimits();
-            double sizeX = (double) sizeLimits[0] / 2;
+            double sizeX = (double) sizeLimits[1] / 2;
             double sizeZ = (double) sizeLimits[3] / 2;
 
             sizeX += world.random.nextDouble(-sizeX, sizeX);
-            sizeZ += world.random.nextDouble(-sizeX, sizeZ);
+            sizeZ += world.random.nextDouble(-sizeZ, sizeZ);
 
             args.set(0, sizeX);
             args.set(2, sizeZ);

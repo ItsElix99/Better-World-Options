@@ -1,10 +1,8 @@
 package com.itselix99.betterworldoptions.world.worldtypes.indev223;
 
-import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
-import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.IndevFeatures;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.util.math.noise.Distort;
@@ -36,44 +34,6 @@ public class Indev223ChunkGenerator extends BWOChunkGenerator {
     public Indev223ChunkGenerator(World world, long seed) {
         super(world, seed);
         this.singleBiome = this.bwoProperties.bwo_getSingleBiome();
-
-        if (this.theme.equals("Winter")) {
-            if (this.oldFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, true);
-            } else {
-                ((BWOWorld) this.world).bwo_setSnow(true);
-            }
-        } else {
-            if (this.oldFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetSnow(this.worldType, false);
-            } else {
-                ((BWOWorld) this.world).bwo_setSnow(false);
-            }
-        }
-
-        if (this.theme.equals("Hell") || this.theme.equals("Paradise")) {
-            if (this.oldFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, false);
-            } else {
-                ((BWOWorld) this.world).bwo_setPrecipitation(false);
-            }
-        } else {
-            if (this.oldFeatures) {
-                ((BWOWorld) this.world).bwo_oldBiomeSetPrecipitation(this.worldType, true);
-            } else {
-                ((BWOWorld) this.world).bwo_setPrecipitation(true);
-            }
-        }
-
-        if (this.oldFeatures) {
-            switch (this.theme) {
-                case "Hell" -> BetterWorldOptions.Indev.setFogColor(1049600);
-                case "Paradise" -> BetterWorldOptions.Indev.setFogColor(13033215);
-                case "Woods" -> BetterWorldOptions.Indev.setFogColor(5069403);
-                default -> BetterWorldOptions.Indev.setFogColor(16777215);
-            }
-        }
-
         this.distortA = new Distort(new OctavePerlinNoiseSamplerIndev223(this.random, 8), new OctavePerlinNoiseSamplerIndev223(this.random, 8));
         this.distortB = new Distort(new OctavePerlinNoiseSamplerIndev223(this.random, 8), new OctavePerlinNoiseSamplerIndev223(this.random, 8));
         this.noiseGen1 = new OctavePerlinNoiseSamplerIndev223(this.random, 6);
