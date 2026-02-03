@@ -51,6 +51,10 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, double[] temperatures) {
+        int[] farlandsChunks = this.getFarlandsChunksOrDefault(chunkX, chunkZ, 784426);
+        chunkX = farlandsChunks[0];
+        chunkZ = farlandsChunks[1];
+
         byte var6 = 4;
         byte var7 = 64;
         int var8 = var6 + 1;

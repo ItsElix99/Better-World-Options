@@ -49,6 +49,10 @@ public class Alpha120ChunkGenerator extends BWOChunkGenerator {
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, double[] temperatures) {
+        int[] farlandsChunks = this.getFarlandsChunksOrDefault(chunkX, chunkZ, 784426);
+        chunkX = farlandsChunks[0];
+        chunkZ = farlandsChunks[1];
+
         int var6 = 4;
         int var7 = 64;
         int var8 = var6 + 1;

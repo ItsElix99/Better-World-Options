@@ -113,5 +113,14 @@ public class GeneralOptions {
         IntOptionEntry SizeZ = createIntGeneralOption("bwoMoreOptions.sizeZ", "SizeZ", null, 256, 64, 10240);
         SizeZ.visible = false;
         GENERAL_OPTIONS_LIST.add(SizeZ);
+
+        BooleanOptionEntry Farlands = createBooleanGeneralOption("bwoMoreOptions.farlands", "Farlands", null, false);
+        GENERAL_OPTIONS_LIST.add(Farlands);
+
+        StringOptionEntry FarlandsShape = createStringGeneralOptionWithStringList("bwoMoreOptions.farlandsShape", "FarlandsShape", null, new ArrayList<>(Arrays.asList("Linear", "Square")), 0);
+        GENERAL_OPTIONS_LIST.add(FarlandsShape);
+
+        IntOptionEntry FarlandsDistance = createIntGeneralOption("bwoMoreOptions.farlandsDistance", "FarlandsDistance", null, 8, 2, 32);
+        GENERAL_OPTIONS_LIST.add(FarlandsDistance);
     }
 }

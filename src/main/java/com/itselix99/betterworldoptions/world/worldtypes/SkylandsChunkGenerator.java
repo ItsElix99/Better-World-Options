@@ -42,6 +42,10 @@ public class SkylandsChunkGenerator extends BWOChunkGenerator {
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks) {
+        int[] farlandsChunks = this.getFarlandsChunksOrDefault(chunkX, chunkZ, 784426);
+        chunkX = farlandsChunks[0];
+        chunkZ = farlandsChunks[1];
+
         byte var6 = 2;
         int var7 = var6 + 1;
         int var8 = 33;

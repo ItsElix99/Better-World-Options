@@ -78,9 +78,7 @@ public class BWOOptionListWidget extends EntryListWidgetButtons {
 
                 return button;
             } else if (option instanceof IntOptionEntry) {
-                int intOptionValue = this.bwoWorldPropertiesStorage.getIntOptionValue(option.name, option.optionType);
-                button = new BWOTextFieldWidget(this.parent, this.minecraft.textRenderer, x, 0, 150, 20, String.valueOf(intOptionValue), option, this.bwoWorldPropertiesStorage);
-                ((BWOTextFieldWidget) button).setMaxLength(32);
+                button = new BWOSliderWidget(var1, x, 0, option.displayName, option, this.bwoWorldPropertiesStorage);
                 return button;
             }
         }

@@ -47,6 +47,10 @@ public class Infdev611ChunkGenerator extends BWOChunkGenerator {
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, double[] temperatures) {
+        int[] farlandsChunks = this.getFarlandsChunksOrDefault(chunkX, chunkZ, 784426);
+        chunkX = farlandsChunks[0];
+        chunkZ = farlandsChunks[1];
+
         int var10003 = chunkX << 2;
         int var7 = chunkZ << 2;
         int m11 = var10003;

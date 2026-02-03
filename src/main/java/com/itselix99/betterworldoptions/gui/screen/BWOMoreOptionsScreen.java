@@ -210,9 +210,9 @@ public class BWOMoreOptionsScreen extends Screen {
 
     protected void keyPressed(char character, int keyCode) {
         this.listWidget.keyPressed(character, keyCode);
-        if (this.sizeXField.focused) {
+        if (this.sizeXField != null && this.sizeXField.focused) {
             this.sizeXField.keyPressed(character, keyCode);
-        } else {
+        } else if (this.sizeZField != null) {
             this.sizeZField.keyPressed(character, keyCode);
         }
     }

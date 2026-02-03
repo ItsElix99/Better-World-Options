@@ -124,15 +124,6 @@ public class WorldTypes {
         Flat.worldTypeOptions.put("Superflat", createBooleanOption(Flat.worldTypeOptions.size(), "bwoMoreOptions.superflat", "Superflat", null, false));
         WORLD_TYPE_LIST.add(Flat);
 
-        WorldTypeEntry Farlands = createWorldType(AltOverworldChunkGenerator.class, "Farlands", "Farlands", "/assets/betterworldoptions/gui/farlands.png", new String[]{"Explore the Farlands, where terrain", "generation becomes distorted"});
-        Farlands.properties.put("Enable Structures", true);
-        Farlands.properties.put("Enable Single Biome", true);
-        Farlands.properties.put("Enable Themes", true);
-        Farlands.properties.put("Enable Old Features", false);
-        Farlands.properties.put("Old Features Has Biomes", false);
-        Farlands.properties.put("Enable Finite World", true);
-        WORLD_TYPE_LIST.add(Farlands);
-
         WorldTypeEntry Alpha120 = createWorldType(Alpha120ChunkGenerator.class, "Alpha 1.2.0", "Alpha 1.2.0", "/assets/betterworldoptions/gui/alpha_1.2.0.png", new String[]{"Start the world with Alpha 1.2.0", "generation"});
         Alpha120.properties.put("Enable Structures", true);
         Alpha120.properties.put("Enable Single Biome", true);

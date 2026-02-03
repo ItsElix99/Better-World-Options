@@ -32,6 +32,9 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
     protected final String finiteType;
     protected final int sizeX;
     protected final int sizeZ;
+    protected final boolean farlands;
+    protected final String farlandsShape;
+    protected final int farlandsDistance;
 
     private static int[] sizeLimits;
 
@@ -48,6 +51,9 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         this.finiteType = this.bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
         this.sizeX = this.bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
         this.sizeZ = this.bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
+        this.farlands = this.bwoProperties.bwo_getBooleanOptionValue("Farlands", OptionType.GENERAL_OPTION);
+        this.farlandsShape = this.bwoProperties.bwo_getStringOptionValue("FarlandsShape", OptionType.GENERAL_OPTION);
+        this.farlandsDistance = this.bwoProperties.bwo_getIntOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION) / 2;
 
         ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
     }
@@ -64,6 +70,22 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         }
 
         return defaultChunk;
+    }
+
+    protected int[] getFarlandsChunksOrDefault(int chunkX, int chunkZ, int farlandsChunk) {
+        if (this.farlands) {
+            if (this.farlandsShape.equals("Linear")) {
+                if (chunkX > this.farlandsDistance) chunkX += farlandsChunk;
+                if (chunkX < -this.farlandsDistance) chunkX -= farlandsChunk;
+            } else if (this.farlandsShape.equals("Square")) {
+                if (chunkX > this.farlandsDistance) chunkX += farlandsChunk;
+                if (chunkX < -this.farlandsDistance) chunkX -= farlandsChunk;
+                if (chunkZ > this.farlandsDistance) chunkZ += farlandsChunk;
+                if (chunkZ < -this.farlandsDistance) chunkZ -= farlandsChunk;
+            }
+        }
+
+        return new int[]{chunkX, chunkZ};
     }
 
     protected void buildLCEFiniteWorldLimit(int chunkX, int chunkZ, int x, int y, int z, byte[] blocks, Biome biome) {

@@ -45,13 +45,9 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, double[] temperatures) {
-        if (this.worldType.equals("Farlands")) {
-            if (chunkX >= 8) {
-                chunkX += 784426;
-            } else {
-                chunkX -= 784426;
-            }
-        }
+        int[] farlandsChunks = this.getFarlandsChunksOrDefault(chunkX, chunkZ, 784426);
+        chunkX = farlandsChunks[0];
+        chunkZ = farlandsChunks[1];
 
         byte var6 = 4;
         byte var7 = 64;

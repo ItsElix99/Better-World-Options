@@ -4,7 +4,6 @@ import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWONoise;
-import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.chunk.EmptyFlattenedChunk;
@@ -47,6 +46,9 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     @Unique private String finiteType;
     @Unique private int sizeX;
     @Unique private int sizeZ;
+    @Unique private boolean farlands;
+    @Unique protected String farlandsShape;
+    @Unique protected int farlandsDistance;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void bwo_initBWOProperties(World world, long seed, CallbackInfo ci) {
@@ -57,24 +59,47 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
         this.sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
         this.sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
+        this.farlands = bwoProperties.bwo_getBooleanOptionValue("Farlands", OptionType.GENERAL_OPTION);
+        this.farlandsShape = bwoProperties.bwo_getStringOptionValue("FarlandsShape", OptionType.GENERAL_OPTION);
+        this.farlandsDistance = bwoProperties.bwo_getIntOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION) / 2;
     }
 
-//    @ModifyVariable(
-//            method = "buildTerrain",
-//            at = @At("HEAD"),
-//            ordinal = 0,
-//            argsOnly = true
-//    )
-//    private int modifyChunkXForFarlands(int chunkX) {
-//        if (this.worldType.equals("Farlands")) {
-//            if (chunkX >= 8) {
-//                return chunkX + 784426;
-//            } else {
-//                return chunkX - 784426;
-//            }
-//        }
-//        return chunkX;
-//    }
+    @ModifyVariable(
+            method = "buildTerrain",
+            at = @At("HEAD"),
+            ordinal = 0,
+            argsOnly = true
+    )
+    private int bwo_setFarlandsChunkX(int chunkX) {
+        if (this.farlands) {
+            if (this.farlandsShape.equals("Linear")) {
+                if (chunkX > this.farlandsDistance) chunkX += 784426;
+                if (chunkX < -this.farlandsDistance) chunkX -= 784426;
+            } else if (this.farlandsShape.equals("Square")) {
+                if (chunkX > this.farlandsDistance) chunkX += 784426;
+                if (chunkX < -this.farlandsDistance) chunkX -= 784426;
+            }
+        }
+
+        return chunkX;
+    }
+
+    @ModifyVariable(
+            method = "buildTerrain",
+            at = @At("HEAD"),
+            ordinal = 1,
+            argsOnly = true
+    )
+    private int bwo_setFarlandsChunkZ(int chunkZ) {
+        if (this.farlands) {
+            if (this.farlandsShape.equals("Square")) {
+                if (chunkZ > this.farlandsDistance) chunkZ += 784426;
+                if (chunkZ < -this.farlandsDistance) chunkZ -= 784426;
+            }
+        }
+
+        return chunkZ;
+    }
 
     @ModifyConstant(method = "buildTerrain", constant = @Constant(doubleValue = 0.5D, ordinal = 0))
     private double bwo_changeTempInWinterTheme(double constant) {
