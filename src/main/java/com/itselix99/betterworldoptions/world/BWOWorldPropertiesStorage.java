@@ -109,7 +109,7 @@ public class BWOWorldPropertiesStorage {
             return ((StringOptionStorage) this.generalOptions.getOrDefault(optionName, new StringOptionStorage(optionName, ((StringOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
         } else if (optionType == OptionType.WORLD_TYPE_OPTION){
             WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
-            if (worldType.worldTypeOptions != null && worldType.worldTypeOptions.containsKey(optionName)) {
+            if (!worldType.worldTypeOptions.isEmpty() && worldType.worldTypeOptions.containsKey(optionName)) {
                 return ((StringOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new StringOptionStorage(optionName, ((StringOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
             }
         }
@@ -122,7 +122,7 @@ public class BWOWorldPropertiesStorage {
             return ((BooleanOptionStorage) this.generalOptions.getOrDefault(optionName, new BooleanOptionStorage(optionName, ((BooleanOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
         } else if (optionType == OptionType.WORLD_TYPE_OPTION){
             WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
-            if (worldType.worldTypeOptions != null && worldType.worldTypeOptions.containsKey(optionName)) {
+            if (!worldType.worldTypeOptions.isEmpty() && worldType.worldTypeOptions.containsKey(optionName)) {
                 return ((BooleanOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new BooleanOptionStorage(optionName, ((BooleanOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
             }
         }
@@ -135,7 +135,7 @@ public class BWOWorldPropertiesStorage {
             return ((IntOptionStorage) this.generalOptions.getOrDefault(optionName, new IntOptionStorage(optionName, ((IntOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
         } else if (optionType == OptionType.WORLD_TYPE_OPTION){
             WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
-            if (worldType.worldTypeOptions != null && worldType.worldTypeOptions.containsKey(optionName)) {
+            if (!worldType.worldTypeOptions.isEmpty() && worldType.worldTypeOptions.containsKey(optionName)) {
                 return ((IntOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new IntOptionStorage(optionName, ((IntOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
             }
         }
@@ -159,6 +159,49 @@ public class BWOWorldPropertiesStorage {
         }
 
         return 0;
+    }
+
+    public void resetGeneralOptionToDefaultValue(OptionEntry option) {
+        if (option.optionType == OptionType.GENERAL_OPTION) {
+            if (option instanceof StringOptionEntry stringOption) {
+                this.generalOptions.put(stringOption.name, new StringOptionStorage(stringOption.name, stringOption.defaultValue));
+                this.setSelectedValue(stringOption.name, stringOption.optionType, stringOption.ordinalDefaultValue);
+            } else if (option instanceof BooleanOptionEntry booleanOption) {
+                this.generalOptions.put(booleanOption.name, new BooleanOptionStorage(booleanOption.name, booleanOption.defaultValue));
+
+                if (!option.dependentOptions.isEmpty()) {
+                    this.resetDependentOptionsToDefaultValue(option);
+                }
+            } else if (option instanceof IntOptionEntry intOption) {
+                this.generalOptions.put(intOption.name, new IntOptionStorage(intOption.name, intOption.defaultValue));
+            }
+        }
+    }
+
+    public void resetDependentOptionsToDefaultValue(OptionEntry option) {
+        if (option.optionType == OptionType.GENERAL_OPTION) {
+            for (OptionEntry linkedOption : option.dependentOptions) {
+                if (linkedOption instanceof StringOptionEntry stringOption) {
+                    this.generalOptions.put(stringOption.name, new StringOptionStorage(stringOption.name, stringOption.defaultValue));
+                    this.setSelectedValue(stringOption.name, stringOption.optionType, stringOption.ordinalDefaultValue);
+                } else if (linkedOption instanceof BooleanOptionEntry booleanOption) {
+                    this.generalOptions.put(booleanOption.name, new BooleanOptionStorage(booleanOption.name, booleanOption.defaultValue));
+                } else if (linkedOption instanceof IntOptionEntry intOption) {
+                    this.generalOptions.put(intOption.name, new IntOptionStorage(intOption.name, intOption.defaultValue));
+                }
+            }
+        } else if (option.optionType == OptionType.WORLD_TYPE_OPTION) {
+            for (OptionEntry linkedOption : option.dependentOptions) {
+                if (linkedOption instanceof StringOptionEntry stringOption) {
+                    this.worldTypeOptions.put(stringOption.name, new StringOptionStorage(stringOption.name, stringOption.defaultValue));
+                    this.setSelectedValue(stringOption.name, stringOption.optionType, stringOption.ordinalDefaultValue);
+                } else if (linkedOption instanceof BooleanOptionEntry booleanOption) {
+                    this.worldTypeOptions.put(booleanOption.name, new BooleanOptionStorage(booleanOption.name, booleanOption.defaultValue));
+                } else if (linkedOption instanceof IntOptionEntry intOption) {
+                    this.worldTypeOptions.put(intOption.name, new IntOptionStorage(intOption.name, intOption.defaultValue));
+                }
+            }
+        }
     }
 
     @Environment(EnvType.CLIENT)

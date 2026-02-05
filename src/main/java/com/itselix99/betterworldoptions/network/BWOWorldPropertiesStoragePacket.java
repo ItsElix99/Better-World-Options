@@ -104,9 +104,9 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
             }
 
             WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(((StringOptionStorage) this.generalOptions.get("WorldType")).value);
-            stream.writeBoolean(worldType.worldTypeOptions != null);
+            stream.writeBoolean(!worldType.worldTypeOptions.isEmpty());
 
-            if (worldType.worldTypeOptions != null) {
+            if (!worldType.worldTypeOptions.isEmpty()) {
                 stream.writeInt(this.worldTypeOptions.size());
 
                 for (OptionStorage worldTypeOptions : this.worldTypeOptions.values()) {

@@ -4,6 +4,7 @@ import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import net.minecraft.world.chunk.ChunkSource;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class WorldTypeEntry {
@@ -14,5 +15,6 @@ public class WorldTypeEntry {
     public String[] description;
     public Map<String, Integer> oldTextures = new HashMap<>();
     public Map<String, Boolean> properties = new HashMap<>();
-    public Map<String, OptionEntry> worldTypeOptions;
+    public Map<String, OptionEntry> worldTypeOptions = new LinkedHashMap<>();
+    public boolean isDimension = false;
 }

@@ -15,8 +15,8 @@ public class BWOSliderWidget extends BWOButtonWidget {
     private int maxValue;
     protected float value = 1.0F;
 
-    public BWOSliderWidget(int id, int x, int y, String text, OptionEntry option, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {
-        super(id, x, y, text, option, bwoWorldPropertiesStorage);
+    public BWOSliderWidget(int id, int x, int y, String text, OptionEntry option, BWOWorldPropertiesStorage bwoWorldPropertiesStorage, Object parent) {
+        super(id, x, y, text, option, bwoWorldPropertiesStorage, parent);
         this.text = this.translation.get(this.option.displayName) + " " + this.bwoWorldPropertiesStorage.getIntOptionValue(this.option.name, this.option.optionType);
         if (option instanceof IntOptionEntry intOption) {
             this.minValue = intOption.minValue;
@@ -48,6 +48,9 @@ public class BWOSliderWidget extends BWOButtonWidget {
         this.bwoWorldPropertiesStorage.setIntOptionValue(this.option.name, option.optionType, (int) real);
 
         this.text = this.translation.get(this.option.displayName) + " " + this.bwoWorldPropertiesStorage.getIntOptionValue(this.option.name, this.option.optionType);
+    }
+
+    public void drawTooltip(Minecraft minecraft, int mouseX, int mouseY) {
     }
 
     protected void renderBackground(Minecraft minecraft, int mouseX, int mouseY) {
