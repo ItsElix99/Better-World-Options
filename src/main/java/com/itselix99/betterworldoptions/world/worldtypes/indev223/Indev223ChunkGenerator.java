@@ -3,7 +3,6 @@ package com.itselix99.betterworldoptions.world.worldtypes.indev223;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
-import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.IndevFeatures;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.util.math.noise.Distort;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.util.math.noise.OctavePerlinNoiseSamplerIndev223;
@@ -30,10 +29,12 @@ public class Indev223ChunkGenerator extends BWOChunkGenerator {
     private Biome[] biomes;
 
     private final String singleBiome;
+    private final String indevWorldType;
 
     public Indev223ChunkGenerator(World world, long seed) {
         super(world, seed);
         this.singleBiome = this.bwoProperties.bwo_getSingleBiome();
+        this.indevWorldType = this.bwoProperties.bwo_getStringOptionValue("IndevWorldType", OptionType.WORLD_TYPE_OPTION);
         this.distortA = new Distort(new OctavePerlinNoiseSamplerIndev223(this.random, 8), new OctavePerlinNoiseSamplerIndev223(this.random, 8));
         this.distortB = new Distort(new OctavePerlinNoiseSamplerIndev223(this.random, 8), new OctavePerlinNoiseSamplerIndev223(this.random, 8));
         this.noiseGen1 = new OctavePerlinNoiseSamplerIndev223(this.random, 6);
@@ -47,10 +48,9 @@ public class Indev223ChunkGenerator extends BWOChunkGenerator {
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, double[] temperatures) {
         int[] heightMap = new int[16 * 16];
-        String indevWorldType = ((BWOProperties) this.world.getProperties()).bwo_getStringOptionValue("IndevWorldType", OptionType.WORLD_TYPE_OPTION);
         int surroundingWaterHeight = 65;
 
-        if (indevWorldType.equals("Flat")) {
+        if (this.indevWorldType.equals("Flat")) {
             for (int i = 0; i < heightMap.length; i++) heightMap[i] = 0;
         } else {
             for (int x = 0; x < 16; x++) {
@@ -69,7 +69,7 @@ public class Indev223ChunkGenerator extends BWOChunkGenerator {
 
                     double distance = Math.max(Math.abs(nx), Math.abs(nz));
 
-                    if (indevWorldType.equals("Island")) {
+                    if (this.indevWorldType.equals("Island")) {
                         double radius = Math.sqrt(nx * nx + nz * nz) * 1.2;
                         double falloff = this.noiseGen2.create(worldX * 0.05, worldZ * 0.05) / 4.0 + 1.0;
                         radius = Math.min(Math.max(distance, Math.min(radius, falloff)), 1.0);
@@ -122,7 +122,6 @@ public class Indev223ChunkGenerator extends BWOChunkGenerator {
             for (int z = 0; z < 16; z++) {
                 int worldZ = chunkZ * 16 + z;
                 double nz = ((double) worldZ / (this.sizeZ - 1) - 0.5) * 2.0;
-                double distance = Math.max(Math.abs(nx), Math.abs(nz));
 
                 double radial;
                 radial = (radial = Math.max(nx, nz)) * radial * radial;
@@ -156,71 +155,36 @@ public class Indev223ChunkGenerator extends BWOChunkGenerator {
                     int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
                     int blockId = 0;
 
-                    if (distance > 1.0 && this.finiteWorld) {
-                        if (!indevWorldType.equals("Island") && !indevWorldType.equals("Floating")) {
-                            if (y == surroundingWaterHeight) {
-                                blockId = Block.GRASS_BLOCK.id;
-                            }
-                            if (y <= surroundingWaterHeight - 1) {
-                                blockId = Block.BEDROCK.id;
-                            }
-                        } else if (indevWorldType.equals("Island")) {
-                            if (y == 54) {
-                                blockId = Block.DIRT.id;
-                            }
-
-                            if (y <= 53) {
-                                blockId = Block.BEDROCK.id;
-                            }
-
-                            if (y >= 55) {
-
-                                if (y == surroundingWaterHeight - 2) {
-                                    if (!this.theme.equals("Hell") && (var19 < temp && !this.oldFeatures || this.theme.equals("Winter"))) {
-                                        blockId = Block.ICE.id;
-                                    } else {
-                                        blockId = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
-                                    }
-                                } else {
-                                    blockId = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
-                                }
-                            }
-
-                            if (y > surroundingWaterHeight - 2) {
-                                blockId = 0;
-                            }
-                        }
-                    } else {
-                        if (y <= var108) {
-                            if (!this.oldFeatures) {
-                                blockId = var18.soilBlockId;
-                            } else {
-                                blockId = Block.DIRT.id;
-                            }
-
+                    if (y <= var108) {
+                        if (!this.oldFeatures) {
+                            blockId = var18.soilBlockId;
+                        } else {
+                            blockId = Block.DIRT.id;
                         }
 
-                        if (y <= baseHeight) {
-                            blockId = Block.STONE.id;
-                            lastSandY = y + 1;
-                        }
+                    }
 
-                        if (indevWorldType.equals("Floating") && y < var112) {
-                            blockId = 0;
-                        }
+                    if (y <= baseHeight) {
+                        blockId = Block.STONE.id;
+                        lastSandY = y + 1;
+                    }
 
-                        if (!indevWorldType.equals("Floating") && y <= surroundingWaterHeight - 2 && blockId == 0) {
-                            if (y == surroundingWaterHeight - 2) {
-                                if (!this.theme.equals("Hell") && (var19 < temp && !this.oldFeatures || this.theme.equals("Winter"))) {
-                                    blockId = Block.ICE.id;
-                                } else {
-                                    blockId = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
-                                }
+                    if (this.indevWorldType.equals("Floating") && y < var112) {
+                        blockId = 0;
+                    }
+
+                    if (!this.indevWorldType.equals("Floating") && y <= surroundingWaterHeight - 2 && blockId == 0) {
+                        if (y == surroundingWaterHeight - 2) {
+                            if (!this.theme.equals("Hell") && (var19 < temp && !this.oldFeatures || this.theme.equals("Winter"))) {
+                                blockId = Block.ICE.id;
                             } else {
                                 blockId = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
                             }
+                        } else {
+                            blockId = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
                         }
                     }
+
 
                     if (blocks[index] == 0) {
                         blocks[index] = (byte) blockId;
@@ -246,7 +210,7 @@ public class Indev223ChunkGenerator extends BWOChunkGenerator {
             for (int z = 0; z < 16; z++) {
                 double worldZ = chunkZ * 16 + z;
                 boolean sand = this.noiseGen5.create(worldX, worldZ) > 8.0;
-                if (indevWorldType.equals("Island")) {
+                if (this.indevWorldType.equals("Island")) {
                     sand = this.noiseGen5.create(worldX, worldZ) > (double) -8.0F;
                 }
 
@@ -360,15 +324,11 @@ public class Indev223ChunkGenerator extends BWOChunkGenerator {
             BWOChunkGenerator.setSizeLimits(0, this.sizeX, 0, this.sizeZ);
         }
 
-        double centerX = ((double)(chunkX * 16) / (this.sizeX - 1) - 0.5) * 2.0;
-        double centerZ = ((double)(chunkZ * 16) / (this.sizeZ - 1) - 0.5) * 2.0;
-        double distance = Math.max(Math.abs(centerX), Math.abs(centerZ));
-
-        if (!this.oldFeatures && (distance <= 1.0 || !this.finiteWorld)){
+        if (!this.oldFeatures){
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
 
-        if (Config.BWOConfig.world.ravineGeneration && (distance <= 1.0 || !this.finiteWorld)) {
+        if (Config.BWOConfig.world.ravineGeneration) {
             if (!this.oldFeatures || Config.BWOConfig.world.allowGenWithOldFeaturesOn) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
@@ -388,7 +348,14 @@ public class Indev223ChunkGenerator extends BWOChunkGenerator {
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
 
-        return this.getEmptyChunkMCPEFiniteWorld(chunkX, chunkZ, 0, this.sizeX, 0, this.sizeZ, flattenedChunk);
+        String limitMode;
+        if (this.finiteType.equals("MCPE")) {
+            limitMode = this.finiteType;
+        } else {
+            limitMode = this.indevWorldType;
+        }
+
+        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, 0, this.sizeX, 0, this.sizeZ, var3, limitMode, flattenedChunk);
     }
 
     public void decorate(ChunkSource source, int x, int z) {
@@ -400,30 +367,30 @@ public class Indev223ChunkGenerator extends BWOChunkGenerator {
             byte var62 = (byte) (this.theme.equals("Paradise") ? 12 : 2);
 
             for(int var73 = 0; var73 < var62; ++var73) {
-                int var76 = var4 + this.random.nextInt(16) + (!this.finiteWorld ? 8 : 0);
+                int var76 = var4 + this.random.nextInt(16) + 8;
                 int var85 = this.random.nextInt(128);
-                int var19 = var5 + this.random.nextInt(16) + (!this.finiteWorld ? 8 : 0);
+                int var19 = var5 + this.random.nextInt(16) + 8;
                 (new PlantPatchFeature(Block.DANDELION.id)).generate(this.world, this.random, var76, var85, var19);
             }
 
             for(int var74 = 0; var74 < var62; ++var74) {
-                int var79 = var4 + this.random.nextInt(16) + (!this.finiteWorld ? 8 : 0);
+                int var79 = var4 + this.random.nextInt(16) + 8;
                 int var88 = this.random.nextInt(128);
-                int var99 = var5 + this.random.nextInt(16) + (!this.finiteWorld ? 8 : 0);
+                int var99 = var5 + this.random.nextInt(16) + 8;
                 (new PlantPatchFeature(Block.ROSE.id)).generate(this.world, this.random, var79, var88, var99);
             }
 
             if (this.random.nextInt(4) == 0) {
-                int var80 = var4 + this.random.nextInt(16) + (!this.finiteWorld ? 8 : 0);
+                int var80 = var4 + this.random.nextInt(16) + 8;
                 int var89 = this.random.nextInt(128);
-                int var100 = var5 + this.random.nextInt(16) + (!this.finiteWorld ? 8 : 0);
+                int var100 = var5 + this.random.nextInt(16) + 8;
                 (new PlantPatchFeature(Block.BROWN_MUSHROOM.id)).generate(this.world, this.random, var80, var89, var100);
             }
 
             if (this.random.nextInt(8) == 0) {
-                int var81 = var4 + this.random.nextInt(16) + (!this.finiteWorld ? 8 : 0);
+                int var81 = var4 + this.random.nextInt(16) + 8;
                 int var90 = this.random.nextInt(128);
-                int var101 = var5 + this.random.nextInt(16) + (!this.finiteWorld ? 8 : 0);
+                int var101 = var5 + this.random.nextInt(16) + 8;
                 (new PlantPatchFeature(Block.RED_MUSHROOM.id)).generate(this.world, this.random, var81, var90, var101);
             }
 
@@ -431,15 +398,15 @@ public class Indev223ChunkGenerator extends BWOChunkGenerator {
             OakTreeFeature var9 = new OakTreeFeature();
 
             for(int var11 = 0; var11 < var10; ++var11) {
-                int var12 = var4 + this.random.nextInt(16) + (!this.finiteWorld ? 8 : 0);
-                int var13 = var5 + this.random.nextInt(16) + (!this.finiteWorld ? 8 : 0);
+                int var12 = var4 + this.random.nextInt(16) + 8;
+                int var13 = var5 + this.random.nextInt(16) + 8;
                 int var14 = this.world.getTopY(var12, var13) + this.random.nextInt(3) - this.random.nextInt(6);
                 var9.prepare(1.0F, 1.0F, 1.0F);
                 var9.generate(this.world, this.random, var12, var14, var13);
             }
 
-            for(int var6 = var4; var6 < var4 + 16; ++var6) {
-                for(int var7 = var5; var7 < var5 + 16; ++var7) {
+            for(int var6 = var4 + 8; var6 < var4 + 8 + 16; ++var6) {
+                for(int var7 = var5 + 8; var7 < var5 + 8 + 16; ++var7) {
                     int var8 = this.world.getTopSolidBlockY(var6, var7);
                     if(this.theme.equals("Winter") && var8 > 0 && var8 < this.world.dimension.getHeight() && this.world.getBlockId(var6, var8, var7) == 0 && this.world.getMaterial(var6, var8 - 1, var7).isSolid() && this.world.getMaterial(var6, var8 - 1, var7) != Material.ICE) {
                         this.world.setBlock(var6, var8, var7, Block.SNOW.id);

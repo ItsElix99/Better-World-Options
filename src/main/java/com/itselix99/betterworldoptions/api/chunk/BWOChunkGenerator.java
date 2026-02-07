@@ -5,7 +5,7 @@ import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
-import com.itselix99.betterworldoptions.world.chunk.EmptyFlattenedChunk;
+import com.itselix99.betterworldoptions.world.chunk.BWOLimitChunk;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -58,14 +58,17 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
     }
 
-    protected Chunk getEmptyChunkMCPEFiniteWorld(int chunkX, int chunkZ, int startX, int endX, int startZ, int endZ, Chunk defaultChunk) {
-        if (this.finiteWorld && this.finiteType.equals("MCPE")) {
+    protected Chunk getLimitChunkFiniteWorld(int chunkX, int chunkZ, int startX, int endX, int startZ, int endZ, byte[] blocks, String mode, Chunk defaultChunk) {
+        if (this.finiteWorld && !this.finiteType.equals("Indev Island")) {
             int blockX = chunkX * 16;
             int blockZ = chunkZ * 16;
             setSizeLimits(startX, endX, startZ, endZ);
 
             if (blockX < startX || blockX >= endX || blockZ < startZ || blockZ >= endZ) {
-                return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
+                BWOLimitChunk bwoLimitChunk = new BWOLimitChunk(this.world, chunkX, chunkZ, mode);
+                bwoLimitChunk.fromLegacy(blocks);
+                bwoLimitChunk.populateHeightMap();
+                return bwoLimitChunk;
             }
         }
 
@@ -99,11 +102,10 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
             double maxZ = this.sizeZ / 2.0D - 1.0D;
 
             boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
-            boolean limit2 = x2 < minX || x2 > maxX || z2 < minZ || z2 > maxZ;
             if (y <= 55) {
                 if (limit) {
                     if (y >= 53) {
-                        if (WorldTypes.getWorldTypePropertyValue(this.worldType, "Old Features Has Biomes")) {
+                        if (WorldTypes.getWorldTypeByName(this.worldType).oldFeaturesProperties != null && WorldTypes.getWorldTypeByName(this.worldType).oldFeaturesProperties.oldFeaturesHasVanillaBiomes) {
                             blocks[index] = biome.soilBlockId;
                         } else {
                             blocks[index] = this.oldFeatures ? (byte) Block.DIRT.id : biome.soilBlockId;
@@ -111,30 +113,13 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
                     } else {
                         blocks[index] = (byte) Block.STONE.id;
                     }
-                } else if (limit2) {
-                    blocks[index] = (byte) Block.STONE.id;
                 }
             }
 
             if (y <= this.random.nextInt(5)) {
                 if (limit) {
                     blocks[index] = (byte) Block.BEDROCK.id;
-                } else if (limit2) {
-                    blocks[index] = (byte) Block.BEDROCK.id;
                 }
-            }
-
-            boolean limit3 = x2 <= minX || x2 >= maxX || z2 <= minZ || z2 >= maxZ;
-            if (y > 55 && y <= 63 && limit3) {
-                blocks[index] = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
-
-                if (this.theme.equals("Winter") && y == 63) {
-                    blocks[index] = (byte) Block.ICE.id;
-                }
-            }
-
-            if (y >= 64 && limit3) {
-                blocks[index] = (byte) 0;
             }
         }
     }

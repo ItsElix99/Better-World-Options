@@ -1,7 +1,8 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
-import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.IndevFeatures;
@@ -15,6 +16,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.world.WorldProperties;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.Dimension;
 import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
 import org.spongepowered.asm.mixin.*;
@@ -64,77 +66,23 @@ public abstract class WorldMixin implements BWOWorld {
         String worldType = bwoProperties.bwo_getWorldType();
         boolean oldFeatures =  bwoProperties.bwo_isOldFeatures();
         String theme = bwoProperties.bwo_getTheme();
+        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
 
-        if (oldFeatures) {
+        if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null) {
+            Biome oldBiome = oldFeaturesProperties.oldFeaturesBiomeSupplier.get();
+
             if (theme.equals("Winter")) {
-                switch (worldType) {
-                    case "Alpha 1.1.2_01" -> {
-                        BetterWorldOptions.Alpha.setSnow(true);
-                        BetterWorldOptions.Alpha.setPrecipitation(true);
-                        BetterWorldOptions.Alpha.setFogColor(12638463);
-                    }
-                    case "Infdev 611", "Infdev 420", "Infdev 415" -> {
-                        BetterWorldOptions.Infdev.setSnow(true);
-                        BetterWorldOptions.Infdev.setPrecipitation(true);
-                        BetterWorldOptions.Infdev.setFogColor(11587839);
-                    }
-                    case "Early Infdev" -> {
-                        BetterWorldOptions.EarlyInfdev.setSnow(true);
-                        BetterWorldOptions.EarlyInfdev.setPrecipitation(true);
-                        BetterWorldOptions.EarlyInfdev.setFogColor(11842815);
-                    }
-                    case "Indev 223" -> {
-                        BetterWorldOptions.Indev.setSnow(true);
-                        BetterWorldOptions.Indev.setPrecipitation(true);
-                        BetterWorldOptions.Indev.setFogColor(16777215);
-                    }
-                }
+                oldBiome.setSnow(true);
+                oldBiome.setPrecipitation(true);
+                oldBiome.setFogColor(oldFeaturesProperties.defaultFogColor);
             } else if (theme.equals("Hell") || theme.equals("Paradise")) {
-                switch (worldType) {
-                    case "Alpha 1.1.2_01" -> {
-                        BetterWorldOptions.Alpha.setSnow(false);
-                        BetterWorldOptions.Alpha.setPrecipitation(false);
-                        BetterWorldOptions.Alpha.setFogColor(theme.equals("Hell") ? 1049600 : 13033215);
-                    }
-                    case "Infdev 611", "Infdev 420", "Infdev 415" -> {
-                        BetterWorldOptions.Infdev.setSnow(false);
-                        BetterWorldOptions.Infdev.setPrecipitation(false);
-                        BetterWorldOptions.Infdev.setFogColor(theme.equals("Hell") ? 1049600 : 13033215);
-                    }
-                    case "Early Infdev" -> {
-                        BetterWorldOptions.EarlyInfdev.setSnow(false);
-                        BetterWorldOptions.EarlyInfdev.setPrecipitation(false);
-                        BetterWorldOptions.EarlyInfdev.setFogColor(theme.equals("Hell") ? 1049600 : 13033215);
-                    }
-                    case "Indev 223" -> {
-                        BetterWorldOptions.Indev.setSnow(false);
-                        BetterWorldOptions.Indev.setPrecipitation(false);
-                        BetterWorldOptions.Indev.setFogColor(theme.equals("Hell") ? 1049600 : 13033215);
-                    }
-                }
+                oldBiome.setSnow(false);
+                oldBiome.setPrecipitation(false);
+                oldBiome.setFogColor(theme.equals("Hell") ? 1049600 : 13033215);
             } else {
-                switch (worldType) {
-                    case "Alpha 1.1.2_01" -> {
-                        BetterWorldOptions.Alpha.setSnow(false);
-                        BetterWorldOptions.Alpha.setPrecipitation(true);
-                        BetterWorldOptions.Alpha.setFogColor(theme.equals("Woods") ? 5069403 : 12638463);
-                    }
-                    case "Infdev 611", "Infdev 420", "Infdev 415" -> {
-                        BetterWorldOptions.Infdev.setSnow(false);
-                        BetterWorldOptions.Infdev.setPrecipitation(true);
-                        BetterWorldOptions.Infdev.setFogColor(theme.equals("Woods") ? 5069403 : 11587839);
-                    }
-                    case "Early Infdev" -> {
-                        BetterWorldOptions.EarlyInfdev.setSnow(false);
-                        BetterWorldOptions.EarlyInfdev.setPrecipitation(true);
-                        BetterWorldOptions.EarlyInfdev.setFogColor(theme.equals("Woods") ? 5069403 : 11842815);
-                    }
-                    case "Indev 223" -> {
-                        BetterWorldOptions.Indev.setSnow(false);
-                        BetterWorldOptions.Indev.setPrecipitation(true);
-                        BetterWorldOptions.Indev.setFogColor(theme.equals("Woods") ? 5069403 : 16777215);
-                    }
-                }
+                oldBiome.setSnow(false);
+                oldBiome.setPrecipitation(true);
+                oldBiome.setFogColor(theme.equals("Woods") ? 5069403 : oldFeaturesProperties.defaultFogColor);
             }
         } else {
             if (theme.equals("Winter")) {

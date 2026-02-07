@@ -1,5 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.biomes;
 
+import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
@@ -64,10 +66,11 @@ public class BiomeColorsImplServerMixin {
         String worldType = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_isOldFeatures();
         String theme = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getTheme();
+        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
 
         if (minecraftServer.getWorld(0).dimension.id == 0) {
-            if (oldFeatures && worldType.equals("MCPE") && (theme.equals("Normal") || theme.equals("Winter"))) {
-                return 6731007;
+            if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != 1 && (theme.equals("Normal") || theme.equals("Winter"))) {
+                return oldFeaturesProperties.defaultFogColor;
             } else if (theme.equals("Hell")) {
                 return 1049600;
             } else if (theme.equals("Paradise")) {

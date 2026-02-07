@@ -6,7 +6,7 @@ import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWONoise;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
-import com.itselix99.betterworldoptions.world.chunk.EmptyFlattenedChunk;
+import com.itselix99.betterworldoptions.world.chunk.BWOLimitChunk;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -291,7 +291,6 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             double maxZ = this.sizeZ / 2.0D - 1.0D;
 
             boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
-            boolean limit2 = x2 < minX || x2 > maxX || z2 < minZ || z2 > maxZ;
             if (var17 <= 55) {
                 if (limit) {
                     if (var17 >= 53) {
@@ -299,22 +298,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
                     } else {
                         blocks[index] = (byte) Block.STONE.id;
                     }
-                } else if (limit2) {
-                    blocks[index] = (byte) Block.STONE.id;
                 }
-            }
-
-            boolean limit3 = x2 <= minX || x2 >= maxX || z2 <= minZ || z2 >= maxZ;
-            if (var17 > 55 && var17 <= 63 && limit3) {
-                blocks[index] = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
-
-                if (this.theme.equals("Winter") && var17 == 63) {
-                    blocks[index] = (byte) Block.ICE.id;
-                }
-            }
-
-            if (var17 >= 64 && limit3) {
-                blocks[index] = (byte) 0;
             }
         }
     }
@@ -334,9 +318,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             double maxZ = this.sizeZ / 2.0D - 1.0D;
 
             boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
-            boolean limit2 = x2 < minX || x2 > maxX || z2 < minZ || z2 > maxZ;
-
-            if (limit || limit2) {
+            if (limit) {
                 return -2;
             }
 
@@ -349,7 +331,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             method = "buildSurfaces",
             constant = @Constant(intValue = -1, ordinal = 1)
     )
-    private int bwo_lceFiniteWorldLimit3(int constant, @Local (ordinal = 0, argsOnly = true) int chunkX, @Local (ordinal = 1, argsOnly = true) int chunkZ, @Local (name = "var8") int var8, @Local (name = "var9") int var9) {
+    private int bwo_lceFiniteWorldLimit3(int constant, @Local (ordinal = 0, argsOnly = true) int chunkX, @Local (ordinal = 1, argsOnly = true) int chunkZ, @Local (name = "var8") int var8, @Local (name = "var9") int var9, @Local (name = "var17") int var17) {
         if (this.finiteWorld && this.finiteType.equals("LCE")) {
             double x2 = (chunkX << 4) + var8;
             double z2 = (chunkZ << 4) + var9;
@@ -359,9 +341,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             double maxZ = this.sizeZ / 2.0D - 1.0D;
 
             boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
-            boolean limit2 = x2 < minX || x2 > maxX || z2 < minZ || z2 > maxZ;
-
-            if (limit || limit2) {
+            if (limit && var17 <= 55) {
                 return -2;
             }
 
@@ -385,14 +365,40 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     }
 
     @ModifyReturnValue(method = "getChunk", at = @At(value = "RETURN"))
-    private Chunk bwo_finiteWorld(Chunk original, @Local(ordinal = 0, argsOnly = true) int chunkX,  @Local(ordinal = 1, argsOnly = true) int chunkZ) {
-        if (this.finiteWorld && this.finiteType.equals("MCPE")) {
+    private Chunk bwo_finiteWorld(Chunk original, @Local(ordinal = 0, argsOnly = true) int chunkX,  @Local(ordinal = 1, argsOnly = true) int chunkZ, @Local (ordinal = 0) byte[] blocks) {
+        if (this.finiteWorld && !this.finiteType.equals("Indev Island")) {
             int blockX = chunkX * 16;
             int blockZ = chunkZ * 16;
-            BWOChunkGenerator.setSizeLimits(0, this.sizeX, 0, this.sizeZ);
 
-            if (blockX < 0 || blockX >= this.sizeX || blockZ < 0 || blockZ >= this.sizeZ) {
-                return new EmptyFlattenedChunk(this.world, chunkX, chunkZ);
+            String limitMode = null;
+            if (this.finiteType.equals("MCPE") || this.finiteType.equals("LCE")) {
+                limitMode = this.finiteType;
+            }
+
+            int minX;
+            int maxX;
+            int minZ;
+            int maxZ;
+
+            if (this.finiteType.equals("MCPE")) {
+                minX = 0;
+                maxX = this.sizeX;
+                minZ = 0;
+                maxZ = this.sizeZ;
+            } else {
+                minX = -this.sizeX / 2;
+                maxX = this.sizeX / 2;
+                minZ = -this.sizeZ / 2;
+                maxZ = this.sizeZ / 2;
+            }
+
+            BWOChunkGenerator.setSizeLimits(minX, maxX, minZ, maxZ);
+
+            if (blockX < minX || blockX >= maxX || blockZ < minZ || blockZ >= maxZ) {
+                BWOLimitChunk bwoLimitChunk = new BWOLimitChunk(this.world, chunkX, chunkZ, limitMode);
+                bwoLimitChunk.fromLegacy(blocks);
+                bwoLimitChunk.populateHeightMap();
+                return bwoLimitChunk;
             }
         }
 
@@ -646,175 +652,5 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     )
     private int bwo_replaceFlowingWaterWithFlowingLavaInHellTheme(Block block, Operation<Integer> original) {
         return this.theme.equals("Hell") ? Block.FLOWING_LAVA.id : original.call(block);
-    }
-
-    @ModifyConstant(
-            method = "decorate",
-            constant = @Constant(intValue = 8),
-            slice = @Slice(
-                    to = @At(
-                            value = "INVOKE",
-                            target = "Lnet/minecraft/world/gen/feature/LakeFeature;generate(Lnet/minecraft/world/World;Ljava/util/Random;III)Z",
-                            ordinal = 0
-                    )
-            )
-    )
-    private int bwo_removeOffsetInFiniteWorld(int original) {
-        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
-            return 0;
-        }
-
-        return original;
-    }
-
-    @ModifyConstant(
-            method = "decorate",
-            constant = @Constant(intValue = 8, ordinal = 3)
-    )
-    private int bwo_removeOffsetInFiniteWorld2(int original) {
-        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
-            return 0;
-        }
-
-        return original;
-    }
-
-    @ModifyConstant(
-            method = "decorate",
-            constant = @Constant(intValue = 8, ordinal = 5)
-    )
-    private int bwo_removeOffsetInFiniteWorld3(int original) {
-        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
-            return 0;
-        }
-
-        return original;
-    }
-
-    @ModifyConstant(
-            method = "decorate",
-            constant = @Constant(intValue = 8),
-            slice = @Slice(
-                    from = @At(
-                            value = "INVOKE",
-                            target = "Ljava/util/Random;nextInt(I)I",
-                            ordinal = 10
-                    ),
-                    to = @At(
-                            value = "INVOKE",
-                            target = "Ljava/util/Random;nextInt(I)I",
-                            ordinal = 14
-                    )
-            )
-    )
-    private int bwo_removeOffsetInFiniteWorld4(int original) {
-        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
-            return 0;
-        }
-
-        return original;
-    }
-
-    @ModifyConstant(
-            method = "decorate",
-            constant = @Constant(intValue = 8),
-            slice = @Slice(
-                    from = @At(
-                            value = "INVOKE",
-                            target = "Ljava/util/Random;nextInt(I)I",
-                            ordinal = 42
-                    ),
-                    to = @At(
-                            value = "INVOKE",
-                            target = "Lnet/minecraft/world/gen/feature/PlantPatchFeature;generate(Lnet/minecraft/world/World;Ljava/util/Random;III)Z",
-                            ordinal = 2
-                    )
-            )
-    )
-    private int bwo_removeOffsetInFiniteWorld5(int original) {
-        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
-            return 0;
-        }
-
-        return original;
-    }
-
-    @ModifyConstant(
-            method = "decorate",
-            constant = @Constant(intValue = 8),
-            slice = @Slice(
-                    from = @At(
-                            value = "INVOKE",
-                            target = "Ljava/util/Random;nextInt(I)I",
-                            ordinal = 63
-                    ),
-                    to = @At(
-                            value = "INVOKE",
-                            target = "Ljava/util/Random;nextInt(I)I",
-                            ordinal = 77
-                    )
-            )
-    )
-    private int bwo_removeOffsetInFiniteWorld6(int original) {
-        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
-            return 0;
-        }
-
-        return original;
-    }
-
-    @ModifyConstant(
-            method = "decorate",
-            constant = @Constant(intValue = 8),
-            slice = @Slice(
-                    from = @At(
-                            value = "INVOKE",
-                            target = "Ljava/util/Random;nextInt(I)I",
-                            ordinal = 78
-                    ),
-                    to = @At(
-                            value = "INVOKE",
-                            target = "Ljava/util/Random;nextInt(I)I",
-                            ordinal = 81
-                    )
-            )
-    )
-    private int bwo_removeOffsetInFiniteWorld7(int original) {
-        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
-            return 0;
-        }
-
-        return original;
-    }
-
-    @ModifyConstant(
-            method = "decorate",
-            constant = @Constant(intValue = 8, ordinal = 39)
-    )
-    private int bwo_removeOffsetInFiniteWorld8(int original) {
-        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
-            return 0;
-        }
-
-        return original;
-    }
-
-    @ModifyConstant(
-            method = "decorate",
-            constant = @Constant(intValue = 8),
-            slice = @Slice(
-                    from = @At(
-                            value = "CONSTANT",
-                            args = "intValue=16",
-                            ordinal = 58
-                    )
-            )
-    )
-    private int bwo_removeOffsetInFiniteWorld9(int original) {
-        if (this.finiteWorld && (this.worldType.equals("Indev 223") || this.finiteType.equals("MCPE"))) {
-            return 0;
-        }
-
-        return original;
     }
 }

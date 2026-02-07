@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.dimensions;
 
-import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
@@ -35,22 +35,10 @@ public class DimensionMixin {
         boolean oldFeatures = ((BWOProperties) world.getProperties()).bwo_isOldFeatures();
         String singleBiome = ((BWOProperties) world.getProperties()).bwo_getSingleBiome();
         boolean superflat = ((BWOProperties) world.getProperties()).bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
+        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
 
-        if (oldFeatures && !worldType.equals("MCPE")) {
-            switch (worldType) {
-                case "Alpha 1.1.2_01" -> {
-                    return new FixedBiomeSource(BetterWorldOptions.Alpha, 1.0D, 0.5D);
-                }
-                case "Infdev 611", "Infdev 420", "Infdev 415" -> {
-                    return new FixedBiomeSource(BetterWorldOptions.Infdev, 1.0D, 0.5D);
-                }
-                case "Early Infdev" -> {
-                    return new FixedBiomeSource(BetterWorldOptions.EarlyInfdev, 1.0D, 0.5D);
-                }
-                case "Indev 223" -> {
-                    return new FixedBiomeSource(BetterWorldOptions.Indev, 1.0D, 0.5D);
-                }
-            }
+        if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null) {
+            return new FixedBiomeSource(oldFeaturesProperties.oldFeaturesBiomeSupplier.get(), 1.0D, 0.5D);
         } else if (worldType.equals("Flat") && !superflat) {
             return new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
         } else if (!singleBiome.equals("Off") && !singleBiome.isEmpty()) {

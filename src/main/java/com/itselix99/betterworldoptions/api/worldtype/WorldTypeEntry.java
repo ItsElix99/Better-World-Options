@@ -14,7 +14,7 @@ public class WorldTypeEntry {
     public String icon;
     public String[] description;
     public Map<String, Integer> oldTextures = new HashMap<>();
-    public Map<String, Boolean> properties = new HashMap<>();
+    public OldFeaturesProperties oldFeaturesProperties;
     public Map<String, OptionEntry> worldTypeOptions = new LinkedHashMap<>();
     public boolean isDimension = false;
 }

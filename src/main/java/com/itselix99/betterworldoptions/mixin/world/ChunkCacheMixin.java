@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ChunkCacheMixin {
     @Shadow private World world;
     @Unique private String worldType;
+    @Unique private boolean oldFeatures;
     @Unique private boolean superflat;
     @Unique private boolean finiteWorld;
 
@@ -29,6 +30,7 @@ public class ChunkCacheMixin {
     private void bwo_init(World world, ChunkStorage storage, ChunkSource generator, CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
         this.worldType = bwoProperties.bwo_getWorldType();
+        this.oldFeatures = bwoProperties.bwo_isOldFeatures();
         this.superflat = bwoProperties.bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
         this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
     }
@@ -43,16 +45,18 @@ public class ChunkCacheMixin {
                     )
     )
     private boolean bwo_cancelDecorateInFiniteAndFlatWorld(Chunk chunk, Operation<Boolean> original, @Local(ordinal = 0, argsOnly = true) int x, @Local(ordinal = 1, argsOnly = true) int z) {
-        if (this.worldType.equals("Flat") && !this.superflat) {
-            return true;
-        } else if (this.finiteWorld && this.world.dimension.id == 0) {
-            int blockX = x * 16;
-            int blockZ = z * 16;
-            int[] sizeLimits = BWOChunkGenerator.getSizeLimits();
+        if (this.world.dimension.id == 0) {
+            if (this.worldType.equals("Flat") && !this.superflat) {
+                return true;
+            } else if (this.finiteWorld && this.oldFeatures && this.worldType.equals("MCPE")) {
+                int blockX = x * 16;
+                int blockZ = z * 16;
+                int[] sizeLimits = BWOChunkGenerator.getSizeLimits();
 
-            if (sizeLimits != null) {
-                if (blockX < sizeLimits[0] || blockX >= sizeLimits[1] || blockZ < sizeLimits[2] || blockZ >= sizeLimits[3]) {
-                    return true;
+                if (sizeLimits != null) {
+                    if (blockX < sizeLimits[0] || blockX >= sizeLimits[1] || blockZ < sizeLimits[2] || blockZ >= sizeLimits[3]) {
+                        return true;
+                    }
                 }
             }
         }

@@ -1,7 +1,8 @@
 package com.itselix99.betterworldoptions.mixin.biomes;
 
-import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
@@ -17,8 +18,6 @@ import net.minecraft.world.gen.feature.LargeOakTreeFeature;
 import net.minecraft.world.gen.feature.OakTreeFeature;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Random;
 
@@ -32,6 +31,7 @@ public abstract class BiomeMixin implements BWOWorld {
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
         String theme = ((BWOProperties) minecraft.world.getProperties()).bwo_getTheme();
+        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
 
         if (theme.equals("Hell")) {
             return 1049600;
@@ -39,19 +39,11 @@ public abstract class BiomeMixin implements BWOWorld {
             return 13033215;
         } else if (theme.equals("Woods")) {
             return 7699847;
-        } else if (Biome.class.cast(this) == BetterWorldOptions.Alpha) {
-            return 8961023;
-        } else if (Biome.class.cast(this) == BetterWorldOptions.Infdev) {
-            return 10079487;
-        } else if (Biome.class.cast(this) == BetterWorldOptions.EarlyInfdev) {
-            return 200;
-        } else if (Biome.class.cast(this) == BetterWorldOptions.Indev) {
-            return 10079487;
-        } else if (worldType.equals("MCPE") && oldFeatures) {
-            return 2907587;
-        } else {
-            return original;
+        } else if (oldFeatures && oldFeaturesProperties != null && (oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null || oldFeaturesProperties.defaultSkyColor != -1)) {
+            return oldFeaturesProperties.defaultSkyColor;
         }
+
+        return original;
     }
 
     @ModifyReturnValue(method = "getRandomTreeFeature", at = @At("RETURN"))

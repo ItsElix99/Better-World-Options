@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.api.worldtype;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
@@ -33,8 +34,8 @@ public class WorldTypes {
         return getList().stream().filter(worldTypeEntry -> worldTypeName.equals(worldTypeEntry.name)).toList().get(0);
     }
 
-    public static boolean getWorldTypePropertyValue(String worldTypeName, String propertyName) {
-        return getWorldTypeByName(worldTypeName).properties.getOrDefault(propertyName, false);
+    public static OldFeaturesProperties getOldFeaturesProperties(String worldTypeName) {
+        return getWorldTypeByName(worldTypeName).oldFeaturesProperties;
     }
 
     public static int getOldTexture(String worldTypeName, String textureName, int originalTexture) {
@@ -108,29 +109,37 @@ public class WorldTypes {
         WORLD_TYPE_LIST.add(Flat);
 
         WorldTypeEntry Alpha120 = createWorldType(Alpha120ChunkGenerator.class, "Alpha 1.2.0", "Alpha 1.2.0", "/assets/betterworldoptions/gui/alpha_1.2.0.png", new String[]{"Start the world with Alpha 1.2.0", "generation"});
+        Alpha120.oldFeaturesProperties = new OldFeaturesProperties(() -> null, true, -1, -1);
         WORLD_TYPE_LIST.add(Alpha120);
 
         WorldTypeEntry Alpha112 = createWorldType(Alpha112ChunkGenerator.class, "Alpha 1.1.2_01", "Alpha 1.1.2_01", "/assets/betterworldoptions/gui/alpha_1.1.2_01.png", new String[]{"Start the world with Alpha 1.1.2_01", "generation"});
+        Alpha112.oldFeaturesProperties = new OldFeaturesProperties(() -> BetterWorldOptions.Alpha, false, 8961023, 12638463);
         WORLD_TYPE_LIST.add(Alpha112);
 
         WorldTypeEntry Infdev611 = createWorldType(Infdev611ChunkGenerator.class, "Infdev 20100611", "Infdev 611", "/assets/betterworldoptions/gui/infdev_20100611.png", new String[]{"Start the world with Infdev 611", "generation"});
+        Infdev611.oldFeaturesProperties = new OldFeaturesProperties(() -> BetterWorldOptions.Infdev, false, 10079487, 11587839);
         WORLD_TYPE_LIST.add(Infdev611);
 
         WorldTypeEntry Infdev420 = createWorldType(Infdev420ChunkGenerator.class, "Infdev 20100420", "Infdev 420", "/assets/betterworldoptions/gui/infdev_20100420.png", new String[]{"Start the world with Infdev 420", "generation"});
+        Infdev420.oldFeaturesProperties = new OldFeaturesProperties(() -> BetterWorldOptions.Infdev, false, 10079487, 11587839);
         WORLD_TYPE_LIST.add(Infdev420);
 
         WorldTypeEntry Infdev415 = createWorldType(Infdev415ChunkGenerator.class, "Infdev 20100415", "Infdev 415", "/assets/betterworldoptions/gui/infdev_20100415.png", new String[]{"Start the world with Infdev 415", "generation"});
+        Infdev415.oldFeaturesProperties = new OldFeaturesProperties(() -> BetterWorldOptions.Infdev, false, 10079487, 11587839);
         WORLD_TYPE_LIST.add(Infdev415);
 
         WorldTypeEntry EarlyInfdev = createWorldType(EarlyInfdevChunkGenerator.class, "Early Infdev", "Early Infdev", "/assets/betterworldoptions/gui/early_infdev.png", new String[]{"Start the world with Infdev 227-325", "generation"});
+        EarlyInfdev.oldFeaturesProperties = new OldFeaturesProperties(() -> BetterWorldOptions.EarlyInfdev, false, 200, 11842815);
         WORLD_TYPE_LIST.add(EarlyInfdev);
 
         WorldTypeEntry Indev223 = createWorldType(Indev223ChunkGenerator.class, "Indev 20100223", "Indev 223", "/assets/betterworldoptions/gui/indev_20100223.png", new String[]{"Start the world with Indev 223", "generation"});
+        Indev223.oldFeaturesProperties = new OldFeaturesProperties(() -> BetterWorldOptions.Indev, false, 10079487, 16777215);
         Indev223.worldTypeOptions.put("IndevWorldType", createStringOptionWithStringList(Indev223.worldTypeOptions.size(), "bwoMoreOptions.indevWorldType", "IndevWorldType", null, new ArrayList<>(Arrays.asList("Island", "Floating", "Flat", "Inland")), 0));
         Indev223.worldTypeOptions.put("GenerateIndevHouse", createBooleanOption(Indev223.worldTypeOptions.size(), "bwoMoreOptions.generateIndevHouse", "GenerateIndevHouse", null, true));
         WORLD_TYPE_LIST.add(Indev223);
 
         WorldTypeEntry MCPE = createWorldType(MCPEChunkGenerator.class, "MCPE", "MCPE", "/assets/betterworldoptions/gui/mcpe.png", new String[]{"Start the world with MCPE 0.1.0-0.8.1", "generation"});
+        MCPE.oldFeaturesProperties = new OldFeaturesProperties(() -> null, true, 2907587, 6731007);
         WORLD_TYPE_LIST.add(MCPE);
 
         if (CompatMods.AetherLoaded()) {

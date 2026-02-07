@@ -222,7 +222,12 @@ public class Infdev415ChunkGenerator extends BWOChunkGenerator {
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
 
-        return this.getEmptyChunkMCPEFiniteWorld(chunkX, chunkZ, 0, this.sizeX, 0, this.sizeZ, flattenedChunk);
+        String limitMode = null;
+        if (this.finiteType.equals("MCPE")) {
+            limitMode = this.finiteType;
+        }
+
+        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, 0, this.sizeX, 0, this.sizeZ, var3, limitMode, flattenedChunk);
     }
 
 

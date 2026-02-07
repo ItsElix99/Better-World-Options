@@ -174,7 +174,12 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
 
-        return this.getEmptyChunkMCPEFiniteWorld(chunkX, chunkZ, -this.sizeX / 2, this.sizeX / 2, -this.sizeZ / 2, this.sizeZ / 2, flattenedChunk);
+        String limitMode = null;
+        if (this.finiteType.equals("MCPE")) {
+            limitMode = this.finiteType;
+        }
+
+        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, -this.sizeX / 2, this.sizeX / 2, -this.sizeZ / 2, this.sizeZ / 2, var3, limitMode, flattenedChunk);
     }
 
     public void decorate(ChunkSource source, int x, int z) {
