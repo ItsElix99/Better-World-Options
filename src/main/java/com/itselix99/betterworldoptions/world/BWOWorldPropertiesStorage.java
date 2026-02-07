@@ -30,6 +30,8 @@ public class BWOWorldPropertiesStorage {
     private final Map<String, Integer> selectedGeneralOption = new LinkedHashMap<>();
     private final Map<String, Integer> selectedWorldTypeOption = new LinkedHashMap<>();
 
+    private static HashMap<Biome, double[]> biomeClimateMap;
+
     public boolean isBWOServer = false;
 
     public boolean oldTextures;
@@ -213,6 +215,22 @@ public class BWOWorldPropertiesStorage {
         if (!initOldTextures) {
             initOldTextures = true;
 
+            if (biomeClimateMap == null) {
+                biomeClimateMap = new HashMap<>();
+            }
+
+            biomeClimateMap.put(Biome.TUNDRA, new double[]{0.05D, 0.2D});
+            biomeClimateMap.put(Biome.SAVANNA, new double[]{0.7D, 0.1D});
+            biomeClimateMap.put(Biome.DESERT, new double[]{1.0D, 0.05D});
+            biomeClimateMap.put(Biome.SWAMPLAND, new double[]{0.6D, 0.8D});
+            biomeClimateMap.put(Biome.TAIGA, new double[]{0.4D, 0.4D});
+            biomeClimateMap.put(Biome.SHRUBLAND, new double[]{0.8D, 0.3D});
+            biomeClimateMap.put(Biome.FOREST, new double[]{0.8D, 0.6D});
+            biomeClimateMap.put(Biome.PLAINS, new double[]{1.0D, 0.4D});
+            biomeClimateMap.put(Biome.SEASONAL_FOREST, new double[]{1.0D, 0.7D});
+            biomeClimateMap.put(Biome.RAINFOREST, new double[]{1.0D, 0.85D});
+            biomeClimateMap.put(Biome.ICE_DESERT, new double[]{0.05D, 0.05D});
+
             WorldTypeEntry Alpha120 = WorldTypes.getWorldTypeByName("Alpha 1.2.0");
             Alpha120.oldTextures.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
             Alpha120.oldTextures.put("Cobblestone", TextureListener.alphaCobblestone);
@@ -282,30 +300,6 @@ public class BWOWorldPropertiesStorage {
     }
 
     public static double[] getClimateForBiome(Biome biome) {
-        if (biome == Biome.TUNDRA) {
-            return new double[]{0.05D, 0.2D};
-        } else if (biome == Biome.SAVANNA) {
-            return new double[]{0.7D, 0.1D};
-        } else if (biome == Biome.DESERT) {
-            return new double[]{1.0D, 0.05D};
-        } else if (biome == Biome.SWAMPLAND) {
-            return new double[]{0.6D, 0.8D};
-        } else if (biome == Biome.TAIGA) {
-            return new double[]{0.4D, 0.4D};
-        } else if (biome == Biome.SHRUBLAND) {
-            return new double[]{0.8D, 0.3D};
-        } else if (biome == Biome.FOREST) {
-            return new double[]{0.8D, 0.6D};
-        } else if (biome == Biome.PLAINS) {
-            return new double[]{1.0D, 0.4D};
-        } else if (biome == Biome.SEASONAL_FOREST) {
-            return new double[]{1.0D, 0.7D};
-        } else if (biome == Biome.RAINFOREST) {
-            return new double[]{1.0D, 0.85D};
-        } else if (biome == Biome.ICE_DESERT) {
-            return new double[]{0.0D, 0.0D};
-        }
-
-        return new double[]{0.5D, 0.5D};
+        return biomeClimateMap.getOrDefault(biome, new double[]{0.5D, 0.5D});
     }
 }
