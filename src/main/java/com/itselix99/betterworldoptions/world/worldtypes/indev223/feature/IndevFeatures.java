@@ -5,6 +5,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.PlantBlock;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.feature.OakTreeFeature;
 
 import java.util.*;
 
@@ -38,126 +40,57 @@ public class IndevFeatures {
         world.setBlock(var1 + 3 - 1, var2, var3, Block.TORCH.id);
     }
 
+    public static void placeTopBlockOnDirt(World world, int x, int z, Biome biome, String theme) {
+        int topBlockId;
 
+        if (biome != null) {
+            if (theme.equals("Hell") && !(biome.topBlockId == Block.GRASS_BLOCK.id)) {
+                return;
+            }
 
-    public static void placeLakes(Random random, byte[] blocks, String theme) {
-        int liquid = (Objects.equals(theme, "Hell")) ? Block.LAVA.id : Block.WATER.id;
+            topBlockId = theme.equals("Hell") ? Block.DIRT.id : biome.topBlockId;
+        } else {
+            if (theme.equals("Hell")) {
+                return;
+            }
 
-        int totalAttempts = (16 * 16 * 128) / 1000;
-
-        for (int attempt = 0; attempt < totalAttempts; attempt++) {
-            int x = random.nextInt(16);
-            int y = random.nextInt(128);
-            int z = random.nextInt(16);
-
-            int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
-
-            if (blocks[index] == 0) {
-                long lakeSize = placeLake(x, y, z, 0, Block.WATER.id, blocks);
-
-                if (lakeSize > 0 && lakeSize < 640) {
-                    placeLake(x, y, z, Block.WATER.id, liquid, blocks);
-                } else {
-                    placeLake(x, y, z, Block.WATER.id, 0, blocks);
+            topBlockId = Block.GRASS_BLOCK.id;
+        }
+        for(int var1 = x + 8; var1 < x + 8 + 16; ++var1) {
+            for(int var2 = 0; var2 < 128; ++var2) {
+                for (int var3 = z + 8; var3 < z + 8 + 16; ++var3) {
+                    if (world.getBlockId(var1, var2, var3) == Block.DIRT.id && world.getLightLevel(var1, var2 + 1, var3) >= 4) {
+                        if (!world.getMaterial(var1, var2 + 1, var3).isFluid()) {
+                            world.setBlockWithoutNotifyingNeighbors(var1, var2, var3, topBlockId);
+                        } else if (biome != null) {
+                            world.setBlockWithoutNotifyingNeighbors(var1, var2, var3, biome.soilBlockId);
+                        }
+                    }
                 }
             }
         }
     }
 
-
-    public static void placeUndergroundLakes(Random random, byte[] blocks) {
-        int totalAttempts = (16 * 16 * 128) / 2000;
-        int maxLakeY = 64;
-
-        for (int attempt = 0; attempt < totalAttempts; attempt++) {
-            int x = random.nextInt(16);
-            int z = random.nextInt(16);
-
-            int y = Math.min(
-                    Math.min(random.nextInt(maxLakeY), random.nextInt(maxLakeY)),
-                    Math.min(random.nextInt(maxLakeY), random.nextInt(maxLakeY))
-            );
-
-            int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
-
-            if (blocks[index] == 0) {
-                long lakeSize = placeLake(x, y, z, 0, Block.WATER.id, blocks);
-
-                if (lakeSize > 0 && lakeSize < 640) {
-                    placeLake(x, y, z, Block.WATER.id, Block.LAVA.id, blocks);
-                } else {
-                    placeLake(x, y, z, Block.WATER.id, 0, blocks);
-                }
-            }
+    public static void generateTrees(World world, Random random, int chance, int x, int z) {
+        for(int var1 = 0; var1 < chance; ++var1) {
+            int var2 = x + random.nextInt(16) + 8 + (random.nextInt(12) - random.nextInt(12));
+            int var3 = z + random.nextInt(16) + 8 + (random.nextInt(12) - random.nextInt(12));
+            int var4 = world.getTopY(var2, var3);
+            OakTreeFeature treeFeature = new OakTreeFeature();
+            treeFeature.prepare(1.0F, 1.0F, 1.0F);
+            treeFeature.generate(world, random, var2, var4, var3);
         }
     }
 
-    public static long placeLake(int startX, int startY, int startZ, int matchId, int liquidId, byte[] blocks) {
-        final int sizeX = 16;
-        final int sizeY = Config.BWOConfig.world.worldHeightLimit.getIntValue();
-        final int sizeZ = 16;
-        final int MAX_FILL = 640;
-
-        byte target = (byte) matchId;
-        byte liquid = (byte) liquidId;
-
-        if (startX < 0 || startX >= sizeX || startY < 0 || startY >= sizeY || startZ < 0 || startZ >= sizeZ)
-            return 0;
-
-        int startIndex = (startX * sizeZ + startZ) * sizeY + startY;
-        if (blocks[startIndex] != target)
-            return 0;
-
-        Deque<int[]> queue = new ArrayDeque<>();
-        queue.add(new int[]{startX, startY, startZ});
-
-        long filled = 0L;
-
-        while (!queue.isEmpty()) {
-            int[] pos = queue.pollLast();
-            int x = pos[0];
-            int y = pos[1];
-            int z = pos[2];
-
-            int minZ = z;
-            int maxZ = z;
-
-            while (minZ > 0 && blocks[(x * sizeZ + (minZ - 1)) * sizeY + y] == target) minZ--;
-            while (maxZ < sizeZ - 1 && blocks[(x * sizeZ + (maxZ + 1)) * sizeY + y] == target) maxZ++;
-
-            for (int zz = minZ; zz <= maxZ; zz++) {
-                int idx = (x * sizeZ + zz) * sizeY + y;
-
-                if (blocks[idx] == target) {
-                    blocks[idx] = liquid;
-                    filled++;
-                }
-
-                if (filled >= MAX_FILL) {
-                    return filled;
-                }
-
-                if (y > 0) {
-                    int below = (x * sizeZ + zz) * sizeY + (y - 1);
-                    if (blocks[below] == target) queue.add(new int[]{x, y - 1, zz});
-                }
-                if (y < sizeY - 1) {
-                    int above = (x * sizeZ + zz) * sizeY + (y + 1);
-                    if (blocks[above] == target) queue.add(new int[]{x, y + 1, zz});
-                }
-
-                if (x > 0) {
-                    int left = ((x - 1) * sizeZ + zz) * sizeY + y;
-                    if (blocks[left] == target) queue.add(new int[]{x - 1, y, zz});
-                }
-                if (x < sizeX - 1) {
-                    int right = ((x + 1) * sizeZ + zz) * sizeY + y;
-                    if (blocks[right] == target) queue.add(new int[]{x + 1, y, zz});
-                }
+    public static void generatePlant(World world, Random random, PlantBlock plant, int chance, int x, int z) {
+        for(int var1 = 0; var1 < chance; ++var1) {
+            int var2 = x + random.nextInt(16) + 8 + (random.nextInt(4) - random.nextInt(4));
+            int var3 = z + random.nextInt(16) + 8 + (random.nextInt(4) - random.nextInt(4));
+            int var4 = world.getTopY(var2, var3);
+            if (world.isAir(var2, var4, var3) && Block.BLOCKS[plant.id].canGrow(world, var2, var4, var3)) {
+                world.setBlockWithoutNotifyingNeighbors(var2, var4, var3, plant.id);
             }
         }
-
-        return filled;
     }
 
     public static void placeOre(Random random, int ore, int chance, int minY, int maxY, byte[] blocks) {
@@ -205,28 +138,175 @@ public class IndevFeatures {
         }
     }
 
-    public static void placePlant(World world, Random random, PlantBlock plant, int chance, int x, int z) {
-        chance = (int)((long)16 * (long)16 * (long)128 * (long)chance / 1600000L);
+    public static void placeLakes(Random random, byte[] blocks, String theme) {
+        int liquid = (theme.equals("Hell")) ? Block.LAVA.id : Block.WATER.id;
+        int totalAttempts = (16 * 16 * 128) / 1000;
 
-        for(int i = 0; i < chance; ++i) {
-            int var1 = x + random.nextInt(16);
-            int var2 = random.nextInt(128);
-            int var3 = z + random.nextInt(16);
+        for (int attempt = 0; attempt < totalAttempts; attempt++) {
+            int x = random.nextInt(16);
+            int y = random.nextInt(128);
+            int z = random.nextInt(16);
 
-            for(int var4 = 0; var4 < 10; ++var4) {
-                int var5 = var1;
-                int var6 = var2;
-                int var7 = var3;
+            int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
 
-                for(int var8 = 0; var8 < 10; ++var8) {
-                    var5 += random.nextInt(4) - random.nextInt(4);
-                    var6 += random.nextInt(2) - random.nextInt(2);
-                    var7 += random.nextInt(4) - random.nextInt(4);
-                    if (world.isAir(var5, var6, var7) && Block.BLOCKS[plant.id].canGrow(world, var5, var6, var7)) {
-                        world.setBlockWithoutNotifyingNeighbors(var5, var6, var7, plant.id);
-                    }
+            if (blocks[index] == 0) {
+                long lakeSize = floodFill(x, y, z, 0, 255, blocks);
+
+                if (lakeSize > 0L && lakeSize < 640L) {
+                    floodFill(x, y, z, 255, liquid, blocks);
+                } else {
+                    floodFill(x, y, z, 255, 0, blocks);
                 }
             }
         }
+    }
+
+    public static void placeUndergroundLakes(Random random, byte[] blocks) {
+        int totalAttempts = (16 * 16 * 128) / 2000;
+        int maxLakeY = 60;
+
+        for (int attempt = 0; attempt < totalAttempts; attempt++) {
+            int x = random.nextInt(16);
+            int z = random.nextInt(16);
+            int y = Math.min(Math.min(random.nextInt(maxLakeY), random.nextInt(maxLakeY)), Math.min(random.nextInt(maxLakeY), random.nextInt(maxLakeY)));
+
+            int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
+            if (blocks[index] == 0) {
+                long lakeSize = floodFill(x, y, z, 0, 255, blocks);
+
+                if (lakeSize > 0L && lakeSize < 640L) {
+                    floodFill(x, y, z, 255, Block.LAVA.id, blocks);
+                } else {
+                    floodFill( x, y, z, 255, 0, blocks);
+                }
+            }
+        }
+    }
+
+    public static long floodFill(int startX, int startY, int startZ, int targetBlock, int fillBlock, byte[] blocks) {
+        if (startY < 0) {
+            return 0L;
+        }
+
+        byte fill = (byte) fillBlock;
+        byte target = (byte) targetBlock;
+
+        int height = Config.BWOConfig.world.worldHeightLimit.getIntValue();
+
+        final int WIDTH = 16;
+        final int DEPTH = 16;
+
+        final int X_STRIDE = height * 16;
+        final int Z_STRIDE = height;
+        final int Y_STRIDE = 1;
+
+        ArrayList<int[]> stackPool = new ArrayList<>();
+        int[] stack = new int[WIDTH * DEPTH * height];
+        int stackSize = 0;
+
+        int startIndex = (startX * 16 + startZ) * height + startY;
+        stack[stackSize++] = startIndex;
+
+        long filled = 0L;
+
+        while (stackSize > 0) {
+            int index = stack[--stackSize];
+
+            if (stackSize == 0 && !stackPool.isEmpty()) {
+                stack = stackPool.remove(stackPool.size() - 1);
+                stackSize = stack.length;
+            }
+
+            int y = index % height;
+            int xz = index / height;
+            int z = xz & 15;
+            int x = xz >> 4;
+
+            int leftX = x;
+            int scanIndex = index;
+
+            while (leftX > 0 && blocks[scanIndex - X_STRIDE] == target) {
+                scanIndex -= X_STRIDE;
+                --leftX;
+            }
+
+            int rightX = leftX;
+            int cursor = scanIndex;
+
+            while (rightX < WIDTH && blocks[cursor] == target) {
+                cursor += X_STRIDE;
+                ++rightX;
+            }
+
+            if (fillBlock == 255 && (leftX == 0 || rightX == WIDTH || y == 0 || y == height - 1 || z == 0 || z == DEPTH - 1)) {
+                return -1L;
+            }
+
+            boolean checkNegZ = false;
+            boolean checkPosZ = false;
+            boolean checkNegY = false;
+
+            filled += (rightX - leftX);
+
+            cursor = scanIndex;
+
+            for (int xi = leftX; xi < rightX; xi++) {
+                blocks[cursor] = fill;
+
+                boolean match;
+
+                if (z > 0) {
+                    int i = cursor - Z_STRIDE;
+                    match = blocks[i] == target;
+                    if (match && !checkNegZ) {
+                        if (stackSize == stack.length) {
+                            stackPool.add(stack);
+                            stack = new int[WIDTH * DEPTH * height];
+                            stackSize = 0;
+                        }
+                        stack[stackSize++] = i;
+                    }
+                    checkNegZ = match;
+                }
+
+                if (z < DEPTH - 1) {
+                    int i = cursor + Z_STRIDE;
+                    match = blocks[i] == target;
+                    if (match && !checkPosZ) {
+                        if (stackSize == stack.length) {
+                            stackPool.add(stack);
+                            stack = new int[WIDTH * DEPTH * height];
+                            stackSize = 0;
+                        }
+                        stack[stackSize++] = i;
+                    }
+                    checkPosZ = match;
+                }
+
+                if (y > 0) {
+                    int i = cursor - Y_STRIDE;
+                    byte below = blocks[i];
+
+                    if ((fill == Block.FLOWING_LAVA.id || fill == Block.LAVA.id) && (below == Block.FLOWING_WATER.id || below == Block.WATER.id)) {
+                        blocks[i] = (byte) Block.STONE.id;
+                    }
+
+                    match = below == target;
+                    if (match && !checkNegY) {
+                        if (stackSize == stack.length) {
+                            stackPool.add(stack);
+                            stack = new int[WIDTH * DEPTH * height];
+                            stackSize = 0;
+                        }
+                        stack[stackSize++] = i;
+                    }
+                    checkNegY = match;
+                }
+
+                cursor += X_STRIDE;
+            }
+        }
+
+        return filled;
     }
 }

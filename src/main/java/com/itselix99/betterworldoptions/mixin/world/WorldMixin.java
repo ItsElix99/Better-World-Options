@@ -42,6 +42,8 @@ public abstract class WorldMixin implements BWOWorld {
     @Shadow public abstract WorldProperties getProperties();
     @Shadow public abstract Material getMaterial(int x, int y, int z);
 
+    @Shadow public abstract int getTopSolidBlockY(int x, int z);
+
     @Inject(
             method = {
                     "<init>(Lnet/minecraft/world/World;Lnet/minecraft/world/dimension/Dimension;)V",
@@ -124,8 +126,9 @@ public abstract class WorldMixin implements BWOWorld {
 
         if (worldType.equals("Indev 223")) {
             boolean isValidSpawnArea = false;
+            int attempts = 0;
             int var1 = 0;
-            int var2 = 0;
+            int var2 = 64;
             int var3 = 0;
 
             while (!isValidSpawnArea) {
@@ -133,11 +136,16 @@ public abstract class WorldMixin implements BWOWorld {
                     var1 += this.random.nextInt(64) - this.random.nextInt(64);
                     var3 += this.random.nextInt(64) - this.random.nextInt(64);
                 } else {
+                    ++attempts;
                     var1 = this.random.nextInt(sizeX / 2) + sizeX / 4;
                     var3 = this.random.nextInt(sizeZ / 2) + sizeZ / 4;
+                    var2 = this.getTopSolidBlockY(var1, var3);
                 }
 
-                var2 = random.nextInt(64, 67);
+                if(attempts >= 1000000) {
+                    break;
+                }
+
                 if (!generateIndevHouse && this.dimension.isValidSpawnPoint(var1, var3) || this.isValidSpawnArea(var1, var2, var3)) {
                     isValidSpawnArea = true;
                 }
@@ -145,7 +153,7 @@ public abstract class WorldMixin implements BWOWorld {
 
             original.call(properties, var1, var2 - 1, var3);
 
-            if (generateIndevHouse) {
+            if (generateIndevHouse && isValidSpawnArea) {
                 IndevFeatures.placeSpawnBuilding(World.class.cast(this));
             }
         } else if (finiteType.equals("MCPE")) {
