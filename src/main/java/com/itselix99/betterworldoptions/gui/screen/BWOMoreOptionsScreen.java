@@ -6,10 +6,7 @@ import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
-import com.itselix99.betterworldoptions.gui.widget.BWOButtonWidget;
-import com.itselix99.betterworldoptions.gui.widget.BWOTextFieldWidget;
-import com.itselix99.betterworldoptions.gui.widget.EntryListWidgetButtons;
-import com.itselix99.betterworldoptions.gui.widget.BWOOptionListWidget;
+import com.itselix99.betterworldoptions.gui.widget.*;
 import com.itselix99.betterworldoptions.interfaces.BWOScreen;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
@@ -33,11 +30,8 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
     private int selectedPage = 0;
     public List<BWOButtonWidget> bwoButtons = new ArrayList<>();
 
-    private BWOButtonWidget sizeButton;
-    private BWOButtonWidget finiteTypeButton;
-    private BWOButtonWidget shapeButton;
-    private BWOTextFieldWidget sizeXField;
-    private BWOTextFieldWidget sizeZField;
+    private BWOSliderWidget sizeXSlider;
+    private BWOSliderWidget sizeZSlider;
 
     private final List<int[]> sizeSquare = new ArrayList<>(Arrays.asList(new int[]{128, 128}, new int[]{256, 256}, new int[]{512, 512}, new int[]{864, 864}, new int[]{1024, 1024}, new int[]{3072, 3072}, new int[]{5120, 5120}));
     private final List<int[]> sizeLong = new ArrayList<>(Arrays.asList(new int[]{256, 64}, new int[]{512, 128}, new int[]{1024, 256}, new int[]{1728, 432}, new int[]{2048, 512}, new int[]{6144, 1536}, new int[]{10240, 2560}));
@@ -50,13 +44,6 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
     @Override
     public void tick() {
         this.listWidget.tick();
-        if (this.sizeXField != null) {
-            this.sizeXField.tick();
-        }
-
-        if (this.sizeZField != null) {
-            this.sizeZField.tick();
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -106,11 +93,11 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
 
                 this.title = this.translation.get("bwoMoreOptions.title.finiteWorldOptions");
                 this.buttons.add(new BWOButtonWidget(10, this.width / 2 - 155, 48, this.translation.get(generalOptions.get(5).displayName) + " " + (finiteWorld ? this.translation.get("options.on") : this.translation.get("options.off")), generalOptions.get(5), this.bwoWorldPropertiesStorage, this));
-                this.buttons.add(this.sizeButton = new BWOButtonWidget(11, this.width / 2 + 5, 48, 150, 20, this.translation.get(generalOptions.get(7).displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue(generalOptions.get(7).name, OptionType.GENERAL_OPTION), generalOptions.get(7), this.bwoWorldPropertiesStorage, this));
-                this.buttons.add(this.finiteTypeButton = new BWOButtonWidget(12, this.width / 2 - 155, 73, this.translation.get(generalOptions.get(6).displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue(generalOptions.get(6).name, OptionType.GENERAL_OPTION), generalOptions.get(6), this.bwoWorldPropertiesStorage, this));
-                this.buttons.add(this.shapeButton = new BWOButtonWidget(13, this.width / 2 + 5, 73, this.translation.get(generalOptions.get(8).displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue(generalOptions.get(8).name, OptionType.GENERAL_OPTION), generalOptions.get(8), this.bwoWorldPropertiesStorage, this));
-                this.sizeXField = new BWOTextFieldWidget(this, this.minecraft.textRenderer, this.width / 2 - 155, 99, 150, 20, String.valueOf(this.bwoWorldPropertiesStorage.getIntOptionValue(generalOptions.get(9).name, OptionType.GENERAL_OPTION)), generalOptions.get(9), this.bwoWorldPropertiesStorage);
-                this.sizeZField = new BWOTextFieldWidget(this, this.minecraft.textRenderer, this.width / 2 + 5, 99, 150, 20, String.valueOf(this.bwoWorldPropertiesStorage.getIntOptionValue(generalOptions.get(10).name, OptionType.GENERAL_OPTION)), generalOptions.get(10), this.bwoWorldPropertiesStorage);
+                this.buttons.add(new BWOButtonWidget(11, this.width / 2 + 5, 48, 150, 20, this.translation.get(generalOptions.get(7).displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue(generalOptions.get(7).name, OptionType.GENERAL_OPTION), generalOptions.get(7), this.bwoWorldPropertiesStorage, this));
+                this.buttons.add(new BWOButtonWidget(12, this.width / 2 - 155, 73, this.translation.get(generalOptions.get(6).displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue(generalOptions.get(6).name, OptionType.GENERAL_OPTION), generalOptions.get(6), this.bwoWorldPropertiesStorage, this));
+                this.buttons.add(new BWOButtonWidget(13, this.width / 2 + 5, 73, this.translation.get(generalOptions.get(8).displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue(generalOptions.get(8).name, OptionType.GENERAL_OPTION), generalOptions.get(8), this.bwoWorldPropertiesStorage, this));
+                this.buttons.add(this.sizeXSlider = new BWOSliderWidget(14, this.width / 2 - 155, 98, this.translation.get(generalOptions.get(9).displayName) + " " + this.bwoWorldPropertiesStorage.getIntOptionValue(generalOptions.get(9).name, OptionType.GENERAL_OPTION), generalOptions.get(9), this.bwoWorldPropertiesStorage, this));
+                this.buttons.add(this.sizeZSlider = new BWOSliderWidget(15, this.width / 2 + 5, 98, this.translation.get(generalOptions.get(10).displayName) + " " + this.bwoWorldPropertiesStorage.getIntOptionValue(generalOptions.get(10).name, OptionType.GENERAL_OPTION), generalOptions.get(10), this.bwoWorldPropertiesStorage, this));
 
                 for (Object button : this.buttons) {
                     if (button instanceof BWOButtonWidget bwoButtonWidget) {
@@ -118,8 +105,8 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
                     }
                 }
 
-                this.sizeXField.enabled = finiteWorld;
-                this.sizeZField.enabled = finiteWorld;
+                this.sizeXSlider.active = finiteWorld;
+                this.sizeZSlider.active = finiteWorld;
             }
         }
 
@@ -152,14 +139,14 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
                 boolean finiteWorld = this.bwoWorldPropertiesStorage.getBooleanOptionValue(generalOptions.get(5).name, OptionType.GENERAL_OPTION);
 
                 if (!finiteWorld) {
-                    this.sizeXField.setText(String.valueOf(((IntOptionEntry) generalOptions.get(9)).defaultValue));
-                    this.sizeZField.setText(String.valueOf(((IntOptionEntry) generalOptions.get(10)).defaultValue));
+                    this.sizeXSlider.text = this.translation.get(generalOptions.get(9).displayName) + " " +  ((IntOptionEntry) generalOptions.get(9)).defaultValue;
+                    this.sizeZSlider.text = this.translation.get(generalOptions.get(10).displayName) + " " + ((IntOptionEntry) generalOptions.get(10)).defaultValue;
 
-                    this.sizeXField.enabled = false;
-                    this.sizeZField.enabled = false;
+                    this.sizeXSlider.active = false;
+                    this.sizeZSlider.active = false;
                 } else {
-                    this.sizeXField.enabled = true;
-                    this.sizeZField.enabled = true;
+                    this.sizeXSlider.active = true;
+                    this.sizeZSlider.active = true;
                 }
             } else if (button.id == 11 || button.id == 13) {
                 int selectedSize = this.bwoWorldPropertiesStorage.getSelectedValue(generalOptions.get(7).name, OptionType.GENERAL_OPTION);
@@ -175,8 +162,11 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
                 this.bwoWorldPropertiesStorage.setIntOptionValue(generalOptions.get(9).name, OptionType.GENERAL_OPTION, size[0]);
                 this.bwoWorldPropertiesStorage.setIntOptionValue(generalOptions.get(10).name, OptionType.GENERAL_OPTION, size[1]);
 
-                this.sizeXField.setText(String.valueOf(size[0]));
-                this.sizeZField.setText(String.valueOf(size[1]));
+                this.sizeXSlider.text = this.translation.get(generalOptions.get(9).displayName) + " " + size[0];
+                this.sizeZSlider.text = this.translation.get(generalOptions.get(10).displayName) + " " + size[1];
+
+                this.sizeXSlider.setValue(size[0]);
+                this.sizeZSlider.setValue(size[1]);
             } else if (button.id == 10000) {
                 this.minecraft.setScreen(this.parent);
             }
@@ -185,23 +175,11 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
 
     protected void keyPressed(char character, int keyCode) {
         this.listWidget.keyPressed(character, keyCode);
-        if (this.sizeXField != null && this.sizeXField.focused) {
-            this.sizeXField.keyPressed(character, keyCode);
-        } else if (this.sizeZField != null) {
-            this.sizeZField.keyPressed(character, keyCode);
-        }
     }
 
     protected void mouseClicked(int mouseX, int mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         this.listWidget.mouseClicked(mouseX, mouseY, button);
-        if (this.sizeXField != null) {
-            this.sizeXField.mouseClicked(mouseX, mouseY, button);
-        }
-
-        if (this.sizeZField != null) {
-            this.sizeZField.mouseClicked(mouseX, mouseY, button);
-        }
     }
 
     protected void mouseReleased(int mouseX, int mouseY, int button) {
@@ -213,19 +191,6 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
         this.renderBackground();
         this.listWidget.render(mouseX, mouseY, delta);
         this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get(this.title), this.width / 2, 5, 16777215);
-        if (this.optionsPage.get(this.selectedPage).equals("Finite World Options")) {
-            List<OptionEntry> generalOptions = GeneralOptions.getList();
-            if (this.sizeXField != null) {
-                this.sizeXField.render();
-                this.drawTextWithShadow(this.textRenderer, this.translation.get(generalOptions.get(9).displayName) + " min: " + ((IntOptionEntry) generalOptions.get(9)).minValue + " max: " + ((IntOptionEntry) generalOptions.get(9)).maxValue, this.sizeXField.x, this.sizeXField.y + 25, 10526880);
-            }
-
-            if (this.sizeZField != null) {
-                this.sizeZField.render();
-                this.drawTextWithShadow(this.textRenderer, this.translation.get(generalOptions.get(10).displayName) + " min: " + ((IntOptionEntry) generalOptions.get(10)).minValue + " max: " + ((IntOptionEntry) generalOptions.get(10)).maxValue, this.sizeZField.x, this.sizeZField.y + 25, 10526880);
-            }
-        }
-
         super.render(mouseX, mouseY, delta);
     }
 

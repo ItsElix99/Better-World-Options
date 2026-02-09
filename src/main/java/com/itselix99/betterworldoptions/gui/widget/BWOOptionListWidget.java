@@ -14,7 +14,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.resource.language.TranslationStorage;
 
 import java.util.ArrayList;
@@ -36,15 +35,15 @@ public class BWOOptionListWidget extends EntryListWidgetButtons implements BWOSc
             for (int var1 = 0; var1 < options.length; var1 += 2) {
                 OptionEntry option = options[var1];
                 OptionEntry option2 = var1 < options.length - 1 ? options[var1 + 1] : null;
-                DrawContext buttonWidget = this.createWidget(width / 2 - 155, option);
-                DrawContext buttonWidget2 = this.createWidget(width / 2 - 155 + 160, option2);
+                BWOButtonWidget buttonWidget = this.createWidget(width / 2 - 155, option);
+                BWOButtonWidget buttonWidget2 = this.createWidget(width / 2 - 155 + 160, option2);
                 this.entries.add(new Entry(buttonWidget, buttonWidget2));
             }
         }
 
     }
 
-    private DrawContext createWidget(int x, OptionEntry option) {
+    private BWOButtonWidget createWidget(int x, OptionEntry option) {
         if (option == null) {
             return null;
         } else {
@@ -109,66 +108,52 @@ public class BWOOptionListWidget extends EntryListWidgetButtons implements BWOSc
     @Environment(EnvType.CLIENT)
     public static class Entry implements EntryListWidgetButtons.Entry {
         private final Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
-        private final DrawContext left;
-        private final DrawContext right;
+        private final BWOButtonWidget left;
+        private final BWOButtonWidget right;
 
-        public Entry(DrawContext left, DrawContext right) {
+        public Entry(BWOButtonWidget left, BWOButtonWidget right) {
             this.left = left;
             this.right = right;
         }
 
         public void tick() {
-            if (this.left != null && this.left instanceof BWOTextFieldWidget leftBWOTextField) {
-                leftBWOTextField.tick();
-            }
-
-            if (this.right != null && this.right instanceof BWOTextFieldWidget rightBWOTextField) {
-                rightBWOTextField.tick();
-            }
+//            if (this.left != null && this.left instanceof BWOTextFieldWidget leftBWOTextField) {
+//                leftBWOTextField.tick();
+//            }
+//
+//            if (this.right != null && this.right instanceof BWOTextFieldWidget rightBWOTextField) {
+//                rightBWOTextField.tick();
+//            }
         }
 
         public void keyPressed(char character, int keyCode) {
-            if (this.left != null && this.left instanceof BWOTextFieldWidget leftBWOTextField) {
-                leftBWOTextField.keyPressed(character, keyCode);
-            }
-
-            if (this.right != null && this.right instanceof BWOTextFieldWidget rightBWOTextField) {
-                rightBWOTextField.keyPressed(character, keyCode);
-            }
+//            if (this.left != null && this.left instanceof BWOTextFieldWidget leftBWOTextField) {
+//                leftBWOTextField.keyPressed(character, keyCode);
+//            }
+//
+//            if (this.right != null && this.right instanceof BWOTextFieldWidget rightBWOTextField) {
+//                rightBWOTextField.keyPressed(character, keyCode);
+//            }
         }
 
         public void render(int index, int x, int y, int width, int height, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             if (this.left != null) {
-                if (this.left instanceof BWOButtonWidget leftBWOButton) {
-                    leftBWOButton.y = y;
-                    leftBWOButton.render(this.minecraft, mouseX, mouseY);
-                } else if (this.left instanceof BWOTextFieldWidget leftBWOTextField) {
-                    leftBWOTextField.y = y;
-                    leftBWOTextField.render();
-                }
+                this.left.y = y;
+                this.left.render(this.minecraft, mouseX, mouseY);
             }
 
             if (this.right != null) {
-                if (this.right instanceof BWOButtonWidget rightBWOButton) {
-                    rightBWOButton.y = y;
-                    rightBWOButton.render(this.minecraft, mouseX, mouseY);
-                } else if (this.right instanceof BWOTextFieldWidget rightBWOTextField) {
-                    rightBWOTextField.y = y;
-                    rightBWOTextField.render();
-                }
+                this.right.y = y;
+                this.right.render(this.minecraft, mouseX, mouseY);
             }
 
 
             if (this.left != null) {
-                if (this.left instanceof BWOButtonWidget leftBWOButton) {
-                    leftBWOButton.drawTooltip(this.minecraft, mouseX, mouseY);
-                }
+                this.left.drawTooltip(this.minecraft, mouseX, mouseY);
             }
 
             if (this.right != null) {
-                if (this.right instanceof BWOButtonWidget rightBWOButton) {
-                    rightBWOButton.drawTooltip(this.minecraft, mouseX, mouseY);
-                }
+                this.right.drawTooltip(this.minecraft, mouseX, mouseY);
             }
         }
 
@@ -176,25 +161,15 @@ public class BWOOptionListWidget extends EntryListWidgetButtons implements BWOSc
             boolean clicked = false;
 
             if (this.left != null) {
-                if (this.left instanceof BWOButtonWidget leftBWOButton && leftBWOButton.isMouseOver(this.minecraft, mouseX, mouseY)) {
-                    leftBWOButton.onButtonClicked();
-                    clicked = true;
-                }
-
-                if (this.left instanceof BWOTextFieldWidget leftBWOTextField) {
-                    leftBWOTextField.mouseClicked(mouseX, mouseY, button);
+                if (this.left.isMouseOver(this.minecraft, mouseX, mouseY)) {
+                    this.left.onButtonClicked();
                     clicked = true;
                 }
             }
 
             if (this.right != null) {
-                if (this.right instanceof BWOButtonWidget rightBWOButton && rightBWOButton.isMouseOver(this.minecraft, mouseX, mouseY)) {
-                    rightBWOButton.onButtonClicked();
-                    clicked = true;
-                }
-
-                if (this.right instanceof BWOTextFieldWidget rightBWOTextField) {
-                    rightBWOTextField.mouseClicked(mouseX, mouseY, button);
+                if (this.right.isMouseOver(this.minecraft, mouseX, mouseY)) {
+                    this.right.onButtonClicked();
                     clicked = true;
                 }
             }
@@ -205,15 +180,11 @@ public class BWOOptionListWidget extends EntryListWidgetButtons implements BWOSc
 
         public void mouseReleased(int index, int mouseX, int mouseY, int button, int entryMouseX, int entryMouseY) {
             if (this.left != null) {
-                if (this.left instanceof BWOButtonWidget leftBWOButton) {
-                    leftBWOButton.mouseReleased(mouseX, mouseY);
-                }
+                this.left.mouseReleased(mouseX, mouseY);
             }
 
             if (this.right != null) {
-                if (this.right instanceof BWOButtonWidget rightBWOButton) {
-                    rightBWOButton.mouseReleased(mouseX, mouseY);
-                }
+                this.right.mouseReleased(mouseX, mouseY);
             }
 
         }

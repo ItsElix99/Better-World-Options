@@ -6,6 +6,7 @@ import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 @Environment(EnvType.CLIENT)
@@ -14,6 +15,7 @@ public class BWOSliderWidget extends BWOButtonWidget {
     private int minValue;
     private int maxValue;
     protected float value = 1.0F;
+    private int stepsCount;
 
     public BWOSliderWidget(int id, int x, int y, String text, OptionEntry option, BWOWorldPropertiesStorage bwoWorldPropertiesStorage, Object parent) {
         super(id, x, y, text, option, bwoWorldPropertiesStorage, parent);
@@ -21,6 +23,7 @@ public class BWOSliderWidget extends BWOButtonWidget {
         if (option instanceof IntOptionEntry intOption) {
             this.minValue = intOption.minValue;
             this.maxValue = intOption.maxValue;
+            this.stepsCount = (this.maxValue - this.minValue) / intOption.step;
             this.setValue(this.bwoWorldPropertiesStorage.getIntOptionValue(this.option.name, this.option.optionType));
         }
     }
@@ -29,34 +32,36 @@ public class BWOSliderWidget extends BWOButtonWidget {
         return 0;
     }
 
-    private void setValue(float realValue) {
+    public void setValue(float realValue) {
+        IntOptionEntry intOption = (IntOptionEntry) this.option;
+
         realValue = Math.max(this.minValue, Math.min(this.maxValue, realValue));
-        this.value = (realValue - this.minValue) / (this.maxValue - this.minValue);
+        int stepIndex = Math.round((realValue - this.minValue) / intOption.step);
+        stepIndex = Math.max(0, Math.min(this.stepsCount, stepIndex));
+        this.value = (float) stepIndex / (float) this.stepsCount;
     }
 
-    private float getRealValue() {
-        float real = this.minValue + this.value * (this.maxValue - this.minValue);
-        return Math.round(real);
-    }
+    private void updateValueFromMouse(int mouseX) {
+        IntOptionEntry intOption = (IntOptionEntry) this.option;
 
-    private void updateValueFromMouse(Minecraft minecraft, int mouseX) {
-        this.value = (float)(mouseX - (this.x + 4)) / (float)(this.width - 8);
-        this.value = Math.max(0.0F, Math.min(1.0F, this.value));
+        float rawValue = (float)(mouseX - (this.x + 4)) / (float)(this.width - 8);
+        rawValue = Math.max(0.0F, Math.min(1.0F, rawValue));
 
-        float real = getRealValue();
+        int stepIndex = Math.round(rawValue * this.stepsCount);
+        stepIndex = Math.max(0, Math.min(this.stepsCount, stepIndex));
 
-        this.bwoWorldPropertiesStorage.setIntOptionValue(this.option.name, option.optionType, (int) real);
+        this.value = (float) stepIndex / (float) this.stepsCount;
+        int real = this.minValue + stepIndex * intOption.step;
 
-        this.text = this.translation.get(this.option.displayName) + " " + this.bwoWorldPropertiesStorage.getIntOptionValue(this.option.name, this.option.optionType);
-    }
+        this.bwoWorldPropertiesStorage.setIntOptionValue(this.option.name, option.optionType, real);
 
-    public void drawTooltip(Minecraft minecraft, int mouseX, int mouseY) {
+        this.text = this.translation.get(this.option.displayName) + " " + real;
     }
 
     protected void renderBackground(Minecraft minecraft, int mouseX, int mouseY) {
         if (this.visible) {
             if (this.dragging) {
-                updateValueFromMouse(minecraft, mouseX);
+                updateValueFromMouse(mouseX);
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -65,17 +70,15 @@ public class BWOSliderWidget extends BWOButtonWidget {
         }
     }
 
-    public boolean isMouseOver(Minecraft minecraft, int mouseX, int mouseY) {
-        if (super.isMouseOver(minecraft, mouseX, mouseY)) {
-            updateValueFromMouse(minecraft, mouseX);
+    public void onButtonClicked() {
+        if (Mouse.isButtonDown(0)) {
             this.dragging = true;
-            return true;
-        } else {
-            return false;
         }
     }
 
     public void mouseReleased(int mouseX, int mouseY) {
-        this.dragging = false;
+        if (!Mouse.isButtonDown(0)) {
+            this.dragging = false;
+        }
     }
 }

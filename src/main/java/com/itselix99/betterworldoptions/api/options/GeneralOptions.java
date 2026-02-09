@@ -123,12 +123,14 @@ public class GeneralOptions {
         GENERAL_OPTIONS_LIST.add(Shape);
 
         IntOptionEntry SizeX = createIntGeneralOption("bwoMoreOptions.sizeX", "SizeX", null, 256, 64, 10240);
+        SizeX.step = 64;
         SizeX.compatibleWorldTypes = Set.of("Overworld");
         SizeX.visible = false;
         addDependentOption(FiniteWorld, SizeX);
         GENERAL_OPTIONS_LIST.add(SizeX);
 
         IntOptionEntry SizeZ = createIntGeneralOption("bwoMoreOptions.sizeZ", "SizeZ", null, 256, 64, 10240);
+        SizeZ.step = 64;
         SizeZ.compatibleWorldTypes = Set.of("Overworld");
         SizeZ.visible = false;
         addDependentOption(FiniteWorld, SizeZ);
@@ -144,6 +146,7 @@ public class GeneralOptions {
         GENERAL_OPTIONS_LIST.add(FarlandsShape);
 
         IntOptionEntry FarlandsDistance = createIntGeneralOption("bwoMoreOptions.farlandsDistance", "FarlandsDistance", null, 8, 2, 32);
+        FarlandsDistance.step = 2;
         FarlandsDistance.compatibleWorldTypes = Set.of("Default", "Amplified", "Skylands", "Alpha 1.2.0", "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "MCPE");
         addDependentOption(Farlands, FarlandsDistance);
         GENERAL_OPTIONS_LIST.add(FarlandsDistance);
