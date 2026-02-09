@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.mixin.player;
+package com.itselix99.betterworldoptions.mixin.entity;
 
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;

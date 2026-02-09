@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.mixin.player;
+package com.itselix99.betterworldoptions.mixin.entity;
 
 import com.itselix99.betterworldoptions.config.Config;
 import net.fabricmc.api.EnvType;
