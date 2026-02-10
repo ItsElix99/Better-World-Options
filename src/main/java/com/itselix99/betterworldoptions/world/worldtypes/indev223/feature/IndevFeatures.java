@@ -60,7 +60,7 @@ public class IndevFeatures {
             for(int var2 = 0; var2 < 128; ++var2) {
                 for (int var3 = z + 8; var3 < z + 8 + 16; ++var3) {
                     if (world.getBlockId(var1, var2, var3) == Block.DIRT.id && world.getLightLevel(var1, var2 + 1, var3) >= 4) {
-                        if (!world.getMaterial(var1, var2 + 1, var3).isFluid()) {
+                        if (!world.getMaterial(var1, var2 + 1, var3).isSolid() || !world.getMaterial(var1, var2 + 1, var3).isFluid()) {
                             world.setBlockWithoutNotifyingNeighbors(var1, var2, var3, topBlockId);
                         } else if (biome != null) {
                             world.setBlockWithoutNotifyingNeighbors(var1, var2, var3, biome.soilBlockId);
@@ -98,9 +98,9 @@ public class IndevFeatures {
         chance = 16 * 16 * 128 / 256 / 64 * chance / 100;
 
         for(int var1 = 0; var1 < chance; ++var1) {
-            float var2 = random.nextFloat() * 16;
-            float var3 = random.nextFloat() * 128;
-            float var4 = random.nextFloat() * 16;
+            float var2 = random.nextFloat() * (float) 16;
+            float var3 = random.nextFloat() * (float) 128;
+            float var4 = random.nextFloat() * (float) 16;
             if (!(var3 > (float)maxY)) {
                 int var5 = (int)((random.nextFloat() + random.nextFloat()) * 75.0F * (float)minY / 100.0F);
                 float var6 = random.nextFloat() * (float)Math.PI * 2.0F;
@@ -184,10 +184,6 @@ public class IndevFeatures {
     }
 
     public static long floodFill(int startX, int startY, int startZ, int targetBlock, int fillBlock, byte[] blocks) {
-        if (startY < 0) {
-            return 0L;
-        }
-
         byte fill = (byte) fillBlock;
         byte target = (byte) targetBlock;
 

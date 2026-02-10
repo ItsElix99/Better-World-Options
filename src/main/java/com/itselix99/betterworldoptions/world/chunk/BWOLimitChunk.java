@@ -32,12 +32,18 @@ public class BWOLimitChunk extends FlattenedChunk {
                     }
                 }
                 case "Floating" -> {
-                    return 0;
+                    if (y >= 2) {
+                        return 0;
+                    } else if (y == 1) {
+                        return this.bwoProperties.bwo_getTheme().equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                    } else {
+                        return Block.BEDROCK.id;
+                    }
                 }
                 case "Inland", "Flat" -> {
-                    if (y > 65) {
+                    if (y >= 65) {
                         return 0;
-                    } else if (y == 65) {
+                    } else if (y == 64) {
                         return Block.GRASS_BLOCK.id;
                     } else {
                         return Block.BEDROCK.id;
