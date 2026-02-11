@@ -123,6 +123,9 @@ public abstract class WorldMixin implements BWOWorld {
         String finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
         int sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
         int sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
+        boolean farlands = bwoProperties.bwo_getBooleanOptionValue("Farlands", OptionType.GENERAL_OPTION);
+        String farlandsShape = bwoProperties.bwo_getStringOptionValue("FarlandsShape", OptionType.GENERAL_OPTION);
+        int farlandsDistance = bwoProperties.bwo_getIntOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION) / 2;
 
         if (worldType.equals("Indev 223")) {
             boolean isValidSpawnArea = false;
@@ -156,6 +159,26 @@ public abstract class WorldMixin implements BWOWorld {
             if (generateIndevHouse && isValidSpawnArea) {
                 IndevFeatures.placeSpawnBuilding(World.class.cast(this));
             }
+        } else if (farlands) {
+            int var1 = 0;
+            int var2 = 64;
+
+            int min = -farlandsDistance * 16;
+            int max = (farlandsDistance * 16) + 15;
+
+            int var3;
+            for(var3 = 0; !this.dimension.isValidSpawnPoint(var1, var3); var3 += this.random.nextInt(64) - this.random.nextInt(64)) {
+                var1 += this.random.nextInt(64) - this.random.nextInt(64);
+
+                if (farlandsShape.equals("Linear")) {
+                    var1 = Math.max(min, Math.min(max, var1));
+                } else if (farlandsShape.equals("Square")) {
+                    var1 = Math.max(min, Math.min(max, var1));
+                    var3 = Math.max(min, Math.min(max, var3));
+                }
+            }
+
+            original.call(properties, var1, var2, var3);
         } else if (finiteType.equals("MCPE")) {
             int var1 = sizeX / 2;
             int var2 = 64;
