@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class NetherDimensionMixin extends Dimension {
 
     @ModifyReturnValue(method = "hasWorldSpawn", at = @At("RETURN"))
-    private boolean netherHasWorldSpawn(boolean original) {
+    private boolean bwo_spawnInNetherWorldType(boolean original) {
         String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
 
         if (worldType.equals("Nether")) {

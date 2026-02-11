@@ -22,15 +22,15 @@ public abstract class CaveWorldCarverMixin extends Generator implements CaveGenB
             at = @At("HEAD"),
             cancellable = true
     )
-    private void caveFix(int chunkX, int chunkZ, byte[] blocks, double x, double y, double z, float baseWidth, float yaw, float pitch, int tunnel, int tunnelCount, double widthHeightRatio, CallbackInfo ci) {
+    private void bwo_caveFix(int chunkX, int chunkZ, byte[] blocks, double x, double y, double z, float baseWidth, float yaw, float pitch, int tunnel, int tunnelCount, double widthHeightRatio, CallbackInfo ci) {
         if (Config.BWOConfig.world.caveFix) {
-            this.fixedPlaceTunnels(chunkX, chunkZ, blocks, x, y, z, baseWidth, yaw, pitch, tunnel, tunnelCount, (double) widthHeightRatio, new Random(this.random.nextLong()));
+            this.bwo_fixedPlaceTunnels(chunkX, chunkZ, blocks, x, y, z, baseWidth, yaw, pitch, tunnel, tunnelCount, (double) widthHeightRatio, new Random(this.random.nextLong()));
             ci.cancel();
         }
     }
 
     @Unique
-    private void fixedPlaceTunnels(int chunkX, int chunkZ, byte[] blocks, double x, double y, double z, float baseWidth, float yaw, float pitch, int tunnel, int tunnelCount, double widthHeightRatio, Random var17) {
+    private void bwo_fixedPlaceTunnels(int chunkX, int chunkZ, byte[] blocks, double x, double y, double z, float baseWidth, float yaw, float pitch, int tunnel, int tunnelCount, double widthHeightRatio, Random var17) {
         double var18 = (double)(chunkX * 16 + 8);
         double var20 = (double)(chunkZ * 16 + 8);
         float var22 = 0.0F;
@@ -69,8 +69,8 @@ public abstract class CaveWorldCarverMixin extends Generator implements CaveGenB
             var23 += (var17.nextFloat() - var17.nextFloat()) * var17.nextFloat() * 2.0F;
             var22 += (var17.nextFloat() - var17.nextFloat()) * var17.nextFloat() * 4.0F;
             if (!var60 && tunnel == var25 && baseWidth > 1.0F) {
-                this.fixedPlaceTunnels(chunkX, chunkZ, blocks, x, y, z, (float)(0.75D * var27 + 0.25D * var27 * (double)var17.nextFloat() - 1.5D), yaw - 1.5707964F, pitch / 3.0F, tunnel, tunnelCount, 1.0D, new Random(var17.nextLong()));
-                this.fixedPlaceTunnels(chunkX, chunkZ, blocks, x, y, z, (float)(0.75D * var27 + 0.25D * var27 * (double)var17.nextFloat() - 1.5D), yaw + 1.5707964F, pitch / 3.0F, tunnel, tunnelCount, 1.0D, new Random(var17.nextLong()));
+                this.bwo_fixedPlaceTunnels(chunkX, chunkZ, blocks, x, y, z, (float)(0.75D * var27 + 0.25D * var27 * (double)var17.nextFloat() - 1.5D), yaw - 1.5707964F, pitch / 3.0F, tunnel, tunnelCount, 1.0D, new Random(var17.nextLong()));
+                this.bwo_fixedPlaceTunnels(chunkX, chunkZ, blocks, x, y, z, (float)(0.75D * var27 + 0.25D * var27 * (double)var17.nextFloat() - 1.5D), yaw + 1.5707964F, pitch / 3.0F, tunnel, tunnelCount, 1.0D, new Random(var17.nextLong()));
                 return;
             }
 

@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
-
 @Mixin(InGameHud.class)
 public class InGameHudMixin extends DrawContext {
     @Shadow private Minecraft minecraft;
@@ -23,7 +22,7 @@ public class InGameHudMixin extends DrawContext {
                     ordinal = 1
             )
     )
-    private void renderHardcoreHearts(int target, int texture, Operation<Void> original) {
+    private void bwo_renderHardcoreHearts(int target, int texture, Operation<Void> original) {
         if (((BWOProperties) this.minecraft.world.getProperties()).bwo_isHardcore()) {
             int hardcoreHearts = this.minecraft.textureManager.getTextureId("/assets/betterworldoptions/stationapi/textures/gui/iconsWithHardcoreHearts.png");
             original.call(target, hardcoreHearts);

@@ -55,7 +55,7 @@ public class CreateWorldScreenMixin extends Screen {
     @Unique private List<String> gamemode = new ArrayList<>(Arrays.asList("Survival", "Hardcore"));
     @Unique int selectedGamemode = 0;
 
-    @Inject(method = "init", at = @At("TAIL"))
+    @Inject(method = "<init>", at = @At("TAIL"))
     private void bwo_addCreativeSupport(CallbackInfo ci) {
         if (CompatMods.BHCreativeLoaded()) {
             this.gamemode.add("Creative");

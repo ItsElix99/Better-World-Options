@@ -26,7 +26,7 @@ public class BipedEntityModelMixin extends EntityModel {
             method = "setAngles",
             constant = @Constant(floatValue = 0.5F, ordinal = 0)
     )
-    private float increaseRightArmSpeed(float constant) {
+    private float bwo_increaseRightArmSpeed(float constant) {
         if (Config.BWOConfig.player.walkingAnim.toString().equals("Infdev") || Config.BWOConfig.player.walkingAnim.toString().equals("Classic")) {
             return 1.0F;
         }
@@ -38,7 +38,7 @@ public class BipedEntityModelMixin extends EntityModel {
             method = "setAngles",
             constant = @Constant(floatValue = 0.5F, ordinal = 1)
     )
-    private float increaseLeftArmSpeed(float constant) {
+    private float bwo_increaseLeftArmSpeed(float constant) {
         if (Config.BWOConfig.player.walkingAnim.toString().equals("Infdev") || Config.BWOConfig.player.walkingAnim.toString().equals("Classic")) {
             return 1.0F;
         }
@@ -47,7 +47,7 @@ public class BipedEntityModelMixin extends EntityModel {
     }
 
     @Inject(method = "setAngles", at = @At("TAIL"))
-    private void playerWalkingAnimation(float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch, float scale, CallbackInfo ci) {
+    private void bwo_playerWalkingAnimation(float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch, float scale, CallbackInfo ci) {
         if (Config.BWOConfig.player.walkingAnim.toString().equals("Infdev") || Config.BWOConfig.player.walkingAnim.toString().equals("Classic")) {
             this.rightArm.roll = (MathHelper.cos(limbAngle * 0.2312F) + 1.0F) * limbDistance;
             this.leftArm.roll = (MathHelper.cos(limbAngle * 0.2812F) - 1.0F) * limbDistance;

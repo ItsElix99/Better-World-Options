@@ -17,7 +17,7 @@ public class GameRendererMixin {
             at = @At("STORE"),
             ordinal = 1
     )
-    private float alwaysSnowInWinterWorlds(float original) {
+    private float bwo_alwaysSnowInWinterWorlds(float original) {
         if (((BWOProperties) this.client.world.getProperties()).bwo_getTheme().equals("Winter")) {
             if (Config.BWOConfig.environment.alwaysSnowInWinterWorlds) {
                 return 1.0F;

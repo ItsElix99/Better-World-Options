@@ -24,7 +24,7 @@ public class BiomeSourceMixin {
     @Unique private String worldType;
 
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("TAIL"))
-    private void mcpeBiomeSource(World world, CallbackInfo ci) {
+    private void bwo_initMCPEBiomeSource(World world, CallbackInfo ci) {
         this.mcpeTemperatureSampler = new OctavePerlinNoiseSamplerMCPE(new MTRandom((int) (world.getSeed() * 9871L)), 4);
         this.mcpeDownfallSampler = new OctavePerlinNoiseSamplerMCPE(new MTRandom((int) (world.getSeed() * 39811L)), 4);
         this.mcpeWeirdnessSampler = new OctavePerlinNoiseSamplerMCPE(new MTRandom((int) (world.getSeed() * 543321L)), 2);
@@ -39,7 +39,7 @@ public class BiomeSourceMixin {
                     target = "Lnet/minecraft/util/math/noise/OctaveSimplexNoiseSampler;sample([DDDIIDDD)[D"
             )
     )
-    private double[] changeTemperatureMap(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
+    private double[] bwo_changeTemperatureNoiseInMCPE(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
         if (this.worldType.equals("MCPE")) {
             return this.mcpeTemperatureSampler.create(map, (int) x, (int) z, width, depth, d, e, f);
         } else {
@@ -55,7 +55,7 @@ public class BiomeSourceMixin {
                     ordinal = 0
             )
     )
-    private double[] changeTemperatureMap2(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
+    private double[] bwo_changeTemperatureNoiseInMCPE2(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
         if (this.worldType.equals("MCPE")) {
             return this.mcpeTemperatureSampler.create(map, (int) x, (int) z, width, depth, d, e, f);
         } else {
@@ -71,7 +71,7 @@ public class BiomeSourceMixin {
                     ordinal = 1
             )
     )
-    private double[] changeWeirdnessMap(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
+    private double[] bwo_changeWeirdnessNoiseInMCPE(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
         if (this.worldType.equals("MCPE")) {
             return this.mcpeWeirdnessSampler.create(map, (int) x, (int) z, width, depth, d, e, f);
         } else {
@@ -87,7 +87,7 @@ public class BiomeSourceMixin {
                     ordinal = 0
             )
     )
-    private double[] changeTemperatureMap3(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
+    private double[] bwo_changeTemperatureNoiseInMCPE3(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
         if (this.worldType.equals("MCPE")) {
             return this.mcpeTemperatureSampler.create(map, (int) x, (int) z, width, width, d, e, f);
         } else {
@@ -103,7 +103,7 @@ public class BiomeSourceMixin {
                     ordinal = 1
             )
     )
-    private double[] changeDownfallMap(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
+    private double[] bwo_changeDownfallNoiseInMCPE(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
         if (this.worldType.equals("MCPE")) {
             return this.mcpeDownfallSampler.create(map, (int) x, (int) z, width, width, d, e, f);
         } else {
@@ -119,7 +119,7 @@ public class BiomeSourceMixin {
                     ordinal = 2
             )
     )
-    private double[] changeWeirdnessMap2(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
+    private double[] bwo_changeWeirdnessNoiseInMCPE2(OctaveSimplexNoiseSampler sampler, double[] map, double x, double z, int width, int depth, double d, double e, double f, Operation<double[]> original) {
         if (this.worldType.equals("MCPE")) {
             return this.mcpeWeirdnessSampler.create(map, (int) x, (int) z, width, width, d, e, f);
         } else {

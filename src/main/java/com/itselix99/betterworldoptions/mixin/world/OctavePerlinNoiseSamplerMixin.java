@@ -24,7 +24,6 @@ public class OctavePerlinNoiseSamplerMixin implements BWONoise {
     @Shadow private PerlinNoiseSampler[] octaveSamplers;
     @Shadow private int octaves;
 
-
     @Override
     public double bwo_generateNoise(double x, double y, double z) {
         double var5 = 0.0D;

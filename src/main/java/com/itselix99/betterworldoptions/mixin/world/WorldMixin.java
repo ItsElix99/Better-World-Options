@@ -146,7 +146,7 @@ public abstract class WorldMixin implements BWOWorld {
                     break;
                 }
 
-                if (!generateIndevHouse && this.dimension.isValidSpawnPoint(var1, var3) || this.isValidSpawnArea(var1, var2, var3)) {
+                if (!generateIndevHouse && this.dimension.isValidSpawnPoint(var1, var3) || this.bwo_isValidSpawnArea(var1, var2, var3)) {
                     isValidSpawnArea = true;
                 }
             }
@@ -172,7 +172,7 @@ public abstract class WorldMixin implements BWOWorld {
     }
 
     @Unique
-    private boolean isValidSpawnArea(int centerX, int centerY, int centerZ) {
+    private boolean bwo_isValidSpawnArea(int centerX, int centerY, int centerZ) {
         for (int x = centerX - 3; x <= centerX + 3; x++) {
             for (int y = centerY; y <= centerY + 3; y++) {
                 for (int z = centerZ - 3; z <= centerZ + 3; z++) {

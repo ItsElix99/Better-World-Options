@@ -32,7 +32,7 @@ public class WorldListWidgetMixin {
             ),
             locals = LocalCapture.CAPTURE_FAILSOFT
     )
-    private void worldTypeAndHardcoreText(int index, int x, int y, int i, Tessellator arg, CallbackInfo ci, WorldSaveInfo worldSaveInfo, String worldName, String var8, long var9, String var11) {
+    private void bwo_renderWorldTypeAndHardcoreText(int index, int x, int y, int i, Tessellator arg, CallbackInfo ci, WorldSaveInfo worldSaveInfo, String worldName, String var8, long var9, String var11) {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) worldSaveInfo).bwo_getWorldType();
         boolean isHardcore = ((BWOProperties) worldSaveInfo).bwo_isHardcore();
@@ -63,7 +63,7 @@ public class WorldListWidgetMixin {
                     ordinal = 2
             )
     )
-    private void changeConversionTextX(Args args, @Local(argsOnly = true, ordinal = 1) int x, @Local WorldSaveInfo worldSaveInfo) {
+    private void bwo_changeConversionTextPosX(Args args, @Local(argsOnly = true, ordinal = 1) int x, @Local WorldSaveInfo worldSaveInfo) {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) worldSaveInfo).bwo_getWorldType();
 

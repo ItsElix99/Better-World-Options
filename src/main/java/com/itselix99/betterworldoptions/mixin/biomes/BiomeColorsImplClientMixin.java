@@ -23,7 +23,7 @@ public class BiomeColorsImplClientMixin {
                     ordinal = 0
             )
     )
-    private static int modifyGrassColor(int original) {
+    private static int bwo_modifyGrassColor(int original) {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
@@ -42,7 +42,7 @@ public class BiomeColorsImplClientMixin {
                     ordinal = 0
             )
     )
-    private static int modifyLeavesColor(int original) {
+    private static int bwo_modifyLeavesColor(int original) {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
@@ -61,7 +61,7 @@ public class BiomeColorsImplClientMixin {
                     ordinal = 0
             )
     )
-    private static int modifyFogColor(int original) {
+    private static int bwo_modifyFogColor(int original) {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
