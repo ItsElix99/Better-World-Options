@@ -113,14 +113,13 @@ public class CreateWorldScreenMixin extends Screen {
     private void bwo_initButtons(CallbackInfo ci) {
         List<OptionEntry> generalOptions = GeneralOptions.getList();
 
+        WorldTypeEntry worldTypeEntry = WorldTypes.getWorldTypeByName(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
         for (OptionEntry generalOption : generalOptions) {
-            WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
-
             if (generalOption.compatibleWorldTypes.contains("Overworld")) {
-                if (worldType.isDimension) {
+                if (worldTypeEntry.isDimension) {
                     this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(generalOption);
                 }
-            } else if (!generalOption.compatibleWorldTypes.contains("All") && !generalOption.compatibleWorldTypes.contains(worldType.name)) {
+            } else if (!generalOption.compatibleWorldTypes.contains("All") && !generalOption.compatibleWorldTypes.contains(worldTypeEntry.name)) {
                 this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(generalOption);
             }
         }
@@ -152,14 +151,13 @@ public class CreateWorldScreenMixin extends Screen {
 
         String worldType = this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
         OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
+        OptionEntry singleBiomeOption = generalOptions.get(2);
 
-        if (oldFeaturesProperties != null) {
-            if (!oldFeaturesProperties.oldFeaturesHasVanillaBiomes && this.bwoWorldPropertiesStorage.getBooleanOptionValue("OldFeatures", OptionType.GENERAL_OPTION)) {
-                this.bwoWorldPropertiesStorage.setStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "Off");
-                this.singleBiomeButton.active = false;
-                String singleBiome = this.bwoWorldPropertiesStorage.getStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION);
-                this.singleBiomeButton.text = this.translation.get("selectWorld.singleBiome") + " " + (!singleBiome.equals("Off") ? singleBiome : this.translation.get("options.off"));
-            }
+        if (oldFeaturesProperties != null && !oldFeaturesProperties.oldFeaturesHasVanillaBiomes && this.bwoWorldPropertiesStorage.getBooleanOptionValue("OldFeatures", OptionType.GENERAL_OPTION) || singleBiomeOption.compatibleWorldTypes.contains("Overworld") && worldTypeEntry.isDimension) {
+            this.bwoWorldPropertiesStorage.setStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "Off");
+            this.singleBiomeButton.active = false;
+            String singleBiome = this.bwoWorldPropertiesStorage.getStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION);
+            this.singleBiomeButton.text = this.translation.get("selectWorld.singleBiome") + " " + (!singleBiome.equals("Off") ? singleBiome : this.translation.get("options.off"));
         }
     }
 

@@ -34,29 +34,31 @@ public class EntityMixin {
             double var1;
 
             int[] sizeLimits = BWOChunkGenerator.getSizeLimits();
-            double minX = sizeLimits[0];
-            double maxX = sizeLimits[1];
-            double minZ = sizeLimits[2];
-            double maxZ = sizeLimits[3];
+            if (sizeLimits != null) {
+                double minX = sizeLimits[0];
+                double maxX = sizeLimits[1];
+                double minZ = sizeLimits[2];
+                double maxZ = sizeLimits[3];
 
-            if (this.x < minX - 8.0D) {
-                var1 = (minX - 8.0D) - this.x;
-                this.velocityX += var1 * 0.001D;
-            }
+                if (this.x < minX - 8.0D) {
+                    var1 = (minX - 8.0D) - this.x;
+                    this.velocityX += var1 * 0.001D;
+                }
 
-            if (this.z < minZ - 8.0D) {
-                var1 = (minZ - 8.0D) - this.z;
-                this.velocityZ += var1 * 0.001D;
-            }
+                if (this.z < minZ - 8.0D) {
+                    var1 = (minZ - 8.0D) - this.z;
+                    this.velocityZ += var1 * 0.001D;
+                }
 
-            if (this.x > maxX + 8.0D) {
-                var1 = this.x - (maxX + 8.0D);
-                this.velocityX -= var1 * 0.001D;
-            }
+                if (this.x > maxX + 8.0D) {
+                    var1 = this.x - (maxX + 8.0D);
+                    this.velocityX -= var1 * 0.001D;
+                }
 
-            if (this.z > maxZ + 8.0D) {
-                var1 = this.z - (maxZ + 8.0D);
-                this.velocityZ -= var1 * 0.001D;
+                if (this.z > maxZ + 8.0D) {
+                    var1 = this.z - (maxZ + 8.0D);
+                    this.velocityZ -= var1 * 0.001D;
+                }
             }
         }
     }

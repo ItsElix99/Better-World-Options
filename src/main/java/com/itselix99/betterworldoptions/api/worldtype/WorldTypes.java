@@ -101,7 +101,7 @@ public class WorldTypes {
         WORLD_TYPE_LIST.add(Nether);
 
         WorldTypeEntry Skylands = createWorldType(SkylandsChunkGenerator.class, "Skylands", "Skylands", "/assets/betterworldoptions/gui/skylands.png", new String[]{"Start the world on the floating", "islands"});
-        Skylands.worldTypeOptions.put("Sky Dimension", createBooleanOption(Skylands.worldTypeOptions.size(), "bwoMoreOptions.skyDimension", "SkyDimension", null, false));
+        Skylands.worldTypeOptions.put("SkyDimension", createBooleanOption(Skylands.worldTypeOptions.size(), "bwoMoreOptions.skyDimension", "SkyDimension", null, false));
         WORLD_TYPE_LIST.add(Skylands);
 
         WorldTypeEntry Flat = createWorldType(FlatChunkGenerator.class, "Flat", "Flat", "/assets/betterworldoptions/gui/flat.png", new String[]{"A completely flat world, perfect for", "building"});
