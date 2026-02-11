@@ -7,6 +7,7 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.util.math.MathHelper;
+import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -44,6 +45,14 @@ public class BipedEntityModelMixin extends EntityModel {
         }
 
         return constant;
+    }
+
+    @Inject(method = "render", at = @At("HEAD"))
+    private void bwo_classicJumping(float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch, float scale, CallbackInfo ci) {
+        if (Config.BWOConfig.player.walkingAnim.toString().equals("Classic")) {
+            float bounce = (float) (-Math.abs(Math.sin((limbAngle * 0.6F) * 0.6662F)) * 0.6F * limbDistance);
+            GL11.glTranslatef(0.0F, bounce, 0.0F);
+        }
     }
 
     @Inject(method = "setAngles", at = @At("TAIL"))
