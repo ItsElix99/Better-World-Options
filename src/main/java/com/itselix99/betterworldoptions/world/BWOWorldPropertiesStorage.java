@@ -36,6 +36,8 @@ public class BWOWorldPropertiesStorage {
 
     public boolean oldTextures;
 
+    public static String BWOWorldVersion = null;
+
     public BWOWorldPropertiesStorage() {
         this.initOldTextures();
 

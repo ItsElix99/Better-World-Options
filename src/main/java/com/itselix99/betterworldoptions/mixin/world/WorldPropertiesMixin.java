@@ -117,105 +117,118 @@ public class WorldPropertiesMixin implements BWOProperties {
         return null;
     }
 
+    @Unique
+    private String bwo_getStringOrDefault(NbtCompound nbt, OptionEntry option) {
+        return !nbt.contains(option.name) ? ((StringOptionEntry) option).defaultValue : nbt.getString(option.name);
+    }
+
+    @Unique
+    private boolean bwo_getBooleanOrDefault(NbtCompound nbt, OptionEntry option) {
+        return !nbt.contains(option.name) ? ((BooleanOptionEntry) option).defaultValue : nbt.getBoolean(option.name);
+    }
+
+    @Unique
+    private int bwo_getIntOrDefault(NbtCompound nbt, OptionEntry option) {
+        return !nbt.contains(option.name) ? ((IntOptionEntry) option).defaultValue : nbt.getInt(option.name);
+    }
+
     @Inject(method = "<init>(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("TAIL"))
     private void bwo_loadFromNbt(NbtCompound nbt, CallbackInfo ci) {
         BWOWorldPropertiesStorage bwoWorldPropertiesStorage = new BWOWorldPropertiesStorage();
 
-        if (nbt.contains("BetterWorldOptions")) {
-            NbtCompound betterWorldOptionsTag = nbt.getCompound("BetterWorldOptions");
+        NbtCompound betterWorldOptionsTag = nbt.getCompound("BetterWorldOptions");
 
-            for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
-                OptionEntry generalOption = GeneralOptions.getOptionByName(option.name);
+        for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
+            OptionEntry generalOption = GeneralOptions.getOptionByName(option.name);
 
-                String worldType = betterWorldOptionsTag.getString("WorldType");
-                WorldTypeEntry worldTypeEntry = WorldTypes.getWorldTypeByName(worldType);
+            String worldType = this.bwo_getStringOrDefault(betterWorldOptionsTag, GeneralOptions.getOptionByName("WorldType"));
+            WorldTypeEntry worldTypeEntry = WorldTypes.getWorldTypeByName(worldType);
 
-                if (generalOption.save && (generalOption.compatibleWorldTypes.contains("All") || generalOption.compatibleWorldTypes.contains(worldType) || generalOption.compatibleWorldTypes.contains("Overworld") && !worldTypeEntry.isDimension)) {
-                    if (option instanceof StringOptionStorage) {
-                        String value = betterWorldOptionsTag.getString(option.name);
+            if (generalOption.save && (generalOption.compatibleWorldTypes.contains("All") || generalOption.compatibleWorldTypes.contains(worldType) || generalOption.compatibleWorldTypes.contains("Overworld") && !worldTypeEntry.isDimension)) {
+                if (option instanceof StringOptionStorage) {
+                    String value = this.bwo_getStringOrDefault(betterWorldOptionsTag, generalOption);
 
-                        if (generalOption.parentOption != null && !betterWorldOptionsTag.getBoolean(generalOption.parentOption.name)) {
-                            continue;
-                        }
-
-                        this.generalOptions.put(option.name, new StringOptionStorage(option.name, value));
-                    } else if (option instanceof BooleanOptionStorage) {
-                        boolean value = betterWorldOptionsTag.getBoolean(option.name);
-
-                        if (!generalOption.dependentOptions.isEmpty() && !value) {
-                            continue;
-                        } else if (generalOption.parentOption != null && !betterWorldOptionsTag.getBoolean(generalOption.parentOption.name)) {
-                            continue;
-                        }
-
-                        this.generalOptions.put(option.name, new BooleanOptionStorage(option.name, value));
-                    } else if (option instanceof IntOptionStorage) {
-                        int value = betterWorldOptionsTag.getInt(option.name);
-
-                        if (generalOption.parentOption != null && !betterWorldOptionsTag.getBoolean(generalOption.parentOption.name)) {
-                            continue;
-                        }
-
-                        this.generalOptions.put(option.name, new IntOptionStorage(option.name, value));
+                    if (generalOption.parentOption != null && !this.bwo_getBooleanOrDefault(betterWorldOptionsTag, generalOption.parentOption)) {
+                        continue;
                     }
+
+                    this.generalOptions.put(option.name, new StringOptionStorage(option.name, value));
+                } else if (option instanceof BooleanOptionStorage) {
+                    boolean value = this.bwo_getBooleanOrDefault(betterWorldOptionsTag, generalOption);
+
+                    if (!generalOption.dependentOptions.isEmpty() && !value) {
+                        continue;
+                    } else if (generalOption.parentOption != null && !this.bwo_getBooleanOrDefault(betterWorldOptionsTag, generalOption.parentOption)) {
+                        continue;
+                    }
+
+                    this.generalOptions.put(option.name, new BooleanOptionStorage(option.name, value));
+                } else if (option instanceof IntOptionStorage) {
+                    int value = this.bwo_getIntOrDefault(betterWorldOptionsTag, generalOption);
+
+                    if (generalOption.parentOption != null && !this.bwo_getBooleanOrDefault(betterWorldOptionsTag, generalOption.parentOption)) {
+                        continue;
+                    }
+
+                    this.generalOptions.put(option.name, new IntOptionStorage(option.name, value));
                 }
             }
-
-            bwoWorldPropertiesStorage.setOptionsMap(this.generalOptions, OptionType.GENERAL_OPTION);
-
-            Map<String, OptionEntry> worldTypeOptions = WorldTypes.getWorldTypeByName(betterWorldOptionsTag.getString("WorldType")).worldTypeOptions;
-            if (worldTypeOptions != null) {
-                NbtCompound worldTypeOptionsTag = betterWorldOptionsTag.getCompound("WorldTypeOptions");
-
-                Map<String, OptionStorage> worldTypeOptionsMap = new LinkedHashMap<>();
-
-                for (OptionEntry option : worldTypeOptions.values()) {
-                    if (option instanceof StringOptionEntry) {
-                        String value = worldTypeOptionsTag.getString(option.name);
-
-                        if (worldTypeOptions.get(option.name).parentOption != null && !worldTypeOptionsTag.getBoolean(worldTypeOptions.get(option.name).parentOption.name)) {
-                            continue;
-                        }
-
-                        worldTypeOptionsMap.put(option.name, new StringOptionStorage(option.name, value));
-                    } else if (option instanceof BooleanOptionEntry) {
-                        boolean value = worldTypeOptionsTag.getBoolean(option.name);
-
-                        if (!worldTypeOptions.get(option.name).dependentOptions.isEmpty() && !value) {
-                            continue;
-                        } else if (worldTypeOptions.get(option.name).parentOption != null && !worldTypeOptionsTag.getBoolean(worldTypeOptions.get(option.name).parentOption.name)) {
-                            continue;
-                        }
-
-                        worldTypeOptionsMap.put(option.name, new BooleanOptionStorage(option.name, value));
-                    } else if (option instanceof IntOptionEntry) {
-                        int value = worldTypeOptionsTag.getInt(option.name);
-
-                        if (worldTypeOptions.get(option.name).parentOption != null && !worldTypeOptionsTag.getBoolean(worldTypeOptions.get(option.name).parentOption.name)) {
-                            continue;
-                        }
-
-                        worldTypeOptionsMap.put(option.name, new IntOptionStorage(option.name, value));
-                    }
-                }
-
-                bwoWorldPropertiesStorage.setOptionsMap(worldTypeOptionsMap, OptionType.WORLD_TYPE_OPTION);
-
-                for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.WORLD_TYPE_OPTION).values()) {
-                    if (option instanceof StringOptionStorage stringOption) {
-                        this.worldTypeOptions.put(option.name, new StringOptionStorage(option.name, stringOption.value));
-                    } else if (option instanceof BooleanOptionStorage booleanOption) {
-                        this.worldTypeOptions.put(option.name, new BooleanOptionStorage(option.name, booleanOption.value));
-                    } else if (option instanceof IntOptionStorage intOption) {
-                        this.worldTypeOptions.put(option.name, new IntOptionStorage(option.name, intOption.value));
-                    }
-                }
-
-                bwoWorldPropertiesStorage.setOptionsMap(this.worldTypeOptions, OptionType.WORLD_TYPE_OPTION);
-            }
-
-            BWOWorldPropertiesStorage.setInstance(bwoWorldPropertiesStorage);
         }
+
+        bwoWorldPropertiesStorage.setOptionsMap(this.generalOptions, OptionType.GENERAL_OPTION);
+
+        Map<String, OptionEntry> worldTypeOptions = WorldTypes.getWorldTypeByName(this.bwo_getStringOrDefault(betterWorldOptionsTag, GeneralOptions.getOptionByName("WorldType"))).worldTypeOptions;
+        if (!worldTypeOptions.isEmpty()) {
+            NbtCompound worldTypeOptionsTag = betterWorldOptionsTag.getCompound("WorldTypeOptions");
+
+            Map<String, OptionStorage> worldTypeOptionsMap = new LinkedHashMap<>();
+
+            for (OptionEntry option : worldTypeOptions.values()) {
+                if (option instanceof StringOptionEntry) {
+                    String value = this.bwo_getStringOrDefault(worldTypeOptionsTag, worldTypeOptions.get(option.name));
+
+                    if (worldTypeOptions.get(option.name).parentOption != null && !this.bwo_getBooleanOrDefault(worldTypeOptionsTag, worldTypeOptions.get(option.name).parentOption)) {
+                        continue;
+                    }
+
+                    worldTypeOptionsMap.put(option.name, new StringOptionStorage(option.name, value));
+                } else if (option instanceof BooleanOptionEntry) {
+                    boolean value = this.bwo_getBooleanOrDefault(worldTypeOptionsTag, worldTypeOptions.get(option.name));
+
+                    if (!worldTypeOptions.get(option.name).dependentOptions.isEmpty() && !value) {
+                        continue;
+                    } else if (worldTypeOptions.get(option.name).parentOption != null && !this.bwo_getBooleanOrDefault(worldTypeOptionsTag, worldTypeOptions.get(option.name).parentOption)) {
+                        continue;
+                    }
+
+                    worldTypeOptionsMap.put(option.name, new BooleanOptionStorage(option.name, value));
+                } else if (option instanceof IntOptionEntry) {
+                    int value = this.bwo_getIntOrDefault(worldTypeOptionsTag, worldTypeOptions.get(option.name));
+
+                    if (worldTypeOptions.get(option.name).parentOption != null && !this.bwo_getBooleanOrDefault(worldTypeOptionsTag, worldTypeOptions.get(option.name).parentOption)) {
+                        continue;
+                    }
+
+                    worldTypeOptionsMap.put(option.name, new IntOptionStorage(option.name, value));
+                }
+            }
+
+            bwoWorldPropertiesStorage.setOptionsMap(worldTypeOptionsMap, OptionType.WORLD_TYPE_OPTION);
+
+            for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.WORLD_TYPE_OPTION).values()) {
+                if (option instanceof StringOptionStorage stringOption) {
+                    this.worldTypeOptions.put(option.name, new StringOptionStorage(option.name, stringOption.value));
+                } else if (option instanceof BooleanOptionStorage booleanOption) {
+                    this.worldTypeOptions.put(option.name, new BooleanOptionStorage(option.name, booleanOption.value));
+                } else if (option instanceof IntOptionStorage intOption) {
+                    this.worldTypeOptions.put(option.name, new IntOptionStorage(option.name, intOption.value));
+                }
+            }
+
+            bwoWorldPropertiesStorage.setOptionsMap(this.worldTypeOptions, OptionType.WORLD_TYPE_OPTION);
+        }
+
+        BWOWorldPropertiesStorage.setInstance(bwoWorldPropertiesStorage);
     }
 
     @Inject(method = "<init>(JLjava/lang/String;)V", at = @At("TAIL"))
@@ -282,37 +295,6 @@ public class WorldPropertiesMixin implements BWOProperties {
     private void bwo_updateProperties(NbtCompound nbt, NbtCompound playerNbt, CallbackInfo ci) {
         NbtCompound betterWorldOptionsTag = new NbtCompound();
         NbtCompound worldTypeOptionsTag = new NbtCompound();
-
-        if (this.generalOptions.isEmpty()) {
-            BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
-
-            this.generalOptions = bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION);
-
-            for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
-                OptionEntry generalOption = GeneralOptions.getOptionByName(option.name);
-
-                String worldType = bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
-                WorldTypeEntry worldTypeEntry = WorldTypes.getWorldTypeByName(worldType);
-
-                if (generalOption.save && (generalOption.compatibleWorldTypes.contains("All") || generalOption.compatibleWorldTypes.contains(worldType) || generalOption.compatibleWorldTypes.contains("Overworld") && !worldTypeEntry.isDimension)) {
-                    if (generalOption.parentOption != null && !bwoWorldPropertiesStorage.getBooleanOptionValue(generalOption.parentOption.name, generalOption.optionType)) {
-                        continue;
-                    }
-
-                    if (option instanceof StringOptionStorage stringOption) {
-                        this.generalOptions.put(option.name, new StringOptionStorage(option.name, stringOption.value));
-                    } else if (option instanceof BooleanOptionStorage booleanOption) {
-                        if (!generalOption.dependentOptions.isEmpty() && !booleanOption.value) {
-                            continue;
-                        }
-
-                        this.generalOptions.put(option.name, new BooleanOptionStorage(option.name, booleanOption.value));
-                    } else if (option instanceof IntOptionStorage intOption) {
-                        this.generalOptions.put(option.name, new IntOptionStorage(option.name, intOption.value));
-                    }
-                }
-            }
-        }
 
         for (OptionStorage option : this.generalOptions.values()) {
             if (option instanceof StringOptionStorage stringOption) {

@@ -10,8 +10,6 @@
     "biomes.RainforestBiomeMixin",
     "biomes.TaigaBiomeMixin",
     "blocks.SaplingBlockMixin",
-    "dimensions.DimensionHelperClientImplMixin",
-    "dimensions.DimensionHelperServerImplMixin",
     "dimensions.DimensionMixin",
     "dimensions.NetherDimensionMixin",
     "dimensions.OverworldDimensionMixin",
@@ -28,6 +26,7 @@
   ],
   "server": [
     "biomes.BiomeColorsImplServerMixin",
+    "dimensions.DimensionHelperServerImplMixin",
     "network.ServerLoginNetworkHandlerMixin",
     "world.ServerChunkCacheMixin"
   ],
@@ -41,6 +40,7 @@
     "blocks.OreStorageBlockMixin",
     "blocks.SlabBlockMixin",
     "blocks.TallPlantBlockMixin",
+    "dimensions.DimensionHelperClientImplMixin",
     "entity.BipedEntityModelMixin",
     "entity.ClientPlayerEntityMixin",
     "render.GameRendererMixin",
@@ -49,6 +49,7 @@
     "screen.InGameHudMixin",
     "screen.OptionsScreenMixin",
     "screen.RemoveBHCreativeGamemodeButton",
+    "screen.SelectWorldScreenMixin",
     "screen.WorldListWidgetMixin",
     "world.WorldSaveInfoMixin"
   ],

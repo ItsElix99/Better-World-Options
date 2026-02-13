@@ -31,7 +31,11 @@ public class WorldTypes {
     }
 
     public static WorldTypeEntry getWorldTypeByName(String worldTypeName) {
-        return getList().stream().filter(worldTypeEntry -> worldTypeName.equals(worldTypeEntry.name)).toList().get(0);
+        if (!getList().stream().filter(worldTypeEntry -> worldTypeName.equals(worldTypeEntry.name)).toList().isEmpty()) {
+            return getList().stream().filter(worldTypeEntry -> worldTypeName.equals(worldTypeEntry.name)).toList().get(0);
+        } else {
+            return getList().get(0);
+        }
     }
 
     public static OldFeaturesProperties getOldFeaturesProperties(String worldTypeName) {
