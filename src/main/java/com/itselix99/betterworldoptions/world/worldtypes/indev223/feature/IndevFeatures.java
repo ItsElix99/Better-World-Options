@@ -60,10 +60,8 @@ public class IndevFeatures {
             for(int var2 = 0; var2 < 128; ++var2) {
                 for (int var3 = z + 8; var3 < z + 8 + 16; ++var3) {
                     if (world.getBlockId(var1, var2, var3) == Block.DIRT.id && world.getLightLevel(var1, var2 + 1, var3) >= 4) {
-                        if (!world.getMaterial(var1, var2 + 1, var3).isSolid() || !world.getMaterial(var1, var2 + 1, var3).isFluid()) {
+                        if (!(world.getBlockId(var1, var2 + 1, var3) == Block.ICE.id) && !world.getMaterial(var1, var2 + 1, var3).isFluid()) {
                             world.setBlockWithoutNotifyingNeighbors(var1, var2, var3, topBlockId);
-                        } else if (biome != null) {
-                            world.setBlockWithoutNotifyingNeighbors(var1, var2, var3, biome.soilBlockId);
                         }
                     }
                 }

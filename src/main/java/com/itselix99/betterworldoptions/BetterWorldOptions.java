@@ -32,7 +32,7 @@ public class BetterWorldOptions {
 
     @EventListener
     public void registerBlocks(BlockRegistryEvent event) {
-        INVISIBLE_BEDROCK = new InvisibleBedrock(NAMESPACE.id("invisible_bedrock"), TextureListener.invisibleBedrock, Material.STONE).setUnbreakable().setResistance(6000000.0F).setSoundGroup(Block.STONE_SOUND_GROUP).setTranslationKey(NAMESPACE, "invisible_bedrock").disableTrackingStatistics();
+        INVISIBLE_BEDROCK = new InvisibleBedrock(NAMESPACE.id("invisible_bedrock"), TextureListener.invisibleBedrock, Material.AIR).setUnbreakable().setResistance(6000000.0F).setSoundGroup(Block.STONE_SOUND_GROUP).setTranslationKey(NAMESPACE, "invisible_bedrock").disableTrackingStatistics();
     }
 
     @EventListener

@@ -3,6 +3,7 @@ package com.itselix99.betterworldoptions.world.chunk;
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.world.World;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
@@ -18,6 +19,10 @@ public class BWOLimitChunk extends FlattenedChunk {
     }
 
     public int getBlockId(int x, int y, int z) {
+        if (Block.BLOCKS[super.getBlockId(x, y, z)] instanceof BlockWithEntity) {
+            return super.getBlockId(x, y, z);
+        }
+
         if (this.mode != null) {
             switch (this.mode) {
                 case "Island" -> {
@@ -68,5 +73,13 @@ public class BWOLimitChunk extends FlattenedChunk {
         }
 
         return 0;
+    }
+
+    public int getLight(int x, int y, int z, int light) {
+        if (this.mode.equals("MCPE")) {
+            return 0;
+        }
+
+        return super.getLight(x, y, z, light);
     }
 }

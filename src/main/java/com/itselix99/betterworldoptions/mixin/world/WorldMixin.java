@@ -36,9 +36,9 @@ public abstract class WorldMixin implements BWOWorld {
     @Shadow protected WorldProperties properties;
     @Unique private static Map<String, Boolean> storageSnowBiomes;
     @Unique private static Map<String, Boolean> storagePrecipitationBiomes;
+    @Shadow public boolean eventProcessingEnabled;
 
     @Shadow public abstract int getBlockId(int x, int y, int z);
-    @Shadow public abstract boolean setBlock(int x, int y, int z, int blockId);
     @Shadow public abstract WorldProperties getProperties();
     @Shadow public abstract Material getMaterial(int x, int y, int z);
 
@@ -114,19 +114,23 @@ public abstract class WorldMixin implements BWOWorld {
         BWOWorldPropertiesStorage.getInstance().setOldTextures(this.dimension.id == 0 && ((BWOProperties) this.getProperties()).bwo_isOldFeatures());
     }
 
-    @WrapOperation(method = "initializeSpawnPoint", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldProperties;setSpawn(III)V"))
-    private void bwo_initializeSpawnPoint(WorldProperties properties, int x, int y, int z, Operation<Void> original) {
+    @Inject(method = "initializeSpawnPoint", at = @At("HEAD"), cancellable = true)
+    private void bwo_initializeSpawnPoint(CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) properties;
         String worldType = bwoProperties.bwo_getWorldType();
-        boolean generateIndevHouse = bwoProperties.bwo_getBooleanOptionValue("GenerateIndevHouse", OptionType.WORLD_TYPE_OPTION);
+
         boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
         String finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
         int sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
         int sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
+
         boolean farlands = bwoProperties.bwo_getBooleanOptionValue("Farlands", OptionType.GENERAL_OPTION);
         String farlandsShape = bwoProperties.bwo_getStringOptionValue("FarlandsShape", OptionType.GENERAL_OPTION);
         int farlandsDistance = bwoProperties.bwo_getIntOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION) / 2;
 
+        boolean generateIndevHouse = bwoProperties.bwo_getBooleanOptionValue("GenerateIndevHouse", OptionType.WORLD_TYPE_OPTION);
+
+        this.eventProcessingEnabled = true;
         if (worldType.equals("Indev 223")) {
             boolean isValidSpawnArea = false;
             int attempts = 0;
@@ -142,8 +146,10 @@ public abstract class WorldMixin implements BWOWorld {
                     ++attempts;
                     var1 = this.random.nextInt(sizeX / 2) + sizeX / 4;
                     var3 = this.random.nextInt(sizeZ / 2) + sizeZ / 4;
-                    var2 = this.getTopSolidBlockY(var1, var3);
+                    System.out.println(attempts);
                 }
+
+                var2 = this.getTopSolidBlockY(var1, var3);
 
                 if(attempts >= 1000000) {
                     break;
@@ -154,11 +160,12 @@ public abstract class WorldMixin implements BWOWorld {
                 }
             }
 
-            original.call(properties, var1, var2 - 1, var3);
-
+            this.properties.setSpawn(var1, var2 - 1, var3);
+            this.eventProcessingEnabled = false;
             if (generateIndevHouse && isValidSpawnArea) {
                 IndevFeatures.placeSpawnBuilding(World.class.cast(this));
             }
+            ci.cancel();
         } else if (farlands) {
             int var1 = 0;
             int var2 = 64;
@@ -178,7 +185,9 @@ public abstract class WorldMixin implements BWOWorld {
                 }
             }
 
-            original.call(properties, var1, var2, var3);
+            this.properties.setSpawn(var1, var2, var3);
+            this.eventProcessingEnabled = false;
+            ci.cancel();
         } else if (finiteType.equals("MCPE")) {
             int var1 = sizeX / 2;
             int var2 = 64;
@@ -188,9 +197,9 @@ public abstract class WorldMixin implements BWOWorld {
                 var1 += this.random.nextInt(64) - this.random.nextInt(64);
             }
 
-            original.call(properties, var1, var2, var3);
-        } else {
-            original.call(properties, x, y, z);
+            this.properties.setSpawn(var1, var2, var3);
+            this.eventProcessingEnabled = false;
+            ci.cancel();
         }
     }
 
