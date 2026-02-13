@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.mixin.biomes;
 
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
@@ -28,7 +29,7 @@ public class BiomeColorsImplClientMixin {
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
 
-        if (oldFeatures && worldType.equals("MCPE") && minecraft.world.dimension.id == 0) {
+        if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && worldType.equals("MCPE") && minecraft.world.dimension.id == 0) {
             return 3381555;
         }
 
@@ -47,7 +48,7 @@ public class BiomeColorsImplClientMixin {
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
 
-        if (oldFeatures && worldType.equals("MCPE") && minecraft.world.dimension.id == 0) {
+        if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && worldType.equals("MCPE") && minecraft.world.dimension.id == 0) {
             return 6396257;
         }
 
@@ -69,7 +70,7 @@ public class BiomeColorsImplClientMixin {
         OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
 
         if (minecraft.world.dimension.id == 0) {
-            if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != 1 && (theme.equals("Normal") || theme.equals("Winter"))) {
+            if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != 1 && (theme.equals("Normal") || theme.equals("Winter"))) {
                 return oldFeaturesProperties.defaultFogColor;
             } else if (theme.equals("Hell")) {
                 return 1049600;

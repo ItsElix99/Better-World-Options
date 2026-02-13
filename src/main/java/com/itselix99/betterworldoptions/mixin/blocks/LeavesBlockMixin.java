@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.mixin.blocks;
 
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -28,7 +29,7 @@ public class LeavesBlockMixin extends TransparentBlock {
         String worldType = bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
         boolean oldFeatures = bwoWorldPropertiesStorage.getBooleanOptionValue("OldFeatures", OptionType.GENERAL_OPTION);
 
-        if (oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
+        if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
             WorldTypeEntry worldTypeEntry = WorldTypes.getWorldTypeByName(worldType);
 
             if ((!worldTypeEntry.name.equals("MCPE") && (meta & 3) == 0) || (worldTypeEntry.name.equals("MCPE") && ((meta & 3) == 0 || (meta & 3) == 2))) {

@@ -3,6 +3,7 @@ package com.itselix99.betterworldoptions.mixin.biomes;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
@@ -39,7 +40,7 @@ public abstract class BiomeMixin implements BWOWorld {
             return 13033215;
         } else if (theme.equals("Woods")) {
             return 7699847;
-        } else if (oldFeatures && oldFeaturesProperties != null && (oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null || oldFeaturesProperties.defaultSkyColor != -1)) {
+        } else if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && oldFeaturesProperties != null && (oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null || oldFeaturesProperties.defaultSkyColor != -1)) {
             return oldFeaturesProperties.defaultSkyColor;
         }
 

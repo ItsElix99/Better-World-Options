@@ -31,14 +31,19 @@ public class DimensionMixin {
 
     @WrapOperation(method = "initBiomeSource", at = @At(value = "NEW", target = "(Lnet/minecraft/world/World;)Lnet/minecraft/world/biome/source/BiomeSource;"))
     private BiomeSource bwo_initBiomeSource(World world, Operation<BiomeSource> original) {
-        String worldType = ((BWOProperties) world.getProperties()).bwo_getWorldType();
-        boolean oldFeatures = ((BWOProperties) world.getProperties()).bwo_isOldFeatures();
-        String singleBiome = ((BWOProperties) world.getProperties()).bwo_getSingleBiome();
-        boolean superflat = ((BWOProperties) world.getProperties()).bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
+        BWOProperties bwoProperties = (BWOProperties) world.getProperties();
+        String worldType = bwoProperties.bwo_getWorldType();
+        boolean oldFeatures = bwoProperties.bwo_isOldFeatures();
+        String singleBiome = bwoProperties.bwo_getSingleBiome();
+        boolean superflat = bwoProperties.bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
         OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
 
         if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null) {
-            return new FixedBiomeSource(oldFeaturesProperties.oldFeaturesBiomeSupplier.get(), 1.0D, 0.5D);
+            if (Config.BWOConfig.environment.oldTexturesAndSky) {
+                return new FixedBiomeSource(oldFeaturesProperties.oldFeaturesBiomeSupplier.get(), 1.0D, 0.5D);
+            } else {
+                return new FixedBiomeSource(Biome.FOREST, 0.8D, 0.6D);
+            }
         } else if (worldType.equals("Flat") && !superflat) {
             return new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
         } else if (!singleBiome.equals("Off") && !singleBiome.isEmpty()) {

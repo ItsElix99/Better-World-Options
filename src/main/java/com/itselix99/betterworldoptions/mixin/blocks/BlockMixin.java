@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -26,7 +27,7 @@ public abstract class BlockMixin {
         String worldType = bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
         boolean oldFeatures = bwoWorldPropertiesStorage.getBooleanOptionValue("OldFeatures", OptionType.GENERAL_OPTION);
 
-        if (oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
+        if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
             if (this.id == 4) {
                 return WorldTypes.getOldTexture(worldType, "Cobblestone", original);
             }else if (this.id == 45) {

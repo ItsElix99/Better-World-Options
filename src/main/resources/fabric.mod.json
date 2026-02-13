@@ -36,7 +36,8 @@
       "com.itselix99.betterworldoptions.config.enums.WalkingAnimConfigEnumFactories",
       "com.itselix99.betterworldoptions.config.enums.WorldHeightConfigEnumFactories"
     ],
-    "bhcreative:event_bus": [
+    "gcapi3:presave": [
+      "com.itselix99.betterworldoptions.event.ConfigListener"
     ]
   },
   "mixins": [

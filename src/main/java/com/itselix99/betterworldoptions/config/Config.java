@@ -49,6 +49,9 @@ public class Config {
     public static class BWOEnvironment {
         @ConfigEntry(name = "Always Snow in Winter Worlds")
         public Boolean alwaysSnowInWinterWorlds = true;
+
+        @ConfigEntry(name = "Old Textures and Sky", description = "Use old textures and sky when Old Features is enabled")
+        public Boolean oldTexturesAndSky = true;
     }
 
     public static class BWOPlayer {
