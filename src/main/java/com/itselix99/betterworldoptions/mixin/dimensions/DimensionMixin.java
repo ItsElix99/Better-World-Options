@@ -86,4 +86,16 @@ public class DimensionMixin {
 
         return original;
     }
+
+    @ModifyReturnValue(method = "getBackgroundColor", at = @At(value = "RETURN", ordinal = 0))
+    public float[] bwo_removeSunriseAndSunsetColors(float[] original) {
+        String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
+        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
+
+        if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeaturesProperties != null && !oldFeaturesProperties.sunriseAndSunsetColors) {
+            return null;
+        }
+
+        return original;
+    }
 }

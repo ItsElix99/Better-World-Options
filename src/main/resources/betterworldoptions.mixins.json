@@ -44,6 +44,7 @@
     "entity.BipedEntityModelMixin",
     "entity.ClientPlayerEntityMixin",
     "render.GameRendererMixin",
+    "render.WorldRendererMixin",
     "screen.CreateWorldScreenMixin",
     "screen.DeathScreenMixin",
     "screen.InGameHudMixin",
