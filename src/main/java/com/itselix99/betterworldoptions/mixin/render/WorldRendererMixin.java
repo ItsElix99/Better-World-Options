@@ -30,6 +30,8 @@ public class WorldRendererMixin {
 
         if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeaturesProperties != null && oldFeaturesProperties.oldStars) {
             original.call(dfactor, dfactor);
+        } else {
+            original.call(sfactor, dfactor);
         }
     }
 
@@ -47,6 +49,8 @@ public class WorldRendererMixin {
 
         if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeaturesProperties != null && oldFeaturesProperties.oldStars) {
             original.call(alpha, alpha, alpha, alpha);
+        } else {
+            original.call(red, green, blue, alpha);
         }
     }
 }
