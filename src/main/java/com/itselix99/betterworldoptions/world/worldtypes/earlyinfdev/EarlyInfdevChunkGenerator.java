@@ -38,6 +38,8 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
         new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 3);
         new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 3);
         this.forestNoise = new OctavePerlinNoiseSamplerEarlyInfdev(this.random, 5);
+
+        BWOChunkGenerator.setSizeLimits(-this.width / 2, this.width / 2, -this.length / 2, this.length / 2);
     }
 
     public void buildTerrain(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, double[] temperatures) {
@@ -175,11 +177,11 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
         flattenedChunk.populateHeightMap();
 
         String limitMode = null;
-        if (this.finiteType.equals("MCPE")) {
-            limitMode = this.finiteType;
+        if (this.finiteWorldType.equals("MCPE")) {
+            limitMode = this.finiteWorldType;
         }
 
-        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, -this.sizeX / 2, this.sizeX / 2, -this.sizeZ / 2, this.sizeZ / 2, var3, limitMode, flattenedChunk);
+        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, var3, limitMode, flattenedChunk);
     }
 
     public void decorate(ChunkSource source, int x, int z) {

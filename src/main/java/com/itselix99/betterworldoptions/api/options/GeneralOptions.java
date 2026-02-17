@@ -87,7 +87,7 @@ public class GeneralOptions {
         Theme.compatibleWorldTypes = Set.of("Overworld");
         GENERAL_OPTIONS_LIST.add(Theme);
 
-        BooleanOptionEntry OldFeatures = createBooleanGeneralOption("selectWorld.oldFeatures", "OldFeatures", new String[]{"selectWorld.oldFeatures.line1", "selectWorld.oldFeatures.line2"}, false);
+        BooleanOptionEntry OldFeatures = createBooleanGeneralOption("bwoMoreOptions.oldFeatures", "OldFeatures", new String[]{"bwoMoreOptions.oldFeatures.line1", "bwoMoreOptions.oldFeatures.line2"}, false);
         OldFeatures.compatibleWorldTypes = Set.of("Alpha 1.2.0", "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "Indev 223", "MCPE");
         OldFeatures.worldTypeDefaultValue.put("Alpha 1.2.0", true);
         GENERAL_OPTIONS_LIST.add(OldFeatures);
@@ -97,16 +97,16 @@ public class GeneralOptions {
         FiniteWorld.visible = false;
         GENERAL_OPTIONS_LIST.add(FiniteWorld);
 
-        StringOptionEntry FiniteType = createStringGeneralOptionWithStringList("bwoMoreOptions.finiteType", "FiniteType", null, new ArrayList<>(Arrays.asList("MCPE", "LCE", "Indev Island")), 0);
-        FiniteType.compatibleWorldTypes = Set.of("Overworld");
-        FiniteType.visible = false;
-        FiniteType.worldTypeDefaultValue.put("Skylands", new ArrayList<>(List.of("MCPE")));
-        FiniteType.worldTypeDefaultValue.put("Flat", new ArrayList<>(List.of("MCPE")));
-        FiniteType.worldTypeDefaultValue.put("Infdev 415", new ArrayList<>(List.of("MCPE")));
-        FiniteType.worldTypeDefaultValue.put("Early Infdev", new ArrayList<>(List.of("MCPE")));
-        FiniteType.worldTypeDefaultValue.put("Indev 223", new ArrayList<>(Arrays.asList("MCPE", "Custom")));
-        addDependentOption(FiniteWorld, FiniteType);
-        GENERAL_OPTIONS_LIST.add(FiniteType);
+        StringOptionEntry FiniteWorldType = createStringGeneralOptionWithStringList("bwoMoreOptions.finiteWorldType", "FiniteWorldType", null, new ArrayList<>(Arrays.asList("MCPE", "LCE", "Island")), 0);
+        FiniteWorldType.compatibleWorldTypes = Set.of("Overworld");
+        FiniteWorldType.visible = false;
+        FiniteWorldType.worldTypeDefaultValue.put("Skylands", new ArrayList<>(List.of("MCPE")));
+        FiniteWorldType.worldTypeDefaultValue.put("Flat", new ArrayList<>(List.of("MCPE")));
+        FiniteWorldType.worldTypeDefaultValue.put("Infdev 415", new ArrayList<>(List.of("MCPE")));
+        FiniteWorldType.worldTypeDefaultValue.put("Early Infdev", new ArrayList<>(List.of("MCPE")));
+        FiniteWorldType.worldTypeDefaultValue.put("Indev 223", new ArrayList<>(Arrays.asList("MCPE", "Custom")));
+        addDependentOption(FiniteWorld, FiniteWorldType);
+        GENERAL_OPTIONS_LIST.add(FiniteWorldType);
 
         StringOptionEntry Size = createStringGeneralOptionWithStringList("bwoMoreOptions.size", "Size", null, new ArrayList<>(Arrays.asList("Small", "Normal", "Huge", "Classic LCE", "Small LCE", "Medium LCE", "Large LCE")), 1);
         Size.compatibleWorldTypes = Set.of("Overworld");
@@ -122,19 +122,19 @@ public class GeneralOptions {
         addDependentOption(FiniteWorld, Shape);
         GENERAL_OPTIONS_LIST.add(Shape);
 
-        IntOptionEntry SizeX = createIntGeneralOption("bwoMoreOptions.sizeX", "SizeX", null, 256, 64, 10240);
-        SizeX.step = 64;
-        SizeX.compatibleWorldTypes = Set.of("Overworld");
-        SizeX.visible = false;
-        addDependentOption(FiniteWorld, SizeX);
-        GENERAL_OPTIONS_LIST.add(SizeX);
+        IntOptionEntry Width = createIntGeneralOption("bwoMoreOptions.width", "Width", null, 256, 64, 10240);
+        Width.step = 64;
+        Width.compatibleWorldTypes = Set.of("Overworld");
+        Width.visible = false;
+        addDependentOption(FiniteWorld, Width);
+        GENERAL_OPTIONS_LIST.add(Width);
 
-        IntOptionEntry SizeZ = createIntGeneralOption("bwoMoreOptions.sizeZ", "SizeZ", null, 256, 64, 10240);
-        SizeZ.step = 64;
-        SizeZ.compatibleWorldTypes = Set.of("Overworld");
-        SizeZ.visible = false;
-        addDependentOption(FiniteWorld, SizeZ);
-        GENERAL_OPTIONS_LIST.add(SizeZ);
+        IntOptionEntry Length = createIntGeneralOption("bwoMoreOptions.length", "Length", null, 256, 64, 10240);
+        Length.step = 64;
+        Length.compatibleWorldTypes = Set.of("Overworld");
+        Length.visible = false;
+        addDependentOption(FiniteWorld, Length);
+        GENERAL_OPTIONS_LIST.add(Length);
 
         BooleanOptionEntry Farlands = createBooleanGeneralOption("bwoMoreOptions.farlands", "Farlands", null, false);
         Farlands.compatibleWorldTypes = Set.of("Default", "Amplified", "Skylands", "Alpha 1.2.0", "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "MCPE");
@@ -145,7 +145,7 @@ public class GeneralOptions {
         addDependentOption(Farlands, FarlandsShape);
         GENERAL_OPTIONS_LIST.add(FarlandsShape);
 
-        IntOptionEntry FarlandsDistance = createIntGeneralOption("bwoMoreOptions.farlandsDistance", "FarlandsDistance", null, 8, 2, 32);
+        IntOptionEntry FarlandsDistance = createIntGeneralOption("bwoMoreOptions.farlandsDistance", "FarlandsDistance", new String[]{"bwoMoreOptions.farlandsDistance.line1", "bwoMoreOptions.farlandsDistance.line2"}, 8, 2, 32);
         FarlandsDistance.step = 2;
         FarlandsDistance.compatibleWorldTypes = Set.of("Default", "Amplified", "Skylands", "Alpha 1.2.0", "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "MCPE");
         addDependentOption(Farlands, FarlandsDistance);

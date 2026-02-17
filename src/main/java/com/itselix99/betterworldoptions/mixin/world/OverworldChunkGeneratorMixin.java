@@ -24,6 +24,7 @@ import net.minecraft.world.gen.Generator;
 import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
 import net.minecraft.world.gen.feature.PlantPatchFeature;
 import net.modificationstation.stationapi.api.util.math.MathHelper;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -41,11 +42,10 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     @Shadow private OctavePerlinNoiseSampler perlinNoise3;
     @Unique private Generator ravine = new RavineWorldCarver();
     @Unique private String theme;
-    @Unique private String worldType;
     @Unique private boolean finiteWorld;
-    @Unique private String finiteType;
-    @Unique private int sizeX;
-    @Unique private int sizeZ;
+    @Unique private String finiteWorldType;
+    @Unique private int width;
+    @Unique private int length;
     @Unique private boolean farlands;
     @Unique protected String farlandsShape;
     @Unique protected int farlandsDistance;
@@ -54,14 +54,19 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     private void bwo_initBWOProperties(World world, long seed, CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
         this.theme = bwoProperties.bwo_getTheme();
-        this.worldType = bwoProperties.bwo_getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
         this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-        this.finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
-        this.sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
-        this.sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
+        this.finiteWorldType = bwoProperties.bwo_getStringOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION);
+        this.width = bwoProperties.bwo_getIntOptionValue("Width", OptionType.GENERAL_OPTION);
+        this.length = bwoProperties.bwo_getIntOptionValue("Length", OptionType.GENERAL_OPTION);
         this.farlands = bwoProperties.bwo_getBooleanOptionValue("Farlands", OptionType.GENERAL_OPTION);
         this.farlandsShape = bwoProperties.bwo_getStringOptionValue("FarlandsShape", OptionType.GENERAL_OPTION);
         this.farlandsDistance = bwoProperties.bwo_getIntOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION) / 2;
+
+        if (this.finiteWorldType.equals("MCPE")) {
+            BWOChunkGenerator.setSizeLimits(0, this.width, 0, this.length);
+        } else {
+            BWOChunkGenerator.setSizeLimits(-this.width / 2, this.width / 2, -this.length / 2, this.length / 2);
+        }
     }
 
     @ModifyVariable(
@@ -115,7 +120,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/block/Block;id:I",
-                    ordinal = 0
+                    ordinal = 0,
+                    opcode = Opcodes.GETFIELD
             )
     )
     private int bwo_replaceIceWithLavaInHellTheme(Block block, Operation<Integer> original) {
@@ -127,7 +133,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/block/Block;id:I",
-                    ordinal = 1
+                    ordinal = 1,
+                    opcode = Opcodes.GETFIELD
             )
     )
     private int bwo_replaceWaterWithLavaInHellTheme(Block block, Operation<Integer> original) {
@@ -210,7 +217,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/block/Block;id:I",
-                    ordinal = 6
+                    ordinal = 6,
+                    opcode = Opcodes.GETFIELD
             )
     )
     private int bwo_fixIceNearBeach(Block block, Operation<Integer> original, @Local(name = "var5")int var5, @Local(ordinal = 0)Biome var10, @Local(name = "var17")int var17) {
@@ -229,7 +237,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             method = "buildSurfaces",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/world/biome/Biome;topBlockId:B"
+                    target = "Lnet/minecraft/world/biome/Biome;topBlockId:B",
+                    opcode = Opcodes.GETFIELD
             )
     )
     private byte bwo_replaceTopBlockWithDirtInHellTheme(byte original) {
@@ -241,7 +250,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/block/Block;id:I",
-                    ordinal = 4
+                    ordinal = 4,
+                    opcode = Opcodes.GETFIELD
             )
     )
     private int bwo_replaceSandWithGrassBlockInHellTheme(Block block, Operation<Integer> original) {
@@ -253,7 +263,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/block/Block;id:I",
-                    ordinal = 5
+                    ordinal = 5,
+                    opcode = Opcodes.GETFIELD
             )
     )
     private int bwo_replaceSandWithDirtInHellTheme(Block block, Operation<Integer> original) {
@@ -265,7 +276,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/block/Block;id:I",
-                    ordinal = 6
+                    ordinal = 6,
+                    opcode = Opcodes.GETFIELD
             )
     )
     private int bwo_replaceWaterWithLavaInHellTheme2(Block block, Operation<Integer> original) {
@@ -281,14 +293,14 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             )
     )
     private void bwo_lceFiniteWorldLimit(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, CallbackInfo ci, @Local (name = "var8") int var8, @Local (name = "var9") int var9, @Local (name = "var10") Biome var10, @Local (name = "var17") int var17) {
-        if (this.finiteWorld && this.finiteType.equals("LCE")) {
+        if (this.finiteWorld && this.finiteWorldType.equals("LCE")) {
             double x2 = (chunkX << 4) + var8;
             double z2 = (chunkZ << 4) + var9;
             int index = (var8 * 16 + var9) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var17;
-            double minX = -this.sizeX / 2.0D;
-            double maxX = this.sizeX / 2.0D - 1.0D;
-            double minZ = -this.sizeZ / 2.0D;
-            double maxZ = this.sizeZ / 2.0D - 1.0D;
+            double minX = -this.width / 2.0D;
+            double maxX = this.width / 2.0D - 1.0D;
+            double minZ = -this.length / 2.0D;
+            double maxZ = this.length / 2.0D - 1.0D;
 
             boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
             if (var17 <= 55) {
@@ -309,13 +321,13 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             constant = @Constant(intValue = -1, ordinal = 0)
     )
     private int bwo_lceFiniteWorldLimit2(int constant, @Local (ordinal = 0, argsOnly = true) int chunkX, @Local (ordinal = 1, argsOnly = true) int chunkZ, @Local (name = "var8") int var8, @Local (name = "var9") int var9) {
-        if (this.finiteWorld && this.finiteType.equals("LCE")) {
+        if (this.finiteWorld && this.finiteWorldType.equals("LCE")) {
             double x2 = (chunkX << 4) + var8;
             double z2 = (chunkZ << 4) + var9;
-            double minX = -this.sizeX / 2.0D;
-            double maxX = this.sizeX / 2.0D - 1.0D;
-            double minZ = -this.sizeZ / 2.0D;
-            double maxZ = this.sizeZ / 2.0D - 1.0D;
+            double minX = -this.width / 2.0D;
+            double maxX = this.width / 2.0D - 1.0D;
+            double minZ = -this.length / 2.0D;
+            double maxZ = this.length / 2.0D - 1.0D;
 
             boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
             if (limit) {
@@ -332,13 +344,13 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             constant = @Constant(intValue = -1, ordinal = 1)
     )
     private int bwo_lceFiniteWorldLimit3(int constant, @Local (ordinal = 0, argsOnly = true) int chunkX, @Local (ordinal = 1, argsOnly = true) int chunkZ, @Local (name = "var8") int var8, @Local (name = "var9") int var9, @Local (name = "var17") int var17) {
-        if (this.finiteWorld && this.finiteType.equals("LCE")) {
+        if (this.finiteWorld && this.finiteWorldType.equals("LCE")) {
             double x2 = (chunkX << 4) + var8;
             double z2 = (chunkZ << 4) + var9;
-            double minX = -this.sizeX / 2.0D;
-            double maxX = this.sizeX / 2.0D - 1.0D;
-            double minZ = -this.sizeZ / 2.0D;
-            double maxZ = this.sizeZ / 2.0D - 1.0D;
+            double minX = -this.width / 2.0D;
+            double maxX = this.width / 2.0D - 1.0D;
+            double minZ = -this.length / 2.0D;
+            double maxZ = this.length / 2.0D - 1.0D;
 
             boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
             if (limit && var17 <= 55) {
@@ -366,13 +378,13 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
 
     @ModifyReturnValue(method = "getChunk", at = @At(value = "RETURN"))
     private Chunk bwo_finiteWorld(Chunk original, @Local(ordinal = 0, argsOnly = true) int chunkX,  @Local(ordinal = 1, argsOnly = true) int chunkZ, @Local (ordinal = 0) byte[] blocks) {
-        if (this.finiteWorld && !this.finiteType.equals("Indev Island")) {
+        if (this.finiteWorld && !this.finiteWorldType.equals("Island")) {
             int blockX = chunkX * 16;
             int blockZ = chunkZ * 16;
 
             String limitMode = null;
-            if (this.finiteType.equals("MCPE") || this.finiteType.equals("LCE")) {
-                limitMode = this.finiteType;
+            if (this.finiteWorldType.equals("MCPE") || this.finiteWorldType.equals("LCE")) {
+                limitMode = this.finiteWorldType;
             }
 
             int minX;
@@ -380,19 +392,17 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             int minZ;
             int maxZ;
 
-            if (this.finiteType.equals("MCPE")) {
+            if (this.finiteWorldType.equals("MCPE")) {
                 minX = 0;
-                maxX = this.sizeX;
+                maxX = this.width;
                 minZ = 0;
-                maxZ = this.sizeZ;
+                maxZ = this.length;
             } else {
-                minX = -this.sizeX / 2;
-                maxX = this.sizeX / 2;
-                minZ = -this.sizeZ / 2;
-                maxZ = this.sizeZ / 2;
+                minX = -this.width / 2;
+                maxX = this.width / 2;
+                minZ = -this.length / 2;
+                maxZ = this.length / 2;
             }
-
-            BWOChunkGenerator.setSizeLimits(minX, maxX, minZ, maxZ);
 
             if (blockX < minX || blockX >= maxX || blockZ < minZ || blockZ >= maxZ) {
                 BWOLimitChunk bwoLimitChunk = new BWOLimitChunk(this.world, chunkX, chunkZ, limitMode);
@@ -422,14 +432,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         double dx = Math.abs(nx);
         double dz = Math.abs(nz);
 
-        int halfSizeX = this.sizeX / 2;
-        int halfSizeZ = this.sizeZ / 2;
-
-        if (this.finiteType.equals("LCE")) {
-            BWOChunkGenerator.setSizeLimits(-halfSizeX - 16, halfSizeX, -halfSizeZ - 16, halfSizeZ);
-        } else if (this.finiteType.equals("Indev Island")) {
-            BWOChunkGenerator.setSizeLimits((int) (-halfSizeX * 1.2D), (int) (halfSizeX * 1.2D), (int) (-halfSizeZ * 1.2D), (int) (halfSizeZ * 1.2D));
-        }
+        int halfSizeX = this.width / 2;
+        int halfSizeZ = this.length / 2;
 
         double limitX = halfSizeX + 18.0D;
         double limitZ = halfSizeZ + 18.0D;
@@ -439,7 +443,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
 
         double falloff = 50.0D;
 
-        if (this.finiteType.equals("LCE")) {
+        if (this.finiteWorldType.equals("LCE")) {
             double edgeX = limitX - dx;
             double edgeZ = limitZ - dz;
 
@@ -450,7 +454,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             factorZ = Math.max(0.0D, Math.min(1.0D, factorZ));
 
             worldEdgeFactor = Math.min(factorX, factorZ);
-        } else if (this.finiteType.equals("Indev Island")) {
+        } else if (this.finiteWorldType.equals("Island")) {
             falloff = 100.0D;
 
             double nxNorm = dx / limitX;
@@ -477,7 +481,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             ordinal = 1
     )
     private double bwo_applyIslandOffset(double original, @Share("islandOffset") LocalDoubleRef islandOffset) {
-        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
             return original + islandOffset.get();
         }
 
@@ -491,7 +495,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             ordinal = 2
     )
     private double bwo_applyIslandOffset2(double original, @Share("islandOffset") LocalDoubleRef islandOffset) {
-        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
             return original + islandOffset.get();
         }
 
@@ -504,7 +508,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             ordinal = 10
     )
     private double bwo_applyIslandOffset3(double original, @Share("islandOffset") LocalDoubleRef islandOffset) {
-        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
             return original + islandOffset.get();
         }
 
@@ -517,7 +521,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             ordinal = 11
     )
     private double bwo_applyIslandOffset4(double original, @Share("islandOffset") LocalDoubleRef islandOffset) {
-        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
             return original + islandOffset.get();
         }
 
@@ -529,7 +533,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/block/Block;id:I",
-                    ordinal = 0
+                    ordinal = 0,
+                    opcode = Opcodes.GETFIELD
             )
     )
     private int bwo_replaceWaterWithLavaInHellTheme3(Block block, Operation<Integer> original) {
@@ -568,30 +573,13 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
 
     @ModifyConstant(method = "decorate", constant = @Constant(intValue = 0, ordinal = 12))
     private int bwo_moreDandelionInParadiseTheme(int constant) {
-        return this.theme.equals("Paradise") ? 8 : constant;
-    }
-
-    @WrapOperation(
-            method = "decorate",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/gen/feature/PlantPatchFeature;generate(Lnet/minecraft/world/World;Ljava/util/Random;III)Z",
-                    ordinal = 1
-            )
-
-    )
-    private boolean bwo_cancelRose(PlantPatchFeature instance, World world, Random random, int x, int y, int z, Operation<Boolean> original, @Local Biome var6, @Local(ordinal = 2) int var4, @Local(ordinal = 3) int var5) {
-        if (this.theme.equals("Paradise")) {
-            return false;
-        }
-
-        return original.call(instance, world, random, x, y, z);
+        return this.theme.equals("Paradise") ? 24 : constant;
     }
 
     @Inject(method = "decorate", at = @At("TAIL"))
     private void bwo_moreRoseInParadiseTheme(ChunkSource source, int x, int z, CallbackInfo ci, @Local Biome var6, @Local(ordinal = 2) int var4, @Local(ordinal = 3) int var5) {
         if (this.theme.equals("Paradise")) {
-            byte var62 = 8;
+            byte var62 = 24;
             if (var6 == Biome.FOREST) {
                 var62 += 2;
             }
@@ -617,26 +605,12 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         }
     }
 
-    @WrapOperation(
-            method = "decorate",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;setBlock(IIII)Z",
-                    ordinal = 0
-            )
-    )
-    private boolean bwo_removeSnowInHellTheme(World world, int x, int y, int z, int blockId, Operation<Boolean> original) {
-        if (this.theme.equals("Hell")) {
-            return false;
-        }
-
-        return original.call(world, x, y, z, blockId);
-    }
-
     @ModifyConstant(method = "decorate", constant = @Constant(doubleValue = 0.5D, ordinal = 1))
-    private double bwo_changeTempInWinterTheme2(double constant) {
+    private double bwo_changeTempInHellOrWinterTheme(double constant) {
         if (this.theme.equals("Winter")) {
             return 1.1D;
+        } else if (this.theme.equals("Hell")) {
+            return -1.1D;
         }
 
         return constant;
@@ -647,7 +621,8 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/block/Block;id:I",
-                    ordinal = 10
+                    ordinal = 10,
+                    opcode = Opcodes.GETFIELD
             )
     )
     private int bwo_replaceFlowingWaterWithFlowingLavaInHellTheme(Block block, Operation<Integer> original) {

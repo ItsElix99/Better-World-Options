@@ -155,15 +155,15 @@ public abstract class FlattenedWorldStorageMixin extends RegionWorldStorageSourc
             if (dataTag.getString("WorldType").equals("Indev 223") || dataTag.getString("WorldType").equals("MCPE")) {
                 if (dataTag.getString("WorldType").equals("Indev 223")) {
                     betterWorldOptionsTag.putString("Shape", dataTag.getString("IndevShape"));
-                    betterWorldOptionsTag.putString("FiniteType", "Custom");
+                    betterWorldOptionsTag.putString("FiniteWorldType", "Custom");
                     betterWorldOptionsTag.putBoolean("PregeneratingFiniteWorld", false);
                     worldTypeOptionsTag.putString("IndevWorldType", dataTag.getString("IndevWorldType"));
                     worldTypeOptionsTag.putBoolean("GenerateIndevHouse", dataTag.getBoolean("GenerateIndevHouse"));
                 }
 
                 betterWorldOptionsTag.putBoolean("FiniteWorld", !dataTag.getBoolean("InfiniteWorld"));
-                betterWorldOptionsTag.putInt("SizeX", dataTag.getInt("WorldSizeX"));
-                betterWorldOptionsTag.putInt("SizeZ", dataTag.getInt("WorldSizeZ"));
+                betterWorldOptionsTag.putInt("Width", dataTag.getInt("WorldSizeX"));
+                betterWorldOptionsTag.putInt("Length", dataTag.getInt("WorldSizeZ"));
             }
 
             if (dataTag.getString("WorldType").equals("Flat") || dataTag.getString("WorldType").equals("Skylands") || dataTag.getString("WorldType").equals("Indev 223")) {

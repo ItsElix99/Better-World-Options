@@ -223,11 +223,11 @@ public class Infdev415ChunkGenerator extends BWOChunkGenerator {
         flattenedChunk.populateHeightMap();
 
         String limitMode = null;
-        if (this.finiteType.equals("MCPE")) {
-            limitMode = this.finiteType;
+        if (this.finiteWorldType.equals("MCPE")) {
+            limitMode = this.finiteWorldType;
         }
 
-        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, 0, this.sizeX, 0, this.sizeZ, var3, limitMode, flattenedChunk);
+        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, var3, limitMode, flattenedChunk);
     }
 
 
@@ -339,14 +339,14 @@ public class Infdev415ChunkGenerator extends BWOChunkGenerator {
             }
 
             if (this.theme.equals("Paradise")) {
-                for(z = 0; z < 12; ++z) {
+                for(z = 0; z < 24; ++z) {
                     var5 = var4 + this.random.nextInt(16) + 8;
                     var6 = this.random.nextInt(128);
                     var7 = x + this.random.nextInt(16) + 8;
                     (new PlantPatchFeature(Block.DANDELION.id)).generate(this.world, this.random, var5, var6, var7);
                 }
 
-                for (z = 0; z < 12; z++) {
+                for (z = 0; z < 24; z++) {
                     var5 = var4 + this.random.nextInt(16) + 8;
                     var6 = this.random.nextInt(128);
                     var7 = x + this.random.nextInt(16) + 8;

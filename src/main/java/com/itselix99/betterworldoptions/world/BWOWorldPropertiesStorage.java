@@ -22,7 +22,7 @@ import java.util.*;
 
 public class BWOWorldPropertiesStorage {
     private static BWOWorldPropertiesStorage INSTANCE = new BWOWorldPropertiesStorage();
-    private static boolean initOldTextures = false;
+    private static boolean initBiomeClimateAndOldTextures = false;
 
     private Map<String, OptionStorage> generalOptions = new LinkedHashMap<>();
     private Map<String, OptionStorage> worldTypeOptions = new LinkedHashMap<>();
@@ -39,7 +39,7 @@ public class BWOWorldPropertiesStorage {
     public static String BWOWorldVersion = null;
 
     public BWOWorldPropertiesStorage() {
-        this.initOldTextures();
+        this.initBiomeClimateAndOldTextures();
 
         List<OptionEntry> generalOptionsList = GeneralOptions.getList();
 
@@ -213,9 +213,9 @@ public class BWOWorldPropertiesStorage {
         this.oldTextures = bl;
     }
 
-    private void initOldTextures() {
-        if (!initOldTextures) {
-            initOldTextures = true;
+    private void initBiomeClimateAndOldTextures() {
+        if (!initBiomeClimateAndOldTextures) {
+            initBiomeClimateAndOldTextures = true;
 
             if (biomeClimateMap == null) {
                 biomeClimateMap = new HashMap<>();

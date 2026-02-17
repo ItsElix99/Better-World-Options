@@ -55,13 +55,15 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
 
     public FiniteChunkGenerator(World world, long seed) {
         super(world, seed);
+        
+        setSizeLimits(0, this.width, 0, this.length);
 
         if (this.finiteWorld && ((BWOProperties) world.getProperties()).bwo_isPregeneratingFiniteWorld()) {
             WorldStorage worldStorage = ((DimensionDataAccessor) world).getDimensionData();
             File dir = ((AlphaWorldStorageAccessor) worldStorage).getDir();
 
-            int maxChunkX = this.sizeX / 16;
-            int maxChunkZ = this.sizeZ / 16;
+            int maxChunkX = this.width / 16;
+            int maxChunkZ = this.length / 16;
             this.totalChunks = maxChunkX * maxChunkZ;
 
             this.fullWorldFile = new File(dir, "fullWorld.tmp");
@@ -81,7 +83,7 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
             this.copiedChunks = this.processedChunks.cardinality();
 
             try {
-                long totalSize = (long) this.sizeX * this.sizeZ * 64;
+                long totalSize = (long) this.width * this.length * 64;
 
                 this.fullWorldRandomAccessFile = new RandomAccessFile(this.fullWorldFile, "rw");
                 this.fullWorldRandomAccessFile.setLength(totalSize);
@@ -123,9 +125,9 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
                         int chunkIndex = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
 
                         int worldY = y - yOffset;
-                        if (worldX >= 0 && worldX < this.sizeX && worldZ >= 0 && worldZ < this.sizeZ) {
+                        if (worldX >= 0 && worldX < this.width && worldZ >= 0 && worldZ < this.length) {
                             if (worldY >= 0 && worldY < worldHeight) {
-                                int worldIndex = (worldY * this.sizeZ + worldZ) * this.sizeX + worldX;
+                                int worldIndex = (worldY * this.length + worldZ) * this.width + worldX;
                                 blocks[chunkIndex] = this.fullWorldBlocks.get(worldIndex);
                             } else if (y < yOffset) {
                                 blocks[chunkIndex] = (byte) bottomBlock;
@@ -156,8 +158,8 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
     }
 
     private int getChunkIndex(int chunkX, int chunkZ) {
-        int maxChunkX = this.sizeX / 16;
-        int maxChunkZ = this.sizeZ / 16;
+        int maxChunkX = this.width / 16;
+        int maxChunkZ = this.length / 16;
 
         if (chunkX < 0 || chunkZ < 0 || chunkX >= maxChunkX || chunkZ >= maxChunkZ) {
             return -1;
@@ -217,13 +219,13 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
     protected void placeBlockOnDirt(int blockId) {
         if (blockId == Block.DIRT.id) return;
 
-        for(int x = 0; x < this.sizeX; ++x) {
-            this.setPhasePercentage((float)x * 100.0F / (float)(this.sizeX - 1));
+        for(int x = 0; x < this.width; ++x) {
+            this.setPhasePercentage((float)x * 100.0F / (float)(this.width - 1));
 
             for(int y = 0; y < 64; ++y) {
-                for (int z = 0; z < this.sizeZ; ++z) {
-                    if ((this.fullWorldBlocks.get((y * this.sizeZ + z) * this.sizeX + x) & 255) == Block.DIRT.id && this.getBrightness(x, y + 1, z) >= 4) {
-                        this.fullWorldBlocks.put((y * this.sizeZ + z) * this.sizeX + x, (byte) blockId);
+                for (int z = 0; z < this.length; ++z) {
+                    if ((this.fullWorldBlocks.get((y * this.length + z) * this.width + x) & 255) == Block.DIRT.id && this.getBrightness(x, y + 1, z) >= 4) {
+                        this.fullWorldBlocks.put((y * this.length + z) * this.width + x, (byte) blockId);
                     }
                 }
             }
@@ -231,16 +233,16 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
     }
 
     protected void generateTrees() {
-        int var2 = this.sizeX * this.sizeZ * 64 / 80000;
+        int var2 = this.width * this.length * 64 / 80000;
 
         for(int var3 = 0; var3 < var2; ++var3) {
             if(var3 % 100 == 0) {
                 this.setPhasePercentage((float)var3 * 100.0F / (float)(var2 - 1));
             }
 
-            int var4 = this.random.nextInt(this.sizeX);
+            int var4 = this.random.nextInt(this.width);
             int var5 = this.random.nextInt(64);
-            int var6 = this.random.nextInt(this.sizeZ);
+            int var6 = this.random.nextInt(this.length);
 
             for(int var7 = 0; var7 < 25; ++var7) {
                 int var8 = var4;
@@ -251,7 +253,7 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
                     var8 += this.random.nextInt(12) - this.random.nextInt(12);
                     var9 += this.random.nextInt(3) - this.random.nextInt(6);
                     var10 += this.random.nextInt(12) - this.random.nextInt(12);
-                    if(var8 >= 0 && var9 >= 0 && var10 >= 0 && var8 < this.sizeX && var9 < 64 && var10 < this.sizeZ) {
+                    if(var8 >= 0 && var9 >= 0 && var10 >= 0 && var8 < this.width && var9 < 64 && var10 < this.length) {
                         this.generateTrees(var8, var9, var10);
                     }
                 }
@@ -280,8 +282,8 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
 
                 for(var8 = var1 - var7; var8 <= var1 + var7 && var5; ++var8) {
                     for(var9 = var3 - var7; var9 <= var3 + var7 && var5; ++var9) {
-                        if(var8 >= 0 && var6 >= 0 && var9 >= 0 && var8 < this.sizeX && var6 < 64 && var9 < this.sizeZ) {
-                            var10 = this.fullWorldBlocks.get((var6 * this.sizeZ + var9) * this.sizeX + var8) & 255;
+                        if(var8 >= 0 && var6 >= 0 && var9 >= 0 && var8 < this.width && var6 < 64 && var9 < this.length) {
+                            var10 = this.fullWorldBlocks.get((var6 * this.length + var9) * this.width + var8) & 255;
                             if(var10 != 0) {
                                 var5 = false;
                             }
@@ -295,9 +297,9 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
             if(!var5) {
                 return false;
             } else {
-                var6 = this.fullWorldBlocks.get(((var2 - 1) * this.sizeZ + var3) * this.sizeX + var1) & 255;
+                var6 = this.fullWorldBlocks.get(((var2 - 1) * this.length + var3) * this.width + var1) & 255;
                 if((var6 == Block.GRASS_BLOCK.id || var6 == Block.DIRT.id) && var2 < 64 - var4 - 1) {
-                    this.fullWorldBlocks.put(((var2 - 1) * this.sizeZ + var3) * this.sizeX + var1, (byte) Block.DIRT.id);
+                    this.fullWorldBlocks.put(((var2 - 1) * this.length + var3) * this.width + var1, (byte) Block.DIRT.id);
 
                     int var13;
                     for(var13 = var2 - 3 + var4; var13 <= var2 + var4; ++var13) {
@@ -309,16 +311,16 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
 
                             for(var6 = var3 - var9; var6 <= var3 + var9; ++var6) {
                                 int var11 = var6 - var3;
-                                if((Math.abs(var12) != var9 || Math.abs(var11) != var9 || this.random.nextInt(2) != 0 && var8 != 0) && !Block.BLOCKS_OPAQUE[this.fullWorldBlocks.get((var13 * this.sizeZ + var6) * this.sizeX + var10) & 255]) {
-                                    this.fullWorldBlocks.put((var13 * this.sizeZ + var6) * this.sizeX + var10, (byte) Block.LEAVES.id);
+                                if((Math.abs(var12) != var9 || Math.abs(var11) != var9 || this.random.nextInt(2) != 0 && var8 != 0) && !Block.BLOCKS_OPAQUE[this.fullWorldBlocks.get((var13 * this.length + var6) * this.width + var10) & 255]) {
+                                    this.fullWorldBlocks.put((var13 * this.length + var6) * this.width + var10, (byte) Block.LEAVES.id);
                                 }
                             }
                         }
                     }
 
                     for(var13 = 0; var13 < var4; ++var13) {
-                        if(!Block.BLOCKS_OPAQUE[this.fullWorldBlocks.get(((var2 + var13) * this.sizeZ + var3) * this.sizeX + var1) & 255]) {
-                            this.fullWorldBlocks.put(((var2 + var13) * this.sizeZ + var3) * this.sizeX + var1, (byte) Block.LOG.id);
+                        if(!Block.BLOCKS_OPAQUE[this.fullWorldBlocks.get(((var2 + var13) * this.length + var3) * this.width + var1) & 255]) {
+                            this.fullWorldBlocks.put(((var2 + var13) * this.length + var3) * this.width + var1, (byte) Block.LOG.id);
                         }
                     }
 
@@ -333,16 +335,16 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
     }
 
     protected void generateFlowersAndMushrooms(PlantBlock var2, int var3) {
-        var3 = (int)((long)this.sizeX * (long)this.sizeZ * (long)64 * (long)var3 / 1600000L);
+        var3 = (int)((long)this.width * (long)this.length * (long)64 * (long)var3 / 1600000L);
 
         for(int var4 = 0; var4 < var3; ++var4) {
             if(var4 % 100 == 0) {
                 this.setPhasePercentage((float)var4 * 100.0F / (float)(var3 - 1));
             }
 
-            int var5 = this.random.nextInt(this.sizeX);
+            int var5 = this.random.nextInt(this.width);
             int var6 = this.random.nextInt(64);
-            int var7 = this.random.nextInt(this.sizeZ);
+            int var7 = this.random.nextInt(this.length);
 
             for(int var8 = 0; var8 < 10; ++var8) {
                 int var9 = var5;
@@ -353,8 +355,8 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
                     var9 += this.random.nextInt(4) - this.random.nextInt(4);
                     var10 += this.random.nextInt(2) - this.random.nextInt(2);
                     var11 += this.random.nextInt(4) - this.random.nextInt(4);
-                    if(var9 >= 0 && var11 >= 0 && var10 > 0 && var9 < this.sizeX && var11 < this.sizeZ && var10 < 64 && (this.fullWorldBlocks.get((var10 * this.sizeZ + var11) * this.sizeX + var9) & 255) == 0 && (var2 instanceof MushroomPlantBlock ? this.canGrowMushroom(var9, var10, var11) : this.canGrow(var9, var10, var11))) {
-                        this.fullWorldBlocks.put((var10 * this.sizeZ + var11) * this.sizeX + var9, (byte) var2.id);
+                    if(var9 >= 0 && var11 >= 0 && var10 > 0 && var9 < this.width && var11 < this.length && var10 < 64 && (this.fullWorldBlocks.get((var10 * this.length + var11) * this.width + var9) & 255) == 0 && (var2 instanceof MushroomPlantBlock ? this.canGrowMushroom(var9, var10, var11) : this.canGrow(var9, var10, var11))) {
+                        this.fullWorldBlocks.put((var10 * this.length + var11) * this.width + var9, (byte) var2.id);
                     }
                 }
             }
@@ -363,12 +365,12 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
     }
 
     private boolean canGrow(int var1, int var2, int var3) {
-        return (this.getBrightness(var1, var2, var3) >= 8 || this.getBrightness(var1, var2, var3) >= 4 && this.hasSkyLight(var1, var2, var3)) && this.canPlantOnTop(this.fullWorldBlocks.get(((var2 - 1) * this.sizeZ + var3) * this.sizeX + var1) & 255);
+        return (this.getBrightness(var1, var2, var3) >= 8 || this.getBrightness(var1, var2, var3) >= 4 && this.hasSkyLight(var1, var2, var3)) && this.canPlantOnTop(this.fullWorldBlocks.get(((var2 - 1) * this.length + var3) * this.width + var1) & 255);
     }
 
     private boolean canGrowMushroom(int var1, int var2, int var3) {
         if(this.getBrightness(var1, var2, var3) <= 13) {
-            int id = this.fullWorldBlocks.get(((var2 - 1) * this.sizeZ + var3) * this.sizeX + var1) & 255;
+            int id = this.fullWorldBlocks.get(((var2 - 1) * this.length + var3) * this.width + var1) & 255;
             if(Block.BLOCKS_OPAQUE[id]) {
                 return true;
             }
@@ -384,8 +386,8 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
     protected int generateOres(int var1, int var2, int var3, int var4) {
         int var5 = 0;
         byte var26 = (byte)var1;
-        int var6 = this.sizeX;
-        int var7 = this.sizeZ;
+        int var6 = this.width;
+        int var7 = this.length;
         int var8 = 64;
         var2 = var6 * var7 * var8 / 256 / 64 * var2 / 100;
 
@@ -421,8 +423,8 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
                                 float var24 = (float)var21 - var11;
                                 float var25 = (float)var22 - var12;
                                 var23 = var23 * var23 + var24 * var24 * 2.0F + var25 * var25;
-                                if(var23 < var19 * var19 && var20 > 0 && var21 > 0 && var22 > 0 && var20 < this.sizeX - 1 && var21 < 64 - 1 && var22 < this.sizeZ - 1) {
-                                    int var27 = (var21 * this.sizeZ + var22) * this.sizeX + var20;
+                                if(var23 < var19 * var19 && var20 > 0 && var21 > 0 && var22 > 0 && var20 < this.width - 1 && var21 < 64 - 1 && var22 < this.length - 1) {
+                                    int var27 = (var21 * this.length + var22) * this.width + var20;
                                     if(this.fullWorldBlocks.get(var27) == Block.STONE.id) {
                                         this.fullWorldBlocks.put(var27, var26);
                                         ++var5;
@@ -444,17 +446,17 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
             var1 = Block.LAVA.id;
         }
 
-        int var2 = this.sizeX * this.sizeZ * 64 / 1000;
+        int var2 = this.width * this.length * 64 / 1000;
 
         for(int var3 = 0; var3 < var2; ++var3) {
             if(var3 % 100 == 0) {
                 this.setPhasePercentage((float)var3 * 100.0F / (float)(var2 - 1));
             }
 
-            int var4 = this.random.nextInt(this.sizeX);
+            int var4 = this.random.nextInt(this.width);
             int var5 = this.random.nextInt(64);
-            int var6 = this.random.nextInt(this.sizeZ);
-            if(this.fullWorldBlocks.get((var5 * this.sizeZ + var6) * this.sizeX + var4) == 0) {
+            int var6 = this.random.nextInt(this.length);
+            if(this.fullWorldBlocks.get((var5 * this.length + var6) * this.width + var4) == 0) {
                 long var7 = this.floodFill(var4, var5, var6, 0, 255);
 
                 if(var7 > 0L && var7 < 640L) {
@@ -469,7 +471,7 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
     }
 
     protected void placeUndergroundLakes() {
-        int var1 = this.sizeX * this.sizeZ * 64 / 2000;
+        int var1 = this.width * this.length * 64 / 2000;
         int var2 = 30;
 
         for(int var3 = 0; var3 < var1; ++var3) {
@@ -477,10 +479,10 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
                 this.setPhasePercentage((float)var3 * 100.0F / (float)(var1 - 1));
             }
 
-            int var4 = this.random.nextInt(this.sizeX);
+            int var4 = this.random.nextInt(this.width);
             int var5 = Math.min(Math.min(this.random.nextInt(var2), this.random.nextInt(var2)), Math.min(this.random.nextInt(var2), this.random.nextInt(var2)));
-            int var6 = this.random.nextInt(this.sizeZ);
-            if(this.fullWorldBlocks.get((var5 * this.sizeZ + var6) * this.sizeX + var4) == 0) {
+            int var6 = this.random.nextInt(this.length);
+            if(this.fullWorldBlocks.get((var5 * this.length + var6) * this.width + var4) == 0) {
                 long var7 = this.floodFill(var4, var5, var6, 0, 255);
 
                 if(var7 > 0L && var7 < 640L) {
@@ -500,9 +502,9 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
         ArrayList<int[]> var7 = new ArrayList<>();
         byte var8 = 0;
         int var23 = var8 + 1;
-        this.floodFillBlocks[0] = (var2 * this.sizeZ + var3) * this.sizeX + var1;
+        this.floodFillBlocks[0] = (var2 * this.length + var3) * this.width + var1;
         long var14 = 0L;
-        var1 = this.sizeX * this.sizeZ;
+        var1 = this.width * this.length;
 
         while(var23 > 0) {
             --var23;
@@ -512,25 +514,25 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
                 var23 = this.floodFillBlocks.length;
             }
 
-            int var16 = var2 % this.sizeX;
-            int var27 = var2 / this.sizeX;
+            int var16 = var2 % this.width;
+            int var27 = var2 / this.width;
 
-            var3 = var27 % this.sizeZ;
-            int var13 = var27 / this.sizeZ;
+            var3 = var27 % this.length;
+            int var13 = var27 / this.length;
 
             int var17;
             for(var17 = var16; var16 > 0 && this.fullWorldBlocks.get(var2 - 1) == var22; --var2) {
                 --var16;
             }
 
-            while(var17 < this.sizeX && this.fullWorldBlocks.get(var2 + var17 - var16) == var22) {
+            while(var17 < this.width && this.fullWorldBlocks.get(var2 + var17 - var16) == var22) {
                 ++var17;
             }
 
-            int var28 = var2 / this.sizeX;
-            int var18 = var28 % this.sizeZ;
-            int var19 = var28 / this.sizeZ;
-            if(var5 == 255 && (var16 == 0 || var17 == this.sizeX - 1 || var13 == 0 || var13 == 64 - 1 || var3 == 0 || var3 == this.sizeZ - 1)) {
+            int var28 = var2 / this.width;
+            int var18 = var28 % this.length;
+            int var19 = var28 / this.length;
+            if(var5 == 255 && (var16 == 0 || var17 == this.width - 1 || var13 == 0 || var13 == 64 - 1 || var3 == 0 || var3 == this.length - 1)) {
                 return -1L;
             }
 
@@ -547,7 +549,7 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
                 this.fullWorldBlocks.put(var2, var6);
                 boolean var21;
                 if(var3 > 0) {
-                    var21 = this.fullWorldBlocks.get(var2 - this.sizeX) == var22;
+                    var21 = this.fullWorldBlocks.get(var2 - this.width) == var22;
                     if(var21 && !var24) {
                         if(var23 == this.floodFillBlocks.length) {
                             var7.add(this.floodFillBlocks);
@@ -555,14 +557,14 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
                             var23 = 0;
                         }
 
-                        this.floodFillBlocks[var23++] = var2 - this.sizeX;
+                        this.floodFillBlocks[var23++] = var2 - this.width;
                     }
 
                     var24 = var21;
                 }
 
-                if(var3 < this.sizeZ - 1) {
-                    var21 = this.fullWorldBlocks.get(var2 + this.sizeX) == var22;
+                if(var3 < this.length - 1) {
+                    var21 = this.fullWorldBlocks.get(var2 + this.width) == var22;
                     if(var21 && !var25) {
                         if(var23 == this.floodFillBlocks.length) {
                             var7.add(this.floodFillBlocks);
@@ -570,7 +572,7 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
                             var23 = 0;
                         }
 
-                        this.floodFillBlocks[var23++] = var2 + this.sizeX;
+                        this.floodFillBlocks[var23++] = var2 + this.width;
                     }
 
                     var25 = var21;
@@ -614,19 +616,19 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
             var5 = 12;
         }
 
-        for(var3 = 0; var3 < this.sizeX; ++var3) {
-            this.setPhasePercentage((float)var3 * 100.0F / (float)(this.sizeX - 1));
+        for(var3 = 0; var3 < this.width; ++var3) {
+            this.setPhasePercentage((float)var3 * 100.0F / (float)(this.width - 1));
 
-            for(int var12 = 0; var12 < this.sizeZ; ++var12) {
+            for(int var12 = 0; var12 < this.length; ++var12) {
                 int var13;
-                for(var13 = var2 - 1; var13 > 0 && Block.BLOCKS_LIGHT_OPACITY[(this.fullWorldBlocks.get((var13 * this.sizeZ + var12) * this.sizeX + var3) & 255)] == 0; --var13) {
+                for(var13 = var2 - 1; var13 > 0 && Block.BLOCKS_LIGHT_OPACITY[(this.fullWorldBlocks.get((var13 * this.length + var12) * this.width + var3) & 255)] == 0; --var13) {
                 }
 
-                this.heightMap[var3 + var12 * this.sizeX] = var13 + 1;
+                this.heightMap[var3 + var12 * this.width] = var13 + 1;
 
                 for(var13 = 0; var13 < var2; ++var13) {
-                    int var6 = (var13 * this.sizeZ + var12) * this.sizeX + var3;
-                    int var7 = this.heightMap[var3 + var12 * this.sizeX];
+                    int var6 = (var13 * this.length + var12) * this.width + var3;
+                    int var7 = this.heightMap[var3 + var12 * this.width];
                     var7 = var13 >= var7 ? var5 : 0;
                     byte var14 = this.fullWorldBlocks.get(var6);
                     if(var7 < Block.BLOCKS_LIGHT_LUMINANCE[var14]) {
@@ -642,8 +644,8 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
     protected final byte getBrightness(int var1, int var2, int var3) {
         if(var1 < 0) {
             var1 = 0;
-        } else if(var1 >= this.sizeX) {
-            var1 = this.sizeX - 1;
+        } else if(var1 >= this.width) {
+            var1 = this.width - 1;
         }
 
         if(var2 < 0) {
@@ -654,19 +656,19 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
 
         if(var3 < 0) {
             var3 = 0;
-        } else if(var3 >= this.sizeZ) {
-            var3 = this.sizeZ - 1;
+        } else if(var3 >= this.length) {
+            var3 = this.length - 1;
         }
 
-        return this.fullWorldBlocks.get((var2 * this.sizeZ + var3) * this.sizeX + var1) == Block.SLAB.id ? (var2 < 64 - 1 ? (byte)(this.lighting.get(((var2 + 1) * this.sizeZ + var3) * this.sizeX + var1) & 15) : 15) : (byte)(this.lighting.get((var2 * this.sizeZ + var3) * this.sizeX + var1) & 15);
+        return this.fullWorldBlocks.get((var2 * this.length + var3) * this.width + var1) == Block.SLAB.id ? (var2 < 64 - 1 ? (byte)(this.lighting.get(((var2 + 1) * this.length + var3) * this.width + var1) & 15) : 15) : (byte)(this.lighting.get((var2 * this.length + var3) * this.width + var1) & 15);
     }
 
     protected final boolean hasSkyLight(int var1, int var2, int var3) {
-        if(this.heightMap[var1 + var3 * this.sizeX] <= var2) {
+        if(this.heightMap[var1 + var3 * this.width] <= var2) {
             return true;
         } else {
             while(var2 < 64) {
-                if(Block.BLOCKS_OPAQUE[this.fullWorldBlocks.get(((var2 * this.sizeZ + var3) * this.sizeX + var1) & 255)]) {
+                if(Block.BLOCKS_OPAQUE[this.fullWorldBlocks.get(((var2 * this.length + var3) * this.width + var1) & 255)]) {
                     return false;
                 }
 

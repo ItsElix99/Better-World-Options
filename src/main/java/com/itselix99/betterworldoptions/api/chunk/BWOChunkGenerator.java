@@ -29,9 +29,9 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
     protected final boolean oldFeatures;
     protected final String theme;
     protected final boolean finiteWorld;
-    protected final String finiteType;
-    protected final int sizeX;
-    protected final int sizeZ;
+    protected final String finiteWorldType;
+    protected final int width;
+    protected final int length;
     protected final boolean farlands;
     protected final String farlandsShape;
     protected final int farlandsDistance;
@@ -48,23 +48,29 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         this.oldFeatures = this.bwoProperties.bwo_isOldFeatures();
         this.theme = this.bwoProperties.bwo_getTheme();
         this.finiteWorld = this.bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-        this.finiteType = this.bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
-        this.sizeX = this.bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
-        this.sizeZ = this.bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
+        this.finiteWorldType = this.bwoProperties.bwo_getStringOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION);
+        this.width = this.bwoProperties.bwo_getIntOptionValue("Width", OptionType.GENERAL_OPTION);
+        this.length = this.bwoProperties.bwo_getIntOptionValue("Length", OptionType.GENERAL_OPTION);
         this.farlands = this.bwoProperties.bwo_getBooleanOptionValue("Farlands", OptionType.GENERAL_OPTION);
         this.farlandsShape = this.bwoProperties.bwo_getStringOptionValue("FarlandsShape", OptionType.GENERAL_OPTION);
         this.farlandsDistance = this.bwoProperties.bwo_getIntOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION) / 2;
 
+        if (this.finiteWorldType.equals("MCPE")) {
+            setSizeLimits(0, this.width, 0, this.length);
+        } else {
+            setSizeLimits(-this.width / 2, this.width / 2, -this.length / 2, this.length / 2);
+        }
+
         ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
     }
 
-    protected Chunk getLimitChunkFiniteWorld(int chunkX, int chunkZ, int startX, int endX, int startZ, int endZ, byte[] blocks, String mode, Chunk defaultChunk) {
-        if (this.finiteWorld && !this.finiteType.equals("Indev Island")) {
+    protected Chunk getLimitChunkFiniteWorld(int chunkX, int chunkZ, byte[] blocks, String mode, Chunk defaultChunk) {
+        if (this.finiteWorld && !this.finiteWorldType.equals("Island")) {
             int blockX = chunkX * 16;
             int blockZ = chunkZ * 16;
-            setSizeLimits(startX, endX, startZ, endZ);
+            int[] sizeLimits = getSizeLimits();
 
-            if (blockX < startX || blockX >= endX || blockZ < startZ || blockZ >= endZ) {
+            if (blockX < sizeLimits[0] || blockX >= sizeLimits[1] || blockZ < sizeLimits[2] || blockZ >= sizeLimits[3]) {
                 BWOLimitChunk bwoLimitChunk = new BWOLimitChunk(this.world, chunkX, chunkZ, mode);
                 bwoLimitChunk.fromLegacy(blocks);
                 bwoLimitChunk.populateHeightMap();
@@ -92,14 +98,14 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
     }
 
     protected void buildLCEFiniteWorldLimit(int chunkX, int chunkZ, int x, int y, int z, byte[] blocks, Biome biome) {
-        if (this.finiteWorld && this.finiteType.equals("LCE")) {
+        if (this.finiteWorld && this.finiteWorldType.equals("LCE")) {
             double x2 = (chunkX << 4) + x;
             double z2 = (chunkZ << 4) + z;
             int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
-            double minX = -this.sizeX / 2.0D;
-            double maxX = this.sizeX / 2.0D - 1.0D;
-            double minZ = -this.sizeZ / 2.0D;
-            double maxZ = this.sizeZ / 2.0D - 1.0D;
+            double minX = -this.width / 2.0D;
+            double maxX = this.width / 2.0D - 1.0D;
+            double minZ = -this.length / 2.0D;
+            double maxZ = this.length / 2.0D - 1.0D;
 
             boolean limit = (x2 == minX && z2 >= minZ && z2 <= maxZ) || (x2 == maxX && z2 >= minZ && z2 <= maxZ) || (z2 == minZ && x2 >= minX && x2 <= maxX) || (z2 == maxZ && x2 >= minX && x2 <= maxX);
             if (y <= 55) {
@@ -133,14 +139,8 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         double dx = Math.abs(nx);
         double dz = Math.abs(nz);
 
-        int halfSizeX = this.sizeX / 2;
-        int halfSizeZ = this.sizeZ / 2;
-
-        if (this.finiteType.equals("LCE")) {
-            setSizeLimits(-halfSizeX - 16, halfSizeX, -halfSizeZ - 16, halfSizeZ);
-        } else if (this.finiteType.equals("Indev Island")) {
-            setSizeLimits((int) (-halfSizeX * 1.2D), (int) (halfSizeX * 1.2D), (int) (-halfSizeZ * 1.2D), (int) (halfSizeZ * 1.2D));
-        }
+        int halfSizeX = this.width / 2;
+        int halfSizeZ = this.length / 2;
 
         double limitX = halfSizeX + 18.0D;
         double limitZ = halfSizeZ + 18.0D;
@@ -150,7 +150,7 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
 
         double falloff = 50.0D;
 
-        if (this.finiteType.equals("LCE")) {
+        if (this.finiteWorldType.equals("LCE")) {
             double edgeX = limitX - dx;
             double edgeZ = limitZ - dz;
 
@@ -161,7 +161,7 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
             factorZ = Math.max(0.0D, Math.min(1.0D, factorZ));
 
             worldEdgeFactor = Math.min(factorX, factorZ);
-        } else if (this.finiteType.equals("Indev Island")) {
+        } else if (this.finiteWorldType.equals("Island")) {
             falloff = 100.0D;
 
             double nxNorm = dx / limitX;
@@ -181,8 +181,8 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         return offset * (1.0D - worldEdgeFactor);
     }
 
-    public static void setSizeLimits(int startX, int endX, int startZ, int endZ) {
-        sizeLimits = new int[]{startX, endX, startZ, endZ};
+    public static void setSizeLimits(int minX, int maxX, int minZ, int maxZ) {
+        sizeLimits = new int[]{minX, maxX, minZ, maxZ};
     }
 
     public static int[] getSizeLimits() {

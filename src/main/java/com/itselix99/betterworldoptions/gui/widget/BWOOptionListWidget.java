@@ -146,8 +146,9 @@ public class BWOOptionListWidget extends EntryListWidgetButtons implements BWOSc
                 this.right.y = y;
                 this.right.render(this.minecraft, mouseX, mouseY);
             }
+        }
 
-
+        public void renderTooltip(int mouseX, int mouseY) {
             if (this.left != null) {
                 this.left.drawTooltip(this.minecraft, mouseX, mouseY);
             }

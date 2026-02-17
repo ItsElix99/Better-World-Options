@@ -166,7 +166,13 @@ public class BWOButtonWidget extends ButtonWidget {
             int tooltipHeight = lines.length * lineHeight + padding;
 
             int x = mouseX + 12;
-            int y = mouseY - 12;
+            int y = mouseY + 12;
+
+            if (this.parent instanceof ListWidget listWidget) {
+                if (x > listWidget.width / 2) {
+                    x = mouseX - 6 - maxWidth;
+                }
+            }
 
             this.fillGradient(x - 3, y - 4, x + maxWidth + padding, y + tooltipHeight, -1073741824, -1073741824);
 

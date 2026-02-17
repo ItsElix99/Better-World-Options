@@ -244,28 +244,11 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
         flattenedChunk.populateHeightMap();
 
         String limitMode = null;
-        if (this.finiteType.equals("MCPE") || this.finiteType.equals("LCE")) {
-            limitMode = this.finiteType;
+        if (this.finiteWorldType.equals("MCPE") || this.finiteWorldType.equals("LCE")) {
+            limitMode = this.finiteWorldType;
         }
 
-        int minX;
-        int maxX;
-        int minZ;
-        int maxZ;
-
-        if (this.finiteType.equals("MCPE")) {
-            minX = 0;
-            maxX = this.sizeX;
-            minZ = 0;
-            maxZ = this.sizeZ;
-        } else {
-            minX = -this.sizeX / 2;
-            maxX = this.sizeX / 2;
-            minZ = -this.sizeZ / 2;
-            maxZ = this.sizeZ / 2;
-        }
-
-        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, minX, maxX, minZ, maxZ, var3, limitMode, flattenedChunk);
+        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, var3, limitMode, flattenedChunk);
     }
 
     private double[] generateHeightMap(double[] heightMap, int x, int z, int sizeX, int sizeY, int sizeZ) {
@@ -362,17 +345,17 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
                     if (var42 < (double) 0.0F) {
                         var34 = var38;
 
-                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
                             var34 += islandOffset;
                         }
                     } else if (var42 > (double) 1.0F) {
                         var34 = var40;
 
-                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
                             var34 += islandOffset;
                         }
                     } else {
-                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
                             var38 += islandOffset;
                             var40 += islandOffset;
                         }

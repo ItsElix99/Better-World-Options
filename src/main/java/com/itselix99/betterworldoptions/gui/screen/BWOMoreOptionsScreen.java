@@ -190,6 +190,7 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
     public void render(int mouseX, int mouseY, float delta) {
         this.renderBackground();
         this.listWidget.render(mouseX, mouseY, delta);
+        this.listWidget.renderTooltip(mouseX, mouseY);
         this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get(this.title), this.width / 2, 5, 16777215);
         super.render(mouseX, mouseY, delta);
     }

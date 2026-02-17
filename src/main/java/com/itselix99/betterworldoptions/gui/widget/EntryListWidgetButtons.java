@@ -68,6 +68,16 @@ public abstract class EntryListWidgetButtons extends ListWidget {
         this.setScrolling(true);
     }
 
+    public void renderTooltip(int mouseX, int mouseY) {
+        if (this.isMouseInList(mouseY)) {
+            int var1 = this.getEntryAt(mouseX, mouseY);
+            if (var1 >= 0) {
+                this.getEntry(var1).renderTooltip(mouseX, mouseY);
+            }
+        }
+
+    }
+
     public abstract Entry getEntry(int index);
 
     @Environment(EnvType.CLIENT)
@@ -79,6 +89,8 @@ public abstract class EntryListWidgetButtons extends ListWidget {
         void renderOutOfBounds(int index, int x, int y, float tickDelta);
 
         void render(int index, int x, int y, int width, int height, int mouseX, int mouseY, boolean hovered, float tickDelta);
+
+        void renderTooltip(int mouseX, int mouseY);
 
         boolean mouseClicked(int index, int mouseX, int mouseY, int button, int entryMouseX, int entryMouseY);
 

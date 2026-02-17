@@ -52,7 +52,7 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
 
     protected void pregenerateTerrain() {
         this.setCurrentStage("Raising");
-        int[] heightMap = new int[this.sizeX * this.sizeZ];
+        int[] heightMap = new int[this.width * this.length];
 
         int surroundingWaterHeight = 32;
 
@@ -61,28 +61,28 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
 
             this.setCurrentStage("Eroding");
         } else {
-            for (int x = 0; x < this.sizeX; ++x) {
-                this.setPhasePercentage((float)x * 100.0F / (float)(this.sizeX - 1));
+            for (int x = 0; x < this.width; ++x) {
+                this.setPhasePercentage((float)x * 100.0F / (float)(this.width - 1));
 
-                for (int z = 0; z < this.sizeZ; ++z) {
+                for (int z = 0; z < this.length; ++z) {
                     double ePower = this.distortB.create(x << 1, z << 1) / 8.0D;
                     int sharp = this.distortC.create(x << 1, z << 1) > 0.0D ? 1 : 0;
 
                     if (ePower > 2.0D) {
-                        int h = ((heightMap[x + z * this.sizeX] - sharp) / 2 << 1) + sharp;
-                        heightMap[x + z * this.sizeX] = h;
+                        int h = ((heightMap[x + z * this.width] - sharp) / 2 << 1) + sharp;
+                        heightMap[x + z * this.width] = h;
                     }
                 }
             }
 
             this.setCurrentStage("Eroding");
 
-            for (int x = 0; x < this.sizeX; ++x) {
-                double nx = ((double) x / ((double) this.sizeX - 1.0D) - 0.5D) * 2.0D;
-                this.setPhasePercentage((float)x * 100.0F / (float)(this.sizeX - 1));
+            for (int x = 0; x < this.width; ++x) {
+                double nx = ((double) x / ((double) this.width - 1.0D) - 0.5D) * 2.0D;
+                this.setPhasePercentage((float)x * 100.0F / (float)(this.width - 1));
 
-                for (int z = 0; z < this.sizeZ; ++z) {
-                    double nz = ((double) z / ((double) this.sizeZ - 1.0D) - 0.5D) * 2.0D;
+                for (int z = 0; z < this.length; ++z) {
+                    double nz = ((double) z / ((double) this.length - 1.0D) - 0.5D) * 2.0D;
 
                     double low = this.distortA.create((float)x * 1.3F, (float)z * 1.3F) / 6.0D - 4.0D;
                     double high = this.distortB.create((float)x * 1.3F, (float)z * 1.3F) / 5.0D + 6.0D;
@@ -105,33 +105,33 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
                         }
                     }
 
-                    heightMap[x + z * this.sizeX] = (int) h;
+                    heightMap[x + z * this.width] = (int) h;
                 }
             }
         }
 
         this.setCurrentStage("Soiling");
 
-        for (int x = 0; x < this.sizeX; ++x) {
-            double nx = ((double) x / ((double) this.sizeX - 1.0D) - 0.5D) * 2.0D;
-            this.setPhasePercentage((float)x * 100.0F / (float)(this.sizeX - 1));
+        for (int x = 0; x < this.width; ++x) {
+            double nx = ((double) x / ((double) this.width - 1.0D) - 0.5D) * 2.0D;
+            this.setPhasePercentage((float)x * 100.0F / (float)(this.width - 1));
 
-            for (int z = 0; z < this.sizeZ; ++z) {
-                double nz = ((double) z / ((double) this.sizeZ - 1.0D) - 0.5D) * 2.0D;
+            for (int z = 0; z < this.length; ++z) {
+                double nz = ((double) z / ((double) this.length - 1.0D) - 0.5D) * 2.0D;
 
                 double radial = Math.max(Math.abs(nx), Math.abs(nz));
                 radial *= radial;
 
                 int offset = (int) (this.noiseGen3.create(x, z) / 24.0D) - 4;
                 int var108;
-                int baseHeight = (var108 = heightMap[x + z * this.sizeX] + surroundingWaterHeight) + offset;
-                heightMap[x + z * this.sizeX] = Math.max(var108, baseHeight);
-                if (heightMap[x + z * this.sizeX] > Config.BWOConfig.world.worldHeightLimit.getIntValue() - 2) {
-                    heightMap[x + z * this.sizeX] = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 2;
+                int baseHeight = (var108 = heightMap[x + z * this.width] + surroundingWaterHeight) + offset;
+                heightMap[x + z * this.width] = Math.max(var108, baseHeight);
+                if (heightMap[x + z * this.width] > Config.BWOConfig.world.worldHeightLimit.getIntValue() - 2) {
+                    heightMap[x + z * this.width] = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 2;
                 }
 
-                if (heightMap[x + z * this.sizeX] <= 0) {
-                    heightMap[x + z * this.sizeX] = 1;
+                if (heightMap[x + z * this.width] <= 0) {
+                    heightMap[x + z * this.width] = 1;
                 }
 
                 double var105 = this.noiseGen4.create((double) x * 2.3D, (double) z * 2.3D) / 24.0D;
@@ -142,7 +142,7 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
                 }
 
                 for (int y = 0; y < 64; ++y) {
-                    int index = (y * this.sizeZ + z) * this.sizeX + x;
+                    int index = (y * this.length + z) * this.width + x;
                     int blockId = 0;
 
                     if (y <= var108) {
@@ -171,10 +171,10 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
             beachHeight += 2;
         }
 
-        for (int x = 0; x < this.sizeX; ++x) {
-            this.setPhasePercentage((float)x * 100.0F / (float)(this.sizeX - 1));
+        for (int x = 0; x < this.width; ++x) {
+            this.setPhasePercentage((float)x * 100.0F / (float)(this.width - 1));
 
-            for (int z = 0; z < this.sizeZ; ++z) {
+            for (int z = 0; z < this.length; ++z) {
                 boolean sand = this.noiseGen5.create(x, z) > 8.0D;
                 if (this.indevWorldType.equals("Island")) {
                     sand = this.noiseGen5.create(x, z) > -8.0D;
@@ -189,12 +189,12 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
                     sand = this.noiseGen5.create(x, z) > -8.0D;
                 }
 
-                int surfaceY = Math.max(0, Math.min(63, heightMap[x + z * this.sizeX]));
-                int blockIndex = (surfaceY * this.sizeZ + z) * this.sizeX + x;
+                int surfaceY = Math.max(0, Math.min(63, heightMap[x + z * this.width]));
+                int blockIndex = (surfaceY * this.length + z) * this.width + x;
                 int aboveBlock = 0;
 
                 if (surfaceY < 63) {
-                    aboveBlock = this.fullWorldBlocks.get(((surfaceY + 1) * this.sizeZ + z) * this.sizeX + x) & 255;
+                    aboveBlock = this.fullWorldBlocks.get(((surfaceY + 1) * this.length + z) * this.width + x) & 255;
                 }
 
                 if ((aboveBlock == Block.WATER.id || aboveBlock == Block.FLOWING_WATER.id || aboveBlock == 0) && surfaceY <= surroundingWaterHeight - 1 && gravel) {
@@ -212,13 +212,13 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
         this.setCurrentStage("Carving");
 
         if (this.oldFeatures) {
-            int var56 = this.sizeX * this.sizeZ * 64 / 256 / 64 << 1;
+            int var56 = this.width * this.length * 64 / 256 / 64 << 1;
 
             for(int var21 = 0; var21 < var56; ++var21) {
                 this.setPhasePercentage((float)var21 * 100.0F / (float)(var56 - 1));
-                float var59 = this.random.nextFloat() * (float)this.sizeX;
+                float var59 = this.random.nextFloat() * (float)this.width;
                 float var63 = this.random.nextFloat() * (float)64;
-                float var62 = this.random.nextFloat() * (float)this.sizeZ;
+                float var62 = this.random.nextFloat() * (float)this.length;
                 int var25 = (int)((this.random.nextFloat() + this.random.nextFloat()) * 200.0F);
                 float var66 = this.random.nextFloat() * (float)Math.PI * 2.0F;
                 float var68 = 0.0F;
@@ -252,8 +252,8 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
                                     float var42 = (float)var81 - var33;
                                     float var48 = (float)var40 - var77;
                                     var41 = var41 * var41 + var42 * var42 * 2.0F + var48 * var48;
-                                    if(var41 < var78 * var78 && var5 > 0 && var81 > 0 && var40 > 0 && var5 < this.sizeX - 1 && var81 < 64 - 1 && var40 < this.sizeZ - 1) {
-                                        int var7 = (var81 * this.sizeZ + var40) * this.sizeX + var5;
+                                    if(var41 < var78 * var78 && var5 > 0 && var81 > 0 && var40 > 0 && var5 < this.width - 1 && var81 < 64 - 1 && var40 < this.length - 1) {
+                                        int var7 = (var81 * this.length + var40) * this.width + var5;
                                         if(this.fullWorldBlocks.get(var7) == Block.STONE.id) {
                                             this.fullWorldBlocks.put(var7, (byte) 0);
                                         }
@@ -294,19 +294,19 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
         if (!this.indevWorldType.equals("Floating")) {
             int liquid = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
 
-            for (int x = 0; x < this.sizeX; ++x) {
+            for (int x = 0; x < this.width; ++x) {
                 this.floodFill(x, surroundingWaterHeight - 1, 0, 0, liquid);
-                this.floodFill(x, surroundingWaterHeight - 1, this.sizeZ - 1, 0, liquid);
+                this.floodFill(x, surroundingWaterHeight - 1, this.length - 1, 0, liquid);
             }
 
-            for (int z = 0; z < this.sizeZ; ++z) {
-                this.floodFill(this.sizeX - 1, surroundingWaterHeight - 1, z, 0, liquid);
+            for (int z = 0; z < this.length; ++z) {
+                this.floodFill(this.width - 1, surroundingWaterHeight - 1, z, 0, liquid);
                 this.floodFill(0, surroundingWaterHeight - 1, z, 0, liquid);
             }
         }
 
         this.setCurrentStage("Assembling");
-        this.calculateLighting(this.sizeX, 64, this.sizeZ);
+        this.calculateLighting(this.width, 64, this.length);
 
         this.setCurrentStage("Planting");
         this.placeBlockOnDirt(this.oldFeatures ? (this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id) : Block.SANDSTONE.id);
@@ -646,10 +646,6 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
         double[] var4 = this.world.method_1781().temperatureMap;
         this.buildTerrain(chunkX, chunkZ, var3, this.biomes, var4);
 
-        if (this.finiteWorld && !this.finiteType.equals("MCPE")) {
-            FiniteChunkGenerator.setSizeLimits(0, this.sizeX, 0, this.sizeZ);
-        }
-
         if (!this.oldFeatures){
             this.cave.place(this, this.world, chunkX, chunkZ, var3);
         }
@@ -672,13 +668,13 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
         flattenedChunk.populateHeightMap();
 
         String limitMode;
-        if (this.finiteType.equals("MCPE")) {
-            limitMode = this.finiteType;
+        if (this.finiteWorldType.equals("MCPE")) {
+            limitMode = this.finiteWorldType;
         } else {
             limitMode = this.indevWorldType;
         }
 
-        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, 0, this.sizeX, 0, this.sizeZ, var3, limitMode, flattenedChunk);
+        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, var3, limitMode, flattenedChunk);
     }
 
     public void decorate(ChunkSource source, int x, int z) {

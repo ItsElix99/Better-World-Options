@@ -262,28 +262,11 @@ public class Alpha112ChunkGenerator extends BWOChunkGenerator {
         flattenedChunk.populateHeightMap();
 
         String limitMode = null;
-        if (this.finiteType.equals("MCPE") || this.finiteType.equals("LCE")) {
-            limitMode = this.finiteType;
+        if (this.finiteWorldType.equals("MCPE") || this.finiteWorldType.equals("LCE")) {
+            limitMode = this.finiteWorldType;
         }
 
-        int minX;
-        int maxX;
-        int minZ;
-        int maxZ;
-
-        if (this.finiteType.equals("MCPE")) {
-            minX = 0;
-            maxX = this.sizeX;
-            minZ = 0;
-            maxZ = this.sizeZ;
-        } else {
-            minX = -this.sizeX / 2;
-            maxX = this.sizeX / 2;
-            minZ = -this.sizeZ / 2;
-            maxZ = this.sizeZ / 2;
-        }
-
-        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, minX, maxX, minZ, maxZ, var3, limitMode, flattenedChunk);
+        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, var3, limitMode, flattenedChunk);
     }
 
     private double[] generateHeightMap(double[] heightMap, int x, int z, int sizeX, int sizeY, int sizeZ) {
@@ -352,17 +335,17 @@ public class Alpha112ChunkGenerator extends BWOChunkGenerator {
                     if(var33 < 0.0D) {
                         var25 = var29;
 
-                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
                             var25 += islandOffset;
                         }
                     } else if(var33 > 1.0D) {
                         var25 = var31;
 
-                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
                             var25 += islandOffset;
                         }
                     } else {
-                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
                             var29 += islandOffset;
                             var31 += islandOffset;
                         }
@@ -509,14 +492,14 @@ public class Alpha112ChunkGenerator extends BWOChunkGenerator {
             int var17;
 
             if (this.theme.equals("Paradise")) {
-                for (var14 = 0; var14 < 12; ++var14) {
+                for (var14 = 0; var14 < 24; ++var14) {
                     var15 = var4 + this.random.nextInt(16) + 8;
                     var16 = this.random.nextInt(128);
                     var17 = var5 + this.random.nextInt(16) + 8;
                     (new PlantPatchFeature(Block.DANDELION.id)).generate(this.world, this.random, var15, var16, var17);
                 }
 
-                for (var14 = 0; var14 < 12; var14++) {
+                for (var14 = 0; var14 < 24; var14++) {
                     var15 = var4 + this.random.nextInt(16) + 8;
                     var16 = this.random.nextInt(128);
                     var17 = var5 + this.random.nextInt(16) + 8;

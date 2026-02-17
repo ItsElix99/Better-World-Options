@@ -79,17 +79,17 @@ public class Infdev420ChunkGenerator extends BWOChunkGenerator {
                     if(var69 < 0.0D) {
                         var61 = var65;
 
-                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
                             var61 += islandOffset;
                         }
                     } else if(var69 > 1.0D) {
                         var61 = var67;
 
-                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
                             var61 += islandOffset;
                         }
                     } else {
-                        if (this.finiteWorld && !this.finiteType.equals("MCPE")){
+                        if (this.finiteWorld && !this.finiteWorldType.equals("MCPE")){
                             var65 += islandOffset;
                             var67 += islandOffset;
                         }
@@ -277,28 +277,11 @@ public class Infdev420ChunkGenerator extends BWOChunkGenerator {
         flattenedChunk.populateHeightMap();
 
         String limitMode = null;
-        if (this.finiteType.equals("MCPE") || this.finiteType.equals("LCE")) {
-            limitMode = this.finiteType;
+        if (this.finiteWorldType.equals("MCPE") || this.finiteWorldType.equals("LCE")) {
+            limitMode = this.finiteWorldType;
         }
 
-        int minX;
-        int maxX;
-        int minZ;
-        int maxZ;
-
-        if (this.finiteType.equals("MCPE")) {
-            minX = 0;
-            maxX = this.sizeX;
-            minZ = 0;
-            maxZ = this.sizeZ;
-        } else {
-            minX = -this.sizeX / 2;
-            maxX = this.sizeX / 2;
-            minZ = -this.sizeZ / 2;
-            maxZ = this.sizeZ / 2;
-        }
-
-        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, minX, maxX, minZ, maxZ, var3, limitMode, flattenedChunk);
+        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, var3, limitMode, flattenedChunk);
     }
 
     public void decorate(ChunkSource source, int x, int z) {
@@ -362,14 +345,14 @@ public class Infdev420ChunkGenerator extends BWOChunkGenerator {
             }
 
             if (this.theme.equals("Paradise")) {
-                for(z = 0; z < 12; ++z) {
+                for(z = 0; z < 24; ++z) {
                     var5 = var4 + this.random.nextInt(16) + 8;
                     var6 = this.random.nextInt(128);
                     var7 = x + this.random.nextInt(16) + 8;
                     (new PlantPatchFeature(Block.DANDELION.id)).generate(this.world, this.random, var5, var6, var7);
                 }
 
-                for (z = 0; z < 12; z++) {
+                for (z = 0; z < 24; z++) {
                     var5 = var4 + this.random.nextInt(16) + 8;
                     var6 = this.random.nextInt(128);
                     var7 = x + this.random.nextInt(16) + 8;

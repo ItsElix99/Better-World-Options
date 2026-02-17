@@ -124,9 +124,9 @@ public abstract class WorldMixin implements BWOWorld {
         String worldType = bwoProperties.bwo_getWorldType();
 
         boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-        String finiteType = bwoProperties.bwo_getStringOptionValue("FiniteType", OptionType.GENERAL_OPTION);
-        int sizeX = bwoProperties.bwo_getIntOptionValue("SizeX", OptionType.GENERAL_OPTION);
-        int sizeZ = bwoProperties.bwo_getIntOptionValue("SizeZ", OptionType.GENERAL_OPTION);
+        String finiteWorldType = bwoProperties.bwo_getStringOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION);
+        int width = bwoProperties.bwo_getIntOptionValue("Width", OptionType.GENERAL_OPTION);
+        int length = bwoProperties.bwo_getIntOptionValue("Length", OptionType.GENERAL_OPTION);
 
         boolean farlands = bwoProperties.bwo_getBooleanOptionValue("Farlands", OptionType.GENERAL_OPTION);
         String farlandsShape = bwoProperties.bwo_getStringOptionValue("FarlandsShape", OptionType.GENERAL_OPTION);
@@ -151,8 +151,8 @@ public abstract class WorldMixin implements BWOWorld {
                     var3 += this.random.nextInt(64) - this.random.nextInt(64);
                 } else {
                     ++attempts;
-                    var1 = this.random.nextInt(sizeX / 2) + sizeX / 4;
-                    var3 = this.random.nextInt(sizeZ / 2) + sizeZ / 4;
+                    var1 = this.random.nextInt(width / 2) + width / 4;
+                    var3 = this.random.nextInt(length / 2) + length / 4;
                 }
 
                 var2 = this.getTopSolidBlockY(var1, var3);
@@ -194,12 +194,12 @@ public abstract class WorldMixin implements BWOWorld {
             this.properties.setSpawn(var1, var2, var3);
             this.eventProcessingEnabled = false;
             ci.cancel();
-        } else if (finiteType.equals("MCPE")) {
-            int var1 = sizeX / 2;
+        } else if (finiteWorldType.equals("MCPE")) {
+            int var1 = width / 2;
             int var2 = 64;
             int var3;
 
-            for (var3 = sizeZ / 2; !this.dimension.isValidSpawnPoint(var1, var3); var3 += this.random.nextInt(64) - this.random.nextInt(64)) {
+            for (var3 = length / 2; !this.dimension.isValidSpawnPoint(var1, var3); var3 += this.random.nextInt(64) - this.random.nextInt(64)) {
                 var1 += this.random.nextInt(64) - this.random.nextInt(64);
             }
 

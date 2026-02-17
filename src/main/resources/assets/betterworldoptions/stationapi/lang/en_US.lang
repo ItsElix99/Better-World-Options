@@ -3,7 +3,6 @@ selectWorld.mapFeatures=Generate Structures:
 selectWorld.worldtype=World Type:
 selectWorld.singleBiome=Single Biome:
 selectWorld.theme=Theme:
-selectWorld.oldFeatures=Old Features:
 selectWorld.moreWorldOptions=More World Options...
 
 selectWorld.gameMode.survival.line1=Search for resources, crafting and health
@@ -15,9 +14,6 @@ selectWorld.gameMode.hardcore.line1=Same as survival mode, locked at hardest
 selectWorld.gameMode.hardcore.line2=difficulty, and one life only
 
 selectWorld.mapFeatures.info=Villages, dungeons etc
-
-selectWorld.oldFeatures.line1=Generates worlds using older
-selectWorld.oldFeatures.line2=version terrain features
 
 selectWorldType.title=Select World Type
 
@@ -32,12 +28,13 @@ bwoMoreOptions.button.general=General
 bwoMoreOptions.button.worldType=World Type
 bwoMoreOptions.button.finiteWorld=Finite World
 
+bwoMoreOptions.oldFeatures=Old Features:
 bwoMoreOptions.finiteWorld=Finite World:
 bwoMoreOptions.size=Size:
-bwoMoreOptions.finiteType=Finite Type:
+bwoMoreOptions.finiteWorldType=Finite World Type:
 bwoMoreOptions.shape=Shape:
-bwoMoreOptions.sizeX=Size X:
-bwoMoreOptions.sizeZ=Size Z:
+bwoMoreOptions.width=Width:
+bwoMoreOptions.length=Length:
 bwoMoreOptions.farlands=Farlands:
 bwoMoreOptions.farlandsShape=Farlands Shape:
 bwoMoreOptions.farlandsDistance=Farlands Distance:
@@ -45,6 +42,12 @@ bwoMoreOptions.skyDimension=Sky Dimension:
 bwoMoreOptions.superflat=Superflat:
 bwoMoreOptions.indevWorldType=Indev World Type:
 bwoMoreOptions.generateIndevHouse=Generate Indev House:
+
+bwoMoreOptions.oldFeatures.line1=Generates terrain authentically
+bwoMoreOptions.oldFeatures.line2=as in the original version
+
+bwoMoreOptions.farlandsDistance.line1=Distance from world center (in chunks)
+bwoMoreOptions.farlandsDistance.line2=where Farlands generation begins
 
 options.difficulty.hardcore=Hardcore
 
