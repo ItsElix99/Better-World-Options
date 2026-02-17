@@ -505,16 +505,17 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
             }
 
             if (this.oldFeatures) {
-                int var83 = 8;
+                int var83 = 16;
 
                 for (int i = 0; i < var83; i++) {
-                    float caveX = this.random.nextFloat() * (float) 16;
-                    float caveY = this.random.nextFloat() * (float) 128;
-                    float caveZ = this.random.nextFloat() * (float) 16;
+                    float caveX = this.random.nextFloat() * 16.0F;
+                    float caveY = this.random.nextFloat() * 128.0F;
+                    float caveZ = this.random.nextFloat() * 16.0F;
 
-                    int steps = (int) ((this.random.nextFloat() + this.random.nextFloat()) * 200.0F);
-                    float directionYaw = this.random.nextFloat() * (float) Math.PI * 2.0F;
-                    float directionPitch = this.random.nextFloat() * (float) Math.PI * 2.0F;
+                    int steps = (int)((this.random.nextFloat() + this.random.nextFloat()) * 200.0F);
+
+                    float directionYaw = this.random.nextFloat() * (float)Math.PI * 2.0F;
+                    float directionPitch = this.random.nextFloat() * (float)Math.PI * 2.0F;
 
                     float yawOffset = 0.0F;
                     float pitchOffset = 0.0F;
@@ -537,25 +538,30 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
                         float offsetY = caveY + (this.random.nextFloat() * 4.0F - 2.0F) * 0.2F;
                         float offsetZ = caveZ + (this.random.nextFloat() * 4.0F - 2.0F) * 0.2F;
 
-                        float verticalScale = ((float) 128 - offsetY) / 128;
+                        float verticalScale = ((float)128 - offsetY) / 128;
                         float radius = 1.2F + (verticalScale * 3.5F + 1.0F) * caveSizeRand;
-                        float radiusSq = MathHelper.sin((float) step * (float) Math.PI / steps) * radius;
-                        float radiusSq2 = radiusSq * radiusSq;
+                        float radiusSin = MathHelper.sin((float)step * (float)Math.PI / steps) * radius;
+                        float radiusSq = radiusSin * radiusSin;
 
-                        for (int cx = (int) (offsetX - radiusSq); cx <= (int) (offsetX + radiusSq); cx++) {
-                            if (cx < 1 || cx >= 15) continue;
+                        int minX = (int)(offsetX - radiusSin);
+                        int maxX = (int)(offsetX + radiusSin);
+                        int minY = (int)(offsetY - radiusSin);
+                        int maxY = (int)(offsetY + radiusSin);
+                        int minZ = (int)(offsetZ - radiusSin);
+                        int maxZ = (int)(offsetZ + radiusSin);
 
-                            for (int cy = (int) (offsetY - radiusSq); cy <= (int) (offsetY + radiusSq); cy++) {
-                                if (cy < 1 || cy >= Config.BWOConfig.world.worldHeightLimit.getIntValue()) continue;
-
-                                for (int cz = (int) (offsetZ - radiusSq); cz <= (int) (offsetZ + radiusSq); cz++) {
-                                    if (cz < 1 || cz >= 15) continue;
+                        for (int cx = minX; cx <= maxX; cx++) {
+                            for (int cy = minY; cy <= maxY; cy++) {
+                                for (int cz = minZ; cz <= maxZ; cz++) {
+                                    if (cx < 0 || cx >= 16) continue;
+                                    if (cz < 0 || cz >= 16) continue;
+                                    if (cy < 1 || cy >= Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1) continue;
 
                                     float dx = cx - offsetX;
                                     float dy = cy - offsetY;
                                     float dz = cz - offsetZ;
 
-                                    if ((dx * dx + dy * dy * 2.0F + dz * dz) < radiusSq2) {
+                                    if ((dx * dx + dy * dy * 2.0F + dz * dz) < radiusSq) {
                                         int index = (cx * 16 + cz) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + cy;
 
                                         if (blocks[index] == Block.STONE.id) {

@@ -138,7 +138,7 @@ public class InfiniteIndevFeatures {
 
     public static void placeLakes(Random random, byte[] blocks, String theme) {
         int liquid = (theme.equals("Hell")) ? Block.LAVA.id : Block.WATER.id;
-        int totalAttempts = (16 * 16 * 128) / 1000;
+        int totalAttempts = 32;
 
         for (int attempt = 0; attempt < totalAttempts; attempt++) {
             int x = random.nextInt(16);
@@ -160,7 +160,7 @@ public class InfiniteIndevFeatures {
     }
 
     public static void placeUndergroundLakes(Random random, byte[] blocks) {
-        int totalAttempts = (16 * 16 * 128) / 2000;
+        int totalAttempts = 64;
         int maxLakeY = 60;
 
         for (int attempt = 0; attempt < totalAttempts; attempt++) {
