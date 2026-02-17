@@ -17,6 +17,7 @@
     "world.AlphaWorldStorageAccessor",
     "world.CaveWorldCarverMixin",
     "world.ChunkCacheMixin",
+    "world.ChunkGeneratorAccessor",
     "world.DimensionDataAccessor",
     "world.FlattenedWorldStorageMixin",
     "world.OctavePerlinNoiseSamplerMixin",

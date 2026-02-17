@@ -10,7 +10,7 @@ import net.minecraft.world.gen.feature.OakTreeFeature;
 
 import java.util.*;
 
-public class IndevFeatures {
+public class InfiniteIndevFeatures {
     public static void placeSpawnBuilding(World world) {
         int var1 = world.getProperties().getSpawnX();
         int var2 = world.getProperties().getSpawnY() + 2;

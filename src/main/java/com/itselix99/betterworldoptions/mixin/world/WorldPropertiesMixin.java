@@ -30,6 +30,8 @@ public class WorldPropertiesMixin implements BWOProperties {
     @Unique private Map<String, OptionStorage> generalOptions = new LinkedHashMap<>();
     @Unique private Map<String, OptionStorage> worldTypeOptions = new LinkedHashMap<>();
 
+    @Unique private boolean pregeneratingFiniteWorld;
+
     @Override public void bwo_setWorldType(String name) {
         this.generalOptions.put("WorldType", new StringOptionStorage("WorldType", name));
     }
@@ -56,6 +58,14 @@ public class WorldPropertiesMixin implements BWOProperties {
 
     @Override public String bwo_getTheme() {
         return bwo_getStringOptionValue("Theme", OptionType.GENERAL_OPTION);
+    }
+
+    @Override public void bwo_setPregeneratingFiniteWorld(boolean isDone) {
+        this.pregeneratingFiniteWorld = isDone;
+    }
+
+    @Override public boolean bwo_isPregeneratingFiniteWorld() {
+        return this.pregeneratingFiniteWorld;
     }
 
     @Override
@@ -138,11 +148,15 @@ public class WorldPropertiesMixin implements BWOProperties {
 
         NbtCompound betterWorldOptionsTag = nbt.getCompound("BetterWorldOptions");
 
+        String worldType = this.bwo_getStringOrDefault(betterWorldOptionsTag, GeneralOptions.getOptionByName("WorldType"));
+        WorldTypeEntry worldTypeEntry = WorldTypes.getWorldTypeByName(worldType);
+
+        if (this.bwo_getBooleanOrDefault(betterWorldOptionsTag, GeneralOptions.getOptionByName("FiniteWorld")) && worldTypeEntry.pregenerateFiniteWorld) {
+            this.pregeneratingFiniteWorld = betterWorldOptionsTag.getBoolean("PregeneratingFiniteWorld");
+        }
+
         for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
             OptionEntry generalOption = GeneralOptions.getOptionByName(option.name);
-
-            String worldType = this.bwo_getStringOrDefault(betterWorldOptionsTag, GeneralOptions.getOptionByName("WorldType"));
-            WorldTypeEntry worldTypeEntry = WorldTypes.getWorldTypeByName(worldType);
 
             if (generalOption.save && (generalOption.compatibleWorldTypes.contains("All") || generalOption.compatibleWorldTypes.contains(worldType) || generalOption.compatibleWorldTypes.contains("Overworld") && !worldTypeEntry.isDimension)) {
                 if (option instanceof StringOptionStorage) {
@@ -235,11 +249,15 @@ public class WorldPropertiesMixin implements BWOProperties {
     private void bwo_initBWOProperties(long seed, String name, CallbackInfo ci) {
         BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
 
+        String worldType = bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
+        WorldTypeEntry worldTypeEntry = WorldTypes.getWorldTypeByName(worldType);
+
+        if (bwoWorldPropertiesStorage.getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION) && worldTypeEntry.pregenerateFiniteWorld) {
+            this.pregeneratingFiniteWorld = true;
+        }
+
         for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
             OptionEntry generalOption = GeneralOptions.getOptionByName(option.name);
-
-            String worldType = bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
-            WorldTypeEntry worldTypeEntry = WorldTypes.getWorldTypeByName(worldType);
 
             if (generalOption.save && (generalOption.compatibleWorldTypes.contains("All") || generalOption.compatibleWorldTypes.contains(worldType) || generalOption.compatibleWorldTypes.contains("Overworld") && !worldTypeEntry.isDimension)) {
                 if (generalOption.parentOption != null && !bwoWorldPropertiesStorage.getBooleanOptionValue(generalOption.parentOption.name, generalOption.optionType)) {
@@ -260,18 +278,16 @@ public class WorldPropertiesMixin implements BWOProperties {
             }
         }
 
-        WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
-
-        if (!worldType.worldTypeOptions.isEmpty()) {
+        if (!worldTypeEntry.worldTypeOptions.isEmpty()) {
             for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.WORLD_TYPE_OPTION).values()) {
-                if (worldType.worldTypeOptions.get(option.name).parentOption != null && !bwoWorldPropertiesStorage.getBooleanOptionValue(worldType.worldTypeOptions.get(option.name).parentOption.name, worldType.worldTypeOptions.get(option.name).optionType)) {
+                if (worldTypeEntry.worldTypeOptions.get(option.name).parentOption != null && !bwoWorldPropertiesStorage.getBooleanOptionValue(worldTypeEntry.worldTypeOptions.get(option.name).parentOption.name, worldTypeEntry.worldTypeOptions.get(option.name).optionType)) {
                     continue;
                 }
 
                 if (option instanceof StringOptionStorage stringOption) {
                     this.worldTypeOptions.put(option.name, new StringOptionStorage(option.name, stringOption.value));
                 } else if (option instanceof BooleanOptionStorage booleanOption) {
-                    if (!worldType.worldTypeOptions.get(option.name).dependentOptions.isEmpty() && !booleanOption.value) {
+                    if (!worldTypeEntry.worldTypeOptions.get(option.name).dependentOptions.isEmpty() && !booleanOption.value) {
                         continue;
                     }
 
@@ -287,6 +303,8 @@ public class WorldPropertiesMixin implements BWOProperties {
     private void bwo_copyProperties(WorldProperties worldProperties, CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) worldProperties;
 
+        this.pregeneratingFiniteWorld = bwoProperties.bwo_isPregeneratingFiniteWorld();
+
         this.generalOptions = bwoProperties.bwo_getOptionsMap(OptionType.GENERAL_OPTION);
         this.worldTypeOptions = bwoProperties.bwo_getOptionsMap(OptionType.WORLD_TYPE_OPTION);
     }
@@ -295,6 +313,12 @@ public class WorldPropertiesMixin implements BWOProperties {
     private void bwo_updateProperties(NbtCompound nbt, NbtCompound playerNbt, CallbackInfo ci) {
         NbtCompound betterWorldOptionsTag = new NbtCompound();
         NbtCompound worldTypeOptionsTag = new NbtCompound();
+
+        WorldTypeEntry worldTypeEntry = WorldTypes.getWorldTypeByName(this.bwo_getWorldType());
+
+        if (this.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION) && worldTypeEntry.pregenerateFiniteWorld) {
+            betterWorldOptionsTag.putBoolean("PregeneratingFiniteWorld", this.pregeneratingFiniteWorld);
+        }
 
         for (OptionStorage option : this.generalOptions.values()) {
             if (option instanceof StringOptionStorage stringOption) {

@@ -1,8 +1,10 @@
 package com.itselix99.betterworldoptions.mixin;
 
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
+import com.itselix99.betterworldoptions.api.chunk.FiniteChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.compat.CompatMods;
+import com.itselix99.betterworldoptions.mixin.world.ChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -88,6 +90,25 @@ public class MinecraftMixin {
         }
 
         return original.call(storage, name, seed);
+    }
+
+    @Inject(
+            method = "setWorld(Lnet/minecraft/world/World;)V",
+            at = @At(value = "HEAD")
+    )
+    private void bwo_shutdownFiniteWorldStorage(World world, CallbackInfo ci) {
+        if (this.world != null) {
+            BWOProperties bwoProperties = (BWOProperties) this.world.getProperties();
+            boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+
+            if (((ChunkGeneratorAccessor) this.world.getChunkSource()).getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld && bwoProperties.bwo_isPregeneratingFiniteWorld()) {
+                try {
+                    finiteChunkGenerator.shutdownStorage();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     @ModifyArgs(

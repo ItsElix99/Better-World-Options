@@ -1,11 +1,12 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
+import com.itselix99.betterworldoptions.api.chunk.FiniteChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
-import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.IndevFeatures;
+import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.InfiniteIndevFeatures;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -17,6 +18,7 @@ import net.minecraft.world.World;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.world.WorldProperties;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.dimension.Dimension;
 import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
 import org.spongepowered.asm.mixin.*;
@@ -43,6 +45,8 @@ public abstract class WorldMixin implements BWOWorld {
     @Shadow public abstract Material getMaterial(int x, int y, int z);
 
     @Shadow public abstract int getTopSolidBlockY(int x, int z);
+
+    @Shadow public abstract ChunkSource getChunkSource();
 
     @Inject(
             method = {
@@ -132,6 +136,9 @@ public abstract class WorldMixin implements BWOWorld {
 
         this.eventProcessingEnabled = true;
         if (worldType.equals("Indev 223")) {
+            if (((ChunkGeneratorAccessor) this.getChunkSource()).getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld) {
+                finiteChunkGenerator.setCurrentStage("Spawning");
+            }
             boolean isValidSpawnArea = false;
             int attempts = 0;
             int var1 = 0;
@@ -146,7 +153,6 @@ public abstract class WorldMixin implements BWOWorld {
                     ++attempts;
                     var1 = this.random.nextInt(sizeX / 2) + sizeX / 4;
                     var3 = this.random.nextInt(sizeZ / 2) + sizeZ / 4;
-                    System.out.println(attempts);
                 }
 
                 var2 = this.getTopSolidBlockY(var1, var3);
@@ -163,7 +169,7 @@ public abstract class WorldMixin implements BWOWorld {
             this.properties.setSpawn(var1, var2 - 1, var3);
             this.eventProcessingEnabled = false;
             if (generateIndevHouse && isValidSpawnArea) {
-                IndevFeatures.placeSpawnBuilding(World.class.cast(this));
+                InfiniteIndevFeatures.placeSpawnBuilding(World.class.cast(this));
             }
             ci.cancel();
         } else if (farlands) {

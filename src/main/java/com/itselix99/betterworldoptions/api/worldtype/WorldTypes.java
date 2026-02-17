@@ -138,6 +138,7 @@ public class WorldTypes {
 
         WorldTypeEntry Indev223 = createWorldType(Indev223ChunkGenerator.class, "Indev 20100223", "Indev 223", "/assets/betterworldoptions/gui/indev_20100223.png", new String[]{"Start the world with Indev 223", "generation"});
         Indev223.oldFeaturesProperties = new OldFeaturesProperties(() -> BetterWorldOptions.Indev, false, 10079487, 16777215, true, false);
+        Indev223.pregenerateFiniteWorld = true;
         Indev223.worldTypeOptions.put("IndevWorldType", createStringOptionWithStringList(Indev223.worldTypeOptions.size(), "bwoMoreOptions.indevWorldType", "IndevWorldType", null, new ArrayList<>(Arrays.asList("Island", "Floating", "Flat", "Inland")), 0));
         Indev223.worldTypeOptions.put("GenerateIndevHouse", createBooleanOption(Indev223.worldTypeOptions.size(), "bwoMoreOptions.generateIndevHouse", "GenerateIndevHouse", null, true));
         WORLD_TYPE_LIST.add(Indev223);

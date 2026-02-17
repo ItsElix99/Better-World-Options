@@ -17,4 +17,5 @@ public class WorldTypeEntry {
     public OldFeaturesProperties oldFeaturesProperties;
     public Map<String, OptionEntry> worldTypeOptions = new LinkedHashMap<>();
     public boolean isDimension = false;
+    public boolean pregenerateFiniteWorld = false;
 }

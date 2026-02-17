@@ -3,9 +3,13 @@ package com.itselix99.betterworldoptions;
 import com.itselix99.betterworldoptions.block.InvisibleBedrock;
 import com.itselix99.betterworldoptions.event.TextureListener;
 import com.itselix99.betterworldoptions.network.BWOWorldPropertiesStoragePacket;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.world.biome.Biome;
@@ -18,10 +22,14 @@ import net.modificationstation.stationapi.api.registry.Registry;
 import net.modificationstation.stationapi.api.util.Namespace;
 import net.modificationstation.stationapi.api.util.Null;
 import net.modificationstation.stationapi.api.worldgen.biome.BiomeBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BetterWorldOptions {
     @Entrypoint.Namespace
     public static Namespace NAMESPACE = Null.get();
+
+    public static Logger LOGGER = LogManager.getLogger("Better World Options");
 
     public static Biome Alpha;
     public static Biome Infdev;
@@ -106,5 +114,10 @@ public class BetterWorldOptions {
                 .passiveEntity(WolfEntity.class, 2)
                 .waterEntity(SquidEntity.class, 10)
                 .build();
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static Minecraft getMinecraft() {
+        return (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
     }
 }
