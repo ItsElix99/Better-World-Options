@@ -256,14 +256,13 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
             heightMap = new double[sizeX * sizeY * sizeZ];
         }
 
-        boolean isAmplified = this.worldType.equals("Amplified");
         double var8 = 684.412;
         double var10 = 684.412;
         double[] var12 = this.world.method_1781().temperatureMap;
         double[] var13 = this.world.method_1781().downfallMap;
         this.scaleNoiseBuffer = this.floatingIslandScale.create(this.scaleNoiseBuffer, x, z, sizeX, sizeZ, 1.121, 1.121, 0.5F);
         this.depthNoiseBuffer = this.floatingIslandNoise.create(this.depthNoiseBuffer, x, z, sizeX, sizeZ, 200.0F, 200.0F, 0.5F);
-        this.perlinNoiseBuffer = this.perlinNoise1.create(this.perlinNoiseBuffer, x, 0, z, sizeX, sizeY, sizeZ, var8 / (isAmplified ? (double) 160.0F : (double)80.0F), var10 / (isAmplified ? (double) 240.0F : (double)160.0F), var8 / (isAmplified ? (double) 160.0F : (double)80.0F));
+        this.perlinNoiseBuffer = this.perlinNoise1.create(this.perlinNoiseBuffer, x, 0, z, sizeX, sizeY, sizeZ, var8 / (double)80.0F, var10 / (double)160.0F, var8 / (double)80.0F);
         this.minLimitPerlinNoiseBuffer = this.minLimitPerlinNoise.create(this.minLimitPerlinNoiseBuffer, x, 0, z, sizeX, sizeY, sizeZ, var8, var10, var8);
         this.maxLimitPerlinNoiseBuffer = this.maxLimitPerlinNoise.create(this.maxLimitPerlinNoiseBuffer, x, 0, z, sizeX, sizeY, sizeZ, var8, var10, var8);
         int var14 = 0;
@@ -318,15 +317,13 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
 
                 var27 += 0.5F;
                 if (this.worldType.equals("Amplified")) {
-                    double depth = var29;
-                    if (depth < 0.0D) depth *= -1.0D;
+                    double heightScale = this.world.getHeight() / 256.0D;
+                    if (heightScale < 1.0D) heightScale = 1.0D;
 
-                    double heightScale = this.world.getHeight() / 128.0D;
-
-                    double factor = 1.0D + depth * ((this.world.getHeight() >> 4) * 2) * heightScale;
-
-                    var27 *= factor;
-                    if (var27 < 0.0D) var27 *= -1.0D;
+                    if (var27 > 0.0D) {
+                        var27 = (1.0D + var27 * 2.0D) * heightScale;
+                        var29 = (1.0D + var29 * 4.0D) * heightScale;
+                    }
                 }
                 var29 = var29 * (double) 17 / (double) 16.0F;
                 double var31 = (double) 17 / (double) 2.0F + var29 * (double) 4.0F;
@@ -334,7 +331,7 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
 
                 for (int var33 = 0; var33 < sizeY; ++var33) {
                     double var34;
-                    double var36 = ((double) var33 - var31) * (isAmplified ? (double) 20.0F : (double)12.0F) / var27;
+                    double var36 = ((double) var33 - var31) * (double)12.0F / var27;
                     if (var36 < (double) 0.0F) {
                         var36 *= 4.0F;
                     }

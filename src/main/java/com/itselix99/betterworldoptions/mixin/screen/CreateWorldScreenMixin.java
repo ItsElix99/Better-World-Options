@@ -361,6 +361,11 @@ public class CreateWorldScreenMixin extends Screen {
             if (this.generateStructuresButton.visible) {
                 this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.mapFeatures.info"), this.width / 2 - 150, 122, 10526880);
             }
+
+            if (this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION).equals("Amplified")) {
+                this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.worldtype.amplified.line1"), this.worldTypeButton.x + 2, this.worldTypeButton.y + 22, 10526880);
+                this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.worldtype.amplified.line2"), this.worldTypeButton.x + 2, this.worldTypeButton.y + 31, 10526880);
+            }
         } else {
             if (CompatMods.BHCreativeLoaded()) {
                 if (this.gamemodeButton.text.equals(this.translation.get("selectWorld.gameMode") + " " + "Survival")) {

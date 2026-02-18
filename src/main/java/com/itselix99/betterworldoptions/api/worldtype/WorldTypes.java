@@ -97,7 +97,7 @@ public class WorldTypes {
         WorldTypeEntry Default = createWorldType(null, "Default", "Default", "/assets/betterworldoptions/gui/default.png", new String[]{"Minecraft's default world generator"});
         WORLD_TYPE_LIST.add(Default);
 
-        WorldTypeEntry Amplified = createWorldType(AltOverworldChunkGenerator.class, "Amplified", "Amplified", "/assets/betterworldoptions/gui/default.png", new String[]{"Minecraft's default world generator", "but AMPLIFIED"});
+        WorldTypeEntry Amplified = createWorldType(AltOverworldChunkGenerator.class, "Amplified", "Amplified", "/assets/betterworldoptions/gui/amplified.png", new String[]{"Minecraft's default world generator", "but AMPLIFIED"});
         WORLD_TYPE_LIST.add(Amplified);
 
         WorldTypeEntry Nether = createWorldType(null, "Nether", "Nether", "/assets/betterworldoptions/gui/nether.png", new String[]{"Start the world in the Nether", "dimension"});

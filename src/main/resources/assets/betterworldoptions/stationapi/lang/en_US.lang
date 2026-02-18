@@ -15,6 +15,11 @@ selectWorld.gameMode.hardcore.line2=difficulty, and one life only
 
 selectWorld.mapFeatures.info=Villages, dungeons etc
 
+selectWorld.worldtype.amplified.line1=Notice: Just for fun, requires
+selectWorld.worldtype.amplified.line2=beefy computer
+
+selectWorld.mapFeatures.info=Villages, dungeons etc
+
 selectWorldType.title=Select World Type
 
 selectBiome.title=Select Biome
