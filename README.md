@@ -4,21 +4,27 @@
 
 This mod is designed for legacy versions of Minecraft and brings a fresh twist to the classic experience by blending old-school world generation with modern features. It introduces improvements and options inspired by newer versions of the game, with the goal of keeping the nostalgic atmosphere while providing useful enhancements.
 
-# Features
+## Features
+
 * **World Types**
 * **Hardcore Mode**
 * **Themes** – includes the Indev themes (Hell, Paradise, Woods) and also adds Winter Mode
+* **Finite World** — generates a world with fixed boundaries instead of infinite terrain, with selectable styles such as MCPE, LCE and Island
 * **Old Features** – available for world types based on older versions, allowing the world to generate like it did in the past
+* **Farlands** — generates Farlands with configurable shape and distance
 * **World Height** – configurable world height, from 128 up to 512
 * **Single Biome**
 * **Superflat**
 * **Ravines** – configurable ravine generation
+* **Cave and Beach Fixes** — Fixes caves cutting off and beaches forming incorrectly at chunk borders
 * **Walking Animations** – restores the Infdev/Indev and Classic player walking animations
-# Available World Types
+
+## Available World Types
+* **Default**
+* **Amplified**
 * **Nether**
 * **Skylands**
 * **Flat**
-* **Farlands**
 * **Alpha 1.2.0**
 * **Alpha 1.1.2_01**
 * **Infdev 20100611**
@@ -28,7 +34,9 @@ This mod is designed for legacy versions of Minecraft and brings a fresh twist t
 * **Indev 20100223**  
 * **MCPE** (0.1.0–0.8.1)
 * **Aether** (requires Aether on StationAPI)
-# Requirements
+
+## Requirements
 * **StationAPI**
 * **Glass Config API**
+
 
