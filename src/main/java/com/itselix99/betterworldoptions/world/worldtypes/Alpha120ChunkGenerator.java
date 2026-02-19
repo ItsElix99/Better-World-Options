@@ -235,7 +235,7 @@ public class Alpha120ChunkGenerator extends BWOChunkGenerator {
         this.buildSurfaces(chunkX, chunkZ, var3, this.biomes);
         this.cave.place(this, this.world, chunkX, chunkZ, var3);
 
-        if (Config.BWOConfig.world.ravineGeneration) {
+        if (Config.BWOConfig.world.ravineGeneration && Config.BWOConfig.world.ravineGenWithOldFeatures) {
             this.ravine.place(this, this.world, chunkX, chunkZ, var3);
         }
 

@@ -245,7 +245,7 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
         }
 
         if (Config.BWOConfig.world.ravineGeneration) {
-            if (!this.oldFeatures || Config.BWOConfig.world.allowGenWithOldFeaturesOn) {
+            if (!this.oldFeatures || Config.BWOConfig.world.ravineGenWithOldFeatures) {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
         }

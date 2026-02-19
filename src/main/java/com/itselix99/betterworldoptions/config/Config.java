@@ -49,6 +49,9 @@ public class Config {
 
         @ConfigEntry(name = "Ravine generation", multiplayerSynced = true)
         public Boolean ravineGeneration = false;
+
+        @ConfigEntry(name = "Ravine generation with Old Features", multiplayerSynced = true)
+        public Boolean ravineGenWithOldFeatures = false;
     }
 
     public static class BWOEnvironment {
