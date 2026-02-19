@@ -8,16 +8,16 @@ This mod is designed for legacy versions of Minecraft and brings a fresh twist t
 
 * **World Types**
 * **Hardcore Mode**
-* **Themes** – includes the Indev themes (Hell, Paradise, Woods) and also adds Winter Mode
-* **Finite World** — generates a world with fixed boundaries instead of infinite terrain, with selectable styles such as MCPE, LCE and Island
-* **Old Features** – available for world types based on older versions, allowing the world to generate like it did in the past
-* **Farlands** — generates Farlands with configurable shape and distance
-* **World Height** – configurable world height, from 128 up to 512
+* **Themes** - includes the Indev themes (Hell, Paradise, Woods) and also adds Winter Mode
+* **Finite World** - generates a world with fixed boundaries instead of infinite terrain, with selectable styles such as MCPE, LCE and Island
+* **Old Features** - available for world types based on older versions, allowing the world to generate like it did in the past
+* **Farlands** - generates Farlands with configurable shape and distance
+* **World Height** - configurable world height, from 128 up to 512
 * **Single Biome**
 * **Superflat**
-* **Ravines** – configurable ravine generation
-* **Cave and Beach Fixes** — fixes caves cutting off and beaches forming incorrectly at chunk borders
-* **Walking Animations** – restores the Infdev/Indev and Classic player walking animations
+* **Ravines** - configurable ravine generation
+* **Cave and Beach Fixes** - fixes caves cutting off and beaches forming incorrectly at chunk borders
+* **Walking Animations** - restores the Infdev/Indev and Classic player walking animations
 
 ## Available World Types
 * **Default**
@@ -38,3 +38,4 @@ This mod is designed for legacy versions of Minecraft and brings a fresh twist t
 ## Requirements
 * **StationAPI**
 * **Glass Config API**
+
