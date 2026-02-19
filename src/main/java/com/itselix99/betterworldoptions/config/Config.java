@@ -33,14 +33,19 @@ public class Config {
         @ConfigEntry(name = "Fix terrain gen in Default world type", description = "Fix terrain gen above height 128 in Default world type (may cause incompatibilities with other mods)", multiplayerSynced = true)
         public Boolean fixTerrainGenDefault = false;
 
-        @ConfigEntry(name = "Cave Fix", multiplayerSynced = true)
-        public Boolean caveFix = true;
+        @ConfigEntry(
+                name = "Cave Fix",
+                multiplayerSynced = true,
+                description = "Fixes caves cutting off at chunk boundaries"
+        )
+        public Boolean caveFix = false;
 
-        @ConfigEntry(name = "Beach Fix", multiplayerSynced = true)
-        public Boolean beachFix = true;
-
-        @ConfigEntry(name = "Allow generation of these features with Old Features enabled", multiplayerSynced = true)
-        public Boolean allowGenWithOldFeaturesOn = false;
+        @ConfigEntry(
+                name = "Beach Fix",
+                multiplayerSynced = true,
+                description = "Fixes misaligned beaches and chunk boundary breaks"
+        )
+        public Boolean beachFix = false;
 
         @ConfigEntry(name = "Ravine generation", multiplayerSynced = true)
         public Boolean ravineGeneration = false;
