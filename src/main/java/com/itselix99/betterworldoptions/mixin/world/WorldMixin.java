@@ -12,6 +12,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
@@ -136,8 +137,14 @@ public abstract class WorldMixin implements BWOWorld {
 
         this.eventProcessingEnabled = true;
         if (worldType.equals("Indev 223")) {
-            if (((ChunkGeneratorAccessor) this.getChunkSource()).getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld) {
-                finiteChunkGenerator.setCurrentStage("Spawning");
+            if (FabricLoaderImpl.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+                if (((ServerChunkGeneratorAccessor) this.getChunkSource()).getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld) {
+                    finiteChunkGenerator.setCurrentStage("Spawning");
+                }
+            } else {
+                if (((ChunkGeneratorAccessor) this.getChunkSource()).getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld) {
+                    finiteChunkGenerator.setCurrentStage("Spawning");
+                }
             }
             boolean isValidSpawnArea = false;
             int attempts = 0;

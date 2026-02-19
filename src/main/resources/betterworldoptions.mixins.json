@@ -29,7 +29,9 @@
     "biomes.BiomeColorsImplServerMixin",
     "dimensions.DimensionHelperServerImplMixin",
     "network.ServerLoginNetworkHandlerMixin",
-    "world.ServerChunkCacheMixin"
+    "world.MinecraftServerMixin",
+    "world.ServerChunkCacheMixin",
+    "world.ServerChunkGeneratorAccessor"
   ],
   "client": [
     "MinecraftMixin",

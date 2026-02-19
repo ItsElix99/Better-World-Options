@@ -284,7 +284,7 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
                     for(var9 = var3 - var7; var9 <= var3 + var7 && var5; ++var9) {
                         if(var8 >= 0 && var6 >= 0 && var9 >= 0 && var8 < this.width && var6 < 64 && var9 < this.length) {
                             var10 = this.fullWorldBlocks.get((var6 * this.length + var9) * this.width + var8) & 255;
-                            if(var10 != 0) {
+                            if(var10 != 0 && var10 != Block.LEAVES.id) {
                                 var5 = false;
                             }
                         } else {
@@ -319,7 +319,8 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
                     }
 
                     for(var13 = 0; var13 < var4; ++var13) {
-                        if(!Block.BLOCKS_OPAQUE[this.fullWorldBlocks.get(((var2 + var13) * this.length + var3) * this.width + var1) & 255]) {
+                        int var14 = this.fullWorldBlocks.get(((var2 + var13) * this.length + var3) * this.width + var1) & 255;
+                        if(var14 == 0 || var14 == Block.LEAVES.id) {
                             this.fullWorldBlocks.put(((var2 + var13) * this.length + var3) * this.width + var1, (byte) Block.LOG.id);
                         }
                     }

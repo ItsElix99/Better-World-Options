@@ -11,6 +11,8 @@ import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenera
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -87,6 +89,7 @@ public class DimensionMixin {
         return original;
     }
 
+    @Environment(EnvType.CLIENT)
     @ModifyReturnValue(method = "getBackgroundColor", at = @At(value = "RETURN", ordinal = 0))
     public float[] bwo_removeSunriseAndSunsetColors(float[] original) {
         String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();

@@ -97,7 +97,7 @@ public class MinecraftMixin {
             at = @At(value = "HEAD")
     )
     private void bwo_shutdownFiniteWorldStorage(World world, CallbackInfo ci) {
-        if (this.world != null) {
+        if (this.world != null && !this.world.isRemote) {
             BWOProperties bwoProperties = (BWOProperties) this.world.getProperties();
             boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
 
