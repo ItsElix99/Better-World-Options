@@ -61,7 +61,7 @@ public class BWOSliderWidget extends BWOButtonWidget {
     protected void renderBackground(Minecraft minecraft, int mouseX, int mouseY) {
         if (this.visible) {
             if (this.dragging) {
-                updateValueFromMouse(mouseX);
+                this.updateValueFromMouse(mouseX);
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

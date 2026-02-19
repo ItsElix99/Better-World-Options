@@ -1,8 +1,10 @@
 package com.itselix99.betterworldoptions.mixin.screen;
 
 import com.itselix99.betterworldoptions.api.options.GeneralOptions;
+import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
 import com.itselix99.betterworldoptions.compat.CompatMods;
@@ -53,7 +55,9 @@ public class CreateWorldScreenMixin extends Screen {
     @Unique private String lastEnteredSeed = "";
 
     @Unique private List<String> gamemode = new ArrayList<>(Arrays.asList("Survival", "Hardcore"));
-    @Unique int selectedGamemode = 0;
+    @Unique private int selectedGamemode = 0;
+
+    @Unique private String lastWorldType = "Default";
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void bwo_addCreativeSupport(CallbackInfo ci) {
@@ -112,17 +116,10 @@ public class CreateWorldScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void bwo_initButtons(CallbackInfo ci) {
         List<OptionEntry> generalOptions = GeneralOptions.getList();
-
         WorldTypeEntry worldTypeEntry = WorldTypes.getWorldTypeByName(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
-        for (OptionEntry generalOption : generalOptions) {
-            if (generalOption.compatibleWorldTypes.contains("Overworld")) {
-                if (worldTypeEntry.isDimension) {
-                    this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(generalOption);
-                }
-            } else if (!generalOption.compatibleWorldTypes.contains("All") && !generalOption.compatibleWorldTypes.contains(worldTypeEntry.name)) {
-                this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(generalOption);
-            }
-        }
+        this.bwo_checkGeneralOptionsCompatibilityAndValues(generalOptions, worldTypeEntry);
+
+        this.lastWorldType = this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
 
         this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, this.translation.get("selectWorld.gameMode") + " " + this.gamemode.get(this.selectedGamemode)));
         this.buttons.add(new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions")));
@@ -158,6 +155,42 @@ public class CreateWorldScreenMixin extends Screen {
             this.singleBiomeButton.active = false;
             String singleBiome = this.bwoWorldPropertiesStorage.getStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION);
             this.singleBiomeButton.text = this.translation.get("selectWorld.singleBiome") + " " + (!singleBiome.equals("Off") ? singleBiome : this.translation.get("options.off"));
+        }
+
+        if (worldTypeEntry.isDimension) {
+            this.themeButton.active = false;
+        }
+    }
+
+    @Unique
+    private void bwo_checkGeneralOptionsCompatibilityAndValues(List<OptionEntry> generalOptions, WorldTypeEntry worldTypeEntry) {
+        boolean changedWorldType = !this.lastWorldType.equals(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
+
+        for (OptionEntry generalOption : generalOptions) {
+            if (generalOption.compatibleWorldTypes.contains("Overworld")) {
+                if (worldTypeEntry.isDimension) {
+                    this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(generalOption);
+                }
+            } else if (!generalOption.compatibleWorldTypes.contains("All") && !generalOption.compatibleWorldTypes.contains(worldTypeEntry.name)) {
+                this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(generalOption);
+            }
+
+            if (changedWorldType) {
+                if (generalOption instanceof StringOptionEntry stringGeneralOption && !stringGeneralOption.worldTypeDefaultValue.isEmpty()) {
+                    if (stringGeneralOption.worldTypeDefaultValue.containsKey(worldTypeEntry.name)) {
+                        this.bwoWorldPropertiesStorage.setStringOptionValue(stringGeneralOption.name, stringGeneralOption.optionType, stringGeneralOption.worldTypeDefaultValue.get(worldTypeEntry.name).get(0));
+                        this.bwoWorldPropertiesStorage.setSelectedValue(stringGeneralOption.name, stringGeneralOption.optionType, 0);
+                    } else if (!stringGeneralOption.stringList.contains(this.bwoWorldPropertiesStorage.getStringOptionValue(stringGeneralOption.name, stringGeneralOption.optionType))) {
+                        this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(stringGeneralOption);
+                    }
+                } else if (generalOption instanceof BooleanOptionEntry booleanGeneralOption && !booleanGeneralOption.worldTypeDefaultValue.isEmpty()) {
+                    if (booleanGeneralOption.worldTypeDefaultValue.containsKey(worldTypeEntry.name)) {
+                        this.bwoWorldPropertiesStorage.setBooleanOptionValue(booleanGeneralOption.name, booleanGeneralOption.optionType, booleanGeneralOption.worldTypeDefaultValue.get(worldTypeEntry.name));
+                    } else if (booleanGeneralOption.worldTypeDefaultValue.containsKey(this.lastWorldType)) {
+                        this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(booleanGeneralOption);
+                    }
+                }
+            }
         }
     }
 

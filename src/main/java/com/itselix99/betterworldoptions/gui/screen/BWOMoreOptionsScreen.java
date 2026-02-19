@@ -30,6 +30,8 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
     private int selectedPage = 0;
     public List<BWOButtonWidget> bwoButtons = new ArrayList<>();
 
+    private WorldTypeEntry worldType;
+
     private BWOSliderWidget sizeXSlider;
     private BWOSliderWidget sizeZSlider;
 
@@ -39,6 +41,7 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
     public BWOMoreOptionsScreen(Screen parent, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {
         this.parent = parent;
         this.bwoWorldPropertiesStorage = bwoWorldPropertiesStorage;
+        this.worldType = WorldTypes.getWorldTypeByName(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
     }
 
     @Override
@@ -53,15 +56,19 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
         this.buttons.add(new ButtonWidget(0, this.width / 2 - 155, 20, 100, 20, this.translation.get("bwoMoreOptions.button.general")));
         ButtonWidget worldTypeOptionsButton;
         this.buttons.add(worldTypeOptionsButton = new ButtonWidget(1, this.width / 2 - 50, 20, 100, 20, this.translation.get("bwoMoreOptions.button.worldType")));
-        this.buttons.add(new ButtonWidget(2, this.width / 2 + 55, 20, 100, 20, this.translation.get("bwoMoreOptions.button.finiteWorld")));
+        ButtonWidget finiteWorldOptionsButton;
+        this.buttons.add(finiteWorldOptionsButton = new ButtonWidget(2, this.width / 2 + 55, 20, 100, 20, this.translation.get("bwoMoreOptions.button.finiteWorld")));
         this.buttons.add(new ButtonWidget(10000, this.width / 2 - 100, this.height - 27, this.translation.get("gui.done")));
         OptionEntry[] options = null;
         int i = 0;
 
-        WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
 
-        if (worldType.worldTypeOptions.isEmpty()) {
+        if (this.worldType.worldTypeOptions.isEmpty()) {
             worldTypeOptionsButton.active = false;
+        }
+
+        if (this.worldType.isDimension) {
+            finiteWorldOptionsButton.active = false;
         }
 
         switch (this.optionsPage.get(this.selectedPage)) {
@@ -77,9 +84,9 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
             }
             case "World Type Options" -> {
                 this.title = this.translation.get("bwoMoreOptions.title.worldTypeOptions");
-                if (!worldType.worldTypeOptions.isEmpty()) {
-                    options = new OptionEntry[worldType.worldTypeOptions.size()];
-                    for (OptionEntry option : worldType.worldTypeOptions.values()) {
+                if (!this.worldType.worldTypeOptions.isEmpty()) {
+                    options = new OptionEntry[this.worldType.worldTypeOptions.size()];
+                    for (OptionEntry option : this.worldType.worldTypeOptions.values()) {
                         if (option.visible) {
                             options[i] = option;
                             ++i;
@@ -192,6 +199,17 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
         this.listWidget.render(mouseX, mouseY, delta);
         this.listWidget.renderTooltip(mouseX, mouseY);
         this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get(this.title), this.width / 2, 5, 16777215);
+
+        if (this.optionsPage.get(this.selectedPage).equals("Finite World Options")) {
+            boolean finiteWorld = this.bwoWorldPropertiesStorage.getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+            int width = this.bwoWorldPropertiesStorage.getIntOptionValue("Width", OptionType.GENERAL_OPTION);
+            int length = this.bwoWorldPropertiesStorage.getIntOptionValue("Length", OptionType.GENERAL_OPTION);
+
+            if (this.worldType.pregenerateFiniteWorld && finiteWorld && width * length * 64 > 268435456) {
+                this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get("bwoMoreOptions.pregenerateFiniteWorld.info"), this.width / 2, 122, 16777215);
+            }
+        }
+
         super.render(mouseX, mouseY, delta);
     }
 

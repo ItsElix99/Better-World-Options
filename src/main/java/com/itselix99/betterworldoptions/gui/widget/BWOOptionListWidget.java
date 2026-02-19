@@ -57,9 +57,7 @@ public class BWOOptionListWidget extends EntryListWidgetButtons implements BWOSc
                 button = new BWOButtonWidget(var1, x, 0, this.translation.get(option.displayName) + " " + (booleanOptionValue ? this.translation.get("options.on") : this.translation.get("options.off")), option, this.bwoWorldPropertiesStorage, this);
 
                 if (!booleanOption.worldTypeDefaultValue.isEmpty() && booleanOption.worldTypeDefaultValue.containsKey(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION))) {
-                    this.bwoWorldPropertiesStorage.setBooleanOptionValue(option.name, option.optionType, booleanOption.worldTypeDefaultValue.get(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
                     button.active = false;
-                    button.text = this.translation.get(option.displayName) + " " + (this.bwoWorldPropertiesStorage.getBooleanOptionValue(option.name, option.optionType) ? this.translation.get("options.on") : this.translation.get("options.off"));
                 }
 
             } else if (option instanceof IntOptionEntry) {

@@ -440,13 +440,26 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
                         int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
                         int blockId = 0;
 
-                        if (y <= var108) {
+                        int waterHeight = surroundingWaterHeight;
+
+                        if (this.indevWorldType.equals("Floating")) {
+                            waterHeight = 2;
+                        } else if (this.indevWorldType.equals("Inland")) {
+                            waterHeight = 49;
+                        }
+
+                        if (y == var108 && y >= waterHeight) {
+                            if (!this.oldFeatures) {
+                                blockId = this.theme.equals("Hell") ? (byte) (var18.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var18.topBlockId) : var18.topBlockId;
+                            } else {
+                                blockId = this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id;
+                            }
+                        } else if (y < var108) {
                             if (!this.oldFeatures) {
                                 blockId = var18.soilBlockId;
                             } else {
                                 blockId = Block.DIRT.id;
                             }
-
                         }
 
                         if (y <= baseHeight) {
@@ -684,7 +697,6 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
             int var5 = z << 4;
 
             if (!this.finiteWorld) {
-                InfiniteIndevFeatures.placeTopBlockOnDirt(this.world, var4, var5, null, this.theme);
                 InfiniteIndevFeatures.generateTrees(this.world, this.random, this.theme.equals("Woods") ? 10 : 1, var4, var5);
 
                 int plantChance = this.theme.equals("Paradise") ? 20 : 4;

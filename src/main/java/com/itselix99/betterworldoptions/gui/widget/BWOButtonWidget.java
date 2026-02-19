@@ -32,18 +32,14 @@ public class BWOButtonWidget extends ButtonWidget {
         this.option = option;
         this.bwoWorldPropertiesStorage = bwoWorldPropertiesStorage;
         this.parent = parent;
+
         if (option instanceof StringOptionEntry stringOption) {
             String worldType = this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
+
             if (stringOption.optionType == OptionType.GENERAL_OPTION) {
                 if (!stringOption.worldTypeDefaultValue.isEmpty() && stringOption.worldTypeDefaultValue.containsKey(worldType)) {
-                    if (this.bwoWorldPropertiesStorage.getSelectedValue(option.name, option.optionType) >= stringOption.worldTypeDefaultValue.get(worldType).size()) this.bwoWorldPropertiesStorage.setSelectedValue(option.name, option.optionType, stringOption.ordinalDefaultValue);
-                    this.bwoWorldPropertiesStorage.setStringOptionValue(option.name, option.optionType, stringOption.worldTypeDefaultValue.get(worldType).get(this.bwoWorldPropertiesStorage.getSelectedValue(option.name, option.optionType)));
-                } else {
-                    this.bwoWorldPropertiesStorage.setSelectedValue(this.option.name, this.option.optionType, (this.bwoWorldPropertiesStorage.getSelectedValue(option.name, option.optionType)) % stringOption.stringList.size());
-                    this.bwoWorldPropertiesStorage.setStringOptionValue(this.option.name, this.option.optionType, stringOption.stringList.get(this.bwoWorldPropertiesStorage.getSelectedValue(this.option.name, this.option.optionType)));
+                    if (stringOption.worldTypeDefaultValue.get(worldType).size() < 2) this.active = false;
                 }
-
-                this.text = this.translation.get(this.option.displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue(this.option.name, this.option.optionType);
             }
 
             this.selected = this.bwoWorldPropertiesStorage.getSelectedValue(option.name, option.optionType);
@@ -59,18 +55,14 @@ public class BWOButtonWidget extends ButtonWidget {
         this.option = option;
         this.bwoWorldPropertiesStorage = bwoWorldPropertiesStorage;
         this.parent = parent;
+
         if (option instanceof StringOptionEntry stringOption) {
             String worldType = this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
+
             if (stringOption.optionType == OptionType.GENERAL_OPTION) {
                 if (!stringOption.worldTypeDefaultValue.isEmpty() && stringOption.worldTypeDefaultValue.containsKey(worldType)) {
-                    if (this.bwoWorldPropertiesStorage.getSelectedValue(option.name, option.optionType) >= stringOption.worldTypeDefaultValue.get(worldType).size()) this.bwoWorldPropertiesStorage.setSelectedValue(option.name, option.optionType, stringOption.ordinalDefaultValue);
-                    this.bwoWorldPropertiesStorage.setStringOptionValue(option.name, option.optionType, stringOption.worldTypeDefaultValue.get(worldType).get(this.bwoWorldPropertiesStorage.getSelectedValue(option.name, option.optionType)));
-                } else {
-                    this.bwoWorldPropertiesStorage.setSelectedValue(this.option.name, this.option.optionType, (this.bwoWorldPropertiesStorage.getSelectedValue(option.name, option.optionType)) % stringOption.stringList.size());
-                    this.bwoWorldPropertiesStorage.setStringOptionValue(this.option.name, this.option.optionType, stringOption.stringList.get(this.bwoWorldPropertiesStorage.getSelectedValue(this.option.name, this.option.optionType)));
+                    if (stringOption.worldTypeDefaultValue.get(worldType).size() < 2) this.active = false;
                 }
-
-                this.text = this.translation.get(this.option.displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue(this.option.name, this.option.optionType);
             }
 
             this.selected = this.bwoWorldPropertiesStorage.getSelectedValue(option.name, option.optionType);
@@ -82,9 +74,10 @@ public class BWOButtonWidget extends ButtonWidget {
     }
 
     public void onButtonClicked() {
+        String worldType = this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
+
         if (this.option instanceof StringOptionEntry stringOption) {
             List<String> stringList = stringOption.stringList;
-            String worldType = this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
             if (stringOption.optionType == OptionType.GENERAL_OPTION && !stringOption.worldTypeDefaultValue.isEmpty() && stringOption.worldTypeDefaultValue.containsKey(worldType)) {
                 stringList = stringOption.worldTypeDefaultValue.get(worldType);
             }
@@ -121,6 +114,8 @@ public class BWOButtonWidget extends ButtonWidget {
                 if (this.parent instanceof BWOScreen bwoScreen) {
                     for (BWOButtonWidget bwoButtonWidget : bwoScreen.bwo_getBWOButtonsList()) {
                         if (this.option.dependentOptions.contains(bwoButtonWidget.option)) {
+                            if (bwoButtonWidget.option instanceof StringOptionEntry stringOption && stringOption.worldTypeDefaultValue.containsKey(worldType) && stringOption.worldTypeDefaultValue.get(worldType).size() < 2) continue;
+
                             bwoButtonWidget.active = true;
                         }
                     }

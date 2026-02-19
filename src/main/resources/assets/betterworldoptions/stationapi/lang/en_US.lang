@@ -54,6 +54,8 @@ bwoMoreOptions.oldFeatures.line2=as in the original version
 bwoMoreOptions.farlandsDistance.line1=Distance from world center (in chunks)
 bwoMoreOptions.farlandsDistance.line2=where Farlands generation begins
 
+bwoMoreOptions.pregenerateFiniteWorld.info=Pregenerating large finite worlds may require a more powerful computer
+
 options.difficulty.hardcore=Hardcore
 
 deathScreen.deleteWorld=Delete world

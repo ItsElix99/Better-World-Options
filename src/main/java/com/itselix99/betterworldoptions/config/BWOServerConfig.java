@@ -143,12 +143,16 @@ public class BWOServerConfig {
 
             if (optionType == OptionType.GENERAL_OPTION) {
                 for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
-                    if (option instanceof StringOptionStorage stringGeneralOption) {
-                        props.setProperty(option.name, stringGeneralOption.value);
-                    } else if (option instanceof BooleanOptionStorage booleanGeneralOption) {
-                        props.setProperty(option.name, String.valueOf(booleanGeneralOption.value));
-                    } else if (option instanceof IntOptionStorage intGeneralOption) {
-                        props.setProperty(option.name, String.valueOf(intGeneralOption.value));
+                    OptionEntry optionEntry = GeneralOptions.getOptionByName(option.name);
+
+                    if (optionEntry.save) {
+                        if (option instanceof StringOptionStorage stringGeneralOption) {
+                            props.setProperty(option.name, stringGeneralOption.value);
+                        } else if (option instanceof BooleanOptionStorage booleanGeneralOption) {
+                            props.setProperty(option.name, String.valueOf(booleanGeneralOption.value));
+                        } else if (option instanceof IntOptionStorage intGeneralOption) {
+                            props.setProperty(option.name, String.valueOf(intGeneralOption.value));
+                        }
                     }
                 }
 

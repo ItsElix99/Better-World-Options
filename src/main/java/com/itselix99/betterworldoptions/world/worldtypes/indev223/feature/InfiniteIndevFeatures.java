@@ -5,7 +5,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.PlantBlock;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.OakTreeFeature;
 
 import java.util.*;
@@ -38,35 +37,6 @@ public class InfiniteIndevFeatures {
 
         world.setBlock(var1 - 3 + 1, var2, var3, Block.TORCH.id);
         world.setBlock(var1 + 3 - 1, var2, var3, Block.TORCH.id);
-    }
-
-    public static void placeTopBlockOnDirt(World world, int x, int z, Biome biome, String theme) {
-        int topBlockId;
-
-        if (biome != null) {
-            if (theme.equals("Hell") && !(biome.topBlockId == Block.GRASS_BLOCK.id)) {
-                return;
-            }
-
-            topBlockId = theme.equals("Hell") ? Block.DIRT.id : biome.topBlockId;
-        } else {
-            if (theme.equals("Hell")) {
-                return;
-            }
-
-            topBlockId = Block.GRASS_BLOCK.id;
-        }
-        for(int var1 = x + 8; var1 < x + 8 + 16; ++var1) {
-            for(int var2 = 0; var2 < 128; ++var2) {
-                for (int var3 = z + 8; var3 < z + 8 + 16; ++var3) {
-                    if (world.getBlockId(var1, var2, var3) == Block.DIRT.id && world.getLightLevel(var1, var2 + 1, var3) >= 4) {
-                        if (!(world.getBlockId(var1, var2 + 1, var3) == Block.ICE.id) && !world.getMaterial(var1, var2 + 1, var3).isFluid()) {
-                            world.setBlockWithoutNotifyingNeighbors(var1, var2, var3, topBlockId);
-                        }
-                    }
-                }
-            }
-        }
     }
 
     public static void generateTrees(World world, Random random, int chance, int x, int z) {
