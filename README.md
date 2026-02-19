@@ -16,7 +16,7 @@ This mod is designed for legacy versions of Minecraft and brings a fresh twist t
 * **Single Biome**
 * **Superflat**
 * **Ravines** – configurable ravine generation
-* **Cave and Beach Fixes** — Fixes caves cutting off and beaches forming incorrectly at chunk borders
+* **Cave and Beach Fixes** — fixes caves cutting off and beaches forming incorrectly at chunk borders
 * **Walking Animations** – restores the Infdev/Indev and Classic player walking animations
 
 ## Available World Types
@@ -38,5 +38,3 @@ This mod is designed for legacy versions of Minecraft and brings a fresh twist t
 ## Requirements
 * **StationAPI**
 * **Glass Config API**
-
-
