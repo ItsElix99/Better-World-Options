@@ -378,14 +378,9 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
 
     @ModifyReturnValue(method = "getChunk", at = @At(value = "RETURN"))
     private Chunk bwo_finiteWorld(Chunk original, @Local(ordinal = 0, argsOnly = true) int chunkX,  @Local(ordinal = 1, argsOnly = true) int chunkZ, @Local (ordinal = 0) byte[] blocks) {
-        if (this.finiteWorld && !this.finiteWorldType.equals("Island")) {
+        if (this.finiteWorld) {
             int blockX = chunkX * 16;
             int blockZ = chunkZ * 16;
-
-            String limitMode = null;
-            if (this.finiteWorldType.equals("MCPE") || this.finiteWorldType.equals("LCE")) {
-                limitMode = this.finiteWorldType;
-            }
 
             int minX;
             int maxX;
@@ -405,7 +400,7 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             }
 
             if (blockX < minX || blockX >= maxX || blockZ < minZ || blockZ >= maxZ) {
-                BWOLimitChunk bwoLimitChunk = new BWOLimitChunk(this.world, chunkX, chunkZ, limitMode);
+                BWOLimitChunk bwoLimitChunk = new BWOLimitChunk(this.world, chunkX, chunkZ, this.finiteWorldType);
                 bwoLimitChunk.fromLegacy(blocks);
                 bwoLimitChunk.populateHeightMap();
                 return bwoLimitChunk;

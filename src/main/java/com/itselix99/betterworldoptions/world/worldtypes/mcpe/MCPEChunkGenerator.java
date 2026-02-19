@@ -254,12 +254,7 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
 
-        String limitMode = null;
-        if (this.finiteWorldType.equals("MCPE") || this.finiteWorldType.equals("LCE")) {
-            limitMode = this.finiteWorldType;
-        }
-
-        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, var3, limitMode, flattenedChunk);
+        return this.getLimitChunkFiniteWorld(chunkX, chunkZ, var3, this.finiteWorldType, flattenedChunk);
     }
 
     private double[] generateHeightMap(double[] heightMap, int x, int z, int sizeX, int sizeY, int sizeZ) {

@@ -65,7 +65,7 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
     }
 
     protected Chunk getLimitChunkFiniteWorld(int chunkX, int chunkZ, byte[] blocks, String mode, Chunk defaultChunk) {
-        if (this.finiteWorld && !this.finiteWorldType.equals("Island")) {
+        if (this.finiteWorld) {
             int blockX = chunkX * 16;
             int blockZ = chunkZ * 16;
             int[] sizeLimits = getSizeLimits();
