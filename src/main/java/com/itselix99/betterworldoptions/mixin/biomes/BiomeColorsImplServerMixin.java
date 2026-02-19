@@ -69,7 +69,7 @@ public class BiomeColorsImplServerMixin {
         OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
 
         if (minecraftServer.getWorld(0).dimension.id == 0) {
-            if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != 1 && (theme.equals("Normal") || theme.equals("Winter"))) {
+            if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != -1 && (theme.equals("Normal") || theme.equals("Winter"))) {
                 return oldFeaturesProperties.defaultFogColor;
             } else if (theme.equals("Hell")) {
                 return 1049600;

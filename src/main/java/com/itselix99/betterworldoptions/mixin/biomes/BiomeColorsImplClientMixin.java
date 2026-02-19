@@ -70,7 +70,7 @@ public class BiomeColorsImplClientMixin {
         OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
 
         if (minecraft.world.dimension.id == 0) {
-            if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != 1 && (theme.equals("Normal") || theme.equals("Winter"))) {
+            if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != -1 && (theme.equals("Normal") || theme.equals("Winter"))) {
                 return oldFeaturesProperties.defaultFogColor;
             } else if (theme.equals("Hell")) {
                 return 1049600;
