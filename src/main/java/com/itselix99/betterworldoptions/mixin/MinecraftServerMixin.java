@@ -1,11 +1,11 @@
-package com.itselix99.betterworldoptions.mixin.world;
+package com.itselix99.betterworldoptions.mixin;
 
 import com.itselix99.betterworldoptions.api.chunk.FiniteChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.mixin.world.ServerChunkGeneratorAccessor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.ServerWorld;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
