@@ -135,8 +135,8 @@ public abstract class WorldMixin implements BWOWorld {
 
         boolean generateIndevHouse = bwoProperties.bwo_getBooleanOptionValue("GenerateIndevHouse", OptionType.WORLD_TYPE_OPTION);
 
-        this.eventProcessingEnabled = true;
         if (worldType.equals("Indev 223")) {
+            this.eventProcessingEnabled = true;
             if (FabricLoaderImpl.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
                 if (((ServerChunkGeneratorAccessor) this.getChunkSource()).getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld) {
                     finiteChunkGenerator.setCurrentStage("Spawning");
@@ -180,6 +180,7 @@ public abstract class WorldMixin implements BWOWorld {
             }
             ci.cancel();
         } else if (farlands) {
+            this.eventProcessingEnabled = true;
             int var1 = 0;
             int var2 = 64;
 
@@ -201,7 +202,8 @@ public abstract class WorldMixin implements BWOWorld {
             this.properties.setSpawn(var1, var2, var3);
             this.eventProcessingEnabled = false;
             ci.cancel();
-        } else if (finiteWorldType.equals("MCPE")) {
+        } else if (finiteWorld && finiteWorldType.equals("MCPE")) {
+            this.eventProcessingEnabled = true;
             int var1 = width / 2;
             int var2 = 64;
             int var3;
