@@ -3,19 +3,31 @@
 //file:noinspection ForeignDelegate
 plugins {
     id 'maven-publish'
-    id 'fabric-loom' version '1.13.3'
-    id 'babric-loom-extension' version '1.13.3'
+    id 'fabric-loom' version '1.15.3'
+    id 'babric-loom-extension' version '1.15.3'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+version = property("mod_version")
+group = property("maven_group")
 
-archivesBaseName = project.archives_base_name
-version = project.mod_version
-group = project.maven_group
+base {
+    archivesName = project.archives_base_name
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+    withSourcesJar()
+}
 
 loom {
-	//accessWidenerPath = file("src/main/resources/template.accesswidener")
+    if (project.hasProperty("accesswidener_name") && project.accesswidener_name.length() > 0) {
+        accessWidenerPath = file("src/main/resources/${project.accesswidener_name}.accesswidener")
+    }
+    mixin {
+        useLegacyMixinAp = false
+    }
 }
 
 repositories {
@@ -140,13 +152,19 @@ tasks.withType(JavaCompile).configureEach {
     it.options.release = 17
 }
 
-java {
-    withSourcesJar()
+// Disables the generation of the .module file
+tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
+}
+
+// Gradle 9 fails the build if there are no tests, but we are using the test package for a test mod
+tasks.withType(Test).configureEach {
+    failOnNoDiscoveredTests = false
 }
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
+        rename { "${it}_" + base.archivesName.get() }
     }
 }
 
@@ -168,8 +186,8 @@ publishing {
 	}
 
 	publications {
-		mavenJava(MavenPublication) {
-			artifactId = project.archivesBaseName
+        create("mavenJava", MavenPublication) {
+            artifactId = base.archivesName.get()
 			from components.java
 		}
 	}
