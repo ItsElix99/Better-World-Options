@@ -302,6 +302,45 @@ public abstract class WorldMixin implements BWOWorld {
         }
     }
 
+    @WrapOperation(
+            method = "manageChunkUpdatesAndEvents",
+            at = @At
+                    (
+                            value = "INVOKE",
+                            target = "Lnet/minecraft/world/biome/Biome;canSnow()Z"
+                    )
+    )
+    private boolean bwo_generateSnowAndIceInWinterTheme(Biome biome, Operation<Boolean> original) {
+        BWOProperties bwoProperties = (BWOProperties) properties;
+        String theme = bwoProperties.bwo_getTheme();
+
+        if (theme.equals("Winter")) {
+            return true;
+        }
+
+        return original.call(biome);
+    }
+
+    @WrapOperation(
+            method = "manageChunkUpdatesAndEvents",
+            at = @At
+                    (
+                            value = "INVOKE",
+                            target = "Lnet/minecraft/world/World;isRaining()Z",
+                            ordinal = 1
+                    )
+    )
+    private boolean bwo_generateSnowInWinterTheme(World world, Operation<Boolean> original) {
+        BWOProperties bwoProperties = (BWOProperties) properties;
+        String theme = bwoProperties.bwo_getTheme();
+
+        if (theme.equals("Winter")) {
+            return true;
+        }
+
+        return original.call(world);
+    }
+
     @ModifyReturnValue(method = "getRainGradient", at = @At("RETURN"))
     private float bwo_noRainGradientInHellAndParadise(float original) {
         String theme = ((BWOProperties) this.getProperties()).bwo_getTheme();
