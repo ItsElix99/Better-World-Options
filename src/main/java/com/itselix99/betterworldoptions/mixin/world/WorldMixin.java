@@ -119,6 +119,18 @@ public abstract class WorldMixin implements BWOWorld {
         BWOWorldPropertiesStorage.getInstance().setOldTextures(this.dimension.id == 0 && ((BWOProperties) this.getProperties()).bwo_isOldFeatures());
     }
 
+    @Inject(
+            method = {
+                    "<init>(Lnet/minecraft/world/World;Lnet/minecraft/world/dimension/Dimension;)V",
+                    "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;Lnet/minecraft/world/dimension/Dimension;J)V",
+                    "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;JLnet/minecraft/world/dimension/Dimension;)V"
+            },
+            at = @At("HEAD")
+    )
+    private static void bwo_initDimensionWorldTypes(CallbackInfo ci) {
+        BWOWorldPropertiesStorage.initDimensionWorldTypes();
+    }
+
     @Inject(method = "initializeSpawnPoint", at = @At("HEAD"), cancellable = true)
     private void bwo_initializeSpawnPoint(CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) properties;

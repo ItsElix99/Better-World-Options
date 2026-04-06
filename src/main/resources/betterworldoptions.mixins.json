@@ -26,10 +26,11 @@
     "world.WorldPropertiesMixin"
   ],
   "server": [
+    "MinecraftServerMixin",
     "biomes.BiomeColorsImplServerMixin",
     "dimensions.DimensionHelperServerImplMixin",
     "network.ServerLoginNetworkHandlerMixin",
-    "MinecraftServerMixin",
+    "network.ServerPlayNetworkHandlerMixin",
     "world.ServerChunkCacheMixin",
     "world.ServerChunkGeneratorAccessor"
   ],

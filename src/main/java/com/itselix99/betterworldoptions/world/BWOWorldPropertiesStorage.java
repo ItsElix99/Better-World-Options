@@ -17,12 +17,15 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.world.biome.Biome;
+import net.modificationstation.stationapi.api.registry.DimensionContainer;
+import net.modificationstation.stationapi.api.registry.DimensionRegistry;
 
 import java.util.*;
 
 public class BWOWorldPropertiesStorage {
     private static BWOWorldPropertiesStorage INSTANCE = new BWOWorldPropertiesStorage();
-    private static boolean initBiomeClimateAndOldTextures = false;
+    private static boolean init = false;
+    private static boolean initDimensionWorldTypes = false;
 
     private Map<String, OptionStorage> generalOptions = new LinkedHashMap<>();
     private Map<String, OptionStorage> worldTypeOptions = new LinkedHashMap<>();
@@ -39,7 +42,10 @@ public class BWOWorldPropertiesStorage {
     public static String BWOWorldVersion = null;
 
     public BWOWorldPropertiesStorage() {
-        this.initBiomeClimateAndOldTextures();
+        if (!init) {
+            this.initBiomeClimateAndOldTextures();
+            init = true;
+        }
 
         List<OptionEntry> generalOptionsList = GeneralOptions.getList();
 
@@ -213,71 +219,88 @@ public class BWOWorldPropertiesStorage {
         this.oldTextures = bl;
     }
 
-    private void initBiomeClimateAndOldTextures() {
-        if (!initBiomeClimateAndOldTextures) {
-            initBiomeClimateAndOldTextures = true;
+    public static void initDimensionWorldTypes() {
+        if (!initDimensionWorldTypes) {
+            for (DimensionContainer<?> dimensionContainer : DimensionRegistry.INSTANCE.serialView.values()) {
+                if (dimensionContainer.getLegacyID() > 1) {
+                    String modName = DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString();
+                    if (modName.startsWith("mod_")) modName = modName.substring(4);
 
-            if (biomeClimateMap == null) {
-                biomeClimateMap = new HashMap<>();
+                    String[] nameAndIcon = WorldTypes.getDimensionWorldTypeNameAndIconMap().getOrDefault(modName, new String[]{modName, null});
+                    String[] desc = WorldTypes.getDimensionWorldTypeDescMap().getOrDefault(modName, null);
+
+                    WorldTypeEntry worldType = WorldTypes.createWorldType(null, nameAndIcon[0], nameAndIcon[0], nameAndIcon[1], desc);
+                    worldType.isDimension = true;
+                    worldType.dimensionId = dimensionContainer.getLegacyID();
+                    WorldTypes.getList().add(WorldTypes.getList().size(), worldType);
+                }
             }
 
-            biomeClimateMap.put(Biome.TUNDRA, new double[]{0.05D, 0.2D});
-            biomeClimateMap.put(Biome.SAVANNA, new double[]{0.7D, 0.1D});
-            biomeClimateMap.put(Biome.DESERT, new double[]{1.0D, 0.05D});
-            biomeClimateMap.put(Biome.SWAMPLAND, new double[]{0.6D, 0.8D});
-            biomeClimateMap.put(Biome.TAIGA, new double[]{0.4D, 0.4D});
-            biomeClimateMap.put(Biome.SHRUBLAND, new double[]{0.8D, 0.3D});
-            biomeClimateMap.put(Biome.FOREST, new double[]{0.8D, 0.6D});
-            biomeClimateMap.put(Biome.PLAINS, new double[]{1.0D, 0.4D});
-            biomeClimateMap.put(Biome.SEASONAL_FOREST, new double[]{1.0D, 0.7D});
-            biomeClimateMap.put(Biome.RAINFOREST, new double[]{1.0D, 0.85D});
-            biomeClimateMap.put(Biome.ICE_DESERT, new double[]{0.05D, 0.05D});
-
-            WorldTypeEntry Alpha120 = WorldTypes.getWorldTypeByName("Alpha 1.2.0");
-            Alpha120.oldTextures.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
-            Alpha120.oldTextures.put("Cobblestone", TextureListener.alphaCobblestone);
-
-            WorldTypeEntry Alpha112 = WorldTypes.getWorldTypeByName("Alpha 1.1.2_01");
-            Alpha112.oldTextures.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
-            Alpha112.oldTextures.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
-            Alpha112.oldTextures.put("Cobblestone", TextureListener.alphaCobblestone);
-            Alpha112.oldTextures.put("IronBlockTop", TextureListener.alphaIronBlock);
-            Alpha112.oldTextures.put("IronBlockSide", TextureListener.alphaIronBlockSide);
-            Alpha112.oldTextures.put("IronBlockBottom", TextureListener.alphaIronBlockBottom);
-            Alpha112.oldTextures.put("GoldBlockTop", TextureListener.alphaGoldBlock);
-            Alpha112.oldTextures.put("GoldBlockSide", TextureListener.alphaGoldBlockSide);
-            Alpha112.oldTextures.put("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
-            Alpha112.oldTextures.put("DiamondBlockTop", TextureListener.alphaDiamondBlock);
-            Alpha112.oldTextures.put("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
-            Alpha112.oldTextures.put("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
-            Alpha112.oldTextures.put("Grass", TextureListener.alphaTallGrass);
-            Alpha112.oldTextures.put("Fern", TextureListener.alphaFern);
-            Alpha112.oldTextures.put("Leaves", TextureListener.alphaLeaves);
-            Alpha112.oldTextures.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
-            Alpha112.oldTextures.put("FurnaceTop", Block.STONE.textureId);
-
-            WorldTypeEntry Infdev611 = WorldTypes.getWorldTypeByName("Infdev 611");
-            addOldTexturesForInfdevAndIndev(Infdev611);
-
-            WorldTypeEntry Infdev420 = WorldTypes.getWorldTypeByName("Infdev 420");
-            addOldTexturesForInfdevAndIndev(Infdev420);
-
-            WorldTypeEntry Infdev415 = WorldTypes.getWorldTypeByName("Infdev 415");
-            addOldTexturesForInfdevAndIndev(Infdev415);
-
-            WorldTypeEntry EarlyInfdev = WorldTypes.getWorldTypeByName("Early Infdev");
-            addOldTexturesForInfdevAndIndev(EarlyInfdev);
-
-            WorldTypeEntry Indev223 = WorldTypes.getWorldTypeByName("Indev 223");
-            addOldTexturesForInfdevAndIndev(Indev223);
-
-            WorldTypeEntry MCPE = WorldTypes.getWorldTypeByName("MCPE");
-            MCPE.oldTextures.put("GrassBlockSide", TextureListener.mcpeGrassBlockSide);
-            MCPE.oldTextures.put("Leaves", TextureListener.alphaLeaves);
-            MCPE.oldTextures.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
-            MCPE.oldTextures.put("Rose", TextureListener.mcpeRose);
-            MCPE.oldTextures.put("IceBlock", TextureListener.mcpeIceBlock);
+            initDimensionWorldTypes = true;
         }
+    }
+
+    private void initBiomeClimateAndOldTextures() {
+        if (biomeClimateMap == null) {
+            biomeClimateMap = new HashMap<>();
+        }
+
+        biomeClimateMap.put(Biome.TUNDRA, new double[]{0.05D, 0.2D});
+        biomeClimateMap.put(Biome.SAVANNA, new double[]{0.7D, 0.1D});
+        biomeClimateMap.put(Biome.DESERT, new double[]{1.0D, 0.05D});
+        biomeClimateMap.put(Biome.SWAMPLAND, new double[]{0.6D, 0.8D});
+        biomeClimateMap.put(Biome.TAIGA, new double[]{0.4D, 0.4D});
+        biomeClimateMap.put(Biome.SHRUBLAND, new double[]{0.8D, 0.3D});
+        biomeClimateMap.put(Biome.FOREST, new double[]{0.8D, 0.6D});
+        biomeClimateMap.put(Biome.PLAINS, new double[]{1.0D, 0.4D});
+        biomeClimateMap.put(Biome.SEASONAL_FOREST, new double[]{1.0D, 0.7D});
+        biomeClimateMap.put(Biome.RAINFOREST, new double[]{1.0D, 0.85D});
+        biomeClimateMap.put(Biome.ICE_DESERT, new double[]{0.05D, 0.05D});
+
+        WorldTypeEntry Alpha120 = WorldTypes.getWorldTypeByName("Alpha 1.2.0");
+        Alpha120.oldTextures.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        Alpha120.oldTextures.put("Cobblestone", TextureListener.alphaCobblestone);
+
+        WorldTypeEntry Alpha112 = WorldTypes.getWorldTypeByName("Alpha 1.1.2_01");
+        Alpha112.oldTextures.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
+        Alpha112.oldTextures.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        Alpha112.oldTextures.put("Cobblestone", TextureListener.alphaCobblestone);
+        Alpha112.oldTextures.put("IronBlockTop", TextureListener.alphaIronBlock);
+        Alpha112.oldTextures.put("IronBlockSide", TextureListener.alphaIronBlockSide);
+        Alpha112.oldTextures.put("IronBlockBottom", TextureListener.alphaIronBlockBottom);
+        Alpha112.oldTextures.put("GoldBlockTop", TextureListener.alphaGoldBlock);
+        Alpha112.oldTextures.put("GoldBlockSide", TextureListener.alphaGoldBlockSide);
+        Alpha112.oldTextures.put("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
+        Alpha112.oldTextures.put("DiamondBlockTop", TextureListener.alphaDiamondBlock);
+        Alpha112.oldTextures.put("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
+        Alpha112.oldTextures.put("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
+        Alpha112.oldTextures.put("Grass", TextureListener.alphaTallGrass);
+        Alpha112.oldTextures.put("Fern", TextureListener.alphaFern);
+        Alpha112.oldTextures.put("Leaves", TextureListener.alphaLeaves);
+        Alpha112.oldTextures.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        Alpha112.oldTextures.put("FurnaceTop", Block.STONE.textureId);
+
+        WorldTypeEntry Infdev611 = WorldTypes.getWorldTypeByName("Infdev 611");
+        addOldTexturesForInfdevAndIndev(Infdev611);
+
+        WorldTypeEntry Infdev420 = WorldTypes.getWorldTypeByName("Infdev 420");
+        addOldTexturesForInfdevAndIndev(Infdev420);
+
+        WorldTypeEntry Infdev415 = WorldTypes.getWorldTypeByName("Infdev 415");
+        addOldTexturesForInfdevAndIndev(Infdev415);
+
+        WorldTypeEntry EarlyInfdev = WorldTypes.getWorldTypeByName("Early Infdev");
+        addOldTexturesForInfdevAndIndev(EarlyInfdev);
+
+        WorldTypeEntry Indev223 = WorldTypes.getWorldTypeByName("Indev 223");
+        addOldTexturesForInfdevAndIndev(Indev223);
+
+        WorldTypeEntry MCPE = WorldTypes.getWorldTypeByName("MCPE");
+        MCPE.oldTextures.put("GrassBlockSide", TextureListener.mcpeGrassBlockSide);
+        MCPE.oldTextures.put("Leaves", TextureListener.alphaLeaves);
+        MCPE.oldTextures.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        MCPE.oldTextures.put("Rose", TextureListener.mcpeRose);
+        MCPE.oldTextures.put("IceBlock", TextureListener.mcpeIceBlock);
     }
 
     private void addOldTexturesForInfdevAndIndev(WorldTypeEntry worldType) {

@@ -3,6 +3,7 @@ package com.itselix99.betterworldoptions.mixin;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.chunk.FiniteChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.itselix99.betterworldoptions.compat.CompatMods;
 import com.itselix99.betterworldoptions.mixin.world.ChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
@@ -85,8 +86,8 @@ public class MinecraftMixin {
             return new World(storage, name, seed, Dimension.fromId(-1));
         } else if (worldType.equals("Skylands") && skyDimension && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(1));
-        } else if (worldType.equals("Aether") && storage.loadProperties() == null) {
-            return new World(storage, name, seed, CompatMods.startWorldInAether());
+        } else if (WorldTypes.getWorldTypeByName(worldType).isDimension && storage.loadProperties() == null) {
+            return new World(storage, name, seed, Dimension.fromId(WorldTypes.getWorldTypeByName(worldType).dimensionId));
         }
 
         return original.call(storage, name, seed);

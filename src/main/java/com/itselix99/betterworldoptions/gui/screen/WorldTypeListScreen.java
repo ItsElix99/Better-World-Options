@@ -37,6 +37,8 @@ public class WorldTypeListScreen extends Screen {
     public WorldTypeListScreen(Screen parent, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {
         this.parent = parent;
         this.bwoWorldPropertiesStorage = bwoWorldPropertiesStorage;
+
+        BWOWorldPropertiesStorage.initDimensionWorldTypes();
     }
 
     @SuppressWarnings("unchecked")
@@ -141,8 +143,10 @@ public class WorldTypeListScreen extends Screen {
 
             WorldTypeListScreen.this.drawTextWithShadow(WorldTypeListScreen.this.minecraft.textRenderer, var1.displayName, x + 32 + 2, y + 1, 16777215);
 
-            for (int var2 = 0; var2 < var1.description.length; ++var2) {
-                WorldTypeListScreen.this.drawTextWithShadow(WorldTypeListScreen.this.minecraft.textRenderer, var1.description[var2], x + 32 + 2, y + (12 * (var2 + 1)), 8421504);
+            if (var1.description != null) {
+                for (int var2 = 0; var2 < var1.description.length; ++var2) {
+                    WorldTypeListScreen.this.drawTextWithShadow(WorldTypeListScreen.this.minecraft.textRenderer, var1.description[var2], x + 32 + 2, y + (12 * (var2 + 1)), 8421504);
+                }
             }
         }
     }

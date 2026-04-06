@@ -1,32 +1,36 @@
-package com.itselix99.betterworldoptions.mixin.entity;
+package com.itselix99.betterworldoptions.mixin.network;
 
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.ClientPlayerEntity;
+import net.minecraft.network.NetworkHandler;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-@Mixin(ClientPlayerEntity.class)
-@Environment(EnvType.CLIENT)
-public class ClientPlayerEntityMixin {
-    @Shadow protected Minecraft minecraft;
+@Environment(EnvType.SERVER)
+@Mixin(ServerPlayNetworkHandler.class)
+public abstract class ServerPlayNetworkHandlerMixin extends NetworkHandler {
+    @Shadow private MinecraftServer server;
 
     @ModifyArgs(
-            method = "respawn",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/Minecraft;respawnPlayer(ZI)V"
-            )
+            method = "onPlayerRespawn",
+            at = @At
+                    (
+                            value = "INVOKE",
+                            target = "Lnet/minecraft/server/PlayerManager;respawnPlayer(Lnet/minecraft/entity/player/ServerPlayerEntity;I)Lnet/minecraft/entity/player/ServerPlayerEntity;"
+                    )
     )
-    private void bwo_respawnInOtherDimensions(Args args) {
-        BWOProperties bwoProperties = (BWOProperties) this.minecraft.world.getProperties();
+    private void bwo_respawnInOtherDimensions(Args args){
+        World world = this.server.getWorld(0);
+        BWOProperties bwoProperties = (BWOProperties) world.getProperties();
         String worldType = bwoProperties.bwo_getWorldType();
         boolean skyDimension = bwoProperties.bwo_getBooleanOptionValue("SkyDimension", OptionType.WORLD_TYPE_OPTION);
 

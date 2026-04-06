@@ -5,7 +5,6 @@ import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
-import com.itselix99.betterworldoptions.compat.CompatMods;
 import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.FlatChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.SkylandsChunkGenerator;
@@ -19,15 +18,23 @@ import com.itselix99.betterworldoptions.world.worldtypes.infdev611.Infdev611Chun
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.MCPEChunkGenerator;
 import net.minecraft.world.chunk.ChunkSource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class WorldTypes {
     private static final List<WorldTypeEntry> WORLD_TYPE_LIST = new ArrayList<>();
+    private static final Map<String, String[]> dimensionWorldTypeNameAndIcon = new HashMap<>();
+    private static final Map<String, String[]> dimensionWorldTypeDesc = new HashMap<>();
 
     public static List<WorldTypeEntry> getList() {
         return WORLD_TYPE_LIST;
+    }
+
+    public static Map<String, String[]> getDimensionWorldTypeNameAndIconMap() {
+        return dimensionWorldTypeNameAndIcon;
+    }
+
+    public static Map<String, String[]> getDimensionWorldTypeDescMap() {
+        return dimensionWorldTypeDesc;
     }
 
     public static WorldTypeEntry getWorldTypeByName(String worldTypeName) {
@@ -93,6 +100,11 @@ public class WorldTypes {
         return intOption;
     }
 
+    public static void addNameIconAndDescForDimensionWorldType(String id, String name, String icon, String[] desc) {
+        dimensionWorldTypeNameAndIcon.put(id, new String[]{name, icon});
+        dimensionWorldTypeDesc.put(id, desc);
+    }
+
     static {
         WorldTypeEntry Default = createWorldType(null, "Default", "Default", "/assets/betterworldoptions/gui/default.png", new String[]{"Minecraft's default world generator"});
         WORLD_TYPE_LIST.add(Default);
@@ -147,10 +159,6 @@ public class WorldTypes {
         MCPE.oldFeaturesProperties = new OldFeaturesProperties(() -> null, true, 2907587, 6731007, false, true);
         WORLD_TYPE_LIST.add(MCPE);
 
-        if (CompatMods.AetherLoaded()) {
-            WorldTypeEntry Aether = createWorldType(null, "Aether", "Aether", "/assets/betterworldoptions/gui/aether.png", new String[]{"Start the world in a hostile paradise"});
-            Aether.isDimension = true;
-            WORLD_TYPE_LIST.add(Aether);
-        }
+        addNameIconAndDescForDimensionWorldType("aether", "Aether", "/assets/betterworldoptions/gui/aether.png", new String[]{"Start the world in a hostile paradise"});
     }
 }
