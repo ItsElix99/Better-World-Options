@@ -82,4 +82,12 @@ public class BWOLimitChunk extends FlattenedChunk {
 
         return super.getLight(x, y, z, light);
     }
+
+    public boolean setBlock(int x, int y, int z, int blockId, int meta) {
+        return false;
+    }
+
+    public boolean setBlock(int x, int y, int z, int blockId) {
+        return false;
+    }
 }

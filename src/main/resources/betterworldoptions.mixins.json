@@ -56,6 +56,8 @@
     "screen.RemoveBHCreativeGamemodeButton",
     "screen.SelectWorldScreenMixin",
     "screen.WorldListWidgetMixin",
+    "world.ClientWorldMixin",
+    "world.MultiplayerChunkCacheMixin",
     "world.WorldSaveInfoMixin"
   ],
   "injectors": {

@@ -81,6 +81,18 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         return defaultChunk;
     }
 
+    public static boolean getMultiplayerLimitChunkFiniteWorld(int chunkX, int chunkZ) {
+        int blockX = chunkX * 16;
+        int blockZ = chunkZ * 16;
+        int[] sizeLimits = getSizeLimits();
+
+        if (blockX < sizeLimits[0] || blockX >= sizeLimits[1] || blockZ < sizeLimits[2] || blockZ >= sizeLimits[3]) {
+            return true;
+        }
+
+        return false;
+    }
+
     protected int[] getFarlandsChunksOrDefault(int chunkX, int chunkZ, int farlandsChunk) {
         if (this.farlands) {
             if (this.farlandsShape.equals("Linear")) {
