@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.mixin.world;
+package com.itselix99.betterworldoptions.mixin.chunk;
 
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;

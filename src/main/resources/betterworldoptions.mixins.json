@@ -16,12 +16,12 @@
     "entity.EntityMixin",
     "world.AlphaWorldStorageAccessor",
     "world.CaveWorldCarverMixin",
-    "world.ChunkCacheMixin",
-    "world.ChunkGeneratorAccessor",
+    "chunk.ChunkCacheMixin",
+    "chunk.ChunkGeneratorAccessor",
     "world.DimensionDataAccessor",
     "world.FlattenedWorldStorageMixin",
     "world.OctavePerlinNoiseSamplerMixin",
-    "world.OverworldChunkGeneratorMixin",
+    "chunk.OverworldChunkGeneratorMixin",
     "world.WorldMixin",
     "world.WorldPropertiesMixin"
   ],
@@ -31,8 +31,8 @@
     "dimensions.DimensionHelperServerImplMixin",
     "network.ServerLoginNetworkHandlerMixin",
     "network.ServerPlayNetworkHandlerMixin",
-    "world.ServerChunkCacheMixin",
-    "world.ServerChunkGeneratorAccessor"
+    "chunk.ServerChunkCacheMixin",
+    "chunk.ServerChunkGeneratorAccessor"
   ],
   "client": [
     "MinecraftMixin",
@@ -57,7 +57,7 @@
     "screen.SelectWorldScreenMixin",
     "screen.WorldListWidgetMixin",
     "world.ClientWorldMixin",
-    "world.MultiplayerChunkCacheMixin",
+    "chunk.MultiplayerChunkCacheMixin",
     "world.WorldSaveInfoMixin"
   ],
   "injectors": {

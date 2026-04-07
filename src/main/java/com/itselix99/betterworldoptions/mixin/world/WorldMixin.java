@@ -4,6 +4,8 @@ import com.itselix99.betterworldoptions.api.chunk.FiniteChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.mixin.chunk.ChunkGeneratorAccessor;
+import com.itselix99.betterworldoptions.mixin.chunk.ServerChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.InfiniteIndevFeatures;

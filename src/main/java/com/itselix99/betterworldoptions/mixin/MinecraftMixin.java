@@ -5,7 +5,7 @@ import com.itselix99.betterworldoptions.api.chunk.FiniteChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
 import com.itselix99.betterworldoptions.compat.CompatMods;
-import com.itselix99.betterworldoptions.mixin.world.ChunkGeneratorAccessor;
+import com.itselix99.betterworldoptions.mixin.chunk.ChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
