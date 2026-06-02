@@ -6,6 +6,8 @@ import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkCache;
@@ -22,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ChunkCacheMixin {
     @Shadow private World world;
     @Unique private String worldType;
+    @Unique private String theme;
     @Unique private boolean oldFeatures;
     @Unique private boolean superflat;
     @Unique private boolean finiteWorld;
@@ -30,6 +33,7 @@ public class ChunkCacheMixin {
     private void bwo_init(World world, ChunkStorage storage, ChunkSource generator, CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
         this.worldType = bwoProperties.bwo_getWorldType();
+        this.theme = bwoProperties.bwo_getTheme();
         this.oldFeatures = bwoProperties.bwo_isOldFeatures();
         this.superflat = bwoProperties.bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
         this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
@@ -47,6 +51,19 @@ public class ChunkCacheMixin {
     private boolean bwo_cancelDecorateInFiniteAndFlatWorld(Chunk chunk, Operation<Boolean> original, @Local(ordinal = 0, argsOnly = true) int x, @Local(ordinal = 1, argsOnly = true) int z) {
         if (this.world.dimension.id == 0) {
             if (this.worldType.equals("Flat") && !this.superflat) {
+                if (this.theme.equals("Winter")) {
+                    int blockX = x * 16;
+                    int blockZ = z * 16;
+
+                    for(int var1 = blockX + 8; var1 < blockX + 8 + 16; ++var1) {
+                        for(int var2 = blockZ + 8; var2 < blockZ + 8 + 16; ++var2) {
+                            int var3 = this.world.getTopSolidBlockY(var1, var2);
+                            if (var3 > 0 && var3 < this.world.dimension.getHeight() && this.world.isAir(var1, var3, var2) && this.world.getMaterial(var1, var3 - 1, var2).blocksMovement() && this.world.getMaterial(var1, var3 - 1, var2) != Material.ICE) {
+                                this.world.setBlock(var1, var3, var2, Block.SNOW.id);
+                            }
+                        }
+                    }
+                }
                 return true;
             } else if (this.finiteWorld && this.oldFeatures && this.worldType.equals("MCPE")) {
                 int blockX = x * 16;

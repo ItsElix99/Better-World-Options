@@ -41,8 +41,9 @@ public class FlatChunkGenerator extends BWOChunkGenerator {
                         blockId = var1.soilBlockId;
                     } else if (y == 64) {
                         blockId = this.theme.equals("Hell") ? (byte) (var1.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var1.topBlockId) : var1.topBlockId;
-                    } else
+                    } else {
                         blockId = 0;
+                    }
 
                     int index = (z * 16 + x) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
                     blocks[index] = (byte) blockId;
