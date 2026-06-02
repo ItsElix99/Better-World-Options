@@ -19,10 +19,6 @@ public class BWOLimitChunk extends FlattenedChunk {
     }
 
     public int getBlockId(int x, int y, int z) {
-        if (Block.BLOCKS[super.getBlockId(x, y, z)] instanceof BlockWithEntity) {
-            return super.getBlockId(x, y, z);
-        }
-
         if (this.mode != null) {
             switch (this.mode) {
                 case "Island" -> {
@@ -84,10 +80,18 @@ public class BWOLimitChunk extends FlattenedChunk {
     }
 
     public boolean setBlock(int x, int y, int z, int blockId, int meta) {
+        if (Block.BLOCKS[blockId] instanceof BlockWithEntity) {
+            return super.setBlock(x, y, z, blockId, meta);
+        }
+
         return false;
     }
 
     public boolean setBlock(int x, int y, int z, int blockId) {
+        if (Block.BLOCKS[blockId] instanceof BlockWithEntity) {
+            return super.setBlock(x, y, z, blockId);
+        }
+
         return false;
     }
 }
