@@ -11,8 +11,10 @@ import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenera
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -76,6 +78,18 @@ public class DimensionMixin {
         }
 
         return original;
+    }
+
+    @ModifyReturnValue(method = "isValidSpawnPoint", at = @At("RETURN"))
+    public boolean bwo_isValidSpawnPoint(boolean original, @Local(ordinal = 2) int var3) {
+        String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
+        String theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
+
+        if (!theme.equals("Hell")) {
+            return var3 == WorldTypes.getWorldTypeByName(worldType).blockToSpawn;
+        } else {
+            return var3 == Block.DIRT.id;
+        }
     }
 
     @ModifyReturnValue(method = "getTimeOfDay", at = @At("RETURN"))

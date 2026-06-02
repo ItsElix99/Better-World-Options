@@ -16,6 +16,7 @@ import com.itselix99.betterworldoptions.world.worldtypes.infdev415.Infdev415Chun
 import com.itselix99.betterworldoptions.world.worldtypes.infdev420.Infdev420ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.infdev611.Infdev611ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.MCPEChunkGenerator;
+import net.minecraft.block.Block;
 import net.minecraft.world.chunk.ChunkSource;
 
 import java.util.*;
@@ -118,10 +119,12 @@ public class WorldTypes {
 
         WorldTypeEntry Skylands = createWorldType(SkylandsChunkGenerator.class, "Skylands", "Skylands", "/assets/betterworldoptions/gui/skylands.png", new String[]{"Start the world on the floating", "islands"});
         Skylands.worldTypeOptions.put("SkyDimension", createBooleanOption(Skylands.worldTypeOptions.size(), "bwoMoreOptions.skyDimension", "SkyDimension", null, false));
+        Skylands.blockToSpawn = Block.GRASS_BLOCK.id;
         WORLD_TYPE_LIST.add(Skylands);
 
         WorldTypeEntry Flat = createWorldType(FlatChunkGenerator.class, "Flat", "Flat", "/assets/betterworldoptions/gui/flat.png", new String[]{"A completely flat world, perfect for", "building"});
         Flat.worldTypeOptions.put("Superflat", createBooleanOption(Flat.worldTypeOptions.size(), "bwoMoreOptions.superflat", "Superflat", null, false));
+        Flat.blockToSpawn = Block.GRASS_BLOCK.id;
         WORLD_TYPE_LIST.add(Flat);
 
         WorldTypeEntry Alpha120 = createWorldType(Alpha120ChunkGenerator.class, "Alpha 1.2.0", "Alpha 1.2.0", "/assets/betterworldoptions/gui/alpha_1.2.0.png", new String[]{"Start the world with Alpha 1.2.0", "generation"});
@@ -146,6 +149,7 @@ public class WorldTypes {
 
         WorldTypeEntry EarlyInfdev = createWorldType(EarlyInfdevChunkGenerator.class, "Early Infdev", "Early Infdev", "/assets/betterworldoptions/gui/early_infdev.png", new String[]{"Start the world with Infdev 227-325", "generation"});
         EarlyInfdev.oldFeaturesProperties = new OldFeaturesProperties(() -> BetterWorldOptions.EarlyInfdev, false, 200, 11842815, true, false);
+        EarlyInfdev.blockToSpawn = Block.GRASS_BLOCK.id;
         WORLD_TYPE_LIST.add(EarlyInfdev);
 
         WorldTypeEntry Indev223 = createWorldType(Indev223ChunkGenerator.class, "Indev 20100223", "Indev 223", "/assets/betterworldoptions/gui/indev_20100223.png", new String[]{"Start the world with Indev 223", "generation"});
@@ -153,6 +157,7 @@ public class WorldTypes {
         Indev223.pregenerateFiniteWorld = true;
         Indev223.worldTypeOptions.put("IndevWorldType", createStringOptionWithStringList(Indev223.worldTypeOptions.size(), "bwoMoreOptions.indevWorldType", "IndevWorldType", null, new ArrayList<>(Arrays.asList("Island", "Floating", "Flat", "Inland")), 0));
         Indev223.worldTypeOptions.put("GenerateIndevHouse", createBooleanOption(Indev223.worldTypeOptions.size(), "bwoMoreOptions.generateIndevHouse", "GenerateIndevHouse", null, true));
+        Indev223.blockToSpawn = Block.GRASS_BLOCK.id;
         WORLD_TYPE_LIST.add(Indev223);
 
         WorldTypeEntry MCPE = createWorldType(MCPEChunkGenerator.class, "MCPE", "MCPE", "/assets/betterworldoptions/gui/mcpe.png", new String[]{"Start the world with MCPE 0.1.0-0.8.1", "generation"});

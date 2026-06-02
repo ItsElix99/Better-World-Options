@@ -102,13 +102,13 @@ dependencies {
         transitive false
     }
 
-    modImplementation("maven.modrinth:aether-stapi:${project.aether_version}-fabric,b1.7.3") {
-        transitive false
-    }
+//    modImplementation("maven.modrinth:aether-stapi:${project.aether_version}-fabric,b1.7.3") {
+//        transitive false
+//    }
 
-    modImplementation("maven.modrinth:accessory-api:${project.accessoryapi_version}-fabric,b1.7.3") {
-        transitive false
-    }
+//    modImplementation("maven.modrinth:accessory-api:${project.accessoryapi_version}-fabric,b1.7.3") {
+//        transitive false
+//    }
 
     modImplementation("maven.modrinth:unitweaks:${project.unitweaks_version}-fabric,b1.7.3") {
         transitive false

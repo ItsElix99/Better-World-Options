@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.api.worldtype;
 
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
+import net.minecraft.block.Block;
 import net.minecraft.world.chunk.ChunkSource;
 
 import java.util.HashMap;
@@ -19,4 +20,5 @@ public class WorldTypeEntry {
     public boolean isDimension = false;
     public int dimensionId = 0;
     public boolean pregenerateFiniteWorld = false;
+    public int blockToSpawn = Block.SAND.id;
 }
