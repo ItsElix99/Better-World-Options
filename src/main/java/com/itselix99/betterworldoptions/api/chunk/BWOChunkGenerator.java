@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.api.chunk;
 
 import com.itselix99.betterworldoptions.api.options.OptionType;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
@@ -13,6 +13,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.Generator;
 import net.minecraft.world.gen.carver.CaveWorldCarver;
 import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 
 import java.util.Random;
@@ -123,7 +124,7 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
             if (y <= 55) {
                 if (limit) {
                     if (y >= 53) {
-                        if (WorldTypes.getWorldTypeByName(this.worldType).oldFeaturesProperties != null && WorldTypes.getWorldTypeByName(this.worldType).oldFeaturesProperties.oldFeaturesHasVanillaBiomes) {
+                        if (WorldType.getOldFeaturesProperties(Identifier.of(this.worldType)) != null && WorldType.getOldFeaturesProperties(Identifier.of(this.worldType)).oldFeaturesHasVanillaBiomes) {
                             blocks[index] = biome.soilBlockId;
                         } else {
                             blocks[index] = this.oldFeatures ? (byte) Block.DIRT.id : biome.soilBlockId;

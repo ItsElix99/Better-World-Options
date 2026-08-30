@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.GeneralOptions;
 import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
@@ -10,8 +11,7 @@ import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage
 import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.event.TextureListener;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -19,6 +19,8 @@ import net.minecraft.block.Block;
 import net.minecraft.world.biome.Biome;
 import net.modificationstation.stationapi.api.registry.DimensionContainer;
 import net.modificationstation.stationapi.api.registry.DimensionRegistry;
+import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.api.util.Namespace;
 
 import java.util.*;
 
@@ -118,9 +120,9 @@ public class BWOWorldPropertiesStorage {
         if (optionType == OptionType.GENERAL_OPTION) {
             return ((StringOptionStorage) this.generalOptions.getOrDefault(optionName, new StringOptionStorage(optionName, ((StringOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
         } else if (optionType == OptionType.WORLD_TYPE_OPTION){
-            WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
-            if (!worldType.worldTypeOptions.isEmpty() && worldType.worldTypeOptions.containsKey(optionName)) {
-                return ((StringOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new StringOptionStorage(optionName, ((StringOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
+            WorldType worldType = WorldType.getWorldTypeById(Identifier.of(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
+            if (!worldType.getWorldTypeOptions().isEmpty() && worldType.getWorldTypeOptions().containsKey(optionName)) {
+                return ((StringOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new StringOptionStorage(optionName, ((StringOptionEntry) worldType.getWorldTypeOptions().get(optionName)).defaultValue))).value;
             }
         }
 
@@ -131,9 +133,9 @@ public class BWOWorldPropertiesStorage {
         if (optionType == OptionType.GENERAL_OPTION) {
             return ((BooleanOptionStorage) this.generalOptions.getOrDefault(optionName, new BooleanOptionStorage(optionName, ((BooleanOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
         } else if (optionType == OptionType.WORLD_TYPE_OPTION){
-            WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
-            if (!worldType.worldTypeOptions.isEmpty() && worldType.worldTypeOptions.containsKey(optionName)) {
-                return ((BooleanOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new BooleanOptionStorage(optionName, ((BooleanOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
+            WorldType worldType = WorldType.getWorldTypeById(Identifier.of(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
+            if (!worldType.getWorldTypeOptions().isEmpty() && worldType.getWorldTypeOptions().containsKey(optionName)) {
+                return ((BooleanOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new BooleanOptionStorage(optionName, ((BooleanOptionEntry) worldType.getWorldTypeOptions().get(optionName)).defaultValue))).value;
             }
         }
 
@@ -144,9 +146,9 @@ public class BWOWorldPropertiesStorage {
         if (optionType == OptionType.GENERAL_OPTION) {
             return ((IntOptionStorage) this.generalOptions.getOrDefault(optionName, new IntOptionStorage(optionName, ((IntOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
         } else if (optionType == OptionType.WORLD_TYPE_OPTION){
-            WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
-            if (!worldType.worldTypeOptions.isEmpty() && worldType.worldTypeOptions.containsKey(optionName)) {
-                return ((IntOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new IntOptionStorage(optionName, ((IntOptionEntry) worldType.worldTypeOptions.get(optionName)).defaultValue))).value;
+            WorldType worldType = WorldType.getWorldTypeById(Identifier.of(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
+            if (!worldType.getWorldTypeOptions().isEmpty() && worldType.getWorldTypeOptions().containsKey(optionName)) {
+                return ((IntOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new IntOptionStorage(optionName, ((IntOptionEntry) worldType.getWorldTypeOptions().get(optionName)).defaultValue))).value;
             }
         }
 
@@ -226,13 +228,13 @@ public class BWOWorldPropertiesStorage {
                     String modName = DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString();
                     if (modName.startsWith("mod_")) modName = modName.substring(4);
 
-                    String[] nameAndIcon = WorldTypes.getDimensionWorldTypeNameAndIconMap().getOrDefault(modName, new String[]{modName, null});
-                    String[] desc = WorldTypes.getDimensionWorldTypeDescMap().getOrDefault(modName, null);
+                    Map<String, String[]>[] dimensionWorldTypeInfo = WorldType.getDimensionWorldTypeInfo();
+                    String[] info = dimensionWorldTypeInfo[0].getOrDefault(modName, new String[]{modName, modName, null});
+                    String[] desc = dimensionWorldTypeInfo[1].getOrDefault(modName, null);
 
-                    WorldTypeEntry worldType = WorldTypes.createWorldType(null, nameAndIcon[0], nameAndIcon[0], nameAndIcon[1], desc);
-                    worldType.isDimension = true;
-                    worldType.dimensionId = dimensionContainer.getLegacyID();
-                    WorldTypes.getList().add(WorldTypes.getList().size(), worldType);
+                    WorldType worldType = new WorldType(Identifier.of(Namespace.of(DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString()), info[0]), info[1], info[2], desc);
+                    worldType.setIsDimension(true);
+                    worldType.setDimensionId(dimensionContainer.getLegacyID());
                 }
             }
 
@@ -257,71 +259,71 @@ public class BWOWorldPropertiesStorage {
         biomeClimateMap.put(Biome.RAINFOREST, new double[]{1.0D, 0.85D});
         biomeClimateMap.put(Biome.ICE_DESERT, new double[]{0.05D, 0.05D});
 
-        WorldTypeEntry Alpha120 = WorldTypes.getWorldTypeByName("Alpha 1.2.0");
-        Alpha120.oldTextures.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
-        Alpha120.oldTextures.put("Cobblestone", TextureListener.alphaCobblestone);
+        WorldType Alpha120 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("alpha_1.2.0"));
+        Alpha120.addOldTexture("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        Alpha120.addOldTexture("Cobblestone", TextureListener.alphaCobblestone);
 
-        WorldTypeEntry Alpha112 = WorldTypes.getWorldTypeByName("Alpha 1.1.2_01");
-        Alpha112.oldTextures.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
-        Alpha112.oldTextures.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
-        Alpha112.oldTextures.put("Cobblestone", TextureListener.alphaCobblestone);
-        Alpha112.oldTextures.put("IronBlockTop", TextureListener.alphaIronBlock);
-        Alpha112.oldTextures.put("IronBlockSide", TextureListener.alphaIronBlockSide);
-        Alpha112.oldTextures.put("IronBlockBottom", TextureListener.alphaIronBlockBottom);
-        Alpha112.oldTextures.put("GoldBlockTop", TextureListener.alphaGoldBlock);
-        Alpha112.oldTextures.put("GoldBlockSide", TextureListener.alphaGoldBlockSide);
-        Alpha112.oldTextures.put("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
-        Alpha112.oldTextures.put("DiamondBlockTop", TextureListener.alphaDiamondBlock);
-        Alpha112.oldTextures.put("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
-        Alpha112.oldTextures.put("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
-        Alpha112.oldTextures.put("Grass", TextureListener.alphaTallGrass);
-        Alpha112.oldTextures.put("Fern", TextureListener.alphaFern);
-        Alpha112.oldTextures.put("Leaves", TextureListener.alphaLeaves);
-        Alpha112.oldTextures.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
-        Alpha112.oldTextures.put("FurnaceTop", Block.STONE.textureId);
+        WorldType Alpha112 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("alpha_1.1.2_01"));
+        Alpha112.addOldTexture("GrassBlockTop", TextureListener.alphaGrassBlockTop);
+        Alpha112.addOldTexture("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        Alpha112.addOldTexture("Cobblestone", TextureListener.alphaCobblestone);
+        Alpha112.addOldTexture("IronBlockTop", TextureListener.alphaIronBlock);
+        Alpha112.addOldTexture("IronBlockSide", TextureListener.alphaIronBlockSide);
+        Alpha112.addOldTexture("IronBlockBottom", TextureListener.alphaIronBlockBottom);
+        Alpha112.addOldTexture("GoldBlockTop", TextureListener.alphaGoldBlock);
+        Alpha112.addOldTexture("GoldBlockSide", TextureListener.alphaGoldBlockSide);
+        Alpha112.addOldTexture("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
+        Alpha112.addOldTexture("DiamondBlockTop", TextureListener.alphaDiamondBlock);
+        Alpha112.addOldTexture("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
+        Alpha112.addOldTexture("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
+        Alpha112.addOldTexture("Grass", TextureListener.alphaTallGrass);
+        Alpha112.addOldTexture("Fern", TextureListener.alphaFern);
+        Alpha112.addOldTexture("Leaves", TextureListener.alphaLeaves);
+        Alpha112.addOldTexture("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        Alpha112.addOldTexture("FurnaceTop", Block.STONE.textureId);
 
-        WorldTypeEntry Infdev611 = WorldTypes.getWorldTypeByName("Infdev 611");
+        WorldType Infdev611 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100611"));
         addOldTexturesForInfdevAndIndev(Infdev611);
 
-        WorldTypeEntry Infdev420 = WorldTypes.getWorldTypeByName("Infdev 420");
+        WorldType Infdev420 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100420"));
         addOldTexturesForInfdevAndIndev(Infdev420);
 
-        WorldTypeEntry Infdev415 = WorldTypes.getWorldTypeByName("Infdev 415");
+        WorldType Infdev415 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100415"));
         addOldTexturesForInfdevAndIndev(Infdev415);
 
-        WorldTypeEntry EarlyInfdev = WorldTypes.getWorldTypeByName("Early Infdev");
+        WorldType EarlyInfdev = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("early_infdev"));
         addOldTexturesForInfdevAndIndev(EarlyInfdev);
 
-        WorldTypeEntry Indev223 = WorldTypes.getWorldTypeByName("Indev 223");
+        WorldType Indev223 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("indev_20100223"));
         addOldTexturesForInfdevAndIndev(Indev223);
 
-        WorldTypeEntry MCPE = WorldTypes.getWorldTypeByName("MCPE");
-        MCPE.oldTextures.put("GrassBlockSide", TextureListener.mcpeGrassBlockSide);
-        MCPE.oldTextures.put("Leaves", TextureListener.alphaLeaves);
-        MCPE.oldTextures.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
-        MCPE.oldTextures.put("Rose", TextureListener.mcpeRose);
-        MCPE.oldTextures.put("IceBlock", TextureListener.mcpeIceBlock);
+        WorldType MCPE = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("mcpe"));
+        MCPE.addOldTexture("GrassBlockSide", TextureListener.mcpeGrassBlockSide);
+        MCPE.addOldTexture("Leaves", TextureListener.alphaLeaves);
+        MCPE.addOldTexture("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        MCPE.addOldTexture("Rose", TextureListener.mcpeRose);
+        MCPE.addOldTexture("IceBlock", TextureListener.mcpeIceBlock);
     }
 
-    private void addOldTexturesForInfdevAndIndev(WorldTypeEntry worldType) {
-        worldType.oldTextures.put("GrassBlockTop", TextureListener.alphaGrassBlockTop);
-        worldType.oldTextures.put("GrassBlockSide", TextureListener.alphaGrassBlockSide);
-        worldType.oldTextures.put("Cobblestone", TextureListener.alphaCobblestone);
-        worldType.oldTextures.put("IronBlockTop", TextureListener.alphaIronBlock);
-        worldType.oldTextures.put("IronBlockSide", TextureListener.alphaIronBlockSide);
-        worldType.oldTextures.put("IronBlockBottom", TextureListener.alphaIronBlockBottom);
-        worldType.oldTextures.put("GoldBlockTop", TextureListener.alphaGoldBlock);
-        worldType.oldTextures.put("GoldBlockSide", TextureListener.alphaGoldBlockSide);
-        worldType.oldTextures.put("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
-        worldType.oldTextures.put("DiamondBlockTop", TextureListener.alphaDiamondBlock);
-        worldType.oldTextures.put("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
-        worldType.oldTextures.put("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
-        worldType.oldTextures.put("Grass", TextureListener.alphaTallGrass);
-        worldType.oldTextures.put("Fern", TextureListener.alphaFern);
-        worldType.oldTextures.put("Leaves", TextureListener.alphaLeaves);
-        worldType.oldTextures.put("LeavesOpaque", TextureListener.alphaLeavesOpaque);
-        worldType.oldTextures.put("FurnaceTop", Block.STONE.textureId);
-        worldType.oldTextures.put("BrickBlock", TextureListener.infdevBricksBlock);
+    private void addOldTexturesForInfdevAndIndev(WorldType worldType) {
+        worldType.addOldTexture("GrassBlockTop", TextureListener.alphaGrassBlockTop);
+        worldType.addOldTexture("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        worldType.addOldTexture("Cobblestone", TextureListener.alphaCobblestone);
+        worldType.addOldTexture("IronBlockTop", TextureListener.alphaIronBlock);
+        worldType.addOldTexture("IronBlockSide", TextureListener.alphaIronBlockSide);
+        worldType.addOldTexture("IronBlockBottom", TextureListener.alphaIronBlockBottom);
+        worldType.addOldTexture("GoldBlockTop", TextureListener.alphaGoldBlock);
+        worldType.addOldTexture("GoldBlockSide", TextureListener.alphaGoldBlockSide);
+        worldType.addOldTexture("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
+        worldType.addOldTexture("DiamondBlockTop", TextureListener.alphaDiamondBlock);
+        worldType.addOldTexture("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
+        worldType.addOldTexture("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
+        worldType.addOldTexture("Grass", TextureListener.alphaTallGrass);
+        worldType.addOldTexture("Fern", TextureListener.alphaFern);
+        worldType.addOldTexture("Leaves", TextureListener.alphaLeaves);
+        worldType.addOldTexture("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        worldType.addOldTexture("FurnaceTop", Block.STONE.textureId);
+        worldType.addOldTexture("BrickBlock", TextureListener.infdevBricksBlock);
     }
 
     public static double[] getClimateForBiome(Biome biome) {

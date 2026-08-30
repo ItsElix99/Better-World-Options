@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.biomes;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
@@ -23,7 +24,7 @@ public abstract class ForestBiomeMixin extends BiomeMixin implements BWOWorld {
         BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
         String worldType = bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
 
-        if (worldType.equals("Infdev 415") || worldType.equals("Infdev 420")) {
+        if (worldType.equals(BetterWorldOptions.NAMESPACE.id("infdev_20100415").toString()) || worldType.equals(BetterWorldOptions.NAMESPACE.id("infdev_20100420").toString())) {
             return random.nextInt(3) == 0 ? new OakTreeFeature() : new LargeOakTreeFeature();
         } else {
             return original;

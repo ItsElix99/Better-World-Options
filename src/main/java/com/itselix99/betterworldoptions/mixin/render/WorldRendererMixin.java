@@ -1,13 +1,14 @@
 package com.itselix99.betterworldoptions.mixin.render;
 
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.world.World;
+import net.modificationstation.stationapi.api.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +27,7 @@ public class WorldRendererMixin {
     )
     public void bwo_oldStars(int sfactor, int dfactor, Operation<Void> original) {
         String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
+        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
 
         if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeaturesProperties != null && oldFeaturesProperties.oldStars) {
             original.call(dfactor, dfactor);
@@ -45,7 +46,7 @@ public class WorldRendererMixin {
     )
     public void bwo_oldStars2(float red, float green, float blue, float alpha, Operation<Void> original) {
         String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
+        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
 
         if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeaturesProperties != null && oldFeaturesProperties.oldStars) {
             original.call(alpha, alpha, alpha, alpha);

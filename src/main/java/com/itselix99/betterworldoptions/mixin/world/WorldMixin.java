@@ -1,9 +1,10 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.FiniteChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.mixin.chunk.ChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.mixin.chunk.ServerChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
@@ -23,6 +24,7 @@ import net.minecraft.world.WorldProperties;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.dimension.Dimension;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -75,7 +77,7 @@ public abstract class WorldMixin implements BWOWorld {
         String worldType = bwoProperties.bwo_getWorldType();
         boolean oldFeatures =  bwoProperties.bwo_isOldFeatures();
         String theme = bwoProperties.bwo_getTheme();
-        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
+        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
 
         if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null) {
             Biome oldBiome = oldFeaturesProperties.oldFeaturesBiomeSupplier.get();
@@ -149,7 +151,7 @@ public abstract class WorldMixin implements BWOWorld {
 
         boolean generateIndevHouse = bwoProperties.bwo_getBooleanOptionValue("GenerateIndevHouse", OptionType.WORLD_TYPE_OPTION);
 
-        if (worldType.equals("Indev 223")) {
+        if (worldType.equals(BetterWorldOptions.NAMESPACE.id("indev_20100223").toString())) {
             this.eventProcessingEnabled = true;
             if (FabricLoaderImpl.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
                 if (((ServerChunkGeneratorAccessor) this.getChunkSource()).getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld) {

@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.screen;
 
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.compat.CompatMods;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
@@ -8,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.world.storage.WorldSaveInfo;
+import net.modificationstation.stationapi.api.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -38,7 +40,7 @@ public class WorldListWidgetMixin {
         boolean isHardcore = ((BWOProperties) worldSaveInfo).bwo_isHardcore();
 
         if (worldType.isEmpty()) {
-            worldType = "Default";
+            worldType = WorldType.defaultWorldType.getName();
         }
 
         if (isHardcore) {
@@ -52,7 +54,7 @@ public class WorldListWidgetMixin {
                 this.field_2444.drawTextWithShadow(minecraft.textRenderer, "Hardcore", x + offset, y + 1, 16711680);
             }
         }
-        this.field_2444.drawTextWithShadow(minecraft.textRenderer, "World Type:" + " " + worldType, x + 2, y + 12 + 10, 8421504);
+        this.field_2444.drawTextWithShadow(minecraft.textRenderer, "World Type:" + " " + WorldType.getWorldTypeById(Identifier.of(worldType)).getName(), x + 2, y + 12 + 10, 8421504);
     }
 
     @ModifyArgs(
@@ -68,9 +70,9 @@ public class WorldListWidgetMixin {
         String worldType = ((BWOProperties) worldSaveInfo).bwo_getWorldType();
 
         if (worldType.isEmpty()) {
-            worldType = "Default";
+            worldType = WorldType.defaultWorldType.getName();
         }
-        int offset = minecraft.textRenderer.getWidth("World Type:" + " " + worldType) + 10;
+        int offset = minecraft.textRenderer.getWidth("World Type:" + " " + WorldType.getWorldTypeById(Identifier.of(worldType)).getName()) + 10;
 
         args.set(2, x + offset);
     }

@@ -1,12 +1,12 @@
 package com.itselix99.betterworldoptions.mixin.dimensions;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenerator;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -21,6 +21,7 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.dimension.Dimension;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,13 +35,12 @@ public class DimensionMixin {
     @Shadow public World world;
 
     @WrapOperation(method = "initBiomeSource", at = @At(value = "NEW", target = "(Lnet/minecraft/world/World;)Lnet/minecraft/world/biome/source/BiomeSource;"))
-    private BiomeSource bwo_initBiomeSource(World world, Operation<BiomeSource> original) {
+    private BiomeSource bwo_initBiomeSource(World world, Operation<BiomeSource> original) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
         String worldType = bwoProperties.bwo_getWorldType();
         boolean oldFeatures = bwoProperties.bwo_isOldFeatures();
         String singleBiome = bwoProperties.bwo_getSingleBiome();
-        boolean superflat = bwoProperties.bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
-        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
+        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
 
         if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null) {
             if (Config.BWOConfig.environment.oldTexturesAndSky) {
@@ -48,8 +48,6 @@ public class DimensionMixin {
             } else {
                 return new FixedBiomeSource(Biome.FOREST, 0.8D, 0.6D);
             }
-        } else if (worldType.equals("Flat") && !superflat) {
-            return new FixedBiomeSource(Biome.PLAINS, 1.0D, 0.4D);
         } else if (!singleBiome.equals("Off") && !singleBiome.isEmpty()) {
             List<Biome> biomesList = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).toList();
 
@@ -61,23 +59,21 @@ public class DimensionMixin {
             }
         }
 
-        return original.call(world);
+        return WorldType.getWorldTypeById(Identifier.of(worldType)).getBiomeSource().getDeclaredConstructor(World.class).newInstance(world);
     }
 
     @ModifyReturnValue(method = "createChunkGenerator", at = @At("RETURN"))
     public ChunkSource bwo_createChunkGenerator(ChunkSource original) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
-        WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
+        WorldType worldType = WorldType.getWorldTypeById(Identifier.of(bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
         Class<? extends ChunkSource> chunkGenerator;
 
-        if (worldType.name.equals("Default") && Config.BWOConfig.world.fixTerrainGenDefault) {
+        if (worldType.getId().toString().equals(BetterWorldOptions.NAMESPACE.id("default").toString()) && Config.BWOConfig.world.fixTerrainGenDefault) {
             return new AltOverworldChunkGenerator(this.world, this.world.getSeed());
-        } else if (worldType.overworldChunkGenerator != null) {
-            chunkGenerator = worldType.overworldChunkGenerator;
+        } else {
+            chunkGenerator = worldType.getChunkGenerator(0);
             return chunkGenerator.getDeclaredConstructor(World.class, long.class).newInstance(this.world, this.world.getSeed());
         }
-
-        return original;
     }
 
     @ModifyReturnValue(method = "isValidSpawnPoint", at = @At("RETURN"))
@@ -86,7 +82,7 @@ public class DimensionMixin {
         String theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
 
         if (!theme.equals("Hell")) {
-            return var3 == WorldTypes.getWorldTypeByName(worldType).blockToSpawn;
+            return var3 == WorldType.getWorldTypeById(Identifier.of(worldType)).getBlockToSpawn();
         } else {
             return var3 == Block.DIRT.id;
         }
@@ -107,7 +103,7 @@ public class DimensionMixin {
     @ModifyReturnValue(method = "getBackgroundColor", at = @At(value = "RETURN", ordinal = 0))
     public float[] bwo_removeSunriseAndSunsetColors(float[] original) {
         String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
+        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
 
         if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeaturesProperties != null && !oldFeaturesProperties.sunriseAndSunsetColors) {
             return null;

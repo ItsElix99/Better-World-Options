@@ -1,13 +1,15 @@
 package com.itselix99.betterworldoptions.mixin.biomes;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.server.MinecraftServer;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.impl.worldgen.BiomeColorsImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +30,7 @@ public class BiomeColorsImplServerMixin {
         String worldType = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_isOldFeatures();
 
-        if (oldFeatures && worldType.equals("MCPE") && minecraftServer.getWorld(0).dimension.id == 0) {
+        if (oldFeatures && worldType.equals(BetterWorldOptions.NAMESPACE.id("mcpe").toString()) && minecraftServer.getWorld(0).dimension.id == 0) {
             return 3381555;
         }
 
@@ -47,7 +49,7 @@ public class BiomeColorsImplServerMixin {
         String worldType = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_isOldFeatures();
 
-        if (oldFeatures && worldType.equals("MCPE") && minecraftServer.getWorld(0).dimension.id == 0) {
+        if (oldFeatures && worldType.equals(BetterWorldOptions.NAMESPACE.id("mcpe").toString()) && minecraftServer.getWorld(0).dimension.id == 0) {
             return 6396257;
         }
 
@@ -66,7 +68,7 @@ public class BiomeColorsImplServerMixin {
         String worldType = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_isOldFeatures();
         String theme = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getTheme();
-        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
+        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
 
         if (minecraftServer.getWorld(0).dimension.id == 0) {
             if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != -1 && (theme.equals("Normal") || theme.equals("Winter"))) {

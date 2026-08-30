@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.world.worldtypes;
+package com.itselix99.betterworldoptions.world.worldtypes.flat;
 
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;

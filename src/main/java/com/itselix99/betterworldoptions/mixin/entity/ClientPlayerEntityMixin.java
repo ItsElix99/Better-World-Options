@@ -1,12 +1,14 @@
 package com.itselix99.betterworldoptions.mixin.entity;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.OptionType;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ClientPlayerEntity;
+import net.modificationstation.stationapi.api.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,12 +32,12 @@ public class ClientPlayerEntityMixin {
         String worldType = bwoProperties.bwo_getWorldType();
         boolean skyDimension = bwoProperties.bwo_getBooleanOptionValue("SkyDimension", OptionType.WORLD_TYPE_OPTION);
 
-        if (worldType.equals("Nether")) {
+        if (worldType.equals(BetterWorldOptions.NAMESPACE.id("nether").toString())) {
             args.set(1, -1);
-        } else if (worldType.equals("Skylands") && skyDimension) {
+        } else if (worldType.equals(BetterWorldOptions.NAMESPACE.id("skylands").toString()) && skyDimension) {
             args.set(1, 1);
-        } else if (WorldTypes.getWorldTypeByName(worldType).isDimension) {
-            args.set(1, WorldTypes.getWorldTypeByName(worldType).dimensionId);
+        } else if (WorldType.getWorldTypeById(Identifier.of(worldType)).isDimension()) {
+            args.set(1, WorldType.getWorldTypeById(Identifier.of(worldType)).getDimensionId());
         }
     }
 }

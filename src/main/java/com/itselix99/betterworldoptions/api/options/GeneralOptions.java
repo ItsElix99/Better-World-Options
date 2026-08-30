@@ -4,7 +4,7 @@ import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 
 import java.util.*;
 
@@ -69,9 +69,9 @@ public class GeneralOptions {
     }
 
     static {
-        StringOptionEntry WorldType = createStringGeneralOption("selectWorld.worldtype", "WorldType", null, WorldTypes.getList().get(0).name);
-        WorldType.visible = false;
-        GENERAL_OPTIONS_LIST.add(WorldType);
+        StringOptionEntry WorldTypeOption = createStringGeneralOption("selectWorld.worldtype", "WorldType", null, WorldType.defaultWorldType.getId().toString());
+        WorldTypeOption.visible = false;
+        GENERAL_OPTIONS_LIST.add(WorldTypeOption);
 
         BooleanOptionEntry Hardcore = createBooleanGeneralOption("options.difficulty.hardcore", "Hardcore", null, false);
         Hardcore.visible = false;

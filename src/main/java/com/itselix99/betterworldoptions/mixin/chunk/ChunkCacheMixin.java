@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.chunk;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
@@ -50,7 +51,7 @@ public class ChunkCacheMixin {
     )
     private boolean bwo_cancelDecorateInFiniteAndFlatWorld(Chunk chunk, Operation<Boolean> original, @Local(ordinal = 0, argsOnly = true) int x, @Local(ordinal = 1, argsOnly = true) int z) {
         if (this.world.dimension.id == 0) {
-            if (this.worldType.equals("Flat") && !this.superflat) {
+            if (this.worldType.equals(BetterWorldOptions.NAMESPACE.id("flat").toString()) && !this.superflat) {
                 if (this.theme.equals("Winter")) {
                     int blockX = x * 16;
                     int blockZ = z * 16;
@@ -65,7 +66,7 @@ public class ChunkCacheMixin {
                     }
                 }
                 return true;
-            } else if (this.finiteWorld && this.oldFeatures && this.worldType.equals("MCPE")) {
+            } else if (this.finiteWorld && this.oldFeatures && this.worldType.equals(BetterWorldOptions.NAMESPACE.id("mcpe").toString())) {
                 int blockX = x * 16;
                 int blockZ = z * 16;
                 int[] sizeLimits = BWOChunkGenerator.getSizeLimits();

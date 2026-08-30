@@ -1,8 +1,9 @@
 package com.itselix99.betterworldoptions.mixin.biomes;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
@@ -17,6 +18,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.LargeOakTreeFeature;
 import net.minecraft.world.gen.feature.OakTreeFeature;
+import net.modificationstation.stationapi.api.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -32,7 +34,7 @@ public abstract class BiomeMixin implements BWOWorld {
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
         String theme = ((BWOProperties) minecraft.world.getProperties()).bwo_getTheme();
-        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
+        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
 
         if (theme.equals("Hell")) {
             return 1049600;
@@ -52,7 +54,7 @@ public abstract class BiomeMixin implements BWOWorld {
         BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
         String worldType = bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
 
-        if (worldType.equals("Infdev 415") || worldType.equals("Infdev 420")) {
+        if (worldType.equals(BetterWorldOptions.NAMESPACE.id("infdev_20100415").toString()) || worldType.equals(BetterWorldOptions.NAMESPACE.id("infdev_20100420").toString())) {
             return random.nextInt(10) == 0 ? new LargeOakTreeFeature() : new OakTreeFeature();
         } else {
             return original;

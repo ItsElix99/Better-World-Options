@@ -9,9 +9,8 @@ import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage
 import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
@@ -19,6 +18,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.resource.language.TranslationStorage;
+import net.modificationstation.stationapi.api.util.Identifier;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
@@ -32,7 +32,7 @@ public class WorldTypeListScreen extends Screen {
 
     private WorldTypeListWidget worldTypeListWidget;
     private ButtonWidget doneButton;
-    private static WorldTypeEntry selectedWorldType;
+    private static WorldType selectedWorldType;
 
     public WorldTypeListScreen(Screen parent, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {
         this.parent = parent;
@@ -49,7 +49,7 @@ public class WorldTypeListScreen extends Screen {
         this.buttons.add(this.doneButton = new ButtonWidget(0, this.width / 2 - 75, this.height - 28, 150, 20, translation.get("gui.cancel")));
 
         String currentWorldType = this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
-        selectedWorldType = WorldTypes.getWorldTypeByName(currentWorldType);
+        selectedWorldType = WorldType.getWorldTypeById(Identifier.of(currentWorldType));
     }
 
     protected void buttonClicked(ButtonWidget button) {
@@ -66,7 +66,7 @@ public class WorldTypeListScreen extends Screen {
         super.render(var1, var2, var3);
     }
 
-    public static void selectWorldType(WorldTypeEntry var1) {
+    public static void selectWorldType(WorldType var1) {
         selectedWorldType = var1;
     }
 
@@ -77,19 +77,19 @@ public class WorldTypeListScreen extends Screen {
         }
 
         protected int getEntryCount() {
-            List<WorldTypeEntry> var1 = WorldTypes.getList();
+            List<WorldType> var1 = WorldType.getWorldTypeList();
             return var1.size();
         }
 
         protected void entryClicked(int index, boolean doubleClick) {
-            List<WorldTypeEntry> var3 = WorldTypes.getList();
+            List<WorldType> var3 = WorldType.getWorldTypeList();
             WorldTypeListScreen.selectWorldType(var3.get(index));
 
             String currentWorldType = WorldTypeListScreen.this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
-            if (!currentWorldType.equals(var3.get(index).name)) {
-                WorldTypeListScreen.this.bwoWorldPropertiesStorage.setStringOptionValue("WorldType", OptionType.GENERAL_OPTION, var3.get(index).name);
+            if (!currentWorldType.equals(var3.get(index).getId().toString())) {
+                WorldTypeListScreen.this.bwoWorldPropertiesStorage.setStringOptionValue("WorldType", OptionType.GENERAL_OPTION, var3.get(index).getId().toString());
 
-                Map<String, OptionEntry> worldTypeOptions = WorldTypes.getWorldTypeByName(var3.get(index).name).worldTypeOptions;
+                Map<String, OptionEntry> worldTypeOptions = WorldType.getWorldTypeById(var3.get(index).getId()).getWorldTypeOptions();
                 if (worldTypeOptions != null) {
                     Map<String, OptionStorage> worldTypeOptionsMap = new LinkedHashMap<>();
 
@@ -115,7 +115,7 @@ public class WorldTypeListScreen extends Screen {
         }
 
         protected boolean isSelectedEntry(int index) {
-            List<WorldTypeEntry> var2 = WorldTypes.getList();
+            List<WorldType> var2 = WorldType.getWorldTypeList();
             return WorldTypeListScreen.selectedWorldType == var2.get(index);
         }
 
@@ -128,9 +128,9 @@ public class WorldTypeListScreen extends Screen {
         }
 
         protected void renderEntry(int index, int x, int y, int i, Tessellator tessellator) {
-            WorldTypeEntry var1 = WorldTypes.getList().get(index);
+            WorldType var1 = WorldType.getWorldTypeList().get(index);
 
-            GL11.glBindTexture(3553, WorldTypeListScreen.this.minecraft.textureManager.getTextureId(Objects.requireNonNullElse(var1.icon, "/gui/unknown_pack.png")));
+            GL11.glBindTexture(3553, WorldTypeListScreen.this.minecraft.textureManager.getTextureId(Objects.requireNonNullElse(var1.getIcon(), "/gui/unknown_pack.png")));
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             tessellator.startQuads();
@@ -141,11 +141,11 @@ public class WorldTypeListScreen extends Screen {
             tessellator.vertex(x, y, 0.0F, 0.0F, 0.0F);
             tessellator.draw();
 
-            WorldTypeListScreen.this.drawTextWithShadow(WorldTypeListScreen.this.minecraft.textRenderer, var1.displayName, x + 32 + 2, y + 1, 16777215);
+            WorldTypeListScreen.this.drawTextWithShadow(WorldTypeListScreen.this.minecraft.textRenderer, var1.getName(), x + 32 + 2, y + 1, 16777215);
 
-            if (var1.description != null) {
-                for (int var2 = 0; var2 < var1.description.length; ++var2) {
-                    WorldTypeListScreen.this.drawTextWithShadow(WorldTypeListScreen.this.minecraft.textRenderer, var1.description[var2], x + 32 + 2, y + (12 * (var2 + 1)), 8421504);
+            if (var1.getDescription() != null) {
+                for (int var2 = 0; var2 < var1.getDescription().length; ++var2) {
+                    WorldTypeListScreen.this.drawTextWithShadow(WorldTypeListScreen.this.minecraft.textRenderer, var1.getDescription()[var2], x + 32 + 2, y + (12 * (var2 + 1)), 8421504);
                 }
             }
         }

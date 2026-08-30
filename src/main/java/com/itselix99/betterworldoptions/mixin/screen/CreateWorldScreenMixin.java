@@ -1,19 +1,19 @@
 package com.itselix99.betterworldoptions.mixin.screen;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.GeneralOptions;
 import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
 import com.itselix99.betterworldoptions.compat.CompatMods;
 import com.itselix99.betterworldoptions.gui.screen.BWOMoreOptionsScreen;
 import com.itselix99.betterworldoptions.gui.screen.BiomeListScreen;
 import com.itselix99.betterworldoptions.gui.widget.BWOButtonWidget;
 import com.itselix99.betterworldoptions.gui.widget.ButtonWidgetWithIcon;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.itselix99.betterworldoptions.gui.screen.WorldTypeListScreen;
@@ -23,6 +23,7 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.TranslationStorage;
+import net.modificationstation.stationapi.api.util.Identifier;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -116,7 +117,7 @@ public class CreateWorldScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void bwo_initButtons(CallbackInfo ci) {
         List<OptionEntry> generalOptions = GeneralOptions.getList();
-        WorldTypeEntry worldTypeEntry = WorldTypes.getWorldTypeByName(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
+        WorldType worldTypeEntry = WorldType.getWorldTypeById(Identifier.of(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
         this.bwo_checkGeneralOptionsCompatibilityAndValues(generalOptions, worldTypeEntry);
 
         this.lastWorldType = this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
@@ -124,7 +125,7 @@ public class CreateWorldScreenMixin extends Screen {
         this.buttons.add(this.gamemodeButton = new ButtonWidget(10, this.width / 2 - 75, 100, 150, 20, this.translation.get("selectWorld.gameMode") + " " + this.gamemode.get(this.selectedGamemode)));
         this.buttons.add(new ButtonWidget(11, this.width / 2 - 75, 172, 150, 20, this.moreOptions ? this.translation.get("gui.done") : this.translation.get("selectWorld.moreWorldOptions")));
         this.buttons.add(this.generateStructuresButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, this.translation.get("selectWorld.mapFeatures") + " " + this.translation.get("options.off")));
-        this.buttons.add(this.worldTypeButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, this.translation.get("selectWorld.worldtype") + " " + this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
+        this.buttons.add(this.worldTypeButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, this.translation.get("selectWorld.worldtype") + " " + WorldType.getWorldTypeById(Identifier.of(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION))).getName()));
         this.buttons.add(this.singleBiomeButton = new ButtonWidget(14, this.width / 2 - 155, 150, 150, 20, this.translation.get("selectWorld.singleBiome") + " " + (!this.bwoWorldPropertiesStorage.getStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION).equals("Off") ? this.bwoWorldPropertiesStorage.getStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION) : this.translation.get("options.off"))));
         this.buttons.add(this.themeButton = new BWOButtonWidget(15, this.width / 2 + 5, 150, 150, 20, this.translation.get(generalOptions.get(3).displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue("Theme", OptionType.GENERAL_OPTION), generalOptions.get(3), this.bwoWorldPropertiesStorage, this));
         this.buttons.add(this.generalOptionsButton = new ButtonWidgetWithIcon(16, this.width / 2 + 160, 100, "/assets/betterworldoptions/stationapi/textures/gui/settings_icon.png"));
@@ -147,45 +148,45 @@ public class CreateWorldScreenMixin extends Screen {
         }
 
         String worldType = this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
-        OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(worldType);
+        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
         OptionEntry singleBiomeOption = generalOptions.get(2);
 
-        if (oldFeaturesProperties != null && !oldFeaturesProperties.oldFeaturesHasVanillaBiomes && this.bwoWorldPropertiesStorage.getBooleanOptionValue("OldFeatures", OptionType.GENERAL_OPTION) || singleBiomeOption.compatibleWorldTypes.contains("Overworld") && worldTypeEntry.isDimension) {
+        if (oldFeaturesProperties != null && !oldFeaturesProperties.oldFeaturesHasVanillaBiomes && this.bwoWorldPropertiesStorage.getBooleanOptionValue("OldFeatures", OptionType.GENERAL_OPTION) || singleBiomeOption.compatibleWorldTypes.contains("Overworld") && worldTypeEntry.isDimension()) {
             this.bwoWorldPropertiesStorage.setStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "Off");
             this.singleBiomeButton.active = false;
             String singleBiome = this.bwoWorldPropertiesStorage.getStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION);
             this.singleBiomeButton.text = this.translation.get("selectWorld.singleBiome") + " " + (!singleBiome.equals("Off") ? singleBiome : this.translation.get("options.off"));
         }
 
-        if (worldTypeEntry.isDimension) {
+        if (worldTypeEntry.isDimension()) {
             this.themeButton.active = false;
         }
     }
 
     @Unique
-    private void bwo_checkGeneralOptionsCompatibilityAndValues(List<OptionEntry> generalOptions, WorldTypeEntry worldTypeEntry) {
+    private void bwo_checkGeneralOptionsCompatibilityAndValues(List<OptionEntry> generalOptions, WorldType worldType) {
         boolean changedWorldType = !this.lastWorldType.equals(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
 
         for (OptionEntry generalOption : generalOptions) {
             if (generalOption.compatibleWorldTypes.contains("Overworld")) {
-                if (worldTypeEntry.isDimension) {
+                if (worldType.isDimension()) {
                     this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(generalOption);
                 }
-            } else if (!generalOption.compatibleWorldTypes.contains("All") && !generalOption.compatibleWorldTypes.contains(worldTypeEntry.name)) {
+            } else if (!generalOption.compatibleWorldTypes.contains("All") && !generalOption.compatibleWorldTypes.contains(worldType.getId().toString())) {
                 this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(generalOption);
             }
 
             if (changedWorldType) {
                 if (generalOption instanceof StringOptionEntry stringGeneralOption && !stringGeneralOption.worldTypeDefaultValue.isEmpty()) {
-                    if (stringGeneralOption.worldTypeDefaultValue.containsKey(worldTypeEntry.name)) {
-                        this.bwoWorldPropertiesStorage.setStringOptionValue(stringGeneralOption.name, stringGeneralOption.optionType, stringGeneralOption.worldTypeDefaultValue.get(worldTypeEntry.name).get(0));
+                    if (stringGeneralOption.worldTypeDefaultValue.containsKey(worldType.getName())) {
+                        this.bwoWorldPropertiesStorage.setStringOptionValue(stringGeneralOption.name, stringGeneralOption.optionType, stringGeneralOption.worldTypeDefaultValue.get(worldType.getName()).get(0));
                         this.bwoWorldPropertiesStorage.setSelectedValue(stringGeneralOption.name, stringGeneralOption.optionType, 0);
                     } else if (!stringGeneralOption.stringList.contains(this.bwoWorldPropertiesStorage.getStringOptionValue(stringGeneralOption.name, stringGeneralOption.optionType))) {
                         this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(stringGeneralOption);
                     }
                 } else if (generalOption instanceof BooleanOptionEntry booleanGeneralOption && !booleanGeneralOption.worldTypeDefaultValue.isEmpty()) {
-                    if (booleanGeneralOption.worldTypeDefaultValue.containsKey(worldTypeEntry.name)) {
-                        this.bwoWorldPropertiesStorage.setBooleanOptionValue(booleanGeneralOption.name, booleanGeneralOption.optionType, booleanGeneralOption.worldTypeDefaultValue.get(worldTypeEntry.name));
+                    if (booleanGeneralOption.worldTypeDefaultValue.containsKey(worldType.getName())) {
+                        this.bwoWorldPropertiesStorage.setBooleanOptionValue(booleanGeneralOption.name, booleanGeneralOption.optionType, booleanGeneralOption.worldTypeDefaultValue.get(worldType.getName()));
                     } else if (booleanGeneralOption.worldTypeDefaultValue.containsKey(this.lastWorldType)) {
                         this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(booleanGeneralOption);
                     }
@@ -395,7 +396,7 @@ public class CreateWorldScreenMixin extends Screen {
                 this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.mapFeatures.info"), this.width / 2 - 150, 122, 10526880);
             }
 
-            if (this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION).equals("Amplified")) {
+            if (this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION).equals(BetterWorldOptions.NAMESPACE.id("amplified").toString())) {
                 this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.worldtype.amplified.line1"), this.worldTypeButton.x + 2, this.worldTypeButton.y + 22, 10526880);
                 this.drawTextWithShadow(this.textRenderer, this.translation.get("selectWorld.worldtype.amplified.line2"), this.worldTypeButton.x + 2, this.worldTypeButton.y + 31, 10526880);
             }

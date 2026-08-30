@@ -4,8 +4,7 @@ import com.itselix99.betterworldoptions.api.options.GeneralOptions;
 import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import com.itselix99.betterworldoptions.api.options.OptionType;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.gui.widget.*;
 import com.itselix99.betterworldoptions.interfaces.BWOScreen;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
@@ -14,6 +13,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.TranslationStorage;
+import net.modificationstation.stationapi.api.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
     private int selectedPage = 0;
     public List<BWOButtonWidget> bwoButtons = new ArrayList<>();
 
-    private WorldTypeEntry worldType;
+    private WorldType worldType;
 
     private BWOSliderWidget sizeXSlider;
     private BWOSliderWidget sizeZSlider;
@@ -41,7 +41,7 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
     public BWOMoreOptionsScreen(Screen parent, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {
         this.parent = parent;
         this.bwoWorldPropertiesStorage = bwoWorldPropertiesStorage;
-        this.worldType = WorldTypes.getWorldTypeByName(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
+        this.worldType = WorldType.getWorldTypeById(Identifier.of(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
     }
 
     @Override
@@ -63,11 +63,11 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
         int i = 0;
 
 
-        if (this.worldType.worldTypeOptions.isEmpty()) {
+        if (this.worldType.getWorldTypeOptions().isEmpty()) {
             worldTypeOptionsButton.active = false;
         }
 
-        if (this.worldType.isDimension) {
+        if (this.worldType.isDimension()) {
             finiteWorldOptionsButton.active = false;
         }
 
@@ -84,9 +84,9 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
             }
             case "World Type Options" -> {
                 this.title = this.translation.get("bwoMoreOptions.title.worldTypeOptions");
-                if (!this.worldType.worldTypeOptions.isEmpty()) {
-                    options = new OptionEntry[this.worldType.worldTypeOptions.size()];
-                    for (OptionEntry option : this.worldType.worldTypeOptions.values()) {
+                if (!this.worldType.getWorldTypeOptions().isEmpty()) {
+                    options = new OptionEntry[this.worldType.getWorldTypeOptions().size()];
+                    for (OptionEntry option : this.worldType.getWorldTypeOptions().values()) {
                         if (option.visible) {
                             options[i] = option;
                             ++i;
@@ -205,7 +205,7 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
             int width = this.bwoWorldPropertiesStorage.getIntOptionValue("Width", OptionType.GENERAL_OPTION);
             int length = this.bwoWorldPropertiesStorage.getIntOptionValue("Length", OptionType.GENERAL_OPTION);
 
-            if (this.worldType.pregenerateFiniteWorld && finiteWorld && width * length * 64 > 268435456) {
+            if (this.worldType.isPregenerateFiniteWorld() && finiteWorld && width * length * 64 > 268435456) {
                 this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get("bwoMoreOptions.pregenerateFiniteWorld.info"), this.width / 2, 122, 16777215);
             }
         }

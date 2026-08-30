@@ -1,9 +1,10 @@
 package com.itselix99.betterworldoptions.mixin;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.chunk.FiniteChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.compat.CompatMods;
 import com.itselix99.betterworldoptions.mixin.chunk.ChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
@@ -15,6 +16,7 @@ import net.minecraft.entity.player.ClientPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.storage.WorldStorage;
+import net.modificationstation.stationapi.api.util.Identifier;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -82,12 +84,12 @@ public class MinecraftMixin {
         String worldType = bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
         boolean skyDimension = bwoWorldPropertiesStorage.getBooleanOptionValue("SkyDimension", OptionType.WORLD_TYPE_OPTION);
 
-        if (worldType.equals("Nether") && storage.loadProperties() == null) {
+        if (worldType.equals(BetterWorldOptions.NAMESPACE.id("nether").toString()) && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(-1));
-        } else if (worldType.equals("Skylands") && skyDimension && storage.loadProperties() == null) {
+        } else if (worldType.equals(BetterWorldOptions.NAMESPACE.id("skylands").toString()) && skyDimension && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(1));
-        } else if (WorldTypes.getWorldTypeByName(worldType).isDimension && storage.loadProperties() == null) {
-            return new World(storage, name, seed, Dimension.fromId(WorldTypes.getWorldTypeByName(worldType).dimensionId));
+        } else if (WorldType.getWorldTypeById(Identifier.of(worldType)).isDimension() && storage.loadProperties() == null) {
+            return new World(storage, name, seed, Dimension.fromId(WorldType.getWorldTypeById(Identifier.of(worldType)).getDimensionId()));
         }
 
         return original.call(storage, name, seed);

@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.dimensions;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.world.dimension.Dimension;
@@ -14,7 +15,7 @@ public class NetherDimensionMixin extends Dimension {
     private boolean bwo_spawnInNetherWorldType(boolean original) {
         String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
 
-        if (worldType.equals("Nether")) {
+        if (worldType.equals(BetterWorldOptions.NAMESPACE.id("nether").toString())) {
             return true;
         } else {
             return original;

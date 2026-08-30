@@ -6,8 +6,7 @@ import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.interfaces.BWOScreen;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
@@ -15,6 +14,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resource.language.TranslationStorage;
+import net.modificationstation.stationapi.api.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,14 +66,14 @@ public class BWOOptionListWidget extends EntryListWidgetButtons implements BWOSc
                 return null;
             }
 
-            WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION));
+            WorldType worldType = WorldType.getWorldTypeById(Identifier.of(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
 
             if (option.compatibleWorldTypes.contains("Overworld")) {
-                if (worldType.isDimension) {
+                if (worldType.isDimension()) {
                     this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(option);
                     button.active = false;
                 }
-            } else if (!option.compatibleWorldTypes.contains("All") && !option.compatibleWorldTypes.contains(worldType.name)) {
+            } else if (!option.compatibleWorldTypes.contains("All") && !option.compatibleWorldTypes.contains(worldType.getId().toString())) {
                 this.bwoWorldPropertiesStorage.resetGeneralOptionToDefaultValue(option);
                 button.active = false;
             }

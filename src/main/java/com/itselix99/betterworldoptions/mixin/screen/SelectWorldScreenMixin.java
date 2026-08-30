@@ -1,11 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.screen;
 
 import com.itselix99.betterworldoptions.gui.screen.BWOConfirmWorldVersionScreen;
-import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
 import net.minecraft.nbt.NbtCompound;

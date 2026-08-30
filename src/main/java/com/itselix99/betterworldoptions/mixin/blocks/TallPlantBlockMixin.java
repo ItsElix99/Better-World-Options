@@ -3,11 +3,12 @@ package com.itselix99.betterworldoptions.mixin.blocks;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.TallPlantBlock;
+import net.modificationstation.stationapi.api.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -24,11 +25,11 @@ public class TallPlantBlockMixin {
 
         if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
             if (meta == 1) {
-                return WorldTypes.getOldTexture(worldType, "Grass", original);
+                return WorldType.getOldTexture(Identifier.of(worldType), "Grass", original);
             } else if (meta == 2) {
-                return WorldTypes.getOldTexture(worldType, "Fern", original);
+                return WorldType.getOldTexture(Identifier.of(worldType), "Fern", original);
             } else {
-                return meta == 0 ? WorldTypes.getOldTexture(worldType, "Fern", original) : WorldTypes.getOldTexture(worldType, "Grass", original);
+                return meta == 0 ? WorldType.getOldTexture(Identifier.of(worldType), "Fern", original) : WorldType.getOldTexture(Identifier.of(worldType), "Grass", original);
             }
         }
 

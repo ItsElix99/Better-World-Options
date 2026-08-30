@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.mixin.blocks;
 
 import java.util.Random;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -29,13 +30,13 @@ public class SaplingBlockMixin{
         boolean oldFeatures = ((BWOProperties) world.getProperties()).bwo_isOldFeatures();
 
         if (((var7 instanceof OakTreeFeature || var7 instanceof LargeOakTreeFeature) && oldFeatures)) {
-            if (worldType.equals("Infdev 420") || worldType.equals("Infdev 415")) {
+            if (worldType.equals(BetterWorldOptions.NAMESPACE.id("infdev_20100420").toString()) || worldType.equals(BetterWorldOptions.NAMESPACE.id("infdev_20100415").toString())) {
                 var7 = new LargeOakTreeFeature();
-            } else if (worldType.equals("Infdev 611") || worldType.equals("Early Infdev") || worldType.equals("Indev 223")|| worldType.equals("MCPE")) {
+            } else if (worldType.equals(BetterWorldOptions.NAMESPACE.id("infdev_20100611").toString()) || worldType.equals(BetterWorldOptions.NAMESPACE.id("early_infdev").toString()) || worldType.equals(BetterWorldOptions.NAMESPACE.id("indev_20100223").toString())|| worldType.equals(BetterWorldOptions.NAMESPACE.id("mcpe").toString())) {
                 var7 = new OakTreeFeature();
             }
         } else if (var7 instanceof OakTreeFeature || var7 instanceof LargeOakTreeFeature) {
-            if (worldType.equals("Infdev 420") || worldType.equals("Infdev 415")) {
+            if (worldType.equals(BetterWorldOptions.NAMESPACE.id("infdev_20100420").toString()) || worldType.equals(BetterWorldOptions.NAMESPACE.id("infdev_20100415").toString())) {
                 var7 = new LargeOakTreeFeature();
                 if (random.nextInt(10) == 0) {
                     var7 = new OakTreeFeature();

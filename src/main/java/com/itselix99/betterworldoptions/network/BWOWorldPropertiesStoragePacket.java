@@ -5,8 +5,7 @@ import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage
 import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypeEntry;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
@@ -15,6 +14,7 @@ import net.minecraft.network.NetworkHandler;
 import net.minecraft.network.packet.Packet;
 import net.modificationstation.stationapi.api.network.packet.ManagedPacket;
 import net.modificationstation.stationapi.api.network.packet.PacketType;
+import net.modificationstation.stationapi.api.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
@@ -103,10 +103,10 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
                 }
             }
 
-            WorldTypeEntry worldType = WorldTypes.getWorldTypeByName(((StringOptionStorage) this.generalOptions.get("WorldType")).value);
-            stream.writeBoolean(!worldType.worldTypeOptions.isEmpty());
+            WorldType worldType = WorldType.getWorldTypeById(Identifier.of(((StringOptionStorage) this.generalOptions.get("WorldType")).value));
+            stream.writeBoolean(!worldType.getWorldTypeOptions().isEmpty());
 
-            if (!worldType.worldTypeOptions.isEmpty()) {
+            if (!worldType.getWorldTypeOptions().isEmpty()) {
                 stream.writeInt(this.worldTypeOptions.size());
 
                 for (OptionStorage worldTypeOptions : this.worldTypeOptions.values()) {

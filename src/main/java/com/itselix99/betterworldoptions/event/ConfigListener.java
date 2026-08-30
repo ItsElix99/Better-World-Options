@@ -2,7 +2,7 @@ package com.itselix99.betterworldoptions.event;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
-import com.itselix99.betterworldoptions.api.worldtype.WorldTypes;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
@@ -11,6 +11,7 @@ import net.glasslauncher.mods.gcapi3.impl.GlassYamlFile;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.FixedBiomeSource;
+import net.modificationstation.stationapi.api.util.Identifier;
 import org.simpleyaml.configuration.ConfigurationSection;
 
 @EventListener
@@ -25,7 +26,7 @@ public class ConfigListener implements PreConfigSavedListener {
             if (BetterWorldOptions.getMinecraft() != null && newEnvironment != null && oldEnvironment != null) {
                 if (BetterWorldOptions.getMinecraft().world != null && newEnvironment.getBoolean("oldTexturesAndSky") != oldEnvironment.getBoolean("oldTexturesAndSky")) {
                     BWOProperties bwoProperties = (BWOProperties) BetterWorldOptions.getMinecraft().world.getProperties();
-                    OldFeaturesProperties oldFeaturesProperties = WorldTypes.getOldFeaturesProperties(bwoProperties.bwo_getWorldType());
+                    OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(bwoProperties.bwo_getWorldType()));
 
                     if (bwoProperties.bwo_isOldFeatures() && BetterWorldOptions.getMinecraft().world.dimension.biomeSource instanceof FixedBiomeSource) {
                         if (!newEnvironment.getBoolean("oldTexturesAndSky")) {
