@@ -77,22 +77,22 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
                     int index = (var6 - chunkX) * 16 + var7 - chunkZ;
                     Biome var18 = biomes[index];
                     double var19 = temperatures[index];
-                    double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
+                    double temp = this.theme.isCold() ? 1.1D : 0.5D;
                     int var15 = 0;
 
                     if ((var6 == 0 || var7 == 0) && var14 <= var13 + 2) {
                         var15 = Block.OBSIDIAN.id;
                     } else if (var14 == var13 && var13 >= 64) {
                         if (!this.oldFeatures) {
-                            var15 = this.theme.equals("Hell") ? (var18.topBlockId != Block.SAND.id ? Block.DIRT.id : var18.topBlockId) : var18.topBlockId;
+                            var15 = this.theme.getTopBlock() != -1 ? (var18.topBlockId == Block.GRASS_BLOCK.id ? this.theme.getTopBlock() : var18.topBlockId) : var18.topBlockId;
                         } else {
-                            var15 = this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id;
+                            var15 = this.theme.getTopBlock() != -1 ? this.theme.getTopBlock() : Block.GRASS_BLOCK.id;
                         }
                     } else if (var14 == var13 + 1 && var13 >= 64 && Math.random() < 0.02D && this.oldFeatures) {
                         int index2 = (index) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + (var14 - 1);
                         if (blocks[index2] == Block.GRASS_BLOCK.id || blocks[index2] == Block.DIRT.id) {
                             var15 = Block.DANDELION.id;
-                            if (this.theme.equals("Paradise") && this.random.nextInt(2) == 0) {
+                            if (this.theme.isFloweryLand() && this.random.nextInt(2) == 0) {
                                 var15 = Block.ROSE.id;
                             }
                         }
@@ -106,28 +106,28 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
                         }
                     } else if (var14 <= var13) {
                         if (!this.oldFeatures) {
-                            var15 = var18.soilBlockId;
+                            var15 = this.theme.getSoilBlock() != -1 ? (var18.soilBlockId == Block.DIRT.id ? this.theme.getSoilBlock() : var18.soilBlockId) : var18.soilBlockId;
                         } else {
-                            var15 = Block.DIRT.id;
+                            var15 = this.theme.getSoilBlock() != -1 ? this.theme.getSoilBlock() : Block.DIRT.id;
                         }
                     } else if (var14 <= 64) {
-                        if (!this.theme.equals("Hell") && (var19 < temp && !this.oldFeatures || this.theme.equals("Winter")) && var14 > 63) {
-                            var15 = Block.ICE.id;
+                        if (!this.theme.isHot() && (var19 < temp && !this.oldFeatures || this.theme.isCold()) && var14 > 63) {
+                            var15 = this.theme.getSurfaceLiquidBlock();
                         } else {
-                            var15 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                            var15 = this.theme.getLiquidBlock();
                         }
                     }
 
                     if (!this.oldFeatures && var14 <= var13 && var13 >= 61 && var13 <= 65) {
                         if (sandBeach) {
-                            if (var15 == (this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id)) {
+                            if (var15 == (this.theme.getTopBlock() != -1 ? this.theme.getTopBlock() : Block.GRASS_BLOCK.id)) {
                                 if (var14 == var13) {
-                                    var15 = this.theme.equals("Hell") ? Block.GRASS_BLOCK.id : Block.SAND.id;
+                                    var15 = this.theme.getBeachTopBlock();
                                 } else {
-                                    var15 = this.theme.equals("Hell") ? Block.DIRT.id : Block.SAND.id;
+                                    var15 = this.theme.getBeachSoilBlock();
                                 }
-                            } else if (var15 == Block.DIRT.id) {
-                                var15 = this.theme.equals("Hell") ? Block.DIRT.id : Block.SAND.id;
+                            } else if (var15 == (this.theme.getSoilBlock() != -1 ? this.theme.getSoilBlock() : Block.DIRT.id)) {
+                                var15 = this.theme.getBeachSoilBlock();
                             }
                         }
 
@@ -221,7 +221,7 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
             z = (int)this.forestNoise.sample((double)var4 * (double)0.0625F, (double)x * (double)0.0625F) << 3;
             OakTreeFeature var9 = new OakTreeFeature();
 
-            if (this.theme.equals("Woods") && z <= 4) {
+            if (this.theme.isDenseWoods() && z <= 4) {
                 z = 10;
             }
 
@@ -235,7 +235,7 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
             for(int var5 = var4 + 8; var5 < var4 + 8 + 16; ++var5) {
                 for(int var7 = x + 8; var7 < x + 8 + 16; ++var7) {
                     int var6 = this.world.getTopSolidBlockY(var5, var7);
-                    if(this.theme.equals("Winter") && var6 > 0 && var6 < this.world.dimension.getHeight() && this.world.getBlockId(var5, var6, var7) == 0 && this.world.getMaterial(var5, var6 - 1, var7).isSolid() && this.world.getMaterial(var5, var6 - 1, var7) != Material.ICE) {
+                    if(this.theme.isCold() && var6 > 0 && var6 < this.world.dimension.getHeight() && this.world.getBlockId(var5, var6, var7) == 0 && this.world.getMaterial(var5, var6 - 1, var7).isSolid() && this.world.getMaterial(var5, var6 - 1, var7) != Material.ICE) {
                         this.world.setBlock(var5, var6, var7, Block.SNOW.id);
                     }
                 }

@@ -1,20 +1,24 @@
 package com.itselix99.betterworldoptions.world.chunk;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.world.World;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 
 public class BWOLimitChunk extends FlattenedChunk {
     protected final String mode;
     private final BWOProperties bwoProperties;
+    private final Theme theme;
 
     public BWOLimitChunk(World world, int xPos, int zPos, String mode) {
         super(world, xPos, zPos);
         this.bwoProperties = (BWOProperties) this.world.getProperties();
+        this.theme = Theme.getThemeById(Identifier.of(this.bwoProperties.bwo_getTheme()));
         this.empty = true;
         this.mode = mode;
     }
@@ -30,7 +34,7 @@ public class BWOLimitChunk extends FlattenedChunk {
                     if (y > 63) {
                         return 0;
                     } else if (y >= 55) {
-                        return this.bwoProperties.bwo_getTheme().equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                        return this.theme.getLiquidBlock();
                     } else if (y == 54) {
                         return Block.DIRT.id;
                     } else {
@@ -41,7 +45,7 @@ public class BWOLimitChunk extends FlattenedChunk {
                     if (y >= 2) {
                         return 0;
                     } else if (y == 1) {
-                        return this.bwoProperties.bwo_getTheme().equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                        return this.theme.getLiquidBlock();
                     } else {
                         return Block.BEDROCK.id;
                     }
@@ -63,7 +67,7 @@ public class BWOLimitChunk extends FlattenedChunk {
                     if (y > 63) {
                         return 0;
                     } else if (y > 55) {
-                        return this.bwoProperties.bwo_getTheme().equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                        return this.theme.getLiquidBlock();
                     } else if (y > var1) {
                         return Block.STONE.id;
                     } else {

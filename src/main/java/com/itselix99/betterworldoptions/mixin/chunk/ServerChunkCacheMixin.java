@@ -3,6 +3,7 @@ package com.itselix99.betterworldoptions.mixin.chunk;
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -14,6 +15,7 @@ import net.minecraft.world.ServerWorld;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.chunk.storage.ChunkStorage;
+import net.modificationstation.stationapi.api.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ServerChunkCacheMixin {
     @Shadow private ServerWorld world;
     @Unique private String worldType;
-    @Unique private String theme;
+    @Unique private Theme theme;
     @Unique private boolean oldFeatures;
     @Unique private boolean superflat;
     @Unique private boolean finiteWorld;
@@ -34,7 +36,7 @@ public class ServerChunkCacheMixin {
     private void bwo_init(ServerWorld world, ChunkStorage storage, ChunkSource generator, CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
         this.worldType = bwoProperties.bwo_getWorldType();
-        this.theme = bwoProperties.bwo_getTheme();
+        this.theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
         this.oldFeatures = bwoProperties.bwo_isOldFeatures();
         this.superflat = bwoProperties.bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
         this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
@@ -52,7 +54,7 @@ public class ServerChunkCacheMixin {
     private boolean bwo_cancelDecorateInFiniteAndFlatWorld(Chunk chunk, Operation<Boolean> original, @Local(ordinal = 0, argsOnly = true) int x, @Local(ordinal = 1, argsOnly = true) int z) {
         if (this.world.dimension.id == 0) {
             if (this.worldType.equals(BetterWorldOptions.NAMESPACE.id("flat").toString()) && !this.superflat) {
-                if (this.theme.equals("Winter")) {
+                if (this.theme.isCold()) {
                     int blockX = x * 16;
                     int blockZ = z * 16;
 

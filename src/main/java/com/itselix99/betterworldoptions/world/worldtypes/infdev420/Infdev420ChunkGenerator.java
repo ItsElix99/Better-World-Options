@@ -140,13 +140,13 @@ public class Infdev420ChunkGenerator extends BWOChunkGenerator {
                                 double var44 = (double)var35 / 4.0D;
                                 double var46 = var38 + (var40 - var38) * var44;
                                 double var53 = temperatures[(var72 * 4 + var82) * 16 + var73 * 4 + var35];
-                                double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
+                                double temp = this.theme.isCold() ? 1.1D : 0.5D;
                                 int var83 = 0;
                                 if((var7 << 3) + var24 < 64) {
-                                    if (!this.theme.equals("Hell") && (var53 < temp && !this.oldFeatures || this.theme.equals("Winter")) && var7 * 8 + var24 >= 63) {
-                                        var83 = Block.ICE.id;
+                                    if (!this.theme.isHot() && (var53 < temp && !this.oldFeatures || this.theme.isCold()) && var7 * 8 + var24 >= 63) {
+                                        var83 = this.theme.getSurfaceLiquidBlock();
                                     } else {
-                                        var83 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                                        var83 = this.theme.getLiquidBlock();
                                     }
                                 }
 
@@ -178,11 +178,11 @@ public class Infdev420ChunkGenerator extends BWOChunkGenerator {
                 int var19;
 
                 if (!this.oldFeatures) {
-                    var80 = this.theme.equals("Hell") ? (var82.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var82.topBlockId) : var82.topBlockId;
-                    var19 = var82.soilBlockId;
+                    var80 = this.theme.getTopBlock() != -1 ? (var82.topBlockId == Block.GRASS_BLOCK.id ? this.theme.getTopBlock() : var82.topBlockId) : var82.topBlockId;
+                    var19 = this.theme.getSoilBlock() != -1 ? (var82.soilBlockId == Block.DIRT.id ? this.theme.getSoilBlock() : var82.soilBlockId) : var82.soilBlockId;
                 } else {
-                    var80 = this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id;
-                    var19 = Block.DIRT.id;
+                    var80 = this.theme.getTopBlock() != -1 ? this.theme.getTopBlock() : Block.GRASS_BLOCK.id;
+                    var19 = this.theme.getSoilBlock() != -1 ? this.theme.getSoilBlock() : Block.DIRT.id;
                 }
 
                 for(int var81 = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1; var81 >= 0; --var81) {
@@ -196,11 +196,11 @@ public class Infdev420ChunkGenerator extends BWOChunkGenerator {
                                 var19 = (byte)Block.STONE.id;
                             } else if(var81 >= 60 && var81 <= 65) {
                                 if (!this.oldFeatures) {
-                                    var80 = this.theme.equals("Hell") ? (var82.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var82.topBlockId) : var82.topBlockId;
-                                    var19 = var82.soilBlockId;
+                                    var80 = this.theme.getTopBlock() != -1 ? (var82.topBlockId == Block.GRASS_BLOCK.id ? this.theme.getTopBlock() : var82.topBlockId) : var82.topBlockId;
+                                    var19 = this.theme.getSoilBlock() != -1 ? (var82.soilBlockId == Block.DIRT.id ? this.theme.getSoilBlock() : var82.soilBlockId) : var82.soilBlockId;
                                 } else {
-                                    var80 = this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id;
-                                    var19 = Block.DIRT.id;
+                                    var80 = this.theme.getTopBlock() != -1 ? this.theme.getTopBlock() : Block.GRASS_BLOCK.id;
+                                    var19 = this.theme.getSoilBlock() != -1 ? this.theme.getSoilBlock() : Block.DIRT.id;
                                 }
                                 if(var78) {
                                     var80 = 0;
@@ -211,11 +211,11 @@ public class Infdev420ChunkGenerator extends BWOChunkGenerator {
                                 }
 
                                 if(var13) {
-                                    var80 = this.theme.equals("Hell") ? Block.GRASS_BLOCK.id : Block.SAND.id;
+                                    var80 = this.theme.getBeachTopBlock();
                                 }
 
                                 if(var13) {
-                                    var19 = this.theme.equals("Hell") ? Block.DIRT.id : Block.SAND.id;
+                                    var19 = this.theme.getBeachSoilBlock();
                                 }
                             }
 
@@ -223,11 +223,11 @@ public class Infdev420ChunkGenerator extends BWOChunkGenerator {
                             double temperature = temperatureMap[var73 + var72 * 16];
 
                             if(var81 < 64 && var80 == 0) {
-                                double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
-                                if (beachFix && !this.theme.equals("Hell") && (temperature < temp && !this.oldFeatures || this.theme.equals("Winter")) && var81 == 63) {
-                                    var80 = Block.ICE.id;
+                                double temp = this.theme.isCold() ? 1.1D : 0.5D;
+                                if (beachFix && !this.theme.isHot() && (temperature < temp && !this.oldFeatures || this.theme.isCold()) && var81 == 63) {
+                                    var80 = this.theme.getSurfaceLiquidBlock();
                                 } else {
-                                    var80 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                                    var80 = this.theme.getLiquidBlock();
                                 }
                             }
 
@@ -317,7 +317,7 @@ public class Infdev420ChunkGenerator extends BWOChunkGenerator {
             }
 
             z = (int)(this.forestNoise.sample((double)var4 * 0.05D, (double)x * 0.05D) - this.random.nextDouble());
-            if (this.theme.equals("Woods")) {
+            if (this.theme.isDenseWoods()) {
                 if(z <= 4) {
                     z = 10;
                 }
@@ -339,7 +339,7 @@ public class Infdev420ChunkGenerator extends BWOChunkGenerator {
                 var9.generate(this.world, this.random, var7, this.world.getTopY(var7, var8), var8);
             }
 
-            if (this.theme.equals("Paradise")) {
+            if (this.theme.isFloweryLand()) {
                 for(z = 0; z < 24; ++z) {
                     var5 = var4 + this.random.nextInt(16) + 8;
                     var6 = this.random.nextInt(128);
@@ -358,7 +358,7 @@ public class Infdev420ChunkGenerator extends BWOChunkGenerator {
             for(var5 = var4 + 8; var5 < var4 + 8 + 16; ++var5) {
                 for(var7 = x + 8; var7 < x + 8 + 16; ++var7) {
                     var6 = this.world.getTopSolidBlockY(var5, var7);
-                    if(this.theme.equals("Winter") && var6 > 0 && var6 < this.world.dimension.getHeight() && this.world.getBlockId(var5, var6, var7) == 0 && this.world.getMaterial(var5, var6 - 1, var7).isSolid() && this.world.getMaterial(var5, var6 - 1, var7) != Material.ICE) {
+                    if(this.theme.isCold() && var6 > 0 && var6 < this.world.dimension.getHeight() && this.world.getBlockId(var5, var6, var7) == 0 && this.world.getMaterial(var5, var6 - 1, var7).isSolid() && this.world.getMaterial(var5, var6 - 1, var7) != Material.ICE) {
                         this.world.setBlock(var5, var6, var7, Block.SNOW.id);
                     }
                 }

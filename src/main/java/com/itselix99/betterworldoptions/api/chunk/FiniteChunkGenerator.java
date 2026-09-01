@@ -442,10 +442,7 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
     }
 
     protected void placeLakes() {
-        int var1 = Block.WATER.id;
-        if(this.theme.equals("Hell")) {
-            var1 = Block.LAVA.id;
-        }
+        int var1 = this.theme.getLiquidBlock();
 
         int var2 = this.width * this.length * 64 / 1000;
 
@@ -611,9 +608,9 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
 		Arrays.fill(this.heightMap, var2);
         int var5 = 15;
 
-        if (this.theme.equals("Hell")) {
+        if (this.theme.isHot()) {
             var5 = 7;
-        } else if (this.theme.equals("Woods")) {
+        } else if (this.theme.isDenseWoods()) {
             var5 = 12;
         }
 

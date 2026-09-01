@@ -167,7 +167,7 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
         this.setCurrentStage("Growing");
 
         int beachHeight = surroundingWaterHeight - 1;
-        if (this.theme.equals("Paradise")) {
+        if (this.theme.isFloweryLand()) {
             beachHeight += 2;
         }
 
@@ -180,12 +180,12 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
                     sand = this.noiseGen5.create(x, z) > -8.0D;
                 }
 
-                if (this.theme.equals("Paradise")) {
+                if (this.theme.isFloweryLand()) {
                     sand = this.noiseGen5.create(x, z) > -32.0D;
                 }
 
                 boolean gravel = this.noiseGen3.create(x, z) > 12.0D;
-                if ((this.theme.equals("Hell") || this.theme.equals("Woods")) || (this.singleBiome.equals("Rainforest") || this.singleBiome.equals("Seasonal Forest") || this.singleBiome.equals("Forest") || this.singleBiome.equals("Taiga"))) {
+                if ((this.theme.isHot() || this.theme.isDenseWoods()) || (this.singleBiome.equals("Rainforest") || this.singleBiome.equals("Seasonal Forest") || this.singleBiome.equals("Forest") || this.singleBiome.equals("Taiga"))) {
                     sand = this.noiseGen5.create(x, z) > -8.0D;
                 }
 
@@ -203,7 +203,7 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
 
                 if (aboveBlock == 0) {
                     if (surfaceY <= beachHeight && sand) {
-                        this.fullWorldBlocks.put(blockIndex, (byte) (this.theme.equals("Hell") ? Block.GRASS_BLOCK.id : Block.SAND.id));
+                        this.fullWorldBlocks.put(blockIndex, (byte) (this.theme.getBeachTopBlock()));
                     }
                 }
             }
@@ -292,7 +292,7 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
         }
 
         if (!this.indevWorldType.equals("Floating")) {
-            int liquid = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+            int liquid = this.theme.getLiquidBlock();
 
             for (int x = 0; x < this.width; ++x) {
                 this.floodFill(x, surroundingWaterHeight - 1, 0, 0, liquid);
@@ -309,11 +309,11 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
         this.calculateLighting(this.width, 64, this.length);
 
         this.setCurrentStage("Planting");
-        this.placeBlockOnDirt(this.oldFeatures ? (this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id) : Block.SANDSTONE.id);
+        this.placeBlockOnDirt(this.oldFeatures ? (this.theme.getTopBlock() != -1 ? this.theme.getTopBlock() : Block.GRASS_BLOCK.id) : Block.SANDSTONE.id);
 
         if (this.oldFeatures) {
             this.generateTrees();
-            if (this.theme.equals("Woods")) {
+            if (this.theme.isDenseWoods()) {
                 for (int count = 0; count < 50; ++count) {
                     this.generateTrees();
                 }
@@ -321,7 +321,7 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
         }
 
         short var43 = 100;
-        if(this.theme.equals("Paradise")) {
+        if(this.theme.isFloweryLand()) {
             var43 = 1000;
         }
 
@@ -450,15 +450,15 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
 
                         if (y == var108 && y >= waterHeight) {
                             if (!this.oldFeatures) {
-                                blockId = this.theme.equals("Hell") ? (byte) (var18.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var18.topBlockId) : var18.topBlockId;
+                                blockId = this.theme.getTopBlock() != -1 ? (byte) (var18.topBlockId == Block.GRASS_BLOCK.id ? this.theme.getTopBlock() : var18.topBlockId) : var18.topBlockId;
                             } else {
-                                blockId = this.theme.equals("Hell") ? Block.DIRT.id : Block.GRASS_BLOCK.id;
+                                blockId = this.theme.getTopBlock() != -1 ? this.theme.getTopBlock() : Block.GRASS_BLOCK.id;
                             }
                         } else if (y < var108) {
                             if (!this.oldFeatures) {
-                                blockId = var18.soilBlockId;
+                                blockId = this.theme.getSoilBlock() != -1 ? (var18.soilBlockId == Block.DIRT.id ? this.theme.getSoilBlock() : var18.soilBlockId) : var18.soilBlockId;
                             } else {
-                                blockId = Block.DIRT.id;
+                                blockId = this.theme.getSoilBlock() != -1 ? this.theme.getSoilBlock() : Block.DIRT.id;
                             }
                         }
 
@@ -478,7 +478,7 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
             }
 
             int beachHeight = surroundingWaterHeight - 1;
-            if (this.theme.equals("Paradise")) {
+            if (this.theme.isFloweryLand()) {
                 beachHeight += 2;
             }
 
@@ -491,12 +491,12 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
                         sand = this.noiseGen5.create(worldX, worldZ) > -8.0D;
                     }
 
-                    if (this.theme.equals("Paradise")) {
+                    if (this.theme.isFloweryLand()) {
                         sand = this.noiseGen5.create(worldX, worldZ) > -32.0D;
                     }
 
                     boolean gravel = this.noiseGen3.create(worldX, worldZ) > 12.0D;
-                    if ((this.theme.equals("Hell") || this.theme.equals("Woods")) || (this.singleBiome.equals("Rainforest") || this.singleBiome.equals("Seasonal Forest") || this.singleBiome.equals("Forest") || this.singleBiome.equals("Taiga"))) {
+                    if ((this.theme.isHot() || this.theme.isDenseWoods()) || (this.singleBiome.equals("Rainforest") || this.singleBiome.equals("Seasonal Forest") || this.singleBiome.equals("Forest") || this.singleBiome.equals("Taiga"))) {
                         sand = this.noiseGen5.create(worldX, worldZ) > -8.0D;
                     }
 
@@ -511,7 +511,7 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
 
                     if (aboveBlock == 0) {
                         if (surfaceY <= beachHeight && sand) {
-                            blocks[blockIndex] = (byte) (this.theme.equals("Hell") ? Block.GRASS_BLOCK.id : Block.SAND.id);
+                            blocks[blockIndex] = (byte) (this.theme.getBeachTopBlock());
                         }
                     }
                 }
@@ -597,7 +597,7 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
                 surroundingWaterHeight = 49;
             }
 
-            int liquid = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+            int liquid = this.theme.getLiquidBlock();
 
             for (int x = 0; x < 16; ++x) {
                 InfiniteIndevFeatures.floodFill(x, surroundingWaterHeight - 1, 0, 0, liquid, blocks);
@@ -614,10 +614,10 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
             for (int z = 0; z < 16; ++z) {
                 int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + (surroundingWaterHeight - 1);
                 double var10 = temperatures[x * 16 + z];
-                double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
+                double temp = this.theme.isCold() ? 1.1D : 0.5D;
 
-                if (!this.theme.equals("Hell") && (var10 < temp && !this.oldFeatures || this.theme.equals("Winter")) && blocks[index] == Block.WATER.id) {
-                    blocks[index] = (byte) Block.ICE.id;
+                if (!this.theme.isHot() && (var10 < temp && !this.oldFeatures || this.theme.isCold()) && blocks[index] == Block.WATER.id) {
+                    blocks[index] = (byte) this.theme.getSurfaceLiquidBlock();
                 }
 
                 if (this.indevWorldType.equals("Floating")) {
@@ -637,13 +637,13 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
                     }
 
                     if (blocks[index] == Block.SANDSTONE.id && y > 0) {
-                        blocks[index] = this.theme.equals("Hell") ? (byte) (biomes[x * 16 + z].topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : biomes[x * 16 + z].topBlockId) : biomes[x * 16 + z].topBlockId;
+                        blocks[index] = this.theme.getTopBlock() != -1 ? (byte) (biomes[x * 16 + z].topBlockId == Block.GRASS_BLOCK.id ? this.theme.getTopBlock() : biomes[x * 16 + z].topBlockId) : biomes[x * 16 + z].topBlockId;
 
                         int belowIndex = index - 1;
                         int columnStart = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue();
 
                         while (belowIndex >= columnStart && blocks[belowIndex] == Block.DIRT.id) {
-                            blocks[belowIndex] = biomes[x * 16 + z].soilBlockId;
+                            blocks[belowIndex] = this.theme.getSoilBlock() != -1 ? (byte) (biomes[x * 16 + z].soilBlockId == Block.DIRT.id ? this.theme.getSoilBlock() : biomes[x * 16 + z].soilBlockId) : biomes[x * 16 + z].soilBlockId;
                             belowIndex--;
                         }
                     }
@@ -697,9 +697,9 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
             int var5 = z << 4;
 
             if (!this.finiteWorld) {
-                InfiniteIndevFeatures.generateTrees(this.world, this.random, this.theme.equals("Woods") ? 10 : 1, var4, var5);
+                InfiniteIndevFeatures.generateTrees(this.world, this.random, this.theme.isDenseWoods() ? 10 : 1, var4, var5);
 
-                int plantChance = this.theme.equals("Paradise") ? 20 : 4;
+                int plantChance = this.theme.isFloweryLand() ? 20 : 4;
 
                 InfiniteIndevFeatures.generatePlant(this.world, this.random, Block.DANDELION, plantChance, var4, var5);
                 InfiniteIndevFeatures.generatePlant(this.world, this.random, Block.ROSE, plantChance, var4, var5);
@@ -710,7 +710,7 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
             for(int var6 = var4 + 8; var6 < var4 + 8 + 16; ++var6) {
                 for(int var7 = var5 + 8; var7 < var5 + 8 + 16; ++var7) {
                     int var8 = this.world.getTopSolidBlockY(var6, var7);
-                    if(this.theme.equals("Winter") && var8 > 0 && var8 < this.world.dimension.getHeight() && this.world.getBlockId(var6, var8, var7) == 0 && this.world.getMaterial(var6, var8 - 1, var7).isSolid() && this.world.getMaterial(var6, var8 - 1, var7) != Material.ICE) {
+                    if(this.theme.isCold() && var8 > 0 && var8 < this.world.dimension.getHeight() && this.world.getBlockId(var6, var8, var7) == 0 && this.world.getMaterial(var6, var8 - 1, var7).isSolid() && this.world.getMaterial(var6, var8 - 1, var7) != Material.ICE) {
                         this.world.setBlockWithoutNotifyingNeighbors(var6, var8, var7, Block.SNOW.id);
                     }
                 }

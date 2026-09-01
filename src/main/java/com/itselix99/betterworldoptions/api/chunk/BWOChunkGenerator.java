@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.api.chunk;
 
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
@@ -28,7 +29,7 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
     protected final BWOProperties bwoProperties;
     protected final String worldType;
     protected final boolean oldFeatures;
-    protected final String theme;
+    protected final Theme theme;
     protected final boolean finiteWorld;
     protected final String finiteWorldType;
     protected final int width;
@@ -47,7 +48,7 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         this.bwoProperties = (BWOProperties) world.getProperties();
         this.worldType = this.bwoProperties.bwo_getWorldType();
         this.oldFeatures = this.bwoProperties.bwo_isOldFeatures();
-        this.theme = this.bwoProperties.bwo_getTheme();
+        this.theme = Theme.getThemeById(Identifier.of(this.bwoProperties.bwo_getTheme()));
         this.finiteWorld = this.bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
         this.finiteWorldType = this.bwoProperties.bwo_getStringOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION);
         this.width = this.bwoProperties.bwo_getIntOptionValue("Width", OptionType.GENERAL_OPTION);

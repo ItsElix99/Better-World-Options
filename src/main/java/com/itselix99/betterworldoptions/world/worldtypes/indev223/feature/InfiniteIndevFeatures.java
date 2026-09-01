@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.indev223.feature;
 
+import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.config.Config;
 import net.minecraft.block.Block;
 import net.minecraft.block.PlantBlock;
@@ -106,8 +107,8 @@ public class InfiniteIndevFeatures {
         }
     }
 
-    public static void placeLakes(Random random, byte[] blocks, String theme) {
-        int liquid = (theme.equals("Hell")) ? Block.LAVA.id : Block.WATER.id;
+    public static void placeLakes(Random random, byte[] blocks, Theme theme) {
+        int liquid = theme.getLiquidBlock();
         int totalAttempts = 32;
 
         for (int attempt = 0; attempt < totalAttempts; attempt++) {

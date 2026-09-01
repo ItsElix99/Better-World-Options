@@ -6,10 +6,12 @@ import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
 import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
+import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.compat.CompatMods;
 import com.itselix99.betterworldoptions.gui.screen.BWOMoreOptionsScreen;
 import com.itselix99.betterworldoptions.gui.screen.BiomeListScreen;
+import com.itselix99.betterworldoptions.gui.screen.ThemesListScreen;
 import com.itselix99.betterworldoptions.gui.widget.BWOButtonWidget;
 import com.itselix99.betterworldoptions.gui.widget.ButtonWidgetWithIcon;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
@@ -127,7 +129,7 @@ public class CreateWorldScreenMixin extends Screen {
         this.buttons.add(this.generateStructuresButton = new ButtonWidget(12, this.width / 2 - 155, 100, 150, 20, this.translation.get("selectWorld.mapFeatures") + " " + this.translation.get("options.off")));
         this.buttons.add(this.worldTypeButton = new ButtonWidget(13, this.width / 2 + 5, 100, 150, 20, this.translation.get("selectWorld.worldtype") + " " + WorldType.getWorldTypeById(Identifier.of(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION))).getName()));
         this.buttons.add(this.singleBiomeButton = new ButtonWidget(14, this.width / 2 - 155, 150, 150, 20, this.translation.get("selectWorld.singleBiome") + " " + (!this.bwoWorldPropertiesStorage.getStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION).equals("Off") ? this.bwoWorldPropertiesStorage.getStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION) : this.translation.get("options.off"))));
-        this.buttons.add(this.themeButton = new BWOButtonWidget(15, this.width / 2 + 5, 150, 150, 20, this.translation.get(generalOptions.get(3).displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue("Theme", OptionType.GENERAL_OPTION), generalOptions.get(3), this.bwoWorldPropertiesStorage, this));
+        this.buttons.add(this.themeButton = new ButtonWidget(15, this.width / 2 + 5, 150, 150, 20, this.translation.get(generalOptions.get(3).displayName) + " " + Theme.getThemeById(Identifier.of(this.bwoWorldPropertiesStorage.getStringOptionValue("Theme", OptionType.GENERAL_OPTION))).getName()));
         this.buttons.add(this.generalOptionsButton = new ButtonWidgetWithIcon(16, this.width / 2 + 160, 100, "/assets/betterworldoptions/stationapi/textures/gui/settings_icon.png"));
         this.generateStructuresButton.active = false;
 
@@ -255,6 +257,11 @@ public class CreateWorldScreenMixin extends Screen {
                 this.lastEnteredSeed = this.seedField.getText();
 
                 this.minecraft.setScreen(new BiomeListScreen(this, this.bwoWorldPropertiesStorage));
+            } else if (button.id == 15) {
+                this.lastEnteredWorldName = this.worldNameField.getText();
+                this.lastEnteredSeed = this.seedField.getText();
+
+                this.minecraft.setScreen(new ThemesListScreen(this, this.bwoWorldPropertiesStorage));
             } else if (button.id == 16) {
                 this.lastEnteredWorldName = this.worldNameField.getText();
                 this.lastEnteredSeed = this.seedField.getText();

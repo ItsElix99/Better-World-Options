@@ -38,9 +38,9 @@ public class FlatChunkGenerator extends BWOChunkGenerator {
                             blockId = Block.SANDSTONE.id;
                         }
                     } else if (y <= 63) {
-                        blockId = var1.soilBlockId;
+                        blockId = this.theme.getSoilBlock() != -1 ? (var1.soilBlockId == Block.DIRT.id ? this.theme.getSoilBlock() : var1.soilBlockId) : var1.soilBlockId;
                     } else if (y == 64) {
-                        blockId = this.theme.equals("Hell") ? (byte) (var1.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var1.topBlockId) : var1.topBlockId;
+                        blockId = this.theme.getTopBlock() != -1 ? (var1.topBlockId == Block.GRASS_BLOCK.id ? this.theme.getTopBlock() : var1.topBlockId) : var1.topBlockId;
                     } else {
                         blockId = 0;
                     }

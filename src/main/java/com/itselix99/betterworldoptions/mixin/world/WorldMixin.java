@@ -3,6 +3,7 @@ package com.itselix99.betterworldoptions.mixin.world;
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.FiniteChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.mixin.chunk.ChunkGeneratorAccessor;
@@ -76,31 +77,21 @@ public abstract class WorldMixin implements BWOWorld {
         BWOProperties bwoProperties = (BWOProperties) this.properties;
         String worldType = bwoProperties.bwo_getWorldType();
         boolean oldFeatures =  bwoProperties.bwo_isOldFeatures();
-        String theme = bwoProperties.bwo_getTheme();
+        Theme theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
         OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
 
         if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null) {
             Biome oldBiome = oldFeaturesProperties.oldFeaturesBiomeSupplier.get();
 
-            if (theme.equals("Winter")) {
-                oldBiome.setSnow(true);
-                oldBiome.setPrecipitation(true);
-                oldBiome.setFogColor(oldFeaturesProperties.defaultFogColor);
-            } else if (theme.equals("Hell") || theme.equals("Paradise")) {
-                oldBiome.setSnow(false);
-                oldBiome.setPrecipitation(false);
-                oldBiome.setFogColor(theme.equals("Hell") ? 1049600 : 13033215);
-            } else {
-                oldBiome.setSnow(false);
-                oldBiome.setPrecipitation(true);
-                oldBiome.setFogColor(theme.equals("Woods") ? 5069403 : oldFeaturesProperties.defaultFogColor);
-            }
+            oldBiome.setSnow(theme.isCold());
+            oldBiome.setPrecipitation(theme.allowRain());
+            oldBiome.setFogColor(theme.getFogColor() != 1 ? theme.getFogColor() : oldFeaturesProperties.defaultFogColor);
         } else {
-            if (theme.equals("Winter")) {
+            if (theme.isCold()) {
                 OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setSnow(true));
                 OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setPrecipitation(storagePrecipitationBiomes.get(biome.name)));
-            } else if (theme.equals("Hell") || theme.equals("Paradise")) {
-                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setSnow(theme.equals("Hell") ? false : storageSnowBiomes.get(biome.name)));
+            } else if (!theme.allowRain()) {
+                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setSnow(theme.isHot() ? false : storageSnowBiomes.get(biome.name)));
                 OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setPrecipitation(false));
             } else {
                 OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setSnow(storageSnowBiomes.get(biome.name)));
@@ -263,20 +254,10 @@ public abstract class WorldMixin implements BWOWorld {
             at = @At("RETURN")
     )
     private int bwo_modifySkylight(int original) {
-        String theme = ((BWOProperties) this.getProperties()).bwo_getTheme();
+        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) this.getProperties()).bwo_getTheme()));
 
         if (this.dimension.id == 0) {
-            if (theme.equals("Hell")) {
-                if (original < 9) {
-                    return 9;
-                } else if (original == 11) {
-                    return 12;
-                }
-            } else if (theme.equals("Woods")) {
-                if (original < 4) {
-                    return 4;
-                }
-            }
+            return theme.changeAmbientDarkness(original);
         }
 
         return original;
@@ -291,22 +272,11 @@ public abstract class WorldMixin implements BWOWorld {
             )
     )
     private long bwo_themeCloudsColor(World world, Operation<Long> original) {
-        String theme = ((BWOProperties) world.getProperties()).bwo_getTheme();
+        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) world.getProperties()).bwo_getTheme()));
 
         if (world.dimension.id == 0) {
-            switch (theme) {
-                case "Hell" -> {
-                    return 2164736;
-                }
-                case "Paradise" -> {
-                    return 15658751;
-                }
-                case "Woods" -> {
-                    return 5069403;
-                }
-            }
+            return theme.getCloudsColor();
         }
-
 
         return original.call(world);
     }
@@ -316,6 +286,12 @@ public abstract class WorldMixin implements BWOWorld {
         if (((BWOProperties) this.getProperties()).bwo_isHardcore() && this.difficulty < 3) {
             this.difficulty = 3;
         }
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void bwo_tickTheme(CallbackInfo ci) {
+        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) this.getProperties()).bwo_getTheme()));
+        theme.tick(World.class.cast(this));
     }
 
     @WrapOperation(
@@ -328,9 +304,9 @@ public abstract class WorldMixin implements BWOWorld {
     )
     private boolean bwo_generateSnowAndIceInWinterTheme(Biome biome, Operation<Boolean> original) {
         BWOProperties bwoProperties = (BWOProperties) properties;
-        String theme = bwoProperties.bwo_getTheme();
+        Theme theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
 
-        if (theme.equals("Winter")) {
+        if (theme.isCold()) {
             return true;
         }
 
@@ -348,9 +324,9 @@ public abstract class WorldMixin implements BWOWorld {
     )
     private boolean bwo_generateSnowInWinterTheme(World world, Operation<Boolean> original) {
         BWOProperties bwoProperties = (BWOProperties) properties;
-        String theme = bwoProperties.bwo_getTheme();
+        Theme theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
 
-        if (theme.equals("Winter")) {
+        if (theme.isCold()) {
             return true;
         }
 
@@ -359,10 +335,10 @@ public abstract class WorldMixin implements BWOWorld {
 
     @ModifyReturnValue(method = "getRainGradient", at = @At("RETURN"))
     private float bwo_noRainGradientInHellAndParadise(float original) {
-        String theme = ((BWOProperties) this.getProperties()).bwo_getTheme();
+        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) this.getProperties()).bwo_getTheme()));
 
         if (this.dimension.id == 0) {
-            if (theme.equals("Hell") || theme.equals("Paradise")) {
+            if (!theme.allowRain()) {
                 return 0.0F;
             }
         }
@@ -372,10 +348,10 @@ public abstract class WorldMixin implements BWOWorld {
 
     @ModifyReturnValue(method = "getThunderGradient", at = @At("RETURN"))
     private float bwo_noThunderGradientInHellAndParadise(float original) {
-        String theme = ((BWOProperties) this.getProperties()).bwo_getTheme();
+        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) this.getProperties()).bwo_getTheme()));
 
         if (this.dimension.id == 0) {
-            if (theme.equals("Hell") || theme.equals("Paradise")) {
+            if (!theme.allowRain()) {
                 return 0.0F;
             }
         }

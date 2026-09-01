@@ -21,6 +21,7 @@ selectWorld.worldtype.amplified.line2=beefy computer
 selectWorld.mapFeatures.info=Villages, dungeons etc
 
 selectWorldType.title=Select World Type
+selectTheme.title=Select Theme
 
 selectBiome.title=Select Biome
 selectBiome.allBiomes=All Biomes

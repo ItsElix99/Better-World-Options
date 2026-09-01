@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.biomes;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
@@ -67,18 +68,14 @@ public class BiomeColorsImplServerMixin {
         MinecraftServer minecraftServer = (MinecraftServer) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_isOldFeatures();
-        String theme = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getTheme();
+        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getTheme()));
         OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
 
         if (minecraftServer.getWorld(0).dimension.id == 0) {
-            if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != -1 && (theme.equals("Normal") || theme.equals("Winter"))) {
+            if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != -1 && (theme.getFogColor() == -1)) {
                 return oldFeaturesProperties.defaultFogColor;
-            } else if (theme.equals("Hell")) {
-                return 1049600;
-            } else if (theme.equals("Paradise")) {
-                return 13033215;
-            } else if (theme.equals("Woods")) {
-                return 5069403;
+            } else if (theme.getFogColor() != -1) {
+                return theme.getFogColor();
             }
         }
 

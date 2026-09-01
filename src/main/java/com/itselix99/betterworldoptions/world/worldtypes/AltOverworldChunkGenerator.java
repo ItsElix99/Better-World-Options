@@ -91,13 +91,13 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
 
                             for (int var52 = 0; var52 < 4; ++var52) {
                                 double var53 = temperatures[(var11 * 4 + var43) * 16 + var12 * 4 + var52];
-                                double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
+                                double temp = this.theme.isCold() ? 1.1D : 0.5D;
                                 int var55 = 0;
                                 if (var13 * 8 + var32 < var7) {
-                                    if (!this.theme.equals("Hell") && var53 < temp && var13 * 8 + var32 >= var7 - 1) {
-                                        var55 = Block.ICE.id;
+                                    if (!this.theme.isHot() && var53 < temp && var13 * 8 + var32 >= var7 - 1) {
+                                        var55 = this.theme.getSurfaceLiquidBlock();
                                     } else {
-                                        var55 = this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id;
+                                        var55 = this.theme.getLiquidBlock();
                                     }
                                 }
 
@@ -154,8 +154,8 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
                     var13 = (int) (this.depthBuffer[var8 + var9 * 16] / (double) 3.0F + (double) 3.0F + this.random.nextDouble() * (double) 0.25F);
                 }
                 int var14 = -1;
-                int var15 = this.theme.equals("Hell") ? (var10.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var10.topBlockId) : var10.topBlockId;
-                int var16 = var10.soilBlockId;
+                int var15 = this.theme.getTopBlock() != -1 ? (var10.topBlockId == Block.GRASS_BLOCK.id ? this.theme.getTopBlock() : var10.topBlockId) : var10.topBlockId;
+                int var16 = this.theme.getSoilBlock() != -1 ? (var10.soilBlockId == Block.DIRT.id ? this.theme.getSoilBlock() : var10.soilBlockId) : var10.soilBlockId;
 
                 for (int var17 = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1; var17 >= 0; --var17) {
                     int var18 = (beachFix ? var8 * 16 + var9 : var9 * 16 + var8) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var17;
@@ -171,8 +171,8 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
                                     var15 = 0;
                                     var16 = (byte) Block.STONE.id;
                                 } else if (var17 >= var5 - 4 && var17 <= var5 + 1) {
-                                    var15 = this.theme.equals("Hell") ? (var10.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var10.topBlockId) : var10.topBlockId;
-                                    var16 = var10.soilBlockId;
+                                    var15 = this.theme.getTopBlock() != -1 ? (var10.topBlockId == Block.GRASS_BLOCK.id ? this.theme.getTopBlock() : var10.topBlockId) : var10.topBlockId;
+                                    var16 = this.theme.getSoilBlock() != -1 ? (var10.soilBlockId == Block.DIRT.id ? this.theme.getSoilBlock() : var10.soilBlockId) : var10.soilBlockId;
                                     if (var12) {
                                         var15 = 0;
                                     }
@@ -182,11 +182,11 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
                                     }
 
                                     if (var11) {
-                                        var15 = (byte) (this.theme.equals("Hell") ? Block.GRASS_BLOCK.id : Block.SAND.id);
+                                        var15 = (byte) (this.theme.getBeachTopBlock());
                                     }
 
                                     if (var11) {
-                                        var16 = (byte) (this.theme.equals("Hell") ? Block.DIRT.id : Block.SAND.id);
+                                        var16 = (byte) (this.theme.getBeachSoilBlock());
                                     }
                                 }
 
@@ -194,11 +194,11 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
                                 double temperature = temperatureMap[var8 * 16 + var9];
 
                                 if (var17 < var5 && var15 == 0) {
-                                    double temp = this.theme.equals("Winter") ? 1.1D : 0.5D;
-                                    if (beachFix && !this.theme.equals("Hell") && (temperature < temp) && var17 >= var5 - 1) {
-                                        var15 = (byte) Block.ICE.id;
+                                    double temp = this.theme.isCold() ? 1.1D : 0.5D;
+                                    if (beachFix && !this.theme.isHot() && (temperature < temp) && var17 >= var5 - 1) {
+                                        var15 = (byte) this.theme.getSurfaceLiquidBlock();
                                     } else {
-                                        var15 = (byte) (this.theme.equals("Hell") ? Block.LAVA.id : Block.WATER.id);
+                                        var15 = (byte) (this.theme.getLiquidBlock());
                                     }
                                 }
 

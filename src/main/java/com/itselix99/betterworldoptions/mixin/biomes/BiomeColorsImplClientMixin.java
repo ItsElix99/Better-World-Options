@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.biomes;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.config.Config;
@@ -68,18 +69,14 @@ public class BiomeColorsImplClientMixin {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
-        String theme = ((BWOProperties) minecraft.world.getProperties()).bwo_getTheme();
+        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) minecraft.world.getProperties()).bwo_getTheme()));
         OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
 
         if (minecraft.world.dimension.id == 0) {
-            if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != -1 && (theme.equals("Normal") || theme.equals("Winter"))) {
+            if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != -1 && (theme.getFogColor() == -1)) {
                 return oldFeaturesProperties.defaultFogColor;
-            } else if (theme.equals("Hell")) {
-                return 1049600;
-            } else if (theme.equals("Paradise")) {
-                return 13033215;
-            } else if (theme.equals("Woods")) {
-                return 5069403;
+            } else if (theme.getFogColor() != -1) {
+                return theme.getFogColor();
             }
         }
 

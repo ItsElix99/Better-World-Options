@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.mixin.dimensions;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
@@ -79,20 +80,20 @@ public class DimensionMixin {
     @ModifyReturnValue(method = "isValidSpawnPoint", at = @At("RETURN"))
     public boolean bwo_isValidSpawnPoint(boolean original, @Local(ordinal = 2) int var3) {
         String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        String theme = ((BWOProperties) this.world.getProperties()).bwo_getTheme();
+        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) this.world.getProperties()).bwo_getTheme()));
 
-        if (!theme.equals("Hell")) {
-            return var3 == WorldType.getWorldTypeById(Identifier.of(worldType)).getBlockToSpawn();
+        if (theme.getBlockToSpawn() != -1) {
+            return var3 == theme.getBlockToSpawn();
         } else {
-            return var3 == Block.DIRT.id;
+            return var3 == WorldType.getWorldTypeById(Identifier.of(worldType)).getBlockToSpawn();
         }
     }
 
     @ModifyReturnValue(method = "getTimeOfDay", at = @At("RETURN"))
     public float bwo_stopTimeInParadiseTheme(float original, long time, float tickDelta) {
-        String theme = ((BWOProperties) world.getProperties()).bwo_getTheme();
+        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) world.getProperties()).bwo_getTheme()));
 
-        if (theme.equals("Paradise")) {
+        if (theme.isStopTime()) {
             return 0.0F;
         }
 

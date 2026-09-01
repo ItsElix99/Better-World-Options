@@ -130,8 +130,8 @@ public class SkylandsChunkGenerator extends BWOChunkGenerator {
                     var10 = (int) (this.depthBuffer[var7 + var8 * 16] / (double) 3.0F + (double) 3.0F + this.random.nextDouble() * (double) 0.25F);
                 }
                 int var11 = -1;
-                int var12 = this.theme.equals("Hell") ? (var9.topBlockId == Block.GRASS_BLOCK.id ? Block.DIRT.id : var9.topBlockId) : var9.topBlockId;
-                int var13 = var9.soilBlockId;
+                int var12 = this.theme.getTopBlock() != -1 ? (var9.topBlockId == Block.GRASS_BLOCK.id ? this.theme.getTopBlock() : var9.topBlockId) : var9.topBlockId;
+                int var13 = this.theme.getSoilBlock() != -1 ? (var9.soilBlockId == Block.DIRT.id ? this.theme.getSoilBlock() : var9.soilBlockId) : var9.soilBlockId;
 
                 for (int var14 = Config.BWOConfig.world.worldHeightLimit.getIntValue() - 1; var14 >= 0; --var14) {
                     int var15 = (beachFix ? var7 * 16 + var8 : var8 * 16 + var7) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var14;

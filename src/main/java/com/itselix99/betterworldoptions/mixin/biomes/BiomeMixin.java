@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.mixin.biomes;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.config.Config;
@@ -33,15 +34,11 @@ public abstract class BiomeMixin implements BWOWorld {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
-        String theme = ((BWOProperties) minecraft.world.getProperties()).bwo_getTheme();
+        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) minecraft.world.getProperties()).bwo_getTheme()));
         OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
 
-        if (theme.equals("Hell")) {
-            return 1049600;
-        } else if (theme.equals("Paradise")) {
-            return 13033215;
-        } else if (theme.equals("Woods")) {
-            return 7699847;
+        if (theme.getSkyColor() != -1) {
+            return theme.getFogColor();
         } else if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && oldFeaturesProperties != null && (oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null || oldFeaturesProperties.defaultSkyColor != -1)) {
             return oldFeaturesProperties.defaultSkyColor;
         }
