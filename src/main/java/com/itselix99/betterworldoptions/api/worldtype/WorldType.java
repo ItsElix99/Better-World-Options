@@ -1,11 +1,11 @@
 package com.itselix99.betterworldoptions.api.worldtype;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
-import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
+import com.itselix99.betterworldoptions.api.options.entry.BooleanOption;
 import com.itselix99.betterworldoptions.api.options.OptionType;
-import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
+import com.itselix99.betterworldoptions.api.options.entry.IntOption;
+import com.itselix99.betterworldoptions.api.options.entry.Option;
+import com.itselix99.betterworldoptions.api.options.entry.StringOption;
 import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.flat.FlatChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.SkylandsChunkGenerator;
@@ -45,7 +45,7 @@ public class WorldType {
     private Class<? extends BiomeSource> biomeSource = BiomeSource.class;
     private Map<String, Integer> oldTextures = new HashMap<>();
     private OldFeaturesProperties oldFeaturesProperties;
-    private final Map<String, OptionEntry> worldTypeOptions = new LinkedHashMap<>();
+    private final Map<String, Option<?>> worldTypeOptions = new LinkedHashMap<>();
     private boolean isDimension;
     private int dimensionId;
     private boolean pregenerateFiniteWorld = false;
@@ -136,7 +136,7 @@ public class WorldType {
         return this.biomeSource;
     }
 
-    public Map<String, OptionEntry> getWorldTypeOptions() {
+    public Map<String, Option<?>> getWorldTypeOptions() {
         return this.worldTypeOptions;
     }
 
@@ -181,40 +181,18 @@ public class WorldType {
     }
 
     public void addStringWorldTypeOption(String displayName, String name, String[] description, List<String> stringList, int defaultValue) {
-        StringOptionEntry stringOption = new StringOptionEntry();
-        stringOption.id = this.worldTypeOptions.size();
-        stringOption.displayName = displayName;
-        stringOption.name = name;
-        stringOption.description = description;
-        stringOption.optionType = OptionType.WORLD_TYPE_OPTION;
-        stringOption.stringList = stringList;
-        stringOption.defaultValue = stringOption.stringList.get(defaultValue);
-        stringOption.ordinalDefaultValue = defaultValue;
-        this.worldTypeOptions.put(stringOption.name, stringOption);
+        StringOption stringOption = new StringOption(this.worldTypeOptions.size(), displayName, name, description, OptionType.WORLD_TYPE_OPTION, stringList, defaultValue);
+        this.worldTypeOptions.put(stringOption.getName(), stringOption);
     }
 
     public void addBooleanWorldTypeOption(String displayName, String name, String[] description, boolean defaultValue) {
-        BooleanOptionEntry booleanOption = new BooleanOptionEntry();
-        booleanOption.id = this.worldTypeOptions.size();
-        booleanOption.displayName = displayName;
-        booleanOption.name = name;
-        booleanOption.description = description;
-        booleanOption.optionType = OptionType.WORLD_TYPE_OPTION;
-        booleanOption.defaultValue = defaultValue;
-        this.worldTypeOptions.put(booleanOption.name, booleanOption);
+        BooleanOption booleanOption = new BooleanOption(this.worldTypeOptions.size(), displayName, name, description, OptionType.WORLD_TYPE_OPTION, defaultValue);
+        this.worldTypeOptions.put(booleanOption.getName(), booleanOption);
     }
 
     public void addIntWorldTypeOption(String displayName, String name, String[] description, int defaultValue, int minValue, int maxValue) {
-        IntOptionEntry intOption = new IntOptionEntry();
-        intOption.id = this.worldTypeOptions.size();
-        intOption.displayName = displayName;
-        intOption.name = name;
-        intOption.description = description;
-        intOption.optionType = OptionType.WORLD_TYPE_OPTION;
-        intOption.defaultValue = defaultValue;
-        intOption.minValue = minValue;
-        intOption.maxValue = maxValue;
-        this.worldTypeOptions.put(intOption.name, intOption);
+        IntOption intOption = new IntOption(this.worldTypeOptions.size(), displayName, name, description, OptionType.WORLD_TYPE_OPTION, defaultValue, minValue, maxValue);
+        this.worldTypeOptions.put(intOption.getName(), intOption);
     }
 
     public static void addDimensionWorldTypeInfo(Identifier id, String name, String icon, String[] desc) {

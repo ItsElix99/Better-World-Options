@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.gui.widget;
 
-import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
+import com.itselix99.betterworldoptions.api.options.entry.IntOption;
+import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -17,14 +17,14 @@ public class BWOSliderWidget extends BWOButtonWidget {
     protected float value = 1.0F;
     private int stepsCount;
 
-    public BWOSliderWidget(int id, int x, int y, String text, OptionEntry option, BWOWorldPropertiesStorage bwoWorldPropertiesStorage, Object parent) {
+    public BWOSliderWidget(int id, int x, int y, String text, Option<?> option, BWOWorldPropertiesStorage bwoWorldPropertiesStorage, Object parent) {
         super(id, x, y, text, option, bwoWorldPropertiesStorage, parent);
-        this.text = this.translation.get(this.option.displayName) + " " + this.bwoWorldPropertiesStorage.getIntOptionValue(this.option.name, this.option.optionType);
-        if (option instanceof IntOptionEntry intOption) {
-            this.minValue = intOption.minValue;
-            this.maxValue = intOption.maxValue;
-            this.stepsCount = (this.maxValue - this.minValue) / intOption.step;
-            this.setValue(this.bwoWorldPropertiesStorage.getIntOptionValue(this.option.name, this.option.optionType));
+        this.text = this.translation.get(this.option.getDisplayName()) + " " + this.bwoWorldPropertiesStorage.getOptionValue(this.option.getName(), this.option.getOptionType(), 0);
+        if (option instanceof IntOption intOption) {
+            this.minValue = intOption.getMinValue();
+            this.maxValue = intOption.getMaxValue();
+            this.stepsCount = (this.maxValue - this.minValue) / intOption.getStep();
+            this.setValue(this.bwoWorldPropertiesStorage.getOptionValue(this.option.getName(), this.option.getOptionType(), 0));
         }
     }
 
@@ -33,16 +33,16 @@ public class BWOSliderWidget extends BWOButtonWidget {
     }
 
     public void setValue(float realValue) {
-        IntOptionEntry intOption = (IntOptionEntry) this.option;
+        IntOption intOption = (IntOption) this.option;
 
         realValue = Math.max(this.minValue, Math.min(this.maxValue, realValue));
-        int stepIndex = Math.round((realValue - this.minValue) / intOption.step);
+        int stepIndex = Math.round((realValue - this.minValue) / intOption.getStep());
         stepIndex = Math.max(0, Math.min(this.stepsCount, stepIndex));
         this.value = (float) stepIndex / (float) this.stepsCount;
     }
 
     private void updateValueFromMouse(int mouseX) {
-        IntOptionEntry intOption = (IntOptionEntry) this.option;
+        IntOption intOption = (IntOption) this.option;
 
         float rawValue = (float)(mouseX - (this.x + 4)) / (float)(this.width - 8);
         rawValue = Math.max(0.0F, Math.min(1.0F, rawValue));
@@ -51,11 +51,11 @@ public class BWOSliderWidget extends BWOButtonWidget {
         stepIndex = Math.max(0, Math.min(this.stepsCount, stepIndex));
 
         this.value = (float) stepIndex / (float) this.stepsCount;
-        int real = this.minValue + stepIndex * intOption.step;
+        int real = this.minValue + stepIndex * intOption.getStep();
 
-        this.bwoWorldPropertiesStorage.setIntOptionValue(this.option.name, option.optionType, real);
+        this.bwoWorldPropertiesStorage.setOptionValue(this.option.getName(), option.getOptionType(), real);
 
-        this.text = this.translation.get(this.option.displayName) + " " + real;
+        this.text = this.translation.get(this.option.getDisplayName()) + " " + real;
     }
 
     protected void renderBackground(Minecraft minecraft, int mouseX, int mouseY) {

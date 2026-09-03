@@ -41,11 +41,11 @@ public abstract class MultiplayerChunkCacheMixin implements BWOWorld {
     @Inject(method = "<init>", at = @At("TAIL"))
     private void bwo_init(World var1, CallbackInfo ci) {
         this.bwoProperties = (BWOProperties) var1.getProperties();
-        this.width = this.bwoProperties.bwo_getIntOptionValue("Width", OptionType.GENERAL_OPTION);
-        this.length = this.bwoProperties.bwo_getIntOptionValue("Length", OptionType.GENERAL_OPTION);
-        this.finiteWorld = this.bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-        this.finiteWorldType = this.bwoProperties.bwo_getStringOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION);
-        this.indevWorldType = this.bwoProperties.bwo_getStringOptionValue("IndevWorldType", OptionType.WORLD_TYPE_OPTION);
+        this.width = this.bwoProperties.bwo_getOptionValue("Width", OptionType.GENERAL_OPTION, 0);
+        this.length = this.bwoProperties.bwo_getOptionValue("Length", OptionType.GENERAL_OPTION, 0);
+        this.finiteWorld = this.bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
+        this.finiteWorldType = this.bwoProperties.bwo_getOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION, "");
+        this.indevWorldType = this.bwoProperties.bwo_getOptionValue("IndevWorldType", OptionType.WORLD_TYPE_OPTION, "");
 
         if (this.bwoProperties.bwo_getWorldType().equals(BetterWorldOptions.NAMESPACE.id("early_infdev").toString())) {
             BWOChunkGenerator.setSizeLimits(-this.width / 2, this.width / 2, -this.length / 2, this.length / 2);

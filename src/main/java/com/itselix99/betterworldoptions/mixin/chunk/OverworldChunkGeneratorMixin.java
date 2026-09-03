@@ -56,13 +56,13 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
     private void bwo_initBWOProperties(World world, long seed, CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
         this.theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
-        this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-        this.finiteWorldType = bwoProperties.bwo_getStringOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION);
-        this.width = bwoProperties.bwo_getIntOptionValue("Width", OptionType.GENERAL_OPTION);
-        this.length = bwoProperties.bwo_getIntOptionValue("Length", OptionType.GENERAL_OPTION);
-        this.farlands = bwoProperties.bwo_getBooleanOptionValue("Farlands", OptionType.GENERAL_OPTION);
-        this.farlandsShape = bwoProperties.bwo_getStringOptionValue("FarlandsShape", OptionType.GENERAL_OPTION);
-        this.farlandsDistance = bwoProperties.bwo_getIntOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION) / 2;
+        this.finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
+        this.finiteWorldType = bwoProperties.bwo_getOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION, "");
+        this.width = bwoProperties.bwo_getOptionValue("Width", OptionType.GENERAL_OPTION, 0);
+        this.length = bwoProperties.bwo_getOptionValue("Length", OptionType.GENERAL_OPTION, 0);
+        this.farlands = bwoProperties.bwo_getOptionValue("Farlands", OptionType.GENERAL_OPTION, false);
+        this.farlandsShape = bwoProperties.bwo_getOptionValue("FarlandsShape", OptionType.GENERAL_OPTION, "");
+        this.farlandsDistance = bwoProperties.bwo_getOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION, 0) / 2;
 
         if (this.finiteWorldType.equals("MCPE")) {
             BWOChunkGenerator.setSizeLimits(0, this.width, 0, this.length);

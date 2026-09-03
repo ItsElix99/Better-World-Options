@@ -30,7 +30,7 @@ public class DimensionHelperClientImplMixin {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         World world = minecraft.world;
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
-        boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        boolean finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
 
         if (finiteWorld) {
             int[] sizeLimits = BWOChunkGenerator.getSizeLimits();
@@ -57,7 +57,7 @@ public class DimensionHelperClientImplMixin {
         Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         World world = minecraft.world;
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
-        boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        boolean finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
 
         if (finiteWorld && minecraft.player.dimensionId == 0) {
             int[] sizeLimits = BWOChunkGenerator.getSizeLimits();

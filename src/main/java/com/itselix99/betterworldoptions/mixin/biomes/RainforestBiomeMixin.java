@@ -20,7 +20,7 @@ public class RainforestBiomeMixin {
     @ModifyReturnValue(method = "getRandomTreeFeature", at = @At(value = "RETURN"))
     public Feature bwo_getRandomTreeFeatureByWorldType(Feature original, @Local(ordinal = 0, argsOnly = true) Random random) {
         BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
-        String worldType = bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
+        String worldType = bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "");
 
         if (worldType.equals(BetterWorldOptions.NAMESPACE.id("infdev_20100415").toString()) || worldType.equals(BetterWorldOptions.NAMESPACE.id("infdev_20100420").toString())) {
             return random.nextInt(3) == 0 ? new OakTreeFeature() : new LargeOakTreeFeature();

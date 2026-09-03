@@ -1,9 +1,11 @@
 package com.itselix99.betterworldoptions.api.options.storage;
 
-public class OptionStorage {
-    public String name;
+public record OptionStorage<T>(String name, T value) {
+    public String getName() {
+        return this.name;
+    }
 
-    public OptionStorage(String name) {
-        this.name = name;
+    public T getValue() {
+        return this.value;
     }
 }

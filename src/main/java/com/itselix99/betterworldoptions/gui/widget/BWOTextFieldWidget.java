@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.gui.widget;
 
-import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
+import com.itselix99.betterworldoptions.api.options.entry.IntOption;
+import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -12,7 +12,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 
 @Environment(EnvType.CLIENT)
 public class BWOTextFieldWidget extends TextFieldWidget {
-    private final OptionEntry option;
+    private final Option<?> option;
     private final BWOWorldPropertiesStorage bwoWorldPropertiesStorage;
     private final TextRenderer textRenderer;
     public int x;
@@ -21,7 +21,7 @@ public class BWOTextFieldWidget extends TextFieldWidget {
     private final int height;
     private int focusedTicks;
 
-    public BWOTextFieldWidget(Screen parent, TextRenderer textRenderer, int x, int y, int width, int height, String text, OptionEntry option, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {
+    public BWOTextFieldWidget(Screen parent, TextRenderer textRenderer, int x, int y, int width, int height, String text, Option<?> option, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {
         super(parent, textRenderer, x, y, width, height, text);
         this.textRenderer = textRenderer;
         this.x = x;
@@ -60,13 +60,13 @@ public class BWOTextFieldWidget extends TextFieldWidget {
                 this.setText(this.getText() + character);
             }
 
-            IntOptionEntry intOptionEntry = (IntOptionEntry) this.option;
+            IntOption intOptionEntry = (IntOption) this.option;
 
             if (!this.getText().isEmpty()) {
                 int value = Integer.parseInt(this.getText());
 
-                if (value >= intOptionEntry.minValue && value <= intOptionEntry.maxValue) {
-                    this.bwoWorldPropertiesStorage.setIntOptionValue(this.option.name, this.option.optionType, value);
+                if (value >= intOptionEntry.getMinValue() && value <= intOptionEntry.getMaxValue()) {
+                    this.bwoWorldPropertiesStorage.setOptionValue(this.option.getName(), this.option.getOptionType(), value);
                 }
             }
         }

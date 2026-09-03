@@ -1,154 +1,135 @@
 package com.itselix99.betterworldoptions.api.options;
 
-import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
+import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.api.options.entry.BooleanOption;
+import com.itselix99.betterworldoptions.api.options.entry.IntOption;
+import com.itselix99.betterworldoptions.api.options.entry.Option;
+import com.itselix99.betterworldoptions.api.options.entry.StringOption;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 
 import java.util.*;
 
 public class GeneralOptions {
-    private static final List<OptionEntry> GENERAL_OPTIONS_LIST = new ArrayList<>();
+    private static final List<Option<?>> generalOptionsList = new ArrayList<>();
 
-    public static List<OptionEntry> getList() {
-        return GENERAL_OPTIONS_LIST;
+    public static List<Option<?>> getGeneralOptionsList() {
+        return generalOptionsList;
     }
 
-    public static OptionEntry getOptionByName(String optionName) {
-        return getList().stream().filter(generalOptionsEntry -> optionName.equals(generalOptionsEntry.name)).toList().get(0);
+    public static Option<?> getGeneralOptionByName(String generalOptionName) {
+        return getGeneralOptionsList().stream().filter(generalOptions -> generalOptionName.equals(generalOptions.getName())).findFirst().orElse(null);
     }
 
-    public static StringOptionEntry createStringGeneralOption(String displayName, String name, String[] description, String defaultValue) {
-        StringOptionEntry stringOption = new StringOptionEntry();
-        stringOption.displayName = displayName;
-        stringOption.name = name;
-        stringOption.description = description;
-        stringOption.optionType = OptionType.GENERAL_OPTION;
-        stringOption.defaultValue = defaultValue;
-        return stringOption;
-    }
-
-    public static StringOptionEntry createStringGeneralOptionWithStringList(String displayName, String name, String[] description, List<String> stringList, int defaultValue) {
-        StringOptionEntry stringOption = new StringOptionEntry();
-        stringOption.displayName = displayName;
-        stringOption.name = name;
-        stringOption.description = description;
-        stringOption.optionType = OptionType.GENERAL_OPTION;
-        stringOption.stringList = stringList;
-        stringOption.defaultValue = stringOption.stringList.get(defaultValue);
-        stringOption.ordinalDefaultValue = defaultValue;
-        return stringOption;
-    }
-
-    public static BooleanOptionEntry createBooleanGeneralOption(String displayName, String name, String[] description, boolean defaultValue) {
-        BooleanOptionEntry booleanOption = new BooleanOptionEntry();
-        booleanOption.displayName = displayName;
-        booleanOption.name = name;
-        booleanOption.description = description;
-        booleanOption.optionType = OptionType.GENERAL_OPTION;
-        booleanOption.defaultValue = defaultValue;
-        return booleanOption;
-    }
-
-    public static IntOptionEntry createIntGeneralOption(String displayName, String name, String[] description, int defaultValue, int minValue, int maxValue) {
-        IntOptionEntry intOption = new IntOptionEntry();
-        intOption.displayName = displayName;
-        intOption.name = name;
-        intOption.description = description;
-        intOption.optionType = OptionType.GENERAL_OPTION;
-        intOption.defaultValue = defaultValue;
-        intOption.minValue = minValue;
-        intOption.maxValue = maxValue;
-        return intOption;
-    }
-
-    public static void addDependentOption(OptionEntry parent, OptionEntry dependent) {
-        parent.dependentOptions.add(dependent);
-        dependent.parentOption = parent;
+    public static void addDependentOption(Option<?> parent, Option<?> dependent) {
+        parent.addDependentOptions(dependent);
+        dependent.setParentOption(parent);
     }
 
     static {
-        StringOptionEntry WorldTypeOption = createStringGeneralOption("selectWorld.worldtype", "WorldType", null, WorldType.defaultWorldType.getId().toString());
-        WorldTypeOption.visible = false;
-        GENERAL_OPTIONS_LIST.add(WorldTypeOption);
+        StringOption WorldTypeOption = new StringOption("selectWorld.worldtype", "WorldType", null, OptionType.GENERAL_OPTION, WorldType.defaultWorldType.getId().toString());
+        WorldTypeOption.setVisible(false);
 
-        BooleanOptionEntry Hardcore = createBooleanGeneralOption("options.difficulty.hardcore", "Hardcore", null, false);
-        Hardcore.visible = false;
-        GENERAL_OPTIONS_LIST.add(Hardcore);
+        BooleanOption Hardcore = new BooleanOption("options.difficulty.hardcore", "Hardcore", null, OptionType.GENERAL_OPTION,false);
+        Hardcore.setVisible(false);
 
-        StringOptionEntry SingleBiome = createStringGeneralOption("selectWorld.singleBiome", "SingleBiome", null, "Off");
-        SingleBiome.visible = false;
-        SingleBiome.compatibleWorldTypes = Set.of("Overworld");
-        GENERAL_OPTIONS_LIST.add(SingleBiome);
+        StringOption SingleBiome = new StringOption("selectWorld.singleBiome", "SingleBiome", null, OptionType.GENERAL_OPTION, "Off");
+        SingleBiome.setVisible(false);
+        SingleBiome.setCompatibleType("Overworld");
 
-        StringOptionEntry Theme = createStringGeneralOptionWithStringList("selectWorld.theme", "Theme", null, new ArrayList<>(Arrays.asList("Normal", "Hell", "Paradise", "Woods", "Winter")), 0);
-        Theme.visible = false;
-        Theme.compatibleWorldTypes = Set.of("Overworld");
-        GENERAL_OPTIONS_LIST.add(Theme);
+        StringOption Theme = new StringOption("selectWorld.theme", "Theme", null, OptionType.GENERAL_OPTION, new ArrayList<>(Arrays.asList("Normal", "Hell", "Paradise", "Woods", "Winter")), 0);
+        Theme.setVisible(false);
+        Theme.setCompatibleType("Overworld");
 
-        BooleanOptionEntry OldFeatures = createBooleanGeneralOption("bwoMoreOptions.oldFeatures", "OldFeatures", new String[]{"bwoMoreOptions.oldFeatures.line1", "bwoMoreOptions.oldFeatures.line2"}, false);
-        OldFeatures.compatibleWorldTypes = Set.of("Alpha 1.2.0", "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "Indev 223", "MCPE");
-        OldFeatures.worldTypeDefaultValue.put("Alpha 1.2.0", true);
-        GENERAL_OPTIONS_LIST.add(OldFeatures);
+        BooleanOption OldFeatures = new BooleanOption("bwoMoreOptions.oldFeatures", "OldFeatures", new String[]{"bwoMoreOptions.oldFeatures.line1", "bwoMoreOptions.oldFeatures.line2"}, OptionType.GENERAL_OPTION, false);
+        OldFeatures.setCompatibleType("WorldType");
+        OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("alpha_1.2.0"));
+        OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("alpha_1.1.2_01"));
+        OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100611"));
+        OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100420"));
+        OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100415"));
+        OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("early_infdev"));
+        OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("indev_20100223"));
+        OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("mcpe"));
+        OldFeatures.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("alpha_1.2.0"), true);
 
-        BooleanOptionEntry FiniteWorld = createBooleanGeneralOption("bwoMoreOptions.finiteWorld", "FiniteWorld", null, false);
-        FiniteWorld.compatibleWorldTypes = Set.of("Overworld");
-        FiniteWorld.visible = false;
-        GENERAL_OPTIONS_LIST.add(FiniteWorld);
+        BooleanOption FiniteWorld = new BooleanOption("bwoMoreOptions.finiteWorld", "FiniteWorld", null, OptionType.GENERAL_OPTION, false);
+        FiniteWorld.setVisible(false);
+        FiniteWorld.setCompatibleType("Overworld");
 
-        StringOptionEntry FiniteWorldType = createStringGeneralOptionWithStringList("bwoMoreOptions.finiteWorldType", "FiniteWorldType", null, new ArrayList<>(Arrays.asList("MCPE", "LCE", "Island")), 0);
-        FiniteWorldType.compatibleWorldTypes = Set.of("Overworld");
-        FiniteWorldType.visible = false;
-        FiniteWorldType.worldTypeDefaultValue.put("Skylands", new ArrayList<>(List.of("MCPE")));
-        FiniteWorldType.worldTypeDefaultValue.put("Flat", new ArrayList<>(List.of("MCPE")));
-        FiniteWorldType.worldTypeDefaultValue.put("Infdev 415", new ArrayList<>(List.of("MCPE")));
-        FiniteWorldType.worldTypeDefaultValue.put("Early Infdev", new ArrayList<>(List.of("MCPE")));
-        FiniteWorldType.worldTypeDefaultValue.put("Indev 223", new ArrayList<>(Arrays.asList("MCPE", "Custom")));
+        StringOption FiniteWorldType = new StringOption("bwoMoreOptions.finiteWorldType", "FiniteWorldType", null, OptionType.GENERAL_OPTION, new ArrayList<>(Arrays.asList("MCPE", "LCE", "Island")), 0);
+        FiniteWorldType.setCompatibleType("Overworld");
+        FiniteWorldType.setVisible(false);
+        FiniteWorldType.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("skylands"), new ArrayList<>(List.of("MCPE")));
+        FiniteWorldType.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("flat"), new ArrayList<>(List.of("MCPE")));
+        FiniteWorldType.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100415"), new ArrayList<>(List.of("MCPE")));
+        FiniteWorldType.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("early_infdev"), new ArrayList<>(List.of("MCPE")));
+        FiniteWorldType.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("indev_20100223"), new ArrayList<>(Arrays.asList("MCPE", "Custom")));
         addDependentOption(FiniteWorld, FiniteWorldType);
-        GENERAL_OPTIONS_LIST.add(FiniteWorldType);
 
-        StringOptionEntry Size = createStringGeneralOptionWithStringList("bwoMoreOptions.size", "Size", null, new ArrayList<>(Arrays.asList("Small", "Normal", "Huge", "Classic LCE", "Small LCE", "Medium LCE", "Large LCE")), 1);
-        Size.compatibleWorldTypes = Set.of("Overworld");
-        Size.visible = false;
-        Size.save = false;
+        StringOption Size = new StringOption("bwoMoreOptions.size", "Size", null, OptionType.GENERAL_OPTION, new ArrayList<>(Arrays.asList("Small", "Normal", "Huge", "Classic LCE", "Small LCE", "Medium LCE", "Large LCE")), 1);
+        Size.setCompatibleType("Overworld");
+        Size.setVisible(false);
+        Size.setSave(false);
         addDependentOption(FiniteWorld, Size);
-        GENERAL_OPTIONS_LIST.add(Size);
 
-        StringOptionEntry Shape = createStringGeneralOptionWithStringList("bwoMoreOptions.shape", "Shape", null, new ArrayList<>(Arrays.asList("Square", "Long")), 0);
-        Shape.compatibleWorldTypes = Set.of("Overworld");
-        Shape.visible = false;
-        Shape.save = false;
+        StringOption Shape = new StringOption("bwoMoreOptions.shape", "Shape", null, OptionType.GENERAL_OPTION, new ArrayList<>(Arrays.asList("Square", "Long")), 0);
+        Shape.setCompatibleType("Overworld");
+        Shape.setVisible(false);
+        Shape.setSave(false);
         addDependentOption(FiniteWorld, Shape);
-        GENERAL_OPTIONS_LIST.add(Shape);
 
-        IntOptionEntry Width = createIntGeneralOption("bwoMoreOptions.width", "Width", null, 256, 64, 10240);
-        Width.step = 64;
-        Width.compatibleWorldTypes = Set.of("Overworld");
-        Width.visible = false;
+        IntOption Width = new IntOption("bwoMoreOptions.width", "Width", null, OptionType.GENERAL_OPTION, 256, 64, 10240);
+        Width.setStep(64);
+        Width.setCompatibleType("Overworld");
+        Width.setVisible(false);
         addDependentOption(FiniteWorld, Width);
-        GENERAL_OPTIONS_LIST.add(Width);
 
-        IntOptionEntry Length = createIntGeneralOption("bwoMoreOptions.length", "Length", null, 256, 64, 10240);
-        Length.step = 64;
-        Length.compatibleWorldTypes = Set.of("Overworld");
-        Length.visible = false;
+        IntOption Length = new IntOption("bwoMoreOptions.length", "Length", null, OptionType.GENERAL_OPTION, 256, 64, 10240);
+        Length.setStep(64);
+        Length.setCompatibleType("Overworld");
+        Length.setVisible(false);
         addDependentOption(FiniteWorld, Length);
-        GENERAL_OPTIONS_LIST.add(Length);
 
-        BooleanOptionEntry Farlands = createBooleanGeneralOption("bwoMoreOptions.farlands", "Farlands", null, false);
-        Farlands.compatibleWorldTypes = Set.of("Default", "Amplified", "Skylands", "Alpha 1.2.0", "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "MCPE");
-        GENERAL_OPTIONS_LIST.add(Farlands);
+        BooleanOption Farlands = new BooleanOption("bwoMoreOptions.farlands", "Farlands", null, OptionType.GENERAL_OPTION, false);
+        Farlands.setCompatibleType("WorldType");
+        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("default"));
+        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("amplified"));
+        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("skylands"));
+        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("alpha_1.2.0"));
+        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("alpha_1.1.2_01"));
+        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100611"));
+        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100420"));
+        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100415"));
+        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("early_infdev"));
+        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("mcpe"));
 
-        StringOptionEntry FarlandsShape = createStringGeneralOptionWithStringList("bwoMoreOptions.farlandsShape", "FarlandsShape", null, new ArrayList<>(Arrays.asList("Linear", "Square")), 0);
-        FarlandsShape.compatibleWorldTypes = Set.of("Default", "Amplified", "Skylands", "Alpha 1.2.0", "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "MCPE");
+        StringOption FarlandsShape = new StringOption("bwoMoreOptions.farlandsShape", "FarlandsShape", null, OptionType.GENERAL_OPTION, new ArrayList<>(Arrays.asList("Linear", "Square")), 0);
+        FarlandsShape.setCompatibleType("WorldType");
+        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("default"));
+        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("amplified"));
+        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("skylands"));
+        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("alpha_1.2.0"));
+        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("alpha_1.1.2_01"));
+        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100611"));
+        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100420"));
+        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100415"));
+        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("early_infdev"));
+        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("mcpe"));
         addDependentOption(Farlands, FarlandsShape);
-        GENERAL_OPTIONS_LIST.add(FarlandsShape);
 
-        IntOptionEntry FarlandsDistance = createIntGeneralOption("bwoMoreOptions.farlandsDistance", "FarlandsDistance", new String[]{"bwoMoreOptions.farlandsDistance.line1", "bwoMoreOptions.farlandsDistance.line2"}, 8, 2, 32);
-        FarlandsDistance.step = 2;
-        FarlandsDistance.compatibleWorldTypes = Set.of("Default", "Amplified", "Skylands", "Alpha 1.2.0", "Alpha 1.1.2_01", "Infdev 611", "Infdev 420", "Infdev 415", "Early Infdev", "MCPE");
+        IntOption FarlandsDistance = new IntOption("bwoMoreOptions.farlandsDistance", "FarlandsDistance", new String[]{"bwoMoreOptions.farlandsDistance.line1", "bwoMoreOptions.farlandsDistance.line2"}, OptionType.GENERAL_OPTION, 8, 2, 32);
+        FarlandsDistance.setCompatibleType("WorldType");
+        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("default"));
+        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("amplified"));
+        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("skylands"));
+        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("alpha_1.2.0"));
+        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("alpha_1.1.2_01"));
+        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100611"));
+        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100420"));
+        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100415"));
+        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("early_infdev"));
+        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("mcpe"));
+        FarlandsDistance.setStep(2);
         addDependentOption(Farlands, FarlandsDistance);
-        GENERAL_OPTIONS_LIST.add(FarlandsDistance);
     }
 }

@@ -28,7 +28,7 @@ public class EntityMixin {
     )
     private void bwo_pushEntityBackIntoWorld(CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) this.world.getProperties();
-        boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        boolean finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
 
         if (finiteWorld) {
             double var1;

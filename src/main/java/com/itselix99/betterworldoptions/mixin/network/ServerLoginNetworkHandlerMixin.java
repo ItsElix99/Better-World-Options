@@ -48,7 +48,7 @@ public abstract class ServerLoginNetworkHandlerMixin extends NetworkHandler {
         World world = this.server.getWorld(0);
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
         String worldType = bwoProperties.bwo_getWorldType();
-        boolean skyDimension = bwoProperties.bwo_getBooleanOptionValue("SkyDimension", OptionType.WORLD_TYPE_OPTION);
+        boolean skyDimension = bwoProperties.bwo_getOptionValue("SkyDimension", OptionType.WORLD_TYPE_OPTION, false);
 
         if (worldType.equals(BetterWorldOptions.NAMESPACE.id("nether").toString())) {
             player.dimensionId = -1;

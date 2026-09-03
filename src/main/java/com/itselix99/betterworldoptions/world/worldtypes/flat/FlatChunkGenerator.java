@@ -18,7 +18,7 @@ public class FlatChunkGenerator extends BWOChunkGenerator {
 
     public FlatChunkGenerator(World world, long seed) {
         super(world, seed);
-        this.superflat = this.bwoProperties.bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
+        this.superflat = this.bwoProperties.bwo_getOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION, false);
         this.forestNoise = new OctavePerlinNoiseSampler(this.random, 8);
     }
 

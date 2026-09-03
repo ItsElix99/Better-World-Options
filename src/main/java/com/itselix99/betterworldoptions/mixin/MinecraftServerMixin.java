@@ -24,7 +24,7 @@ public abstract class MinecraftServerMixin {
     private void bwo_shutdownFiniteWorldStorage(CallbackInfo ci) {
         if (this.getWorld(0) != null) {
             BWOProperties bwoProperties = (BWOProperties) this.getWorld(0).getProperties();
-            boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+            boolean finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
 
             if (((ServerChunkGeneratorAccessor) this.getWorld(0).getChunkSource()).getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld && bwoProperties.bwo_isPregeneratingFiniteWorld()) {
                 try {

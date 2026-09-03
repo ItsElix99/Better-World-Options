@@ -38,8 +38,8 @@ public class ServerChunkCacheMixin {
         this.worldType = bwoProperties.bwo_getWorldType();
         this.theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
         this.oldFeatures = bwoProperties.bwo_isOldFeatures();
-        this.superflat = bwoProperties.bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
-        this.finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        this.superflat = bwoProperties.bwo_getOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION, false);
+        this.finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
     }
 
     @WrapOperation(

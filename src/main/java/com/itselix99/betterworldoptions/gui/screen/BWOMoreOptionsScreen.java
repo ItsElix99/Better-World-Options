@@ -1,8 +1,8 @@
 package com.itselix99.betterworldoptions.gui.screen;
 
 import com.itselix99.betterworldoptions.api.options.GeneralOptions;
-import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
+import com.itselix99.betterworldoptions.api.options.entry.IntOption;
+import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.gui.widget.*;
@@ -30,7 +30,7 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
     private int selectedPage = 0;
     public List<BWOButtonWidget> bwoButtons = new ArrayList<>();
 
-    private WorldType worldType;
+    private final WorldType worldType;
 
     private BWOSliderWidget sizeXSlider;
     private BWOSliderWidget sizeZSlider;
@@ -41,7 +41,7 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
     public BWOMoreOptionsScreen(Screen parent, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {
         this.parent = parent;
         this.bwoWorldPropertiesStorage = bwoWorldPropertiesStorage;
-        this.worldType = WorldType.getWorldTypeById(Identifier.of(this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
+        this.worldType = WorldType.getWorldTypeById(Identifier.of(this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "")));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
         ButtonWidget finiteWorldOptionsButton;
         this.buttons.add(finiteWorldOptionsButton = new ButtonWidget(2, this.width / 2 + 55, 20, 100, 20, this.translation.get("bwoMoreOptions.button.finiteWorld")));
         this.buttons.add(new ButtonWidget(10000, this.width / 2 - 100, this.height - 27, this.translation.get("gui.done")));
-        OptionEntry[] options = null;
+        Option<?>[] options = null;
         int i = 0;
 
 
@@ -74,9 +74,9 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
         switch (this.optionsPage.get(this.selectedPage)) {
             case "General Options" -> {
                 this.title = this.translation.get("bwoMoreOptions.title.generalOptions");
-                options = new OptionEntry[GeneralOptions.getList().size()];
-                for (OptionEntry generalOptions : GeneralOptions.getList()) {
-                    if (generalOptions.visible) {
+                options = new Option[GeneralOptions.getGeneralOptionsList().size()];
+                for (Option<?> generalOptions : GeneralOptions.getGeneralOptionsList()) {
+                    if (generalOptions.isVisible()) {
                         options[i] = generalOptions;
                         ++i;
                     }
@@ -85,9 +85,9 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
             case "World Type Options" -> {
                 this.title = this.translation.get("bwoMoreOptions.title.worldTypeOptions");
                 if (!this.worldType.getWorldTypeOptions().isEmpty()) {
-                    options = new OptionEntry[this.worldType.getWorldTypeOptions().size()];
-                    for (OptionEntry option : this.worldType.getWorldTypeOptions().values()) {
-                        if (option.visible) {
+                    options = new Option[this.worldType.getWorldTypeOptions().size()];
+                    for (Option<?> option : this.worldType.getWorldTypeOptions().values()) {
+                        if (option.isVisible()) {
                             options[i] = option;
                             ++i;
                         }
@@ -95,16 +95,16 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
                 }
             }
             case "Finite World Options" -> {
-                List<OptionEntry> generalOptions = GeneralOptions.getList();
-                boolean finiteWorld = this.bwoWorldPropertiesStorage.getBooleanOptionValue(generalOptions.get(5).name, OptionType.GENERAL_OPTION);
+                List<Option<?>> generalOptions = GeneralOptions.getGeneralOptionsList();
+                boolean finiteWorld = this.bwoWorldPropertiesStorage.getOptionValue(generalOptions.get(5).getName(), OptionType.GENERAL_OPTION, false);
 
                 this.title = this.translation.get("bwoMoreOptions.title.finiteWorldOptions");
-                this.buttons.add(new BWOButtonWidget(10, this.width / 2 - 155, 48, this.translation.get(generalOptions.get(5).displayName) + " " + (finiteWorld ? this.translation.get("options.on") : this.translation.get("options.off")), generalOptions.get(5), this.bwoWorldPropertiesStorage, this));
-                this.buttons.add(new BWOButtonWidget(11, this.width / 2 + 5, 48, 150, 20, this.translation.get(generalOptions.get(7).displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue(generalOptions.get(7).name, OptionType.GENERAL_OPTION), generalOptions.get(7), this.bwoWorldPropertiesStorage, this));
-                this.buttons.add(new BWOButtonWidget(12, this.width / 2 - 155, 73, this.translation.get(generalOptions.get(6).displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue(generalOptions.get(6).name, OptionType.GENERAL_OPTION), generalOptions.get(6), this.bwoWorldPropertiesStorage, this));
-                this.buttons.add(new BWOButtonWidget(13, this.width / 2 + 5, 73, this.translation.get(generalOptions.get(8).displayName) + " " + this.bwoWorldPropertiesStorage.getStringOptionValue(generalOptions.get(8).name, OptionType.GENERAL_OPTION), generalOptions.get(8), this.bwoWorldPropertiesStorage, this));
-                this.buttons.add(this.sizeXSlider = new BWOSliderWidget(14, this.width / 2 - 155, 98, this.translation.get(generalOptions.get(9).displayName) + " " + this.bwoWorldPropertiesStorage.getIntOptionValue(generalOptions.get(9).name, OptionType.GENERAL_OPTION), generalOptions.get(9), this.bwoWorldPropertiesStorage, this));
-                this.buttons.add(this.sizeZSlider = new BWOSliderWidget(15, this.width / 2 + 5, 98, this.translation.get(generalOptions.get(10).displayName) + " " + this.bwoWorldPropertiesStorage.getIntOptionValue(generalOptions.get(10).name, OptionType.GENERAL_OPTION), generalOptions.get(10), this.bwoWorldPropertiesStorage, this));
+                this.buttons.add(new BWOButtonWidget(10, this.width / 2 - 155, 48, this.translation.get(generalOptions.get(5).getDisplayName()) + " " + (finiteWorld ? this.translation.get("options.on") : this.translation.get("options.off")), generalOptions.get(5), this.bwoWorldPropertiesStorage, this));
+                this.buttons.add(new BWOButtonWidget(11, this.width / 2 + 5, 48, 150, 20, this.translation.get(generalOptions.get(7).getDisplayName()) + " " + this.bwoWorldPropertiesStorage.getOptionValue(generalOptions.get(7).getName(), OptionType.GENERAL_OPTION, 0), generalOptions.get(7), this.bwoWorldPropertiesStorage, this));
+                this.buttons.add(new BWOButtonWidget(12, this.width / 2 - 155, 73, this.translation.get(generalOptions.get(6).getDisplayName()) + " " + this.bwoWorldPropertiesStorage.getOptionValue(generalOptions.get(6).getName(), OptionType.GENERAL_OPTION, ""), generalOptions.get(6), this.bwoWorldPropertiesStorage, this));
+                this.buttons.add(new BWOButtonWidget(13, this.width / 2 + 5, 73, this.translation.get(generalOptions.get(8).getDisplayName()) + " " + this.bwoWorldPropertiesStorage.getOptionValue(generalOptions.get(8).getName(), OptionType.GENERAL_OPTION, ""), generalOptions.get(8), this.bwoWorldPropertiesStorage, this));
+                this.buttons.add(this.sizeXSlider = new BWOSliderWidget(14, this.width / 2 - 155, 98, this.translation.get(generalOptions.get(9).getDisplayName()) + " " + this.bwoWorldPropertiesStorage.getOptionValue(generalOptions.get(9).getName(), OptionType.GENERAL_OPTION, 0), generalOptions.get(9), this.bwoWorldPropertiesStorage, this));
+                this.buttons.add(this.sizeZSlider = new BWOSliderWidget(15, this.width / 2 + 5, 98, this.translation.get(generalOptions.get(10).getDisplayName()) + " " + this.bwoWorldPropertiesStorage.getOptionValue(generalOptions.get(10).getName(), OptionType.GENERAL_OPTION, 0), generalOptions.get(10), this.bwoWorldPropertiesStorage, this));
 
                 for (Object button : this.buttons) {
                     if (button instanceof BWOButtonWidget bwoButtonWidget) {
@@ -127,7 +127,7 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
 
     protected void buttonClicked(ButtonWidget button) {
         if (button.active) {
-            List<OptionEntry> generalOptions = GeneralOptions.getList();
+            List<Option<?>> generalOptions = GeneralOptions.getGeneralOptionsList();
 
             if (button instanceof BWOButtonWidget bwoButton) {
                 bwoButton.onButtonClicked();
@@ -143,11 +143,11 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
                 this.selectedPage = 2;
                 this.init();
             } else if (button.id == 10) {
-                boolean finiteWorld = this.bwoWorldPropertiesStorage.getBooleanOptionValue(generalOptions.get(5).name, OptionType.GENERAL_OPTION);
+                boolean finiteWorld = this.bwoWorldPropertiesStorage.getOptionValue(generalOptions.get(5).getName(), OptionType.GENERAL_OPTION, false);
 
                 if (!finiteWorld) {
-                    this.sizeXSlider.text = this.translation.get(generalOptions.get(9).displayName) + " " +  ((IntOptionEntry) generalOptions.get(9)).defaultValue;
-                    this.sizeZSlider.text = this.translation.get(generalOptions.get(10).displayName) + " " + ((IntOptionEntry) generalOptions.get(10)).defaultValue;
+                    this.sizeXSlider.text = this.translation.get(generalOptions.get(9).getDisplayName()) + " " +  ((IntOption) generalOptions.get(9)).getDefaultValue();
+                    this.sizeZSlider.text = this.translation.get(generalOptions.get(10).getDisplayName()) + " " + ((IntOption) generalOptions.get(10)).getDefaultValue();
 
                     this.sizeXSlider.active = false;
                     this.sizeZSlider.active = false;
@@ -156,8 +156,8 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
                     this.sizeZSlider.active = true;
                 }
             } else if (button.id == 11 || button.id == 13) {
-                int selectedSize = this.bwoWorldPropertiesStorage.getSelectedValue(generalOptions.get(7).name, OptionType.GENERAL_OPTION);
-                String shape = this.bwoWorldPropertiesStorage.getStringOptionValue(generalOptions.get(8).name, OptionType.GENERAL_OPTION);
+                int selectedSize = this.bwoWorldPropertiesStorage.getSelectedValue(generalOptions.get(7).getName(), OptionType.GENERAL_OPTION);
+                String shape = this.bwoWorldPropertiesStorage.getOptionValue(generalOptions.get(8).getName(), OptionType.GENERAL_OPTION, "");
                 int[] size;
 
                 if (shape.equals("Long")) {
@@ -166,11 +166,11 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
                     size = this.sizeSquare.get(selectedSize);
                 }
 
-                this.bwoWorldPropertiesStorage.setIntOptionValue(generalOptions.get(9).name, OptionType.GENERAL_OPTION, size[0]);
-                this.bwoWorldPropertiesStorage.setIntOptionValue(generalOptions.get(10).name, OptionType.GENERAL_OPTION, size[1]);
+                this.bwoWorldPropertiesStorage.setOptionValue(generalOptions.get(9).getName(), OptionType.GENERAL_OPTION, size[0]);
+                this.bwoWorldPropertiesStorage.setOptionValue(generalOptions.get(10).getName(), OptionType.GENERAL_OPTION, size[1]);
 
-                this.sizeXSlider.text = this.translation.get(generalOptions.get(9).displayName) + " " + size[0];
-                this.sizeZSlider.text = this.translation.get(generalOptions.get(10).displayName) + " " + size[1];
+                this.sizeXSlider.text = this.translation.get(generalOptions.get(9).getDisplayName()) + " " + size[0];
+                this.sizeZSlider.text = this.translation.get(generalOptions.get(10).getDisplayName()) + " " + size[1];
 
                 this.sizeXSlider.setValue(size[0]);
                 this.sizeZSlider.setValue(size[1]);
@@ -201,9 +201,9 @@ public class BWOMoreOptionsScreen extends Screen implements BWOScreen {
         this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get(this.title), this.width / 2, 5, 16777215);
 
         if (this.optionsPage.get(this.selectedPage).equals("Finite World Options")) {
-            boolean finiteWorld = this.bwoWorldPropertiesStorage.getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-            int width = this.bwoWorldPropertiesStorage.getIntOptionValue("Width", OptionType.GENERAL_OPTION);
-            int length = this.bwoWorldPropertiesStorage.getIntOptionValue("Length", OptionType.GENERAL_OPTION);
+            boolean finiteWorld = this.bwoWorldPropertiesStorage.getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
+            int width = this.bwoWorldPropertiesStorage.getOptionValue("Width", OptionType.GENERAL_OPTION, 0);
+            int length = this.bwoWorldPropertiesStorage.getOptionValue("Length", OptionType.GENERAL_OPTION, 0);
 
             if (this.worldType.isPregenerateFiniteWorld() && finiteWorld && width * length * 64 > 268435456) {
                 this.drawCenteredTextWithShadow(this.textRenderer, this.translation.get("bwoMoreOptions.pregenerateFiniteWorld.info"), this.width / 2, 122, 16777215);

@@ -39,7 +39,7 @@ public class ThemesListScreen extends Screen {
         this.themesListWidget.registerButtons(this.buttons, 4, 5);
         this.buttons.add(this.doneButton = new ButtonWidget(0, this.width / 2 - 75, this.height - 28, 150, 20, translation.get("gui.cancel")));
 
-        String currentTheme = this.bwoWorldPropertiesStorage.getStringOptionValue("Theme", OptionType.GENERAL_OPTION);
+        String currentTheme = this.bwoWorldPropertiesStorage.getOptionValue("Theme", OptionType.GENERAL_OPTION, "");
         selectedTheme = Theme.getThemeById(Identifier.of(currentTheme));
     }
 
@@ -76,9 +76,9 @@ public class ThemesListScreen extends Screen {
             List<Theme> var3 = Theme.getThemesList();
             ThemesListScreen.selectTheme(var3.get(index));
 
-            String currentTheme = ThemesListScreen.this.bwoWorldPropertiesStorage.getStringOptionValue("Theme", OptionType.GENERAL_OPTION);
+            String currentTheme = ThemesListScreen.this.bwoWorldPropertiesStorage.getOptionValue("Theme", OptionType.GENERAL_OPTION, "");
             if (!currentTheme.equals(var3.get(index).getId().toString())) {
-                ThemesListScreen.this.bwoWorldPropertiesStorage.setStringOptionValue("Theme", OptionType.GENERAL_OPTION, var3.get(index).getId().toString());
+                ThemesListScreen.this.bwoWorldPropertiesStorage.setOptionValue("Theme", OptionType.GENERAL_OPTION, var3.get(index).getId().toString());
                 ThemesListScreen.this.doneButton.text = ThemesListScreen.this.translation.get("gui.done");
             }
         }

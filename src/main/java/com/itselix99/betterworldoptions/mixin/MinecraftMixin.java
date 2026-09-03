@@ -81,8 +81,8 @@ public class MinecraftMixin {
     private World bwo_startGameInOtherDimensions(WorldStorage storage, String name, long seed, Operation<World> original) {
         BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
 
-        String worldType = bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
-        boolean skyDimension = bwoWorldPropertiesStorage.getBooleanOptionValue("SkyDimension", OptionType.WORLD_TYPE_OPTION);
+        String worldType = bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "");
+        boolean skyDimension = bwoWorldPropertiesStorage.getOptionValue("SkyDimension", OptionType.WORLD_TYPE_OPTION, false);
 
         if (worldType.equals(BetterWorldOptions.NAMESPACE.id("nether").toString()) && storage.loadProperties() == null) {
             return new World(storage, name, seed, Dimension.fromId(-1));
@@ -102,7 +102,7 @@ public class MinecraftMixin {
     private void bwo_shutdownFiniteWorldStorage(World world, CallbackInfo ci) {
         if (this.world != null && !this.world.isRemote) {
             BWOProperties bwoProperties = (BWOProperties) this.world.getProperties();
-            boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+            boolean finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
 
             if (((ChunkGeneratorAccessor) this.world.getChunkSource()).getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld && bwoProperties.bwo_isPregeneratingFiniteWorld()) {
                 try {
@@ -124,7 +124,7 @@ public class MinecraftMixin {
     )
     private void bwo_fixSpawnInFiniteWorld(Args args) {
         BWOProperties bwoProperties = (BWOProperties) this.world.getProperties();
-        boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        boolean finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
 
         if (finiteWorld) {
             int[] sizeLimits = BWOChunkGenerator.getSizeLimits();
@@ -149,7 +149,7 @@ public class MinecraftMixin {
     )
     private void bwo_fixSpawnInFiniteWorld2(Args args) {
         BWOProperties bwoProperties = (BWOProperties) this.world.getProperties();
-        boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        boolean finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
 
         if (finiteWorld && this.player.dimensionId == 0) {
             int[] sizeLimits = BWOChunkGenerator.getSizeLimits();

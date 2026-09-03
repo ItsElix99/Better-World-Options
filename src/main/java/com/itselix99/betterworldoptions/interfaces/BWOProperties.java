@@ -16,12 +16,10 @@ public interface BWOProperties {
     String bwo_getTheme();
     boolean bwo_isOldFeatures();
 
-    String bwo_getStringOptionValue(String optionName, OptionType optionType);
-    boolean bwo_getBooleanOptionValue(String optionName, OptionType optionType);
-    int bwo_getIntOptionValue(String optionName, OptionType optionType);
+    <T> T bwo_getOptionValue(String optionName, OptionType optionType, T fallback);
 
     void bwo_setPregeneratingFiniteWorld(boolean isDone);
     boolean bwo_isPregeneratingFiniteWorld();
 
-    Map<String, OptionStorage> bwo_getOptionsMap(OptionType optionType);
+    Map<String, OptionStorage<?>> bwo_getOptionsMap(OptionType optionType);
 }

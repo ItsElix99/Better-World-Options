@@ -2,14 +2,11 @@ package com.itselix99.betterworldoptions.config;
 
 import com.itselix99.betterworldoptions.api.options.GeneralOptions;
 import com.itselix99.betterworldoptions.api.options.OptionType;
-import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
-import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
-import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
+import com.itselix99.betterworldoptions.api.options.entry.BooleanOption;
+import com.itselix99.betterworldoptions.api.options.entry.IntOption;
+import com.itselix99.betterworldoptions.api.options.entry.Option;
+import com.itselix99.betterworldoptions.api.options.entry.StringOption;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
-import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
@@ -47,39 +44,39 @@ public class BWOServerConfig {
 
             BWOWorldPropertiesStorage bwoWorldPropertiesStorage = new BWOWorldPropertiesStorage();
 
-            for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
-                if (option instanceof StringOptionStorage) {
-                    StringOptionEntry stringGeneralOption = (StringOptionEntry) GeneralOptions.getOptionByName(option.name);
-                    String defaultValue = stringGeneralOption.defaultValue;
+            for (OptionStorage<?> option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
+                if (option.getValue() instanceof String) {
+                    StringOption stringGeneralOption = (StringOption) GeneralOptions.getGeneralOptionByName(option.name());
+                    String defaultValue = stringGeneralOption.getDefaultValue();
 
-                    if (!stringGeneralOption.worldTypeDefaultValue.isEmpty() && stringGeneralOption.worldTypeDefaultValue.containsKey(generalProps.getProperty("WorldType", "Default"))) {
-                        List<String> stringList = stringGeneralOption.worldTypeDefaultValue.get(generalProps.getProperty("WorldType", "Default"));
+                    if (!stringGeneralOption.getWorldTypeValues().isEmpty()) {
+                        List<String> stringList = stringGeneralOption.getValues(Identifier.of(generalProps.getProperty("WorldType", WorldType.defaultWorldType.getId().toString())));
 
-                        if (!stringList.contains(generalProps.getProperty(option.name, defaultValue))) {
+                        if (!stringList.contains(generalProps.getProperty(option.name(), defaultValue))) {
                             defaultValue = stringList.get(0);
                         }
                     }
 
-                    bwoWorldPropertiesStorage.setStringOptionValue(option.name, OptionType.GENERAL_OPTION, generalProps.getProperty(option.name, defaultValue));
-                } else if (option instanceof BooleanOptionStorage) {
-                    BooleanOptionEntry booleanGeneralOption = (BooleanOptionEntry) GeneralOptions.getOptionByName(option.name);
-                    boolean defaultValue = booleanGeneralOption.defaultValue;
+                    bwoWorldPropertiesStorage.setOptionValue(option.name(), OptionType.GENERAL_OPTION, generalProps.getProperty(option.name(), defaultValue));
+                } else if (option.getValue() instanceof Boolean) {
+                    BooleanOption booleanGeneralOption = (BooleanOption) GeneralOptions.getGeneralOptionByName(option.name());
+                    boolean defaultValue = booleanGeneralOption.getDefaultValue();
 
-                    if (!booleanGeneralOption.worldTypeDefaultValue.isEmpty() && booleanGeneralOption.worldTypeDefaultValue.containsKey(generalProps.getProperty("WorldType", "Default"))) {
-                        defaultValue = booleanGeneralOption.worldTypeDefaultValue.get(generalProps.getProperty("WorldType", "Default"));
+                    if (!booleanGeneralOption.getWorldTypeValues().isEmpty()) {
+                        defaultValue = booleanGeneralOption.getValues(Identifier.of(generalProps.getProperty("WorldType", WorldType.defaultWorldType.getId().toString())));
                     }
 
-                    bwoWorldPropertiesStorage.setBooleanOptionValue(option.name, OptionType.GENERAL_OPTION, Boolean.parseBoolean(generalProps.getProperty(option.name, String.valueOf(defaultValue))));
-                } else if (option instanceof IntOptionStorage) {
-                    IntOptionEntry intGeneralOption = (IntOptionEntry) GeneralOptions.getOptionByName(option.name);
-                    int defaultValue = intGeneralOption.defaultValue;
-                    int loadedValue = Integer.parseInt(generalProps.getProperty(option.name, String.valueOf(defaultValue)));
+                    bwoWorldPropertiesStorage.setOptionValue(option.name(), OptionType.GENERAL_OPTION, Boolean.parseBoolean(generalProps.getProperty(option.name(), String.valueOf(defaultValue))));
+                } else if (option.getValue() instanceof Integer) {
+                    IntOption intGeneralOption = (IntOption) GeneralOptions.getGeneralOptionByName(option.name());
+                    int defaultValue = intGeneralOption.getDefaultValue();
+                    int loadedValue = Integer.parseInt(generalProps.getProperty(option.name(), String.valueOf(defaultValue)));
 
-                    if (!(loadedValue >= intGeneralOption.minValue && loadedValue <= intGeneralOption.maxValue)) {
+                    if (!(loadedValue >= intGeneralOption.getMinValue() && loadedValue <= intGeneralOption.getMaxValue())) {
                         loadedValue = defaultValue;
                     }
 
-                    bwoWorldPropertiesStorage.setIntOptionValue(option.name, OptionType.GENERAL_OPTION, loadedValue);
+                    bwoWorldPropertiesStorage.setOptionValue(option.name(), OptionType.GENERAL_OPTION, loadedValue);
                 }
             }
 
@@ -88,42 +85,42 @@ public class BWOServerConfig {
             worldTypeProps.load(in2);
             in2.close();
 
-            WorldType worldType = WorldType.getWorldTypeById(Identifier.of(bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
+            WorldType worldType = WorldType.getWorldTypeById(Identifier.of(bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "")));
 
             if (!worldType.getWorldTypeOptions().isEmpty()) {
-                Map<String, OptionStorage> worldTypeOptions = new HashMap<>();
+                Map<String, OptionStorage<?>> worldTypeOptions = new HashMap<>();
 
-                for (OptionEntry optionEntry : worldType.getWorldTypeOptions().values()) {
-                    if (optionEntry instanceof StringOptionEntry stringOptionEntry) {
-                        worldTypeOptions.put(optionEntry.name, new StringOptionStorage(optionEntry.name, stringOptionEntry.defaultValue));
-                    } else if (optionEntry instanceof BooleanOptionEntry booleanOptionEntry) {
-                        worldTypeOptions.put(optionEntry.name, new BooleanOptionStorage(optionEntry.name, booleanOptionEntry.defaultValue));
-                    } else if (optionEntry instanceof IntOptionEntry intOptionEntry) {
-                        worldTypeOptions.put(optionEntry.name, new IntOptionStorage(optionEntry.name, intOptionEntry.defaultValue));
+                for (Option<?> option : worldType.getWorldTypeOptions().values()) {
+                    if (option instanceof StringOption stringOptionEntry) {
+                        worldTypeOptions.put(option.getName(), new OptionStorage<>(option.getName(), stringOptionEntry.getDefaultValue()));
+                    } else if (option instanceof BooleanOption booleanOptionEntry) {
+                        worldTypeOptions.put(option.getName(), new OptionStorage<>(option.getName(), booleanOptionEntry.getDefaultValue()));
+                    } else if (option instanceof IntOption intOptionEntry) {
+                        worldTypeOptions.put(option.getName(), new OptionStorage<>(option.getName(), intOptionEntry.getDefaultValue()));
                     }
                 }
 
                 bwoWorldPropertiesStorage.setOptionsMap(worldTypeOptions, OptionType.WORLD_TYPE_OPTION);
 
-                for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.WORLD_TYPE_OPTION).values()) {
-                    if (option instanceof StringOptionStorage) {
-                        StringOptionEntry stringWorldTypeOption = (StringOptionEntry) worldType.getWorldTypeOptions().get(option.name);
-                        String defaultValue = stringWorldTypeOption.defaultValue;
-                        bwoWorldPropertiesStorage.setStringOptionValue(option.name, OptionType.WORLD_TYPE_OPTION, worldTypeProps.getProperty(option.name, defaultValue));
-                    } else if (option instanceof BooleanOptionStorage) {
-                        BooleanOptionEntry booleanWorldTypeOption = (BooleanOptionEntry) worldType.getWorldTypeOptions().get(option.name);
-                        boolean defaultValue = booleanWorldTypeOption.defaultValue;
-                        bwoWorldPropertiesStorage.setBooleanOptionValue(option.name, OptionType.WORLD_TYPE_OPTION, Boolean.parseBoolean(worldTypeProps.getProperty(option.name, String.valueOf(defaultValue))));
-                    } else if (option instanceof IntOptionStorage) {
-                        IntOptionEntry intWorldTypeOption = (IntOptionEntry) worldType.getWorldTypeOptions().get(option.name);
-                        int defaultValue = intWorldTypeOption.defaultValue;
-                        int loadedValue = Integer.parseInt(worldTypeProps.getProperty(option.name, String.valueOf(defaultValue)));
+                for (OptionStorage<?> option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.WORLD_TYPE_OPTION).values()) {
+                    if (option.getValue() instanceof String) {
+                        StringOption stringWorldTypeOption = (StringOption) worldType.getWorldTypeOptions().get(option.name());
+                        String defaultValue = stringWorldTypeOption.getDefaultValue();
+                        bwoWorldPropertiesStorage.setOptionValue(option.name(), OptionType.WORLD_TYPE_OPTION, worldTypeProps.getProperty(option.name(), defaultValue));
+                    } else if (option.getValue() instanceof Boolean) {
+                        BooleanOption booleanWorldTypeOption = (BooleanOption) worldType.getWorldTypeOptions().get(option.name());
+                        boolean defaultValue = booleanWorldTypeOption.getDefaultValue();
+                        bwoWorldPropertiesStorage.setOptionValue(option.name(), OptionType.WORLD_TYPE_OPTION, Boolean.parseBoolean(worldTypeProps.getProperty(option.name(), String.valueOf(defaultValue))));
+                    } else if (option.getValue() instanceof Integer) {
+                        IntOption intWorldTypeOption = (IntOption) worldType.getWorldTypeOptions().get(option.name());
+                        int defaultValue = intWorldTypeOption.getDefaultValue();
+                        int loadedValue = Integer.parseInt(worldTypeProps.getProperty(option.name(), String.valueOf(defaultValue)));
 
-                        if (!(loadedValue >= intWorldTypeOption.minValue && loadedValue <= intWorldTypeOption.maxValue)) {
+                        if (!(loadedValue >= intWorldTypeOption.getMinValue() && loadedValue <= intWorldTypeOption.getMaxValue())) {
                             loadedValue = defaultValue;
                         }
 
-                        bwoWorldPropertiesStorage.setIntOptionValue(option.name, OptionType.WORLD_TYPE_OPTION, loadedValue);
+                        bwoWorldPropertiesStorage.setOptionValue(option.name(), OptionType.WORLD_TYPE_OPTION, loadedValue);
                     }
                 }
             }
@@ -142,17 +139,11 @@ public class BWOServerConfig {
             BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
 
             if (optionType == OptionType.GENERAL_OPTION) {
-                for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
-                    OptionEntry optionEntry = GeneralOptions.getOptionByName(option.name);
+                for (OptionStorage<?> option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.GENERAL_OPTION).values()) {
+                    Option<?> optionEntry = GeneralOptions.getGeneralOptionByName(option.name());
 
-                    if (optionEntry.save) {
-                        if (option instanceof StringOptionStorage stringGeneralOption) {
-                            props.setProperty(option.name, stringGeneralOption.value);
-                        } else if (option instanceof BooleanOptionStorage booleanGeneralOption) {
-                            props.setProperty(option.name, String.valueOf(booleanGeneralOption.value));
-                        } else if (option instanceof IntOptionStorage intGeneralOption) {
-                            props.setProperty(option.name, String.valueOf(intGeneralOption.value));
-                        }
+                    if (optionEntry.allowSave()) {
+                        props.setProperty(option.name(), String.valueOf(option.getValue()));
                     }
                 }
 
@@ -160,17 +151,11 @@ public class BWOServerConfig {
                 storeWithoutTimestamp(props, out, "Better World Options - General Options");
                 out.close();
             } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
-                WorldType worldType = WorldType.getWorldTypeById(Identifier.of(bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
+                WorldType worldType = WorldType.getWorldTypeById(Identifier.of(bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "")));
 
                 if (!worldType.getWorldTypeOptions().isEmpty()) {
-                    for (OptionStorage option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.WORLD_TYPE_OPTION).values()) {
-                        if (option instanceof StringOptionStorage stringWorldTypeOption) {
-                            props.setProperty(option.name, stringWorldTypeOption.value);
-                        } else if (option instanceof BooleanOptionStorage booleanWorldTypeOption) {
-                            props.setProperty(option.name, String.valueOf(booleanWorldTypeOption.value));
-                        } else if (option instanceof IntOptionStorage intWorldTypeOption) {
-                            props.setProperty(option.name, String.valueOf(intWorldTypeOption.value));
-                        }
+                    for (OptionStorage<?> option : bwoWorldPropertiesStorage.getOptionsMap(OptionType.WORLD_TYPE_OPTION).values()) {
+                        props.setProperty(option.name(), String.valueOf(option.getValue()));
                     }
                 }
 

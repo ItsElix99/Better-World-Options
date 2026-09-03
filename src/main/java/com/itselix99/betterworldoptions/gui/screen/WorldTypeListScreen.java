@@ -1,14 +1,11 @@
 package com.itselix99.betterworldoptions.gui.screen;
 
-import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
+import com.itselix99.betterworldoptions.api.options.entry.BooleanOption;
+import com.itselix99.betterworldoptions.api.options.entry.IntOption;
+import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.api.options.OptionType;
-import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
-import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
-import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
+import com.itselix99.betterworldoptions.api.options.entry.StringOption;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
-import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import net.fabricmc.api.EnvType;
@@ -48,7 +45,7 @@ public class WorldTypeListScreen extends Screen {
         this.worldTypeListWidget.registerButtons(this.buttons, 4, 5);
         this.buttons.add(this.doneButton = new ButtonWidget(0, this.width / 2 - 75, this.height - 28, 150, 20, translation.get("gui.cancel")));
 
-        String currentWorldType = this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
+        String currentWorldType = this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "");
         selectedWorldType = WorldType.getWorldTypeById(Identifier.of(currentWorldType));
     }
 
@@ -85,25 +82,25 @@ public class WorldTypeListScreen extends Screen {
             List<WorldType> var3 = WorldType.getWorldTypeList();
             WorldTypeListScreen.selectWorldType(var3.get(index));
 
-            String currentWorldType = WorldTypeListScreen.this.bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION);
+            String currentWorldType = WorldTypeListScreen.this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "");
             if (!currentWorldType.equals(var3.get(index).getId().toString())) {
-                WorldTypeListScreen.this.bwoWorldPropertiesStorage.setStringOptionValue("WorldType", OptionType.GENERAL_OPTION, var3.get(index).getId().toString());
+                WorldTypeListScreen.this.bwoWorldPropertiesStorage.setOptionValue("WorldType", OptionType.GENERAL_OPTION, var3.get(index).getId().toString());
 
-                Map<String, OptionEntry> worldTypeOptions = WorldType.getWorldTypeById(var3.get(index).getId()).getWorldTypeOptions();
+                Map<String, Option<?>> worldTypeOptions = WorldType.getWorldTypeById(var3.get(index).getId()).getWorldTypeOptions();
                 if (worldTypeOptions != null) {
-                    Map<String, OptionStorage> worldTypeOptionsMap = new LinkedHashMap<>();
+                    Map<String, OptionStorage<?>> worldTypeOptionsMap = new LinkedHashMap<>();
 
-                    for(OptionEntry option : worldTypeOptions.values()) {
-                        if (option instanceof StringOptionEntry stringOption) {
-                            worldTypeOptionsMap.put(stringOption.name, new StringOptionStorage(stringOption.name, stringOption.defaultValue));
+                    for(Option<?> option : worldTypeOptions.values()) {
+                        if (option instanceof StringOption stringOption) {
+                            worldTypeOptionsMap.put(stringOption.getName(), new OptionStorage<>(stringOption.getName(), stringOption.getDefaultValue()));
 
-                            if (stringOption.stringList != null) {
-                                WorldTypeListScreen.this.bwoWorldPropertiesStorage.setSelectedValue(option.name, OptionType.WORLD_TYPE_OPTION, stringOption.ordinalDefaultValue);
+                            if (stringOption.getValues(Identifier.of("")) != null) {
+                                WorldTypeListScreen.this.bwoWorldPropertiesStorage.setSelectedValue(option.getName(), OptionType.WORLD_TYPE_OPTION, stringOption.getOrdinalDefaultValue());
                             }
-                        } else if (option instanceof BooleanOptionEntry booleanOption) {
-                            worldTypeOptionsMap.put(booleanOption.name, new BooleanOptionStorage(booleanOption.name, booleanOption.defaultValue));
-                        } else if (option instanceof IntOptionEntry intOption) {
-                            worldTypeOptionsMap.put(intOption.name, new IntOptionStorage(intOption.name, intOption.defaultValue));
+                        } else if (option instanceof BooleanOption booleanOption) {
+                            worldTypeOptionsMap.put(booleanOption.getName(), new OptionStorage<>(booleanOption.getName(), booleanOption.getDefaultValue()));
+                        } else if (option instanceof IntOption intOption) {
+                            worldTypeOptionsMap.put(intOption.getName(), new OptionStorage<>(intOption.getName(), intOption.getDefaultValue()));
                         }
                     }
 

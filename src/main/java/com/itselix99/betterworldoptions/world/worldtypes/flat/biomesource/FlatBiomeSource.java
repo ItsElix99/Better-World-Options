@@ -17,7 +17,7 @@ public class FlatBiomeSource extends BiomeSource {
     public FlatBiomeSource(World world) {
         super(world);
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
-        this.superflat = bwoProperties.bwo_getBooleanOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION);
+        this.superflat = bwoProperties.bwo_getOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION, false);
     }
 
     public Biome getBiome(ChunkPos chunkPos) {

@@ -31,7 +31,7 @@ public class DimensionHelperServerImplMixin {
         MinecraftServer minecraftServer = (MinecraftServer) FabricLoaderImpl.INSTANCE.getGameInstance();
         World world = minecraftServer.getWorld(0);
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
-        boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
+        boolean finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
 
         if (finiteWorld && serverPlayer.dimensionId == 0) {
             int[] sizeLimits = BWOChunkGenerator.getSizeLimits();

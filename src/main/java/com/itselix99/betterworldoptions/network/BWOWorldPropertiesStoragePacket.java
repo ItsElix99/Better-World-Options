@@ -1,10 +1,7 @@
 package com.itselix99.betterworldoptions.network;
 
 import com.itselix99.betterworldoptions.api.options.OptionType;
-import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
-import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
-import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
@@ -26,8 +23,8 @@ import java.util.Map;
 public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPacket<BWOWorldPropertiesStoragePacket> {
     public static final PacketType<BWOWorldPropertiesStoragePacket> TYPE = PacketType.builder(true, false, BWOWorldPropertiesStoragePacket::new).build();
 
-    private Map<String, OptionStorage> generalOptions = new LinkedHashMap<>();
-    private Map<String, OptionStorage> worldTypeOptions = new LinkedHashMap<>();
+    private Map<String, OptionStorage<?>> generalOptions = new LinkedHashMap<>();
+    private Map<String, OptionStorage<?>> worldTypeOptions = new LinkedHashMap<>();
     private boolean worldTypeOptionsBoolean;
 
     public BWOWorldPropertiesStoragePacket() {
@@ -47,12 +44,12 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
                 String generalOptionName = stream.readUTF();
                 String valueType = stream.readUTF();
 
-                OptionStorage option = null;
+                OptionStorage<?> option = null;
 
                 switch (valueType) {
-                    case "String" -> option = new StringOptionStorage(generalOptionName, stream.readUTF());
-                    case "Boolean" -> option = new BooleanOptionStorage(generalOptionName, stream.readBoolean());
-                    case "Int" -> option = new IntOptionStorage(generalOptionName, stream.readInt());
+                    case "String" -> option = new OptionStorage<>(generalOptionName, stream.readUTF());
+                    case "Boolean" -> option = new OptionStorage<>(generalOptionName, stream.readBoolean());
+                    case "Int" -> option = new OptionStorage<>(generalOptionName, stream.readInt());
                 }
 
                 this.generalOptions.put(generalOptionName, option);
@@ -67,12 +64,12 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
                     String worldTypeOptionName = stream.readUTF();
                     String valueType = stream.readUTF();
 
-                    OptionStorage option = null;
+                    OptionStorage<?> option = null;
 
                     switch (valueType) {
-                        case "String" -> option = new StringOptionStorage(worldTypeOptionName, stream.readUTF());
-                        case "Boolean" -> option = new BooleanOptionStorage(worldTypeOptionName, stream.readBoolean());
-                        case "Int" -> option = new IntOptionStorage(worldTypeOptionName, stream.readInt());
+                        case "String" -> option = new OptionStorage<>(worldTypeOptionName, stream.readUTF());
+                        case "Boolean" -> option = new OptionStorage<>(worldTypeOptionName, stream.readBoolean());
+                        case "Int" -> option = new OptionStorage<>(worldTypeOptionName, stream.readInt());
                     }
 
                     this.worldTypeOptions.put(worldTypeOptionName, option);
@@ -88,39 +85,39 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
         try {
             stream.writeInt(this.generalOptions.size());
 
-            for (OptionStorage generalOptions : this.generalOptions.values()) {
-                stream.writeUTF(generalOptions.name);
+            for (OptionStorage<?> generalOptions : this.generalOptions.values()) {
+                stream.writeUTF(generalOptions.name());
 
-                if (generalOptions instanceof StringOptionStorage stringGeneralOptions) {
+                if (generalOptions.getValue() instanceof String) {
                     stream.writeUTF("String");
-                    stream.writeUTF(stringGeneralOptions.value);
-                } else if (generalOptions instanceof BooleanOptionStorage booleanGeneralOptions) {
+                    stream.writeUTF((String) generalOptions.getValue());
+                } else if (generalOptions.getValue() instanceof Boolean) {
                     stream.writeUTF("Boolean");
-                    stream.writeBoolean(booleanGeneralOptions.value);
-                } else if (generalOptions instanceof IntOptionStorage intGeneralOptions) {
+                    stream.writeBoolean((boolean) generalOptions.getValue());
+                } else if (generalOptions.getValue() instanceof Integer) {
                     stream.writeUTF("Int");
-                    stream.writeInt(intGeneralOptions.value);
+                    stream.writeInt((int) generalOptions.getValue());
                 }
             }
 
-            WorldType worldType = WorldType.getWorldTypeById(Identifier.of(((StringOptionStorage) this.generalOptions.get("WorldType")).value));
+            WorldType worldType = WorldType.getWorldTypeById(Identifier.of((String) this.generalOptions.get("WorldType").getValue()));
             stream.writeBoolean(!worldType.getWorldTypeOptions().isEmpty());
 
             if (!worldType.getWorldTypeOptions().isEmpty()) {
                 stream.writeInt(this.worldTypeOptions.size());
 
-                for (OptionStorage worldTypeOptions : this.worldTypeOptions.values()) {
-                    stream.writeUTF(worldTypeOptions.name);
+                for (OptionStorage<?> worldTypeOptions : this.worldTypeOptions.values()) {
+                    stream.writeUTF(worldTypeOptions.name());
 
-                    if (worldTypeOptions instanceof StringOptionStorage stringWorldTypeOptions) {
+                    if (worldTypeOptions.getValue() instanceof String) {
                         stream.writeUTF("String");
-                        stream.writeUTF(stringWorldTypeOptions.value);
-                    } else if (worldTypeOptions instanceof BooleanOptionStorage booleanWorldTypeOptions) {
+                        stream.writeUTF((String) worldTypeOptions.getValue());
+                    } else if (worldTypeOptions.getValue() instanceof Boolean) {
                         stream.writeUTF("Boolean");
-                        stream.writeBoolean(booleanWorldTypeOptions.value);
-                    } else if (worldTypeOptions instanceof IntOptionStorage intWorldTypeOptions) {
+                        stream.writeBoolean((boolean) worldTypeOptions.getValue());
+                    } else if (worldTypeOptions.getValue() instanceof Integer) {
                         stream.writeUTF("Int");
-                        stream.writeInt(intWorldTypeOptions.value);
+                        stream.writeInt((int) worldTypeOptions.getValue());
                     }
                 }
             }
@@ -150,16 +147,16 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
 
         size += 4;
 
-        for (OptionStorage generalOption : this.generalOptions.values()) {
-            size += generalOption.name.length();
+        for (OptionStorage<?> generalOption : this.generalOptions.values()) {
+            size += generalOption.name().length();
 
-            if (generalOption instanceof StringOptionStorage stringGeneralOption) {
+            if (generalOption.getValue() instanceof String) {
                 size += "String".length();
-                size += stringGeneralOption.value.length();
-            } else if (generalOption instanceof BooleanOptionStorage) {
+                size += ((String) generalOption.getValue()).length();
+            } else if (generalOption.getValue() instanceof Boolean) {
                 size += "Boolean".length();
                 size += 1;
-            } else if (generalOption instanceof IntOptionStorage) {
+            } else if (generalOption.getValue() instanceof Integer) {
                 size += "Int".length();
                 size += 4;
             }
@@ -170,16 +167,16 @@ public class BWOWorldPropertiesStoragePacket extends Packet implements ManagedPa
         if (this.worldTypeOptionsBoolean) {
             size += 4;
 
-            for (OptionStorage worldTypeOption : this.worldTypeOptions.values()) {
-                size += worldTypeOption.name.length();
+            for (OptionStorage<?> worldTypeOption : this.worldTypeOptions.values()) {
+                size += worldTypeOption.name().length();
 
-                if (worldTypeOption instanceof StringOptionStorage stringWorldTypeOption) {
+                if (worldTypeOption.getValue() instanceof String) {
                     size += "String".length();
-                    size += stringWorldTypeOption.value.length();
-                } else if (worldTypeOption instanceof BooleanOptionStorage) {
+                    size += ((String) worldTypeOption.getValue()).length();
+                } else if (worldTypeOption.getValue() instanceof Boolean) {
                     size += "Boolean".length();
                     size += 1;
-                } else if (worldTypeOption instanceof IntOptionStorage) {
+                } else if (worldTypeOption.getValue() instanceof Integer) {
                     size += "Int".length();
                     size += 4;
                 }

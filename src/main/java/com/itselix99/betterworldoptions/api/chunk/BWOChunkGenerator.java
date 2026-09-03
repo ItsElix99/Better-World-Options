@@ -49,13 +49,13 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         this.worldType = this.bwoProperties.bwo_getWorldType();
         this.oldFeatures = this.bwoProperties.bwo_isOldFeatures();
         this.theme = Theme.getThemeById(Identifier.of(this.bwoProperties.bwo_getTheme()));
-        this.finiteWorld = this.bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-        this.finiteWorldType = this.bwoProperties.bwo_getStringOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION);
-        this.width = this.bwoProperties.bwo_getIntOptionValue("Width", OptionType.GENERAL_OPTION);
-        this.length = this.bwoProperties.bwo_getIntOptionValue("Length", OptionType.GENERAL_OPTION);
-        this.farlands = this.bwoProperties.bwo_getBooleanOptionValue("Farlands", OptionType.GENERAL_OPTION);
-        this.farlandsShape = this.bwoProperties.bwo_getStringOptionValue("FarlandsShape", OptionType.GENERAL_OPTION);
-        this.farlandsDistance = this.bwoProperties.bwo_getIntOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION) / 2;
+        this.finiteWorld = this.bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
+        this.finiteWorldType = this.bwoProperties.bwo_getOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION, "");
+        this.width = this.bwoProperties.bwo_getOptionValue("Width", OptionType.GENERAL_OPTION, 0);
+        this.length = this.bwoProperties.bwo_getOptionValue("Length", OptionType.GENERAL_OPTION, 0);
+        this.farlands = this.bwoProperties.bwo_getOptionValue("Farlands", OptionType.GENERAL_OPTION, false);
+        this.farlandsShape = this.bwoProperties.bwo_getOptionValue("FarlandsShape", OptionType.GENERAL_OPTION, "");
+        this.farlandsDistance = this.bwoProperties.bwo_getOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION, 0) / 2;
 
         if (this.finiteWorldType.equals("MCPE")) {
             setSizeLimits(0, this.width, 0, this.length);

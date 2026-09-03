@@ -2,15 +2,12 @@ package com.itselix99.betterworldoptions.world;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.GeneralOptions;
-import com.itselix99.betterworldoptions.api.options.entry.BooleanOptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.IntOptionEntry;
-import com.itselix99.betterworldoptions.api.options.entry.OptionEntry;
+import com.itselix99.betterworldoptions.api.options.entry.BooleanOption;
+import com.itselix99.betterworldoptions.api.options.entry.IntOption;
+import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.api.options.OptionType;
-import com.itselix99.betterworldoptions.api.options.entry.StringOptionEntry;
-import com.itselix99.betterworldoptions.api.options.storage.BooleanOptionStorage;
-import com.itselix99.betterworldoptions.api.options.storage.IntOptionStorage;
+import com.itselix99.betterworldoptions.api.options.entry.StringOption;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
-import com.itselix99.betterworldoptions.api.options.storage.StringOptionStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.event.TextureListener;
 import net.fabricmc.api.EnvType;
@@ -29,8 +26,8 @@ public class BWOWorldPropertiesStorage {
     private static boolean init = false;
     private static boolean initDimensionWorldTypes = false;
 
-    private Map<String, OptionStorage> generalOptions = new LinkedHashMap<>();
-    private Map<String, OptionStorage> worldTypeOptions = new LinkedHashMap<>();
+    private Map<String, OptionStorage<?>> generalOptions = new LinkedHashMap<>();
+    private Map<String, OptionStorage<?>> worldTypeOptions = new LinkedHashMap<>();
 
     private final Map<String, Integer> selectedGeneralOption = new LinkedHashMap<>();
     private final Map<String, Integer> selectedWorldTypeOption = new LinkedHashMap<>();
@@ -49,19 +46,19 @@ public class BWOWorldPropertiesStorage {
             init = true;
         }
 
-        List<OptionEntry> generalOptionsList = GeneralOptions.getList();
+        List<Option<?>> generalOptionsList = GeneralOptions.getGeneralOptionsList();
 
-        for(OptionEntry generalOption : generalOptionsList) {
-            if (generalOption instanceof StringOptionEntry stringGeneralOption) {
-                this.generalOptions.put(generalOption.name, new StringOptionStorage(stringGeneralOption.name, stringGeneralOption.defaultValue));
+        for(Option<?> generalOption : generalOptionsList) {
+            if (generalOption instanceof StringOption stringGeneralOption) {
+                this.generalOptions.put(generalOption.getName(), new OptionStorage<>(stringGeneralOption.getName(), stringGeneralOption.getDefaultValue()));
 
-                if (stringGeneralOption.stringList != null) {
-                    this.selectedGeneralOption.put(generalOption.name, stringGeneralOption.ordinalDefaultValue);
+                if (stringGeneralOption.getValues(Identifier.of("")) != null) {
+                    this.selectedGeneralOption.put(generalOption.getName(), stringGeneralOption.getOrdinalDefaultValue());
                 }
-            } else if (generalOption instanceof BooleanOptionEntry booleanGeneralOption) {
-                this.generalOptions.put(generalOption.name, new BooleanOptionStorage(booleanGeneralOption.name, booleanGeneralOption.defaultValue));
-            } else if (generalOption instanceof IntOptionEntry intGeneralOption) {
-                this.generalOptions.put(generalOption.name, new IntOptionStorage(intGeneralOption.name, intGeneralOption.defaultValue));
+            } else if (generalOption instanceof BooleanOption booleanGeneralOption) {
+                this.generalOptions.put(generalOption.getName(), new OptionStorage<>(booleanGeneralOption.getName(), booleanGeneralOption.getDefaultValue()));
+            } else if (generalOption instanceof IntOption intGeneralOption) {
+                this.generalOptions.put(generalOption.getName(), new OptionStorage<>(intGeneralOption.getName(), intGeneralOption.getDefaultValue()));
             }
         }
     }
@@ -74,7 +71,7 @@ public class BWOWorldPropertiesStorage {
         return INSTANCE;
     }
 
-    public void setOptionsMap(Map<String, OptionStorage> options, OptionType optionType) {
+    public void setOptionsMap(Map<String, OptionStorage<?>> options, OptionType optionType) {
         if (optionType == OptionType.GENERAL_OPTION) {
             this.generalOptions = new LinkedHashMap<>(options);
         } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
@@ -82,7 +79,7 @@ public class BWOWorldPropertiesStorage {
         }
     }
 
-    public Map<String, OptionStorage> getOptionsMap(OptionType optionType) {
+    public Map<String, OptionStorage<?>> getOptionsMap(OptionType optionType) {
         if (optionType == OptionType.GENERAL_OPTION) {
             return this.generalOptions;
         } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
@@ -92,67 +89,28 @@ public class BWOWorldPropertiesStorage {
         return null;
     }
 
-    public void setStringOptionValue(String optionName, OptionType optionType, String value) {
+    public <T> void setOptionValue(String optionName, OptionType optionType, T value) {
+        OptionStorage<T> storage = new OptionStorage<>(optionName, value);
+
         if (optionType == OptionType.GENERAL_OPTION) {
-            this.generalOptions.put(optionName, new StringOptionStorage(optionName, value));
+            this.generalOptions.put(optionName, storage);
         } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
-            this.worldTypeOptions.put(optionName, new StringOptionStorage(optionName, value));
+            this.worldTypeOptions.put(optionName, storage);
         }
     }
 
-    public void setBooleanOptionValue(String optionName, OptionType optionType, boolean value) {
+    @SuppressWarnings("unchecked")
+    public <T> T getOptionValue(String optionName, OptionType optionType, T fallback) {
         if (optionType == OptionType.GENERAL_OPTION) {
-            this.generalOptions.put(optionName, new BooleanOptionStorage(optionName, value));
+            return (T) this.generalOptions.getOrDefault(optionName, new OptionStorage<>(optionName, GeneralOptions.getGeneralOptionByName(optionName).getDefaultValue())).value();
         } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
-            this.worldTypeOptions.put(optionName, new BooleanOptionStorage(optionName, value));
-        }
-    }
-
-    public void setIntOptionValue(String optionName, OptionType optionType, int value) {
-        if (optionType == OptionType.GENERAL_OPTION) {
-            this.generalOptions.put(optionName, new IntOptionStorage(optionName, value));
-        } else if (optionType == OptionType.WORLD_TYPE_OPTION) {
-            this.worldTypeOptions.put(optionName, new IntOptionStorage(optionName, value));
-        }
-    }
-
-    public String getStringOptionValue(String optionName, OptionType optionType) {
-        if (optionType == OptionType.GENERAL_OPTION) {
-            return ((StringOptionStorage) this.generalOptions.getOrDefault(optionName, new StringOptionStorage(optionName, ((StringOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
-        } else if (optionType == OptionType.WORLD_TYPE_OPTION){
-            WorldType worldType = WorldType.getWorldTypeById(Identifier.of(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
+            WorldType worldType = WorldType.getWorldTypeById(Identifier.of(this.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "")));
             if (!worldType.getWorldTypeOptions().isEmpty() && worldType.getWorldTypeOptions().containsKey(optionName)) {
-                return ((StringOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new StringOptionStorage(optionName, ((StringOptionEntry) worldType.getWorldTypeOptions().get(optionName)).defaultValue))).value;
+                return (T) this.worldTypeOptions.getOrDefault(optionName, new OptionStorage<>(optionName, worldType.getWorldTypeOptions().get(optionName).getDefaultValue())).value();
             }
         }
 
-        return "";
-    }
-
-    public boolean getBooleanOptionValue(String optionName, OptionType optionType) {
-        if (optionType == OptionType.GENERAL_OPTION) {
-            return ((BooleanOptionStorage) this.generalOptions.getOrDefault(optionName, new BooleanOptionStorage(optionName, ((BooleanOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
-        } else if (optionType == OptionType.WORLD_TYPE_OPTION){
-            WorldType worldType = WorldType.getWorldTypeById(Identifier.of(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
-            if (!worldType.getWorldTypeOptions().isEmpty() && worldType.getWorldTypeOptions().containsKey(optionName)) {
-                return ((BooleanOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new BooleanOptionStorage(optionName, ((BooleanOptionEntry) worldType.getWorldTypeOptions().get(optionName)).defaultValue))).value;
-            }
-        }
-
-        return false;
-    }
-
-    public int getIntOptionValue(String optionName, OptionType optionType) {
-        if (optionType == OptionType.GENERAL_OPTION) {
-            return ((IntOptionStorage) this.generalOptions.getOrDefault(optionName, new IntOptionStorage(optionName, ((IntOptionEntry) GeneralOptions.getOptionByName(optionName)).defaultValue))).value;
-        } else if (optionType == OptionType.WORLD_TYPE_OPTION){
-            WorldType worldType = WorldType.getWorldTypeById(Identifier.of(this.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
-            if (!worldType.getWorldTypeOptions().isEmpty() && worldType.getWorldTypeOptions().containsKey(optionName)) {
-                return ((IntOptionStorage) this.worldTypeOptions.getOrDefault(optionName, new IntOptionStorage(optionName, ((IntOptionEntry) worldType.getWorldTypeOptions().get(optionName)).defaultValue))).value;
-            }
-        }
-
-        return 0;
+        return fallback;
     }
 
     public void setSelectedValue(String optionName, OptionType optionType, int value) {
@@ -173,44 +131,44 @@ public class BWOWorldPropertiesStorage {
         return 0;
     }
 
-    public void resetGeneralOptionToDefaultValue(OptionEntry option) {
-        if (option.optionType == OptionType.GENERAL_OPTION) {
-            if (option instanceof StringOptionEntry stringOption) {
-                this.generalOptions.put(stringOption.name, new StringOptionStorage(stringOption.name, stringOption.defaultValue));
-                this.setSelectedValue(stringOption.name, stringOption.optionType, stringOption.ordinalDefaultValue);
-            } else if (option instanceof BooleanOptionEntry booleanOption) {
-                this.generalOptions.put(booleanOption.name, new BooleanOptionStorage(booleanOption.name, booleanOption.defaultValue));
+    public void resetGeneralOptionToDefaultValue(Option<?> option) {
+        if (option.getOptionType() == OptionType.GENERAL_OPTION) {
+            if (option instanceof StringOption stringOption) {
+                this.generalOptions.put(stringOption.getName(), new OptionStorage<>(stringOption.getName(), stringOption.getDefaultValue()));
+                this.setSelectedValue(stringOption.getName(), stringOption.getOptionType(), stringOption.getOrdinalDefaultValue());
+            } else if (option instanceof BooleanOption booleanOption) {
+                this.generalOptions.put(booleanOption.getName(), new OptionStorage<>(booleanOption.getName(), booleanOption.getDefaultValue()));
 
-                if (!option.dependentOptions.isEmpty()) {
+                if (!option.getDependentOptions().isEmpty()) {
                     this.resetDependentOptionsToDefaultValue(option);
                 }
-            } else if (option instanceof IntOptionEntry intOption) {
-                this.generalOptions.put(intOption.name, new IntOptionStorage(intOption.name, intOption.defaultValue));
+            } else if (option instanceof IntOption intOption) {
+                this.generalOptions.put(intOption.getName(), new OptionStorage<>(intOption.getName(), intOption.getDefaultValue()));
             }
         }
     }
 
-    public void resetDependentOptionsToDefaultValue(OptionEntry option) {
-        if (option.optionType == OptionType.GENERAL_OPTION) {
-            for (OptionEntry linkedOption : option.dependentOptions) {
-                if (linkedOption instanceof StringOptionEntry stringOption) {
-                    this.generalOptions.put(stringOption.name, new StringOptionStorage(stringOption.name, stringOption.defaultValue));
-                    this.setSelectedValue(stringOption.name, stringOption.optionType, stringOption.ordinalDefaultValue);
-                } else if (linkedOption instanceof BooleanOptionEntry booleanOption) {
-                    this.generalOptions.put(booleanOption.name, new BooleanOptionStorage(booleanOption.name, booleanOption.defaultValue));
-                } else if (linkedOption instanceof IntOptionEntry intOption) {
-                    this.generalOptions.put(intOption.name, new IntOptionStorage(intOption.name, intOption.defaultValue));
+    public void resetDependentOptionsToDefaultValue(Option<?> option) {
+        if (option.getOptionType() == OptionType.GENERAL_OPTION) {
+            for (Option<?> linkedOption : option.getDependentOptions()) {
+                if (linkedOption instanceof StringOption stringOption) {
+                    this.generalOptions.put(stringOption.getName(), new OptionStorage<>(stringOption.getName(), stringOption.getDefaultValue()));
+                    this.setSelectedValue(stringOption.getName(), stringOption.getOptionType(), stringOption.getOrdinalDefaultValue());
+                } else if (linkedOption instanceof BooleanOption booleanOption) {
+                    this.generalOptions.put(booleanOption.getName(), new OptionStorage<>(booleanOption.getName(), booleanOption.getDefaultValue()));
+                } else if (linkedOption instanceof IntOption intOption) {
+                    this.generalOptions.put(intOption.getName(), new OptionStorage<>(intOption.getName(), intOption.getDefaultValue()));
                 }
             }
-        } else if (option.optionType == OptionType.WORLD_TYPE_OPTION) {
-            for (OptionEntry linkedOption : option.dependentOptions) {
-                if (linkedOption instanceof StringOptionEntry stringOption) {
-                    this.worldTypeOptions.put(stringOption.name, new StringOptionStorage(stringOption.name, stringOption.defaultValue));
-                    this.setSelectedValue(stringOption.name, stringOption.optionType, stringOption.ordinalDefaultValue);
-                } else if (linkedOption instanceof BooleanOptionEntry booleanOption) {
-                    this.worldTypeOptions.put(booleanOption.name, new BooleanOptionStorage(booleanOption.name, booleanOption.defaultValue));
-                } else if (linkedOption instanceof IntOptionEntry intOption) {
-                    this.worldTypeOptions.put(intOption.name, new IntOptionStorage(intOption.name, intOption.defaultValue));
+        } else if (option.getOptionType() == OptionType.WORLD_TYPE_OPTION) {
+            for (Option<?> linkedOption : option.getDependentOptions()) {
+                if (linkedOption instanceof StringOption stringOption) {
+                    this.worldTypeOptions.put(stringOption.getName(), new OptionStorage<>(stringOption.getName(), stringOption.getDefaultValue()));
+                    this.setSelectedValue(stringOption.getName(), stringOption.getOptionType(), stringOption.getOrdinalDefaultValue());
+                } else if (linkedOption instanceof BooleanOption booleanOption) {
+                    this.worldTypeOptions.put(booleanOption.getName(), new OptionStorage<>(booleanOption.getName(), booleanOption.getDefaultValue()));
+                } else if (linkedOption instanceof IntOption intOption) {
+                    this.worldTypeOptions.put(intOption.getName(), new OptionStorage<>(intOption.getName(), intOption.getDefaultValue()));
                 }
             }
         }

@@ -38,7 +38,7 @@ public class BiomeListScreen extends Screen {
         this.buttons.add(this.doneButton = new ButtonWidget(0, this.width / 2 + 5, this.height - 28, 150, 20, this.translation.get("gui.cancel")));
         this.buttons.add(this.allBiomesButton = new ButtonWidget(1, this.width / 2 - 155, this.height - 28, 150, 20, this.translation.get("selectBiome.allBiomes")));
 
-        String currentBiome = this.bwoWorldPropertiesStorage.getStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION);
+        String currentBiome = this.bwoWorldPropertiesStorage.getOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "");
         if (!currentBiome.equals("Off") && !OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome -> biome.name.equals(currentBiome)).toList().isEmpty()) {
             selectedBiome = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome -> biome.name.equals(currentBiome)).toList().get(0);
         } else {
@@ -51,9 +51,9 @@ public class BiomeListScreen extends Screen {
             if (button.id == 0) {
                 this.minecraft.setScreen(this.parent);
             } else if (button.id == 1) {
-                String currentBiome = this.bwoWorldPropertiesStorage.getStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION);
+                String currentBiome = this.bwoWorldPropertiesStorage.getOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "");
                 if (!currentBiome.equals("Off")) {
-                    this.bwoWorldPropertiesStorage.setStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "Off");
+                    this.bwoWorldPropertiesStorage.setOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "Off");
                     selectedBiome = null;
                     button.active = false;
                     this.doneButton.text = this.translation.get("gui.done");
@@ -87,9 +87,9 @@ public class BiomeListScreen extends Screen {
             List<Biome> var3 = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().toList();
             BiomeListScreen.this.selectBiome(var3.get(index));
 
-            String currentBiome = BiomeListScreen.this.bwoWorldPropertiesStorage.getStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION);
+            String currentBiome = BiomeListScreen.this.bwoWorldPropertiesStorage.getOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "");
             if (!var3.get(index).name.equals(currentBiome)) {
-                BiomeListScreen.this.bwoWorldPropertiesStorage.setStringOptionValue("SingleBiome", OptionType.GENERAL_OPTION, var3.get(index).name);
+                BiomeListScreen.this.bwoWorldPropertiesStorage.setOptionValue("SingleBiome", OptionType.GENERAL_OPTION, var3.get(index).name);
                 BiomeListScreen.this.allBiomesButton.active = true;
                 BiomeListScreen.this.doneButton.text = BiomeListScreen.this.translation.get("gui.done");
             }

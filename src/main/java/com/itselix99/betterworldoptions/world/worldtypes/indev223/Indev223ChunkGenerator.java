@@ -33,7 +33,7 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
     public Indev223ChunkGenerator(World world, long seed) {
         super(world, seed);
         this.singleBiome = this.bwoProperties.bwo_getSingleBiome();
-        this.indevWorldType = this.bwoProperties.bwo_getStringOptionValue("IndevWorldType", OptionType.WORLD_TYPE_OPTION);
+        this.indevWorldType = this.bwoProperties.bwo_getOptionValue("IndevWorldType", OptionType.WORLD_TYPE_OPTION, "");
         this.distortA = new Distort(new OctavePerlinNoiseSamplerIndev223(this.random, 8), new OctavePerlinNoiseSamplerIndev223(this.random, 8));
         this.distortB = new Distort(new OctavePerlinNoiseSamplerIndev223(this.random, 8), new OctavePerlinNoiseSamplerIndev223(this.random, 8));
         this.noiseGen1 = new OctavePerlinNoiseSamplerIndev223(this.random, 6);

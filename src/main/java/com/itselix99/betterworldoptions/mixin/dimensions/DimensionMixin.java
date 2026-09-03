@@ -15,7 +15,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -66,7 +65,7 @@ public class DimensionMixin {
     @ModifyReturnValue(method = "createChunkGenerator", at = @At("RETURN"))
     public ChunkSource bwo_createChunkGenerator(ChunkSource original) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
-        WorldType worldType = WorldType.getWorldTypeById(Identifier.of(bwoWorldPropertiesStorage.getStringOptionValue("WorldType", OptionType.GENERAL_OPTION)));
+        WorldType worldType = WorldType.getWorldTypeById(Identifier.of(bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "")));
         Class<? extends ChunkSource> chunkGenerator;
 
         if (worldType.getId().toString().equals(BetterWorldOptions.NAMESPACE.id("default").toString()) && Config.BWOConfig.world.fixTerrainGenDefault) {

@@ -131,16 +131,16 @@ public abstract class WorldMixin implements BWOWorld {
         BWOProperties bwoProperties = (BWOProperties) properties;
         String worldType = bwoProperties.bwo_getWorldType();
 
-        boolean finiteWorld = bwoProperties.bwo_getBooleanOptionValue("FiniteWorld", OptionType.GENERAL_OPTION);
-        String finiteWorldType = bwoProperties.bwo_getStringOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION);
-        int width = bwoProperties.bwo_getIntOptionValue("Width", OptionType.GENERAL_OPTION);
-        int length = bwoProperties.bwo_getIntOptionValue("Length", OptionType.GENERAL_OPTION);
+        boolean finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
+        String finiteWorldType = bwoProperties.bwo_getOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION, "");
+        int width = bwoProperties.bwo_getOptionValue("Width", OptionType.GENERAL_OPTION, 0);
+        int length = bwoProperties.bwo_getOptionValue("Length", OptionType.GENERAL_OPTION, 0);
 
-        boolean farlands = bwoProperties.bwo_getBooleanOptionValue("Farlands", OptionType.GENERAL_OPTION);
-        String farlandsShape = bwoProperties.bwo_getStringOptionValue("FarlandsShape", OptionType.GENERAL_OPTION);
-        int farlandsDistance = bwoProperties.bwo_getIntOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION) / 2;
+        boolean farlands = bwoProperties.bwo_getOptionValue("Farlands", OptionType.GENERAL_OPTION, false);
+        String farlandsShape = bwoProperties.bwo_getOptionValue("FarlandsShape", OptionType.GENERAL_OPTION, "");
+        int farlandsDistance = bwoProperties.bwo_getOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION, 0) / 2;
 
-        boolean generateIndevHouse = bwoProperties.bwo_getBooleanOptionValue("GenerateIndevHouse", OptionType.WORLD_TYPE_OPTION);
+        boolean generateIndevHouse = bwoProperties.bwo_getOptionValue("GenerateIndevHouse", OptionType.WORLD_TYPE_OPTION, false);
 
         if (worldType.equals(BetterWorldOptions.NAMESPACE.id("indev_20100223").toString())) {
             this.eventProcessingEnabled = true;

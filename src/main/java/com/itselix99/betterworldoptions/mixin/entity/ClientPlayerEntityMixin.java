@@ -30,7 +30,7 @@ public class ClientPlayerEntityMixin {
     private void bwo_respawnInOtherDimensions(Args args) {
         BWOProperties bwoProperties = (BWOProperties) this.minecraft.world.getProperties();
         String worldType = bwoProperties.bwo_getWorldType();
-        boolean skyDimension = bwoProperties.bwo_getBooleanOptionValue("SkyDimension", OptionType.WORLD_TYPE_OPTION);
+        boolean skyDimension = bwoProperties.bwo_getOptionValue("SkyDimension", OptionType.WORLD_TYPE_OPTION, false);
 
         if (worldType.equals(BetterWorldOptions.NAMESPACE.id("nether").toString())) {
             args.set(1, -1);
