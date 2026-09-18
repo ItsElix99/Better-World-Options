@@ -1,6 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
-import com.itselix99.betterworldoptions.interfaces.BWOWorld;
+import com.itselix99.betterworldoptions.interfaces.BWOMultiplayerChunk;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.fabricmc.api.EnvType;
@@ -26,6 +26,6 @@ public class ClientWorldMixin {
                     )
             )
     public Chunk updateChunk(MultiplayerChunkCache instance, int chunkX, int chunkZ, Operation<Chunk> original) {
-        return ((BWOWorld) this.chunkCache).bwo_loadFiniteWorldLimitChunk(chunkX, chunkZ);
+        return ((BWOMultiplayerChunk) this.chunkCache).bwo_loadFiniteWorldLimitChunk(chunkX, chunkZ);
     }
 }

@@ -5,7 +5,7 @@ import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.interfaces.BWOWorld;
+import com.itselix99.betterworldoptions.interfaces.BWOMultiplayerChunk;
 import com.itselix99.betterworldoptions.world.chunk.BWOLimitChunk;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 @Environment(EnvType.CLIENT)
 @Mixin(MultiplayerChunkCache.class)
-public abstract class MultiplayerChunkCacheMixin implements BWOWorld {
+public abstract class MultiplayerChunkCacheMixin implements BWOMultiplayerChunk {
     @Shadow private World world;
     @Shadow private Map chunksByPos = new HashMap();
     @Unique private int width;

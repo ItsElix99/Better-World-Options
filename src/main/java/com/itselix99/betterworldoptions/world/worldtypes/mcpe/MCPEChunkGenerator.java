@@ -151,13 +151,13 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
                 boolean var12;
                 int var13;
                 if (beachFix) {
-                    var11 = this.perlinNoise2.bwo_generateNoise(x2 * var6, z2 * var6, 0.0D) + this.random.nextDouble() * 0.2 > (double) 0.0F;
-                    var12 = this.perlinNoise2.bwo_generateNoise(z2 * var6, var6, x2 * var6) + this.random.nextDouble() * 0.2 > (double) 3.0F;
-                    var13 = (int) (this.perlinNoise3.sample(x2 * var6 * 2.0D, z2 * var6 * 2.0D) / (double) 3.0F + (double) 3.0F + this.random.nextDouble() * (double) 0.25F);
+                    var11 = this.perlinNoise2.bwo_generateNoise(x2 * var6, z2 * var6, 0.0D) + this.random.nextFloat() * 0.2 > (double) 0.0F;
+                    var12 = this.perlinNoise2.bwo_generateNoise(z2 * var6, var6, x2 * var6) + this.random.nextFloat() * 0.2 > (double) 3.0F;
+                    var13 = (int) (this.perlinNoise3.sample(x2 * var6 * 2.0D, z2 * var6 * 2.0D) / (double) 3.0F + (double) 3.0F + this.random.nextFloat() * (double) 0.25F);
                 } else {
-                    var11 = this.sandBuffer[var8 + var9 * 16] + this.random.nextDouble() * 0.2 > (double) 0.0F;
-                    var12 = this.gravelBuffer[var8 + var9 * 16] + this.random.nextDouble() * 0.2 > (double) 3.0F;
-                    var13 = (int) (this.depthBuffer[var8 + var9 * 16] / (double) 3.0F + (double) 3.0F + this.random.nextDouble() * (double) 0.25F);
+                    var11 = this.sandBuffer[var8 + var9 * 16] + this.random.nextFloat() * 0.2 > (double) 0.0F;
+                    var12 = this.gravelBuffer[var8 + var9 * 16] + this.random.nextFloat() * 0.2 > (double) 3.0F;
+                    var13 = (int) (this.depthBuffer[var8 + var9 * 16] / (double) 3.0F + (double) 3.0F + this.random.nextFloat() * (double) 0.25F);
                 }
                 int var14 = -1;
                 byte var15 = this.theme.getTopBlock() != -1 ? (byte) (var10.topBlockId == Block.GRASS_BLOCK.id ? this.theme.getTopBlock() : var10.topBlockId) : var10.topBlockId;
@@ -233,7 +233,7 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
     }
 
     public Chunk getChunk(int chunkX, int chunkZ) {
-        this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
+        this.random.setSeed((long)chunkX * 341872712L + (long)chunkZ * 132899541L);
         byte[] var3 = new byte[16 * Config.BWOConfig.world.worldHeightLimit.getIntValue() * 16];
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
         double[] var5 = this.world.method_1781().temperatureMap;
@@ -372,6 +372,25 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
         return heightMap;
     }
 
+    private Feature getRandomTreeFeatureMCPE(Biome biome) {
+        if (biome == Biome.FOREST) {
+            if (this.random.nextInt(5) == 0) {
+                return new BirchTreeFeature();
+            } else {
+                this.random.nextInt(3);
+                return new OakTreeFeature();
+            }
+        } else if (biome == Biome.TAIGA) {
+            return this.random.nextInt(3) == 0 ? new PineTreeFeature() : new SpruceTreeFeature();
+        } else if (biome == Biome.RAINFOREST) {
+            this.random.nextInt(3);
+            return new OakTreeFeature();
+        } else {
+            this.random.nextInt(10);
+            return new OakTreeFeature();
+        }
+    }
+
     public void decorate(ChunkSource source, int x, int z) {
         if (this.oldFeatures) {
             SandBlock.fallInstantly = true;
@@ -503,7 +522,7 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
             for(int var61 = 0; var61 < var49; ++var61) {
                 int var72 = var4 + this.random.nextInt(16) + 8;
                 int var17 = var5 + this.random.nextInt(16) + 8;
-                Feature var18 = ((BWOWorld) var6).bwo_getRandomTreeFeatureMCPE(this.random);
+                Feature var18 = this.getRandomTreeFeatureMCPE(var6);
                 var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
             }
 

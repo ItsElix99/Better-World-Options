@@ -7,7 +7,6 @@ import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
-import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -26,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import java.util.Random;
 
 @Mixin(Biome.class)
-public abstract class BiomeMixin implements BWOWorld {
+public class BiomeMixin {
 
     @Environment(EnvType.CLIENT)
     @ModifyReturnValue(method = "getSkyColor", at = @At("RETURN"))
@@ -56,11 +55,5 @@ public abstract class BiomeMixin implements BWOWorld {
         } else {
             return original;
         }
-    }
-
-    @Override
-    public Feature bwo_getRandomTreeFeatureMCPE(Random random) {
-        random.nextInt();
-        return new OakTreeFeature();
     }
 }
