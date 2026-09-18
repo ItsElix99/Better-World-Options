@@ -3,8 +3,8 @@
 //file:noinspection ForeignDelegate
 plugins {
     id 'maven-publish'
-    id 'fabric-loom' version '1.15.3'
-    id 'babric-loom-extension' version '1.15.3'
+    id 'fabric-loom' version '1.17.20'
+    id 'babric-loom-extension' version '1.17.4'
 }
 
 version = property("mod_version")
@@ -106,7 +106,7 @@ dependencies {
 //        transitive false
 //    }
 
-//    modImplementation("maven.modrinth:accessory-api:${project.accessoryapi_version}-fabric,b1.7.3") {
+//    modImplementation("maven.modrinth:K9k9gNxR:jM7Qrpuf") {
 //        transitive false
 //    }
 
@@ -135,6 +135,10 @@ dependencies {
     }
 
     modImplementation("maven.modrinth:smoothbeta:${project.smoothbeta_version}-fabric,b1.7.3") {
+        transitive false
+    }
+
+    modImplementation("maven.modrinth:wIsx4jjO:zPzphwgJ") {
         transitive false
     }
 
