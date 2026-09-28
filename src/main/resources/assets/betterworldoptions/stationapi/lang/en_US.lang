@@ -1,5 +1,5 @@
 selectWorld.gameMode=Game Mode:
-selectWorld.mapFeatures=Generate Structures:
+selectWorld.mapFeatures=Generate Structures
 selectWorld.worldtype=World Type:
 selectWorld.singleBiome=Single Biome:
 selectWorld.theme=Theme:
@@ -13,18 +13,19 @@ selectWorld.gameMode.creative.line2=destroy blocks instantly
 selectWorld.gameMode.hardcore.line1=Same as survival mode, locked at hardest
 selectWorld.gameMode.hardcore.line2=difficulty, and one life only
 
-selectWorld.mapFeatures.info=Villages, dungeons etc
-
 selectWorld.worldtype.amplified.line1=Notice: Just for fun, requires
 selectWorld.worldtype.amplified.line2=beefy computer
-
-selectWorld.mapFeatures.info=Villages, dungeons etc
 
 selectWorldType.title=Select World Type
 selectTheme.title=Select Theme
 
 selectBiome.title=Select Biome
 selectBiome.allBiomes=All Biomes
+
+mapFeatures.title=Structures
+selectWorld.mapFeatures.info=Villages, dungeons etc
+mapFeatures.enableAll=Enable All
+mapFeatures.disableAll=Disable All
 
 bwoMoreOptions.title.generalOptions=General Options
 bwoMoreOptions.title.worldTypeOptions=World Type Options

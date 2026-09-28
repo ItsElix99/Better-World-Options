@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.gui.widget;
+package com.itselix99.betterworldoptions.gui.widget.list;
 
 import com.google.common.collect.Lists;
 import com.itselix99.betterworldoptions.api.options.entry.BooleanOption;
@@ -7,6 +7,8 @@ import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.StringOption;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
+import com.itselix99.betterworldoptions.gui.widget.BWOButtonWidget;
+import com.itselix99.betterworldoptions.gui.widget.BWOSliderWidget;
 import com.itselix99.betterworldoptions.interfaces.BWOScreen;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;

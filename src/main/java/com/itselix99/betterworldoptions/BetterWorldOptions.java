@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions;
 
+import com.itselix99.betterworldoptions.api.structure.Structure;
 import com.itselix99.betterworldoptions.block.InvisibleBedrock;
 import com.itselix99.betterworldoptions.event.TextureListener;
 import com.itselix99.betterworldoptions.network.BWOWorldPropertiesStoragePacket;
@@ -24,6 +25,10 @@ import net.modificationstation.stationapi.api.util.Null;
 import net.modificationstation.stationapi.api.worldgen.biome.BiomeBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class BetterWorldOptions {
     @Entrypoint.Namespace
@@ -114,6 +119,15 @@ public class BetterWorldOptions {
                 .passiveEntity(WolfEntity.class, 2)
                 .waterEntity(SquidEntity.class, 10)
                 .build();
+
+        Structure village = Structure.getStructureById(NAMESPACE.id("village"));
+        Structure notchVillage = Structure.getStructureById(NAMESPACE.id("notchVillage"));
+        village.addBiomes(getOldBiomes());
+        notchVillage.addBiomes(getOldBiomes());
+    }
+
+    public static List<Biome> getOldBiomes() {
+        return new ArrayList<>(Arrays.asList(Alpha, Infdev, EarlyInfdev, Indev));
     }
 
     @Environment(EnvType.CLIENT)

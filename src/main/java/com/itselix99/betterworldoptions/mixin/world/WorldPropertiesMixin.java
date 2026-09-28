@@ -7,6 +7,7 @@ import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.StringOption;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
+import com.itselix99.betterworldoptions.api.structure.Structure;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
@@ -26,6 +27,7 @@ import java.util.Map;
 public class WorldPropertiesMixin implements BWOProperties {
     @Unique private Map<String, OptionStorage<?>> generalOptions = new LinkedHashMap<>();
     @Unique private Map<String, OptionStorage<?>> worldTypeOptions = new LinkedHashMap<>();
+    @Unique private Map<Identifier, Boolean> structures = new LinkedHashMap<>();
 
     @Unique private boolean pregeneratingFiniteWorld;
 
@@ -89,6 +91,16 @@ public class WorldPropertiesMixin implements BWOProperties {
         }
 
         return null;
+    }
+
+    @Override
+    public Map<Identifier, Boolean> bwo_getStructures() {
+        return this.structures;
+    }
+
+    @Override
+    public boolean bwo_isGenerateStructure(Identifier id) {
+        return this.structures.get(id);
     }
 
     @Unique
@@ -200,6 +212,13 @@ public class WorldPropertiesMixin implements BWOProperties {
             bwoWorldPropertiesStorage.setOptionsMap(this.worldTypeOptions, OptionType.WORLD_TYPE_OPTION);
         }
 
+        NbtCompound structuresTag = betterWorldOptionsTag.getCompound("Structures");
+
+        for (Structure structure : Structure.getStructuresList()) {
+            this.structures.put(structure.getId(), structuresTag.getBoolean(structure.getId().toString()));
+        }
+
+        bwoWorldPropertiesStorage.setStructuresMap(this.structures);
         BWOWorldPropertiesStorage.setInstance(bwoWorldPropertiesStorage);
     }
 
@@ -257,6 +276,8 @@ public class WorldPropertiesMixin implements BWOProperties {
                 }
             }
         }
+
+        this.structures.putAll(bwoWorldPropertiesStorage.getStructures());
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/WorldProperties;)V", at = @At("TAIL"))
@@ -267,12 +288,14 @@ public class WorldPropertiesMixin implements BWOProperties {
 
         this.generalOptions = bwoProperties.bwo_getOptionsMap(OptionType.GENERAL_OPTION);
         this.worldTypeOptions = bwoProperties.bwo_getOptionsMap(OptionType.WORLD_TYPE_OPTION);
+        this.structures = bwoProperties.bwo_getStructures();
     }
 
     @Inject(method = "updateProperties", at = @At("TAIL"))
     private void bwo_updateProperties(NbtCompound nbt, NbtCompound playerNbt, CallbackInfo ci) {
         NbtCompound betterWorldOptionsTag = new NbtCompound();
         NbtCompound worldTypeOptionsTag = new NbtCompound();
+        NbtCompound structuresTag = new NbtCompound();
 
         WorldType worldTypeEntry = WorldType.getWorldTypeById(Identifier.of(this.bwo_getWorldType()));
 
@@ -304,6 +327,11 @@ public class WorldPropertiesMixin implements BWOProperties {
             betterWorldOptionsTag.put("WorldTypeOptions", worldTypeOptionsTag);
         }
 
+        for (Map.Entry<Identifier, Boolean> entry : this.structures.entrySet()) {
+            structuresTag.putBoolean(entry.getKey().toString(), entry.getValue());
+        }
+
+        betterWorldOptionsTag.put("Structures", structuresTag);
         betterWorldOptionsTag.putString("BWOVersion", "0.4.0");
         nbt.put("BetterWorldOptions", betterWorldOptionsTag);
     }

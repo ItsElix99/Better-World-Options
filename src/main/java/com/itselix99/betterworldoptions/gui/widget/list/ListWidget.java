@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.gui.widget;
+package com.itselix99.betterworldoptions.gui.widget.list;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -353,5 +353,13 @@ public abstract class ListWidget {
     public void setX(int minX) {
         this.left = minX;
         this.right = minX + this.width;
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
     }
 }

@@ -8,6 +8,7 @@ import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.StringOption;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
+import com.itselix99.betterworldoptions.api.structure.Structure;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.event.TextureListener;
 import net.fabricmc.api.EnvType;
@@ -28,6 +29,7 @@ public class BWOWorldPropertiesStorage {
 
     private Map<String, OptionStorage<?>> generalOptions = new LinkedHashMap<>();
     private Map<String, OptionStorage<?>> worldTypeOptions = new LinkedHashMap<>();
+    private Map<Identifier, Boolean> structures = new LinkedHashMap<>();
 
     private final Map<String, Integer> selectedGeneralOption = new LinkedHashMap<>();
     private final Map<String, Integer> selectedWorldTypeOption = new LinkedHashMap<>();
@@ -60,6 +62,10 @@ public class BWOWorldPropertiesStorage {
             } else if (generalOption instanceof IntOption intGeneralOption) {
                 this.generalOptions.put(generalOption.getName(), new OptionStorage<>(intGeneralOption.getName(), intGeneralOption.getDefaultValue()));
             }
+        }
+
+        for (Structure structure : Structure.getStructuresList()) {
+            this.structures.put(structure.getId(), false);
         }
     }
 
@@ -131,6 +137,22 @@ public class BWOWorldPropertiesStorage {
         return 0;
     }
 
+    public void setStructuresMap(Map<Identifier, Boolean> structures) {
+        this.structures = new LinkedHashMap<>(structures);
+    }
+
+    public void setGenerateStructure(Identifier id, boolean generate) {
+        this.structures.put(id, generate);
+    }
+
+    public boolean isGenerateStructure(Identifier id) {
+        return this.structures.get(id);
+    }
+
+    public Map<Identifier, Boolean> getStructures() {
+        return this.structures;
+    }
+
     public void resetGeneralOptionToDefaultValue(Option<?> option) {
         if (option.getOptionType() == OptionType.GENERAL_OPTION) {
             if (option instanceof StringOption stringOption) {
@@ -193,6 +215,10 @@ public class BWOWorldPropertiesStorage {
                     WorldType worldType = new WorldType(Identifier.of(Namespace.of(DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString()), info[0]), info[1], info[2], desc);
                     worldType.setIsDimension(true);
                     worldType.setDimensionId(dimensionContainer.getLegacyID());
+
+                    for (Structure structure : Structure.getStructuresList()) {
+                        structure.addIncompatibleWorldType(Identifier.of(Namespace.of(DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString()), info[0]));
+                    }
                 }
             }
 

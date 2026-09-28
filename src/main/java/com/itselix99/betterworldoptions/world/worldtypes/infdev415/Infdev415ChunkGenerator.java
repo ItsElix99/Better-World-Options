@@ -42,6 +42,7 @@ public class Infdev415ChunkGenerator extends BWOChunkGenerator {
         chunkX = farlandsChunks[0];
         chunkZ = farlandsChunks[1];
 
+        int[] surfaceHeights = new int[256];
         int var5;
         int var6;
         double var50;
@@ -100,6 +101,12 @@ public class Infdev415ChunkGenerator extends BWOChunkGenerator {
 
                                 if(var47 > 0.0D) {
                                     var56 = Block.STONE.id;
+
+                                    int y = var8 * 4 + var25;
+                                    int x = var5 * 4 + var55;
+                                    int z = var6 * 4 + var36;
+
+                                    surfaceHeights[x + z * 16] = y;
                                 }
 
                                 blocks[var27] = (byte)var56;
@@ -110,6 +117,8 @@ public class Infdev415ChunkGenerator extends BWOChunkGenerator {
                 }
             }
         }
+
+        this.setSurfaceHeightForStructures(chunkX, chunkZ, surfaceHeights);
 
         boolean beachFix = Config.BWOConfig.world.beachFix;
 
@@ -218,6 +227,8 @@ public class Infdev415ChunkGenerator extends BWOChunkGenerator {
             }
         }
 
+        this.buildStructures(this, this.world, chunkX, chunkZ, var3);
+
         FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
@@ -229,7 +240,6 @@ public class Infdev415ChunkGenerator extends BWOChunkGenerator {
 
         return this.getLimitChunkFiniteWorld(chunkX, chunkZ, var3, limitMode, flattenedChunk);
     }
-
 
     private double generateHeightMap(double var1, double var3, double var5) {
         double var7 = var3 * 4.0D - 64.0D;
@@ -290,6 +300,7 @@ public class Infdev415ChunkGenerator extends BWOChunkGenerator {
     public void decorate(ChunkSource source, int x, int z) {
         if (this.oldFeatures) {
             this.random.setSeed((long)x * 318279123L + (long)z * 919871212L);
+            this.placeStructures(this.world, this.random, x, z);
             int var4 = x << 4;
             x = z << 4;
 

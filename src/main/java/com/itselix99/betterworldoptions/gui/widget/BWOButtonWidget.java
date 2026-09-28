@@ -5,6 +5,7 @@ import com.itselix99.betterworldoptions.api.options.entry.BooleanOption;
 import com.itselix99.betterworldoptions.api.options.entry.IntOption;
 import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.api.options.entry.StringOption;
+import com.itselix99.betterworldoptions.gui.widget.list.ListWidget;
 import com.itselix99.betterworldoptions.interfaces.BWOScreen;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
@@ -162,7 +163,7 @@ public class BWOButtonWidget extends ButtonWidget {
             int y = mouseY + 12;
 
             if (this.parent instanceof ListWidget listWidget) {
-                if (x > listWidget.width / 2) {
+                if (x > listWidget.getWidth() / 2) {
                     x = mouseX - 6 - maxWidth;
                 }
             }

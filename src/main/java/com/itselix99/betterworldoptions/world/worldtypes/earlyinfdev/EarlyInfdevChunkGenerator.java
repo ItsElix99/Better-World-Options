@@ -52,6 +52,7 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
         int var5 = 0;
         double scale = 0.03125D;
 
+        int[] surfaceHeights = new int[256];
         for (int var6 = chunkX; var6 < chunkX + 16; ++var6) {
             for (int var7 = chunkZ; var7 < chunkZ + 16; ++var7) {
                 int var8 = var6 / 1024;
@@ -69,6 +70,11 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
                         ++var13;
                     }
                 }
+
+                int localX = var6 & 15;
+                int localZ = var7 & 15;
+
+                surfaceHeights[localX + localZ * 16] = var13;
 
                 boolean sandBeach = this.noiseGen4.sample(var6 * scale, var7 * scale) + this.random.nextDouble() * 0.2D > 0.0D;
                 boolean gravelBeach = this.noiseGen4.sample(var7 * scale, var6 * scale) + this.random.nextDouble() * 0.2D > 3.0D;
@@ -153,6 +159,8 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
                 }
             }
         }
+
+        this.setSurfaceHeightForStructures(chunkX, chunkZ, surfaceHeights);
     }
 
     public Chunk getChunk(int chunkX, int chunkZ) {
@@ -172,6 +180,8 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
             }
         }
 
+        this.buildStructures(this, this.world, chunkX, chunkZ, var3);
+
         FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
@@ -187,6 +197,7 @@ public class EarlyInfdevChunkGenerator extends BWOChunkGenerator {
     public void decorate(ChunkSource source, int x, int z) {
         if (this.oldFeatures) {
             this.random.setSeed((long)x * 318279123L + (long)z * 919871212L);
+            this.placeStructures(this.world, this.random, x, z);
             int var4 = x << 4;
             x = z << 4;
 

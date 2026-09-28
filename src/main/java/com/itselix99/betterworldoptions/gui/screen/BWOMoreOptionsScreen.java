@@ -6,6 +6,8 @@ import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.gui.widget.*;
+import com.itselix99.betterworldoptions.gui.widget.list.BWOOptionListWidget;
+import com.itselix99.betterworldoptions.gui.widget.list.EntryListWidgetButtons;
 import com.itselix99.betterworldoptions.interfaces.BWOScreen;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;

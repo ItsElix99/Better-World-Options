@@ -6,10 +6,10 @@ import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.mixin.chunk.ChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.mixin.chunk.ServerChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
-import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.InfiniteIndevFeatures;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -23,9 +23,11 @@ import net.minecraft.world.World;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.world.WorldProperties;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.dimension.Dimension;
 import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.api.world.StationFlatteningWorld;
 import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,7 +39,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Mixin(World.class)
-public abstract class WorldMixin implements BWOWorld {
+public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
     @Shadow public Random random;
     @Shadow @Final public Dimension dimension;
     @Shadow public int difficulty;
@@ -53,6 +55,10 @@ public abstract class WorldMixin implements BWOWorld {
     @Shadow public abstract int getTopSolidBlockY(int x, int z);
 
     @Shadow public abstract ChunkSource getChunkSource();
+
+    @Shadow public abstract Chunk getChunkFromPos(int x, int z);
+
+    @Shadow protected ChunkSource chunkSource;
 
     @Inject(
             method = {
@@ -357,6 +363,31 @@ public abstract class WorldMixin implements BWOWorld {
         }
 
         return original;
+    }
+
+    public Random bwo_setRandomSeed(int x, int z, int seed) {
+        long var1 = (long)x * 341873128712L + (long)z * 132897987541L + this.getProperties().getSeed() + (long)seed;
+        this.random.setSeed(var1);
+        return this.random;
+    }
+
+    public int bwo_getSurfaceHeight(int x, int z) {
+        Chunk var1 = this.getChunkFromPos(x, z);
+        int var2 = this.getTopY() - 1;
+        x &= 15;
+
+        for(int var3 = z & 15; var2 > this.getBottomY(); --var2) {
+            int var4 = var1.getBlockId(x, var2, var3);
+            if (var4 != 0 && Block.BLOCKS[var4].material.blocksMovement() && Block.BLOCKS[var4].material != Material.LEAVES) {
+                return var2 + 1;
+            }
+        }
+
+        return -1;
+    }
+
+    public ChunkSource bwo_getChunkGenerator() {
+        return ((ChunkGeneratorAccessor) this.chunkSource).getChunkGenerator();
     }
 }
 

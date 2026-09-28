@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.gui.widget;
+package com.itselix99.betterworldoptions.gui.widget.list;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

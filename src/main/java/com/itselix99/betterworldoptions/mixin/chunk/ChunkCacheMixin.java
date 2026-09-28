@@ -3,8 +3,10 @@ package com.itselix99.betterworldoptions.mixin.chunk;
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.structure.Structure;
 import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -54,6 +56,15 @@ public class ChunkCacheMixin {
     private boolean bwo_cancelDecorateInFiniteAndFlatWorld(Chunk chunk, Operation<Boolean> original, @Local(ordinal = 0, argsOnly = true) int x, @Local(ordinal = 1, argsOnly = true) int z) {
         if (this.world.dimension.id == 0) {
             if (this.worldType.equals(BetterWorldOptions.NAMESPACE.id("flat").toString()) && !this.superflat) {
+                BWOChunkGenerator bwoChunkGenerator = (BWOChunkGenerator) ((BWOWorld) this.world).bwo_getChunkGenerator();
+                bwoChunkGenerator.placeStructures(this.world, bwoChunkGenerator.getRandom(), x, z);
+
+                for (Structure structure : Structure.getStructuresList()) {
+                    if (structure.isDecoration() && ((BWOProperties) this.world.getProperties()).bwo_isGenerateStructure(structure.getId())) {
+                        structure.decorate(this.world, bwoChunkGenerator.getRandom(), this.world.method_1781().getBiome((x * 16) + 16, (z * 16) + 16), x * 16, z * 16);
+                    }
+                }
+
                 if (this.theme.isCold()) {
                     int blockX = x * 16;
                     int blockZ = z * 16;

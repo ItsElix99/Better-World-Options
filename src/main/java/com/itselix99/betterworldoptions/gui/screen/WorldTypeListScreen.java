@@ -6,6 +6,7 @@ import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.StringOption;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
+import com.itselix99.betterworldoptions.api.structure.Structure;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import net.fabricmc.api.EnvType;
@@ -105,6 +106,12 @@ public class WorldTypeListScreen extends Screen {
                     }
 
                     WorldTypeListScreen.this.bwoWorldPropertiesStorage.setOptionsMap(worldTypeOptionsMap, OptionType.WORLD_TYPE_OPTION);
+                }
+
+                for (Structure structure : Structure.getStructuresList()) {
+                    if (structure.getIncompatibleWorldTypes().contains(var3.get(index).getId())) {
+                        WorldTypeListScreen.this.bwoWorldPropertiesStorage.setGenerateStructure(structure.getId(), false);
+                    }
                 }
 
                 WorldTypeListScreen.this.doneButton.text = WorldTypeListScreen.this.translation.get("gui.done");

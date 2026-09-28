@@ -52,6 +52,7 @@ public class SkylandsChunkGenerator extends BWOChunkGenerator {
         int var9 = var6 + 1;
         this.heightMap = this.generateHeightMap(this.heightMap, chunkX * var6, chunkZ * var6, var7, var8, var9);
 
+        int[] surfaceHeights = new int[256];
         for (int var10 = 0; var10 < var6; ++var10) {
             for (int var11 = 0; var11 < var6; ++var11) {
                 for (int var12 = 0; var12 < 32; ++var12) {
@@ -88,6 +89,12 @@ public class SkylandsChunkGenerator extends BWOChunkGenerator {
                                 int var52 = 0;
                                 if (var47 > (double) 0.0F) {
                                     var52 = Block.STONE.id;
+
+                                    int y = var12 * 4 + var31;
+                                    int x = var10 * 8 + var42;
+                                    int z = var11 * 8 + var51;
+
+                                    surfaceHeights[x + z * 16] = y;
                                 }
 
                                 blocks[var43] = (byte) var52;
@@ -108,6 +115,12 @@ public class SkylandsChunkGenerator extends BWOChunkGenerator {
             }
         }
 
+        this.setSurfaceHeightForStructures(chunkX, chunkZ, surfaceHeights);
+
+    }
+
+    public int getMinSurfaceHeight() {
+        return 40;
     }
 
     public void buildSurfaces(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes) {
@@ -177,6 +190,8 @@ public class SkylandsChunkGenerator extends BWOChunkGenerator {
         if (Config.BWOConfig.world.ravineGeneration) {
             this.ravine.place(this, this.world, chunkX, chunkZ, var3);
         }
+
+        this.buildStructures(this, this.world, chunkX, chunkZ, var3);
 
         FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);

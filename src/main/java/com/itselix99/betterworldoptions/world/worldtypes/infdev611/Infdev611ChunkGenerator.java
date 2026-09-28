@@ -144,6 +144,7 @@ public class Infdev611ChunkGenerator extends BWOChunkGenerator {
 
         this.heightMap = var6;
 
+        int[] surfaceHeights = new int[256];
         for(int var19 = 0; var19 < 4; ++var19) {
             for(int var20 = 0; var20 < 4; ++var20) {
                 for(int var87 = 0; var87 < vertical; ++var87) {
@@ -187,6 +188,12 @@ public class Infdev611ChunkGenerator extends BWOChunkGenerator {
 
                                 if (var40 > (double)0.0F) {
                                     var41 = Block.STONE.id;
+
+                                    int y = var87 * 8 + var27;
+                                    int x = var19 * 4 + var33;
+                                    int z = var20 * 4 + var38;
+
+                                    surfaceHeights[x + z * 16] = y;
                                 }
 
                                 blocks[var37] = (byte)var41;
@@ -197,6 +204,8 @@ public class Infdev611ChunkGenerator extends BWOChunkGenerator {
                 }
             }
         }
+
+        this.setSurfaceHeightForStructures(chunkX, chunkZ, surfaceHeights);
 
         boolean beachFix = Config.BWOConfig.world.beachFix;
 
@@ -307,6 +316,8 @@ public class Infdev611ChunkGenerator extends BWOChunkGenerator {
             }
         }
 
+        this.buildStructures(this, this.world, chunkX, chunkZ, var3);
+
         FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
@@ -317,6 +328,7 @@ public class Infdev611ChunkGenerator extends BWOChunkGenerator {
     public void decorate(ChunkSource source, int x, int z) {
         if (this.oldFeatures) {
             this.random.setSeed((long)x * 318279123L + (long)z * 919871212L);
+            this.placeStructures(this.world, this.random, x, z);
             int var8 = x << 4;
             x = z << 4;
 

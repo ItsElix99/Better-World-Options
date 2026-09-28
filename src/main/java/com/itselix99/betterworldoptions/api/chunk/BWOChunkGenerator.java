@@ -1,6 +1,8 @@
 package com.itselix99.betterworldoptions.api.chunk;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.structure.Structure;
 import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.config.Config;
@@ -11,12 +13,16 @@ import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.gen.Generator;
 import net.minecraft.world.gen.carver.CaveWorldCarver;
 import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
 import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.impl.util.math.ChunkPos;
 import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class BWOChunkGenerator extends OverworldChunkGenerator {
@@ -37,6 +43,7 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
     protected final boolean farlands;
     protected final String farlandsShape;
     protected final int farlandsDistance;
+    protected final Map<Long, int[]> surfaceHeightCache;
 
     private static int[] sizeLimits;
 
@@ -56,6 +63,7 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         this.farlands = this.bwoProperties.bwo_getOptionValue("Farlands", OptionType.GENERAL_OPTION, false);
         this.farlandsShape = this.bwoProperties.bwo_getOptionValue("FarlandsShape", OptionType.GENERAL_OPTION, "");
         this.farlandsDistance = this.bwoProperties.bwo_getOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION, 0) / 2;
+        this.surfaceHeightCache = new HashMap<>();
 
         if (this.finiteWorldType.equals("MCPE")) {
             setSizeLimits(0, this.width, 0, this.length);
@@ -64,6 +72,54 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         }
 
         ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
+    }
+
+    protected void buildStructures(ChunkSource source, World world, int chunkX, int chunkZ, byte[] blocks) {
+        for (Structure structure : Structure.getStructuresList()) {
+            if (structure.getStructureFeature() != null && this.bwoProperties.bwo_isGenerateStructure(structure.getId())) {
+                structure.getStructureFeature().place(source, world, chunkX, chunkZ, blocks);
+            }
+        }
+    }
+
+    public boolean placeStructures(World world, Random random, int chunkX, int chunkZ) {
+        boolean generateVillage = false;
+
+        for (Structure structure : Structure.getStructuresList()) {
+            if (structure.getStructureFeature() != null && this.bwoProperties.bwo_isGenerateStructure(structure.getId())) {
+                boolean valid = structure.getStructureFeature().place(world, random, chunkX, chunkZ);
+
+                if (structure.getId().equals(BetterWorldOptions.NAMESPACE.id("village"))) {
+                    generateVillage = valid;
+                }
+            }
+        }
+
+        return generateVillage;
+    }
+
+    public boolean useSurfaceHeightForStructures() {
+        return true;
+    }
+
+    public int getMinSurfaceHeight() {
+        return 59;
+    }
+
+    public void setSurfaceHeightForStructures(int chunkX, int chunkZ, int[] surfaceHeights) {
+        for(int var1 = chunkX - 8; var1 <= chunkX + 8; ++var1) {
+            for (int var2 = chunkZ - 8; var2 <= chunkZ + 8; ++var2) {
+                this.surfaceHeightCache.put(ChunkPos.toLong(var1, var2), surfaceHeights);
+            }
+        }
+    }
+
+    public Map<Long, int[]> getSurfaceHeightCache() {
+        return this.surfaceHeightCache;
+    }
+
+    public Random getRandom() {
+        return this.random;
     }
 
     protected Chunk getLimitChunkFiniteWorld(int chunkX, int chunkZ, byte[] blocks, String mode, Chunk defaultChunk) {

@@ -25,9 +25,10 @@ public class FlatChunkGenerator extends BWOChunkGenerator {
     public void buildTerrain(byte[] blocks, Biome[] biomes) {
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
+                Biome var1 = biomes[x + z * 16];
+
                 for (int y = 0; y < Config.BWOConfig.world.worldHeightLimit.getIntValue(); ++y) {
                     int blockId;
-                    Biome var1 = biomes[x + z * 16];
 
                     if (y == 0) {
                         blockId = Block.BEDROCK.id;
@@ -52,6 +53,10 @@ public class FlatChunkGenerator extends BWOChunkGenerator {
         }
     }
 
+    public boolean useSurfaceHeightForStructures() {
+        return false;
+    }
+
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
         byte[] var3 = new byte[16 * Config.BWOConfig.world.worldHeightLimit.getIntValue() * 16];
@@ -67,6 +72,8 @@ public class FlatChunkGenerator extends BWOChunkGenerator {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
         }
+
+        this.buildStructures(this, this.world, chunkX, chunkZ, var3);
 
         FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);

@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.interfaces;
 
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
+import net.modificationstation.stationapi.api.util.Identifier;
 
 import java.util.Map;
 
@@ -22,4 +23,6 @@ public interface BWOProperties {
     boolean bwo_isPregeneratingFiniteWorld();
 
     Map<String, OptionStorage<?>> bwo_getOptionsMap(OptionType optionType);
+    Map<Identifier, Boolean> bwo_getStructures();
+    boolean bwo_isGenerateStructure(Identifier id);
 }

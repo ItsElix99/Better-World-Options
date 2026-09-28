@@ -1,7 +1,9 @@
 package com.itselix99.betterworldoptions.mixin.chunk;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.structure.Structure;
 import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWONoise;
@@ -14,6 +16,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.llamalad7.mixinextras.sugar.ref.LocalDoubleRef;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
@@ -23,6 +26,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.gen.Generator;
 import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
+import net.minecraft.world.gen.feature.LakeFeature;
 import net.minecraft.world.gen.feature.PlantPatchFeature;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.math.MathHelper;
@@ -37,12 +41,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Random;
 
 @Mixin(OverworldChunkGenerator.class)
-public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
+public class OverworldChunkGeneratorMixin {
     @Shadow private World world;
     @Shadow private Random random;
     @Shadow private OctavePerlinNoiseSampler perlinNoise2;
     @Shadow private OctavePerlinNoiseSampler perlinNoise3;
     @Unique private Generator ravine = new RavineWorldCarver();
+    @Unique private BWOProperties bwoProperties;
     @Unique private Theme theme;
     @Unique private boolean finiteWorld;
     @Unique private String finiteWorldType;
@@ -54,15 +59,15 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void bwo_initBWOProperties(World world, long seed, CallbackInfo ci) {
-        BWOProperties bwoProperties = (BWOProperties) world.getProperties();
-        this.theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
-        this.finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
-        this.finiteWorldType = bwoProperties.bwo_getOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION, "");
-        this.width = bwoProperties.bwo_getOptionValue("Width", OptionType.GENERAL_OPTION, 0);
-        this.length = bwoProperties.bwo_getOptionValue("Length", OptionType.GENERAL_OPTION, 0);
-        this.farlands = bwoProperties.bwo_getOptionValue("Farlands", OptionType.GENERAL_OPTION, false);
-        this.farlandsShape = bwoProperties.bwo_getOptionValue("FarlandsShape", OptionType.GENERAL_OPTION, "");
-        this.farlandsDistance = bwoProperties.bwo_getOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION, 0) / 2;
+        this.bwoProperties = (BWOProperties) world.getProperties();
+        this.theme = Theme.getThemeById(Identifier.of(this.bwoProperties.bwo_getTheme()));
+        this.finiteWorld = this.bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
+        this.finiteWorldType = this.bwoProperties.bwo_getOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION, "");
+        this.width = this.bwoProperties.bwo_getOptionValue("Width", OptionType.GENERAL_OPTION, 0);
+        this.length = this.bwoProperties.bwo_getOptionValue("Length", OptionType.GENERAL_OPTION, 0);
+        this.farlands = this.bwoProperties.bwo_getOptionValue("Farlands", OptionType.GENERAL_OPTION, false);
+        this.farlandsShape = this.bwoProperties.bwo_getOptionValue("FarlandsShape", OptionType.GENERAL_OPTION, "");
+        this.farlandsDistance = this.bwoProperties.bwo_getOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION, 0) / 2;
 
         if (this.finiteWorldType.equals("MCPE")) {
             BWOChunkGenerator.setSizeLimits(0, this.width, 0, this.length);
@@ -381,12 +386,19 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
             at = @At
                     (
                             value = "INVOKE",
-                            target = "Lnet/minecraft/world/gen/Generator;place(Lnet/minecraft/world/chunk/ChunkSource;Lnet/minecraft/world/World;II[B)V"
+                            target = "Lnet/minecraft/world/gen/Generator;place(Lnet/minecraft/world/chunk/ChunkSource;Lnet/minecraft/world/World;II[B)V",
+                            shift = At.Shift.AFTER
                     )
     )
-    private void bwo_ravineGeneration(int chunkX, int chunkZ, CallbackInfoReturnable<Chunk> cir, @Local byte[] var3) {
+    private void bwo_ravineAndStructuresGeneration(int chunkX, int chunkZ, CallbackInfoReturnable<Chunk> cir, @Local byte[] var3) {
         if (Config.BWOConfig.world.ravineGeneration) {
-            this.ravine.place(this, this.world, chunkX, chunkZ, var3);
+            this.ravine.place(OverworldChunkGenerator.class.cast(this), this.world, chunkX, chunkZ, var3);
+        }
+
+        for (Structure structure : Structure.getStructuresList()) {
+            if (structure.getStructureFeature() != null && this.bwoProperties.bwo_isGenerateStructure(structure.getId())) {
+                structure.getStructureFeature().place(OverworldChunkGenerator.class.cast(this), this.world, chunkX, chunkZ, var3);
+            }
         }
     }
 
@@ -535,6 +547,60 @@ public abstract class OverworldChunkGeneratorMixin implements ChunkSource {
         }
 
         return original;
+    }
+
+    @Inject(
+            method = "decorate",
+            at = @At
+                    (
+                            value = "INVOKE",
+                            target = "Ljava/util/Random;setSeed(J)V",
+                            ordinal = 1,
+                            shift = At.Shift.AFTER
+                    )
+    )
+    private void bwo_generateStructures(ChunkSource source, int x, int z, CallbackInfo ci, @Share("generateVillage") LocalBooleanRef generateVillage) {
+        for (Structure structure : Structure.getStructuresList()) {
+            if (structure.getStructureFeature() != null && this.bwoProperties.bwo_isGenerateStructure(structure.getId())) {
+                boolean valid = structure.getStructureFeature().place(this.world, this.random, x, z);
+
+                if (structure.getId().equals(BetterWorldOptions.NAMESPACE.id("village"))) {
+                    generateVillage.set(valid);
+                }
+            }
+        }
+    }
+
+    @WrapOperation(
+            method = "decorate",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/gen/feature/LakeFeature;generate(Lnet/minecraft/world/World;Ljava/util/Random;III)Z",
+                    ordinal = 0
+            )
+    )
+    private boolean bwo_cancelLakeGenerationWithVillage(LakeFeature instance, World world, Random random, int x, int y, int z, Operation<Boolean> original, @Share("generateVillage") LocalBooleanRef generateVillage) {
+        if (!generateVillage.get()) {
+            return original.call(instance, world, random, x, y, z);
+        }
+
+        return false;
+    }
+
+    @WrapOperation(
+            method = "decorate",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/gen/feature/LakeFeature;generate(Lnet/minecraft/world/World;Ljava/util/Random;III)Z",
+                    ordinal = 1
+            )
+    )
+    private boolean bwo_cancelLakeGenerationWithVillage2(LakeFeature instance, World world, Random random, int x, int y, int z, Operation<Boolean> original, @Share("generateVillage") LocalBooleanRef generateVillage) {
+        if (!generateVillage.get()) {
+            return original.call(instance, world, random, x, y, z);
+        }
+
+        return false;
     }
 
     @WrapOperation(

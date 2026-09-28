@@ -2,7 +2,6 @@ package com.itselix99.betterworldoptions.world.worldtypes.mcpe;
 
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.config.Config;
-import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.util.MTRandom;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.util.math.noise.OctavePerlinNoiseSamplerMCPE;
 import net.minecraft.block.Block;
@@ -63,9 +62,10 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
         int var10 = var6 + 1;
         this.heightMap = this.generateHeightMap(this.heightMap, chunkX * var6, chunkZ * var6, var8, var9, var10);
 
+        int[] surfaceHeights = new int[256];
         for(int var11 = 0; var11 < var6; ++var11) {
             for(int var12 = 0; var12 < var6; ++var12) {
-                for(int var13 = 0; var13 < 16; ++var13) {
+                for(int var13 = 0; var13 < vertical; ++var13) {
                     double var14 = 0.125F;
                     double var16 = this.heightMap[((var11) * var10 + var12) * var9 + var13];
                     int var100 = ((var11) * var10 + var12 + 1) * var9;
@@ -109,6 +109,12 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
 
                                 if (var48 > (double)0.0F) {
                                     var55 = Block.STONE.id;
+
+                                    int y = var13 * 8 + var32;
+                                    int x = var11 * 4 + var43;
+                                    int z = var12 * 4 + var52;
+
+                                    surfaceHeights[x + z * 16] = y;
                                 }
 
                                 blocks[var44] = (byte)var55;
@@ -128,6 +134,8 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
                 }
             }
         }
+
+        this.setSurfaceHeightForStructures(chunkX, chunkZ, surfaceHeights);
 
     }
 
@@ -249,6 +257,8 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
                 this.ravine.place(this, this.world, chunkX, chunkZ, var3);
             }
         }
+
+        this.buildStructures(this, this.world, chunkX, chunkZ, var3);
 
         FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
@@ -402,6 +412,8 @@ public class MCPEChunkGenerator extends BWOChunkGenerator {
             int var9 = this.random.nextInt() / 2 * 2 + 1;
             this.random.setSeed((long) x * var7 + (long)z * var9 ^ (int)this.world.getSeed());
             double var11;
+
+            this.placeStructures(this.world, this.random, x, z);
 
             for(int var28 = 0; var28 < 10; ++var28) {
                 int var40 = var4 + this.random.nextInt(16);

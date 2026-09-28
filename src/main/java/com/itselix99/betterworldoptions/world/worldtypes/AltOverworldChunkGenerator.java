@@ -57,6 +57,7 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
         int var10 = var6 + 1;
         this.heightMap = this.generateHeightMap(this.heightMap, chunkX * var6, chunkZ * var6, var8, var9, var10);
 
+        int[] surfaceHeights = new int[256];
         for (int var11 = 0; var11 < var6; ++var11) {
             for (int var12 = 0; var12 < var6; ++var12) {
                 for (int var13 = 0; var13 < vertical; ++var13) {
@@ -103,6 +104,12 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
 
                                 if (var48 > (double) 0.0F) {
                                     var55 = Block.STONE.id;
+
+                                    int y = var13 * 8 + var32;
+                                    int x = var11 * 4 + var43;
+                                    int z = var12 * 4 + var52;
+
+                                    surfaceHeights[x + z * 16] = y;
                                 }
 
                                 blocks[var44] = (byte) var55;
@@ -122,6 +129,8 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
                 }
             }
         }
+
+        this.setSurfaceHeightForStructures(chunkX, chunkZ, surfaceHeights);
 
     }
 
@@ -238,6 +247,8 @@ public class AltOverworldChunkGenerator extends BWOChunkGenerator {
         if (Config.BWOConfig.world.ravineGeneration) {
             this.ravine.place(this, this.world, chunkX, chunkZ, var3);
         }
+
+        this.buildStructures(this, this.world, chunkX, chunkZ, var3);
 
         FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);

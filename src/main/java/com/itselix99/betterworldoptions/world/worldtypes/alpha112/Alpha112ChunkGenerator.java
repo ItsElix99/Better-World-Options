@@ -59,6 +59,7 @@ public class Alpha112ChunkGenerator extends BWOChunkGenerator {
         int var8 = var4 + 1;
         this.heightMap = this.generateHeightMap(this.heightMap, chunkX * var4, chunkZ * var4, var6, var7, var8);
 
+        int[] surfaceHeights = new int[256];
         for(int var9 = 0; var9 < var4; ++var9) {
             for(int var10 = 0; var10 < var4; ++var10) {
                 for(int var11 = 0; var11 < vertical; ++var11) {
@@ -105,6 +106,12 @@ public class Alpha112ChunkGenerator extends BWOChunkGenerator {
 
                                 if(var46 > 0.0D) {
                                     var51 = Block.STONE.id;
+
+                                    int y = var11 * 8 + var30;
+                                    int x = var9 * 4 + var41;
+                                    int z = var10 * 4 + var50;
+
+                                    surfaceHeights[x + z * 16] = y;
                                 }
 
                                 blocks[var42] = (byte)var51;
@@ -124,6 +131,8 @@ public class Alpha112ChunkGenerator extends BWOChunkGenerator {
                 }
             }
         }
+
+        this.setSurfaceHeightForStructures(chunkX, chunkZ, surfaceHeights);
 
     }
 
@@ -257,6 +266,8 @@ public class Alpha112ChunkGenerator extends BWOChunkGenerator {
             }
         }
 
+        this.buildStructures(this, this.world, chunkX, chunkZ, var3);
+
         FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
@@ -387,6 +398,8 @@ public class Alpha112ChunkGenerator extends BWOChunkGenerator {
             long var8 = this.random.nextLong() / 2L * 2L + 1L;
             this.random.setSeed((long)x * var6 + (long)z * var8 ^ this.world.getSeed());
             double var10;
+
+            this.placeStructures(this.world, this.random, x, z);
 
             int var12;
             int var13;

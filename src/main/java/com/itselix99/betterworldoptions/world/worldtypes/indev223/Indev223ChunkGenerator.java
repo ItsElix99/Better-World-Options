@@ -652,6 +652,10 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
         }
     }
 
+    public boolean useSurfaceHeightForStructures() {
+        return false;
+    }
+
     public Chunk getChunk(int chunkX, int chunkZ) {
         this.random.setSeed((long)chunkX * 341873128712L + (long)chunkZ * 132897987541L);
         byte[] var3 = new byte[16 * Config.BWOConfig.world.worldHeightLimit.getIntValue() * 16];
@@ -676,6 +680,8 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
             InfiniteIndevFeatures.placeOre(this.random, Block.DIAMOND_ORE.id, 800, 2, 128 / 5, var3);
         }
 
+        this.buildStructures(this, this.world, chunkX, chunkZ, var3);
+
         FlattenedChunk flattenedChunk = new FlattenedChunk(this.world, chunkX, chunkZ);
         flattenedChunk.fromLegacy(var3);
         flattenedChunk.populateHeightMap();
@@ -695,6 +701,8 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
             this.random.setSeed((long)x * 318279123L + (long)z * 919871212L);
             int var4 = x << 4;
             int var5 = z << 4;
+
+            this.placeStructures(this.world, this.random, x, z);
 
             if (!this.finiteWorld) {
                 InfiniteIndevFeatures.generateTrees(this.world, this.random, this.theme.isDenseWoods() ? 10 : 1, var4, var5);
