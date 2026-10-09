@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.gui.screen;
 
+import com.itselix99.betterworldoptions.api.BiomeProperties;
 import com.itselix99.betterworldoptions.api.options.entry.BooleanOption;
 import com.itselix99.betterworldoptions.api.options.entry.IntOption;
 import com.itselix99.betterworldoptions.api.options.entry.Option;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.resource.language.TranslationStorage;
+import net.minecraft.world.biome.Biome;
 import net.modificationstation.stationapi.api.util.Identifier;
 import org.lwjgl.opengl.GL11;
 
@@ -106,6 +108,14 @@ public class WorldTypeListScreen extends Screen {
                     }
 
                     WorldTypeListScreen.this.bwoWorldPropertiesStorage.setOptionsMap(worldTypeOptionsMap, OptionType.WORLD_TYPE_OPTION);
+                }
+
+                BiomeProperties biomeProperties = var3.get(index).getBiomeProperties();
+                String currentBiome = WorldTypeListScreen.this.bwoWorldPropertiesStorage.getOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "");
+                Biome biome = biomeProperties.getAllBiomesForSingleBiome().stream().filter(biome1 -> biome1.name.equals(currentBiome)).findFirst().orElse(null);
+
+                if (biome == null) {
+                    WorldTypeListScreen.this.bwoWorldPropertiesStorage.setOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "Off");
                 }
 
                 for (Structure structure : Structure.getStructuresList()) {

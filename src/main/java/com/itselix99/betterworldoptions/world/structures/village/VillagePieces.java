@@ -212,7 +212,7 @@ public class VillagePieces {
             for(int var3 = this.bounds.minZ; var3 <= this.bounds.maxZ; ++var3) {
                 for(int var4 = this.bounds.minX; var4 <= this.bounds.maxX; ++var4) {
                     if (bounds.contains(var4, 64, var3)) {
-                        var1 += Math.max(((BWOWorld) world).bwo_getSurfaceHeight(var4, var3), 64);
+                        var1 += Math.max(((BWOWorld) world).bwo_getSurfaceHeight(var4, var3), ((BWOWorld) world).bwo_getSeaLevel());
                         ++var2;
                     }
                 }
@@ -283,8 +283,8 @@ public class VillagePieces {
                 for(int var2 = 0; var2 <= 5; ++var2) {
                     if (var2 == 0 || var2 == 5 || var1 == 0 || var1 == 5) {
                         int var3 = ((BWOWorld) world).bwo_getSurfaceHeight(var1, var2) - 1;
-                        if (var3 < 64) {
-                            var3 = 63;
+                        if (var3 < ((BWOWorld) world).bwo_getSeaLevel()) {
+                            var3 = ((BWOWorld) world).bwo_getSeaLevel() - 1;
                         }
 
                         int blockId = world.getBlockId(var1, var3, var2);
@@ -410,8 +410,8 @@ public class VillagePieces {
                 for(int var2 = this.bounds.minZ; var2 <= this.bounds.maxZ; ++var2) {
                     if (bounds.contains(var1, 64, var2)) {
                         int var3 = ((BWOWorld) world).bwo_getSurfaceHeight(var1, var2) - 1;
-                        if (var3 < 64) {
-                            var3 = 63;
+                        if (var3 < ((BWOWorld) world).bwo_getSeaLevel()) {
+                            var3 = ((BWOWorld) world).bwo_getSeaLevel() - 1;
                         }
 
                         int blockId = world.getBlockId(var1, var3, var2);

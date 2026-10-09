@@ -52,7 +52,7 @@ public class TemplePieces {
                 for (int var3 = this.bounds.minZ; var3 <= this.bounds.maxZ; ++var3) {
                     for (int var4 = this.bounds.minX; var4 <= this.bounds.maxX; ++var4) {
                         if (bounds.contains(var4, 64, var3)) {
-                            var1 += Math.max(((BWOWorld) world).bwo_getSurfaceHeight(var4, var3), 64);
+                            var1 += Math.max(((BWOWorld) world).bwo_getSurfaceHeight(var4, var3), ((BWOWorld) world).bwo_getSeaLevel());
                             ++var2;
                         }
                     }

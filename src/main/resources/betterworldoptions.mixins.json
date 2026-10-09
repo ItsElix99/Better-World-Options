@@ -20,6 +20,7 @@
     "world.CaveWorldCarverMixin",
     "world.DimensionDataAccessor",
     "world.FlattenedWorldStorageMixin",
+    "world.GeneratorMixin",
     "world.OctavePerlinNoiseSamplerMixin",
     "world.WorldMixin",
     "world.WorldPropertiesMixin"

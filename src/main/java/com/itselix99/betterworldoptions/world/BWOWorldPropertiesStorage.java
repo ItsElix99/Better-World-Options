@@ -1,6 +1,5 @@
 package com.itselix99.betterworldoptions.world;
 
-import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.options.GeneralOptions;
 import com.itselix99.betterworldoptions.api.options.entry.BooleanOption;
 import com.itselix99.betterworldoptions.api.options.entry.IntOption;
@@ -10,11 +9,8 @@ import com.itselix99.betterworldoptions.api.options.entry.StringOption;
 import com.itselix99.betterworldoptions.api.options.storage.OptionStorage;
 import com.itselix99.betterworldoptions.api.structure.Structure;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
-import com.itselix99.betterworldoptions.event.TextureListener;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
-import net.minecraft.world.biome.Biome;
 import net.modificationstation.stationapi.api.registry.DimensionContainer;
 import net.modificationstation.stationapi.api.registry.DimensionRegistry;
 import net.modificationstation.stationapi.api.util.Identifier;
@@ -24,7 +20,6 @@ import java.util.*;
 
 public class BWOWorldPropertiesStorage {
     private static BWOWorldPropertiesStorage INSTANCE = new BWOWorldPropertiesStorage();
-    private static boolean init = false;
     private static boolean initDimensionWorldTypes = false;
 
     private Map<String, OptionStorage<?>> generalOptions = new LinkedHashMap<>();
@@ -34,8 +29,6 @@ public class BWOWorldPropertiesStorage {
     private final Map<String, Integer> selectedGeneralOption = new LinkedHashMap<>();
     private final Map<String, Integer> selectedWorldTypeOption = new LinkedHashMap<>();
 
-    private static HashMap<Biome, double[]> biomeClimateMap;
-
     public boolean isBWOServer = false;
 
     public boolean oldTextures;
@@ -43,11 +36,6 @@ public class BWOWorldPropertiesStorage {
     public static String BWOWorldVersion = null;
 
     public BWOWorldPropertiesStorage() {
-        if (!init) {
-            this.initBiomeClimateAndOldTextures();
-            init = true;
-        }
-
         List<Option<?>> generalOptionsList = GeneralOptions.getGeneralOptionsList();
 
         for(Option<?> generalOption : generalOptionsList) {
@@ -224,93 +212,5 @@ public class BWOWorldPropertiesStorage {
 
             initDimensionWorldTypes = true;
         }
-    }
-
-    private void initBiomeClimateAndOldTextures() {
-        if (biomeClimateMap == null) {
-            biomeClimateMap = new HashMap<>();
-        }
-
-        biomeClimateMap.put(Biome.TUNDRA, new double[]{0.05D, 0.2D});
-        biomeClimateMap.put(Biome.SAVANNA, new double[]{0.7D, 0.1D});
-        biomeClimateMap.put(Biome.DESERT, new double[]{1.0D, 0.05D});
-        biomeClimateMap.put(Biome.SWAMPLAND, new double[]{0.6D, 0.8D});
-        biomeClimateMap.put(Biome.TAIGA, new double[]{0.4D, 0.4D});
-        biomeClimateMap.put(Biome.SHRUBLAND, new double[]{0.8D, 0.3D});
-        biomeClimateMap.put(Biome.FOREST, new double[]{0.8D, 0.6D});
-        biomeClimateMap.put(Biome.PLAINS, new double[]{1.0D, 0.4D});
-        biomeClimateMap.put(Biome.SEASONAL_FOREST, new double[]{1.0D, 0.7D});
-        biomeClimateMap.put(Biome.RAINFOREST, new double[]{1.0D, 0.85D});
-        biomeClimateMap.put(Biome.ICE_DESERT, new double[]{0.05D, 0.05D});
-
-        WorldType Alpha120 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("alpha_1.2.0"));
-        Alpha120.addOldTexture("GrassBlockSide", TextureListener.alphaGrassBlockSide);
-        Alpha120.addOldTexture("Cobblestone", TextureListener.alphaCobblestone);
-
-        WorldType Alpha112 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("alpha_1.1.2_01"));
-        Alpha112.addOldTexture("GrassBlockTop", TextureListener.alphaGrassBlockTop);
-        Alpha112.addOldTexture("GrassBlockSide", TextureListener.alphaGrassBlockSide);
-        Alpha112.addOldTexture("Cobblestone", TextureListener.alphaCobblestone);
-        Alpha112.addOldTexture("IronBlockTop", TextureListener.alphaIronBlock);
-        Alpha112.addOldTexture("IronBlockSide", TextureListener.alphaIronBlockSide);
-        Alpha112.addOldTexture("IronBlockBottom", TextureListener.alphaIronBlockBottom);
-        Alpha112.addOldTexture("GoldBlockTop", TextureListener.alphaGoldBlock);
-        Alpha112.addOldTexture("GoldBlockSide", TextureListener.alphaGoldBlockSide);
-        Alpha112.addOldTexture("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
-        Alpha112.addOldTexture("DiamondBlockTop", TextureListener.alphaDiamondBlock);
-        Alpha112.addOldTexture("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
-        Alpha112.addOldTexture("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
-        Alpha112.addOldTexture("Grass", TextureListener.alphaTallGrass);
-        Alpha112.addOldTexture("Fern", TextureListener.alphaFern);
-        Alpha112.addOldTexture("Leaves", TextureListener.alphaLeaves);
-        Alpha112.addOldTexture("LeavesOpaque", TextureListener.alphaLeavesOpaque);
-        Alpha112.addOldTexture("FurnaceTop", Block.STONE.textureId);
-
-        WorldType Infdev611 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100611"));
-        addOldTexturesForInfdevAndIndev(Infdev611);
-
-        WorldType Infdev420 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100420"));
-        addOldTexturesForInfdevAndIndev(Infdev420);
-
-        WorldType Infdev415 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100415"));
-        addOldTexturesForInfdevAndIndev(Infdev415);
-
-        WorldType EarlyInfdev = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("early_infdev"));
-        addOldTexturesForInfdevAndIndev(EarlyInfdev);
-
-        WorldType Indev223 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("indev_20100223"));
-        addOldTexturesForInfdevAndIndev(Indev223);
-
-        WorldType MCPE = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("mcpe"));
-        MCPE.addOldTexture("GrassBlockSide", TextureListener.mcpeGrassBlockSide);
-        MCPE.addOldTexture("Leaves", TextureListener.alphaLeaves);
-        MCPE.addOldTexture("LeavesOpaque", TextureListener.alphaLeavesOpaque);
-        MCPE.addOldTexture("Rose", TextureListener.mcpeRose);
-        MCPE.addOldTexture("IceBlock", TextureListener.mcpeIceBlock);
-    }
-
-    private void addOldTexturesForInfdevAndIndev(WorldType worldType) {
-        worldType.addOldTexture("GrassBlockTop", TextureListener.alphaGrassBlockTop);
-        worldType.addOldTexture("GrassBlockSide", TextureListener.alphaGrassBlockSide);
-        worldType.addOldTexture("Cobblestone", TextureListener.alphaCobblestone);
-        worldType.addOldTexture("IronBlockTop", TextureListener.alphaIronBlock);
-        worldType.addOldTexture("IronBlockSide", TextureListener.alphaIronBlockSide);
-        worldType.addOldTexture("IronBlockBottom", TextureListener.alphaIronBlockBottom);
-        worldType.addOldTexture("GoldBlockTop", TextureListener.alphaGoldBlock);
-        worldType.addOldTexture("GoldBlockSide", TextureListener.alphaGoldBlockSide);
-        worldType.addOldTexture("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
-        worldType.addOldTexture("DiamondBlockTop", TextureListener.alphaDiamondBlock);
-        worldType.addOldTexture("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
-        worldType.addOldTexture("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
-        worldType.addOldTexture("Grass", TextureListener.alphaTallGrass);
-        worldType.addOldTexture("Fern", TextureListener.alphaFern);
-        worldType.addOldTexture("Leaves", TextureListener.alphaLeaves);
-        worldType.addOldTexture("LeavesOpaque", TextureListener.alphaLeavesOpaque);
-        worldType.addOldTexture("FurnaceTop", Block.STONE.textureId);
-        worldType.addOldTexture("BrickBlock", TextureListener.infdevBricksBlock);
-    }
-
-    public static double[] getClimateForBiome(Biome biome) {
-        return biomeClimateMap.getOrDefault(biome, new double[]{0.5D, 0.5D});
     }
 }

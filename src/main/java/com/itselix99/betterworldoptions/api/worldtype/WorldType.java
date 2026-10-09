@@ -1,12 +1,18 @@
 package com.itselix99.betterworldoptions.api.worldtype;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.api.BiomeProperties;
 import com.itselix99.betterworldoptions.api.options.entry.BooleanOption;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.IntOption;
 import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.api.options.entry.StringOption;
+import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.source.AdvUpdFixedBiomeSource;
 import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenerator;
+import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.AdvUpdChunkGenerator;
+import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.source.AdvUpdBiomeSource;
+import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
+import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.ReleaseBiomeProperties;
 import com.itselix99.betterworldoptions.world.worldtypes.flat.FlatChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.SkylandsChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.alpha112.Alpha112ChunkGenerator;
@@ -22,6 +28,7 @@ import com.itselix99.betterworldoptions.world.worldtypes.mcpe.biomesource.MCPEBi
 import net.minecraft.block.Block;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.gen.chunk.NetherChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
@@ -43,6 +50,9 @@ public class WorldType {
     private final String icon;
     private final String[] description;
     private Class<? extends BiomeSource> biomeSource = BiomeSource.class;
+    private Class<? extends BiomeSource> fixedBiomeSource = FixedBiomeSource.class;
+    private BiomeProperties biomeProperties = new BiomeProperties(BetterWorldOptions.NAMESPACE.id("default"));
+    private int seaLevel = 64;
     private Map<String, Integer> oldTextures = new HashMap<>();
     private OldFeaturesProperties oldFeaturesProperties;
     private final Map<String, Option<?>> worldTypeOptions = new LinkedHashMap<>();
@@ -92,6 +102,18 @@ public class WorldType {
         this.biomeSource = biomeSource;
     }
 
+    public void setFixedBiomeSource(Class<? extends BiomeSource> fixedBiomeSource) {
+        this.fixedBiomeSource = fixedBiomeSource;
+    }
+
+    public void setBiomeProperties(BiomeProperties biomeProperties) {
+        this.biomeProperties = biomeProperties;
+    }
+
+    public void setSeaLevel(int seaLevel) {
+        this.seaLevel = seaLevel;
+    }
+
     public void setOldFeaturesProperties(Biome biome, boolean oldFeaturesHasVanillaBiomes, int defaultSkyColor, int defaultFogColor, boolean oldStars, boolean sunriseAndSunsetColors) {
         this.oldFeaturesProperties = new OldFeaturesProperties(() -> biome, oldFeaturesHasVanillaBiomes, defaultSkyColor, defaultFogColor, oldStars, sunriseAndSunsetColors);
     }
@@ -134,6 +156,18 @@ public class WorldType {
 
     public Class<? extends BiomeSource> getBiomeSource() {
         return this.biomeSource;
+    }
+
+    public Class<? extends BiomeSource> getFixedBiomeSource() {
+        return this.fixedBiomeSource;
+    }
+
+    public BiomeProperties getBiomeProperties() {
+        return this.biomeProperties;
+    }
+
+    public int getSeaLevel() {
+        return this.seaLevel;
     }
 
     public Map<String, Option<?>> getWorldTypeOptions() {
@@ -215,6 +249,24 @@ public class WorldType {
         Flat.setBiomeSource(FlatBiomeSource.class);
         Flat.addBooleanWorldTypeOption("bwoMoreOptions.superflat", "Superflat", null, false);
         Flat.setBlockToSpawn(Block.GRASS_BLOCK.id);
+
+        WorldType Release10 = new WorldType(AdvUpdChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("release_1.0"), "Release 1.0", null, new String[]{"Start the world with Release 1.0", "generation"});
+        Release10.setBiomeSource(AdvUpdBiomeSource.class);
+        Release10.setFixedBiomeSource(AdvUpdFixedBiomeSource.class);
+        Release10.setBiomeProperties(new ReleaseBiomeProperties(BetterWorldOptions.NAMESPACE.id("release")));
+        Release10.setSeaLevel(63);
+        Release10.addBooleanWorldTypeOption("Amplified:", "Amplified", null, false);
+        Release10.addBooleanWorldTypeOption("Large Biomes:", "Large Biomes", null, false);
+        Release10.setBlockToSpawn(Block.GRASS_BLOCK.id);
+
+        WorldType Beta181 = new WorldType(AdvUpdChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("beta_1.8.1"), "Beta 1.8.1", null, new String[]{"Start the world with Beta 1.8.1", "generation"});
+        Beta181.setBiomeSource(AdvUpdBiomeSource.class);
+        Beta181.setFixedBiomeSource(AdvUpdFixedBiomeSource.class);
+        Beta181.setBiomeProperties(new AdvUpdBiomeProperties(BetterWorldOptions.NAMESPACE.id("beta_1.8.1")));
+        Beta181.setSeaLevel(63);
+        Beta181.addBooleanWorldTypeOption("Amplified:", "Amplified", null, false);
+        Beta181.addBooleanWorldTypeOption("Large Biomes:", "Large Biomes", null, false);
+        Beta181.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
         WorldType Alpha120 = new WorldType(Alpha120ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("alpha_1.2.0"), "Alpha 1.2.0", "/assets/betterworldoptions/gui/alpha_1.2.0.png", new String[]{"Start the world with Alpha 1.2.0", "generation"});
         Alpha120.setOldFeaturesProperties(null, true, -1, -1, true, true);

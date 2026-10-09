@@ -3,6 +3,7 @@ package com.itselix99.betterworldoptions.world.chunk;
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
@@ -31,7 +32,7 @@ public class BWOLimitChunk extends FlattenedChunk {
         if (this.mode != null) {
             switch (this.mode) {
                 case "Island" -> {
-                    if (y > 63) {
+                    if (y > ((BWOWorld) this.world).bwo_getSeaLevel() - 1) {
                         return 0;
                     } else if (y >= 55) {
                         return this.theme.getLiquidBlock();
@@ -64,7 +65,7 @@ public class BWOLimitChunk extends FlattenedChunk {
                 }
                 case "LCE" -> {
                     int var1 = this.world.random.nextInt(5);
-                    if (y > 63) {
+                    if (y > ((BWOWorld) this.world).bwo_getSeaLevel() - 1) {
                         return 0;
                     } else if (y > 55) {
                         return this.theme.getLiquidBlock();

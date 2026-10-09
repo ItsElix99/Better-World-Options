@@ -1,12 +1,14 @@
 package com.itselix99.betterworldoptions.api.chunk;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.api.BiomeProperties;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.structure.Structure;
 import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.carver.RavineWorldCarver;
 import com.itselix99.betterworldoptions.world.chunk.BWOLimitChunk;
 import net.minecraft.block.Block;
@@ -29,13 +31,14 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
     protected Random random;
     protected final World world;
 
-    protected final Generator cave = new CaveWorldCarver();
+    protected Generator cave = new CaveWorldCarver();
     protected final Generator ravine = new RavineWorldCarver();
 
     protected final BWOProperties bwoProperties;
-    protected final String worldType;
+    protected final WorldType worldType;
     protected final boolean oldFeatures;
     protected final Theme theme;
+    protected final BiomeProperties biomeProperties;
     protected final boolean finiteWorld;
     protected final String finiteWorldType;
     protected final int width;
@@ -53,9 +56,10 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         this.random = new Random(seed);
 
         this.bwoProperties = (BWOProperties) world.getProperties();
-        this.worldType = this.bwoProperties.bwo_getWorldType();
+        this.worldType = ((BWOWorld) world).bwo_getWorldType();
         this.oldFeatures = this.bwoProperties.bwo_isOldFeatures();
         this.theme = Theme.getThemeById(Identifier.of(this.bwoProperties.bwo_getTheme()));
+        this.biomeProperties = ((BWOWorld) world).bwo_getBiomeProperties();
         this.finiteWorld = this.bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
         this.finiteWorldType = this.bwoProperties.bwo_getOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION, "");
         this.width = this.bwoProperties.bwo_getOptionValue("Width", OptionType.GENERAL_OPTION, 0);
@@ -72,6 +76,7 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         }
 
         ((CaveGenBaseImpl) this.cave).stationapi_setWorld(world);
+        ((CaveGenBaseImpl) this.ravine).stationapi_setWorld(world);
     }
 
     protected void buildStructures(ChunkSource source, World world, int chunkX, int chunkZ, byte[] blocks) {
@@ -181,7 +186,7 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
             if (y <= 55) {
                 if (limit) {
                     if (y >= 53) {
-                        if (WorldType.getOldFeaturesProperties(Identifier.of(this.worldType)) != null && WorldType.getOldFeaturesProperties(Identifier.of(this.worldType)).oldFeaturesHasVanillaBiomes) {
+                        if (WorldType.getOldFeaturesProperties(this.worldType.getId()) != null && WorldType.getOldFeaturesProperties(this.worldType.getId()).oldFeaturesHasVanillaBiomes) {
                             blocks[index] = biome.soilBlockId;
                         } else {
                             blocks[index] = this.oldFeatures ? (byte) Block.DIRT.id : biome.soilBlockId;

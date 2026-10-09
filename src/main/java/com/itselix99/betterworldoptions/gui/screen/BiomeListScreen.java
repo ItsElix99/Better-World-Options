@@ -1,6 +1,8 @@
 package com.itselix99.betterworldoptions.gui.screen;
 
+import com.itselix99.betterworldoptions.api.BiomeProperties;
 import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -10,7 +12,8 @@ import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.resource.language.TranslationStorage;
 import net.minecraft.world.biome.Biome;
-import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
+import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.api.worldgen.BiomeAPI;
 
 import java.util.List;
 
@@ -20,6 +23,8 @@ public class BiomeListScreen extends Screen {
     private final TranslationStorage translation = TranslationStorage.getInstance();
     protected String title = this.translation.get("selectBiome.title");
     private final BWOWorldPropertiesStorage bwoWorldPropertiesStorage;
+    private final WorldType worldType;
+    private final BiomeProperties biomeProperties;
 
     private BiomeListWidget biomeListWidget;
     private ButtonWidget doneButton;
@@ -29,6 +34,8 @@ public class BiomeListScreen extends Screen {
     public BiomeListScreen(Screen parent, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {
         this.parent = parent;
         this.bwoWorldPropertiesStorage = bwoWorldPropertiesStorage;
+        this.worldType = WorldType.getWorldTypeById(Identifier.of(bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "")));
+        this.biomeProperties = this.worldType.getBiomeProperties();
     }
 
     @SuppressWarnings("unchecked")
@@ -39,8 +46,9 @@ public class BiomeListScreen extends Screen {
         this.buttons.add(this.allBiomesButton = new ButtonWidget(1, this.width / 2 - 155, this.height - 28, 150, 20, this.translation.get("selectBiome.allBiomes")));
 
         String currentBiome = this.bwoWorldPropertiesStorage.getOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "");
-        if (!currentBiome.equals("Off") && !OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome -> biome.name.equals(currentBiome)).toList().isEmpty()) {
-            selectedBiome = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome -> biome.name.equals(currentBiome)).toList().get(0);
+        Biome biome = this.biomeProperties.getAllBiomesForSingleBiome().stream().filter(biome1 -> biome1.name.equals(currentBiome)).findFirst().orElse(null);
+        if (!currentBiome.equals("Off") && biome != null) {
+            selectedBiome = biome;
         } else {
             this.allBiomesButton.active = false;
         }
@@ -79,12 +87,12 @@ public class BiomeListScreen extends Screen {
         }
 
         protected int getEntryCount() {
-            List<Biome> var1 = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().toList();
+            List<Biome> var1 = BiomeListScreen.this.biomeProperties.getAllBiomesForSingleBiome();
             return var1.size();
         }
 
         protected void entryClicked(int index, boolean doubleClick) {
-            List<Biome> var3 = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().toList();
+            List<Biome> var3 = BiomeListScreen.this.biomeProperties.getAllBiomesForSingleBiome();
             BiomeListScreen.this.selectBiome(var3.get(index));
 
             String currentBiome = BiomeListScreen.this.bwoWorldPropertiesStorage.getOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "");
@@ -96,7 +104,7 @@ public class BiomeListScreen extends Screen {
         }
 
         protected boolean isSelectedEntry(int index) {
-            List<Biome> var2 = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().toList();
+            List<Biome> var2 = BiomeListScreen.this.biomeProperties.getAllBiomesForSingleBiome();
             return BiomeListScreen.this.selectedBiome == var2.get(index);
         }
 
@@ -109,7 +117,7 @@ public class BiomeListScreen extends Screen {
         }
 
         protected void renderEntry(int index, int x, int y, int i, Tessellator tessellator) {
-            Biome var6 = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().toList().get(index);
+            Biome var6 = BiomeListScreen.this.biomeProperties.getAllBiomesForSingleBiome().get(index);
             BiomeListScreen.this.drawCenteredTextWithShadow(BiomeListScreen.this.textRenderer, var6.name, BiomeListScreen.this.width / 2, y + 1, 16777215);
         }
     }

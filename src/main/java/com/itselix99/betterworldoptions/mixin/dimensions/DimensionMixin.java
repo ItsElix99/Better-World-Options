@@ -1,11 +1,11 @@
 package com.itselix99.betterworldoptions.mixin.dimensions;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
-import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.api.BiomeProperties;
 import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.config.Config;
-import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenerator;
@@ -18,17 +18,13 @@ import net.fabricmc.api.Environment;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.dimension.Dimension;
-import net.modificationstation.stationapi.api.util.Identifier;
-import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 @Mixin(Dimension.class)
 public class DimensionMixin {
@@ -37,38 +33,36 @@ public class DimensionMixin {
     @WrapOperation(method = "initBiomeSource", at = @At(value = "NEW", target = "(Lnet/minecraft/world/World;)Lnet/minecraft/world/biome/source/BiomeSource;"))
     private BiomeSource bwo_initBiomeSource(World world, Operation<BiomeSource> original) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
-        String worldType = bwoProperties.bwo_getWorldType();
+        WorldType worldType = ((BWOWorld) world).bwo_getWorldType();
         boolean oldFeatures = bwoProperties.bwo_isOldFeatures();
+        BiomeProperties biomeProperties = ((BWOWorld) world).bwo_getBiomeProperties();
         String singleBiome = bwoProperties.bwo_getSingleBiome();
-        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
+        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(worldType.getId());
 
         if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null) {
             if (Config.BWOConfig.environment.oldTexturesAndSky) {
-                return new FixedBiomeSource(oldFeaturesProperties.oldFeaturesBiomeSupplier.get(), 1.0D, 0.5D);
+                return worldType.getFixedBiomeSource().getDeclaredConstructor(Biome.class, double.class, double.class).newInstance(oldFeaturesProperties.oldFeaturesBiomeSupplier.get(), 1.0D, 0.5D);
             } else {
-                return new FixedBiomeSource(Biome.FOREST, 0.8D, 0.6D);
+                return worldType.getFixedBiomeSource().getDeclaredConstructor(Biome.class, double.class, double.class).newInstance(Biome.FOREST, 0.8D, 0.6D);
             }
         } else if (!singleBiome.equals("Off") && !singleBiome.isEmpty()) {
-            List<Biome> biomesList = OverworldBiomeProviderImpl.getInstance().getBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).toList();
+            Biome biome = biomeProperties.getAllBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).findFirst().orElse(null);
 
-            if (!biomesList.isEmpty()) {
-                Biome biome = biomesList.get(0);
-                double[] climate = BWOWorldPropertiesStorage.getClimateForBiome(biome);
-
-                return new FixedBiomeSource(biome, climate[0], climate[1]);
+            if (biome != null) {
+                float[] tempAndDownfall = biomeProperties.getTemperatureAndDownfall(biome);
+                return worldType.getFixedBiomeSource().getDeclaredConstructor(Biome.class, double.class, double.class).newInstance(biome, tempAndDownfall[0], tempAndDownfall[1]);
             }
         }
 
-        return WorldType.getWorldTypeById(Identifier.of(worldType)).getBiomeSource().getDeclaredConstructor(World.class).newInstance(world);
+        return worldType.getBiomeSource().getDeclaredConstructor(World.class).newInstance(world);
     }
 
     @ModifyReturnValue(method = "createChunkGenerator", at = @At("RETURN"))
     public ChunkSource bwo_createChunkGenerator(ChunkSource original) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
-        WorldType worldType = WorldType.getWorldTypeById(Identifier.of(bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "")));
+        WorldType worldType = ((BWOWorld) this.world).bwo_getWorldType();
         Class<? extends ChunkSource> chunkGenerator;
 
-        if (worldType.getId().toString().equals(BetterWorldOptions.NAMESPACE.id("default").toString()) && Config.BWOConfig.world.fixTerrainGenDefault) {
+        if (worldType.getId().equals(BetterWorldOptions.NAMESPACE.id("default")) && Config.BWOConfig.world.fixTerrainGenDefault) {
             return new AltOverworldChunkGenerator(this.world, this.world.getSeed());
         } else {
             chunkGenerator = worldType.getChunkGenerator(0);
@@ -78,19 +72,24 @@ public class DimensionMixin {
 
     @ModifyReturnValue(method = "isValidSpawnPoint", at = @At("RETURN"))
     public boolean bwo_isValidSpawnPoint(boolean original, @Local(ordinal = 2) int var3) {
-        String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) this.world.getProperties()).bwo_getTheme()));
+        WorldType worldType = ((BWOWorld) this.world).bwo_getWorldType();
+        Theme theme = ((BWOWorld) this.world).bwo_getTheme();
+        BiomeProperties biomeProperties = ((BWOWorld) this.world).bwo_getBiomeProperties();
+        String singleBiome = ((BWOProperties) this.world.getProperties()).bwo_getSingleBiome();
 
-        if (theme.getBlockToSpawn() != -1) {
+        if (!singleBiome.equals("Off") && !singleBiome.isEmpty()) {
+            Biome biome = biomeProperties.getAllBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).findFirst().orElse(null);
+            return var3 == (biome != null ? biome.topBlockId : worldType.getBlockToSpawn());
+        } else if (theme.getBlockToSpawn() != -1) {
             return var3 == theme.getBlockToSpawn();
         } else {
-            return var3 == WorldType.getWorldTypeById(Identifier.of(worldType)).getBlockToSpawn();
+            return var3 == worldType.getBlockToSpawn();
         }
     }
 
     @ModifyReturnValue(method = "getTimeOfDay", at = @At("RETURN"))
     public float bwo_stopTimeInParadiseTheme(float original, long time, float tickDelta) {
-        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) world.getProperties()).bwo_getTheme()));
+        Theme theme = ((BWOWorld) this.world).bwo_getTheme();
 
         if (theme.isStopTime()) {
             return 0.0F;
@@ -102,8 +101,8 @@ public class DimensionMixin {
     @Environment(EnvType.CLIENT)
     @ModifyReturnValue(method = "getBackgroundColor", at = @At(value = "RETURN", ordinal = 0))
     public float[] bwo_removeSunriseAndSunsetColors(float[] original) {
-        String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
+        WorldType worldType = ((BWOWorld) this.world).bwo_getWorldType();
+        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(worldType.getId());
 
         if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeaturesProperties != null && !oldFeaturesProperties.sunriseAndSunsetColors) {
             return null;

@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.api.BiomeProperties;
 import com.itselix99.betterworldoptions.api.chunk.FiniteChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.theme.Theme;
@@ -10,6 +11,7 @@ import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.mixin.chunk.ChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.mixin.chunk.ServerChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
+import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.source.AdvUpdBiomeSource;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.InfiniteIndevFeatures;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -19,23 +21,24 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.world.WorldProperties;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.dimension.Dimension;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.world.StationFlatteningWorld;
-import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Random;
 
 @Mixin(World.class)
@@ -44,21 +47,20 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
     @Shadow @Final public Dimension dimension;
     @Shadow public int difficulty;
     @Shadow protected WorldProperties properties;
-    @Unique private static Map<String, Boolean> storageSnowBiomes;
-    @Unique private static Map<String, Boolean> storagePrecipitationBiomes;
+    @Shadow protected ChunkSource chunkSource;
     @Shadow public boolean eventProcessingEnabled;
+
+    @Unique private WorldType worldType;
+    @Unique private Theme theme;
+    @Unique private BiomeProperties biomeProperties;
 
     @Shadow public abstract int getBlockId(int x, int y, int z);
     @Shadow public abstract WorldProperties getProperties();
     @Shadow public abstract Material getMaterial(int x, int y, int z);
-
     @Shadow public abstract int getTopSolidBlockY(int x, int z);
-
-    @Shadow public abstract ChunkSource getChunkSource();
-
     @Shadow public abstract Chunk getChunkFromPos(int x, int z);
-
-    @Shadow protected ChunkSource chunkSource;
+    @Shadow public abstract BiomeSource method_1781();
+    @Shadow public abstract long getSeed();
 
     @Inject(
             method = {
@@ -71,37 +73,33 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
                     target = "Lnet/minecraft/world/dimension/Dimension;setWorld(Lnet/minecraft/world/World;)V"
             )
     )
-    private void bwo_saveBiomesAndSetSnowAndPrecipitation(CallbackInfo ci) {
-        if (storageSnowBiomes == null && storagePrecipitationBiomes == null) {
-            storageSnowBiomes = new HashMap<>();
-            storagePrecipitationBiomes = new HashMap<>();
-
-            OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> storageSnowBiomes.put(biome.name, biome.canSnow()));
-            OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> storagePrecipitationBiomes.put(biome.name, biome.canRain()));
-        }
-
+    private void bwo_init(CallbackInfo ci) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         BWOProperties bwoProperties = (BWOProperties) this.properties;
-        String worldType = bwoProperties.bwo_getWorldType();
+        this.worldType = WorldType.getWorldTypeById(Identifier.of(bwoProperties.bwo_getWorldType()));
+        this.theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
+        this.biomeProperties = this.worldType.getBiomeProperties().getClass().getDeclaredConstructor().newInstance();
+
+        BiomeProperties.resetDefaultSnowAndPrecipitation();
+
         boolean oldFeatures =  bwoProperties.bwo_isOldFeatures();
-        Theme theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
-        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
+        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(this.worldType.getId());
 
         if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null) {
             Biome oldBiome = oldFeaturesProperties.oldFeaturesBiomeSupplier.get();
 
-            oldBiome.setSnow(theme.isCold());
-            oldBiome.setPrecipitation(theme.allowRain());
-            oldBiome.setFogColor(theme.getFogColor() != 1 ? theme.getFogColor() : oldFeaturesProperties.defaultFogColor);
+            oldBiome.setSnow(this.theme.isCold());
+            oldBiome.setPrecipitation(this.theme.allowRain());
+            oldBiome.setFogColor(this.theme.getFogColor() != 1 ? this.theme.getFogColor() : oldFeaturesProperties.defaultFogColor);
         } else {
-            if (theme.isCold()) {
-                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setSnow(true));
-                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setPrecipitation(storagePrecipitationBiomes.get(biome.name)));
-            } else if (!theme.allowRain()) {
-                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setSnow(theme.isHot() ? false : storageSnowBiomes.get(biome.name)));
-                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setPrecipitation(false));
+            if (this.theme.isCold()) {
+                this.biomeProperties.getAllBiomes().forEach(biome -> biome.setSnow(true));
+                this.biomeProperties.getAllBiomes().forEach(biome -> biome.setPrecipitation(this.biomeProperties.getDefaultPrecipitation(this.biomeProperties.getId(), biome)));
+            } else if (!this.theme.allowRain()) {
+                this.biomeProperties.getAllBiomes().forEach(biome -> biome.setSnow(this.theme.isHot() ? false : this.biomeProperties.getDefaultSnow(this.biomeProperties.getId(), biome)));
+                this.biomeProperties.getAllBiomes().forEach(biome -> biome.setPrecipitation(false));
             } else {
-                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setSnow(storageSnowBiomes.get(biome.name)));
-                OverworldBiomeProviderImpl.getInstance().getBiomes().forEach(biome -> biome.setPrecipitation(storagePrecipitationBiomes.get(biome.name)));
+                this.biomeProperties.getAllBiomes().forEach(biome -> biome.setSnow(this.biomeProperties.getDefaultSnow(this.biomeProperties.getId(), biome)));
+                this.biomeProperties.getAllBiomes().forEach(biome -> biome.setPrecipitation(this.biomeProperties.getDefaultPrecipitation(this.biomeProperties.getId(), biome)));
             }
         }
 
@@ -135,7 +133,6 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
     @Inject(method = "initializeSpawnPoint", at = @At("HEAD"), cancellable = true)
     private void bwo_initializeSpawnPoint(CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) properties;
-        String worldType = bwoProperties.bwo_getWorldType();
 
         boolean finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
         String finiteWorldType = bwoProperties.bwo_getOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION, "");
@@ -148,17 +145,12 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
 
         boolean generateIndevHouse = bwoProperties.bwo_getOptionValue("GenerateIndevHouse", OptionType.WORLD_TYPE_OPTION, false);
 
-        if (worldType.equals(BetterWorldOptions.NAMESPACE.id("indev_20100223").toString())) {
+        if (this.worldType.getId().equals(BetterWorldOptions.NAMESPACE.id("indev_20100223"))) {
             this.eventProcessingEnabled = true;
-            if (FabricLoaderImpl.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
-                if (((ServerChunkGeneratorAccessor) this.getChunkSource()).getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld) {
-                    finiteChunkGenerator.setCurrentStage("Spawning");
-                }
-            } else {
-                if (((ChunkGeneratorAccessor) this.getChunkSource()).getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld) {
-                    finiteChunkGenerator.setCurrentStage("Spawning");
-                }
+            if (this.bwo_getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld) {
+                finiteChunkGenerator.setCurrentStage("Spawning");
             }
+
             boolean isValidSpawnArea = false;
             int attempts = 0;
             int var1 = 0;
@@ -228,6 +220,35 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
             this.properties.setSpawn(var1, var2, var3);
             this.eventProcessingEnabled = false;
             ci.cancel();
+        } else if (this.method_1781() instanceof AdvUpdBiomeSource advUpdBiomeSource) {
+            this.eventProcessingEnabled = true;
+            List<Biome> biomesList = advUpdBiomeSource.getBiomesForSpawnPoint();
+            Random random = new Random(this.getSeed());
+            BlockPos blockPos = advUpdBiomeSource.bwo_findBiome(0, 0, 256, biomesList, random);
+            int x = 0;
+            int y = 64;
+            int z = 0;
+            if (blockPos != null) {
+                x = blockPos.x;
+                z = blockPos.z;
+            } else {
+                System.out.println("Unable to find spawn biome");
+            }
+
+            int var1 = 0;
+
+            while(!this.dimension.isValidSpawnPoint(x, z)) {
+                x += random.nextInt(64) - random.nextInt(64);
+                z += random.nextInt(64) - random.nextInt(64);
+                ++var1;
+                if (var1 == 1000) {
+                    break;
+                }
+            }
+
+            this.properties.setSpawn(x, y, z);
+            this.eventProcessingEnabled = false;
+            ci.cancel();
         }
     }
 
@@ -259,11 +280,9 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
             method = "getAmbientDarkness",
             at = @At("RETURN")
     )
-    private int bwo_modifySkylight(int original) {
-        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) this.getProperties()).bwo_getTheme()));
-
+    private int bwo_modifyAmbientDarkness(int original) {
         if (this.dimension.id == 0) {
-            return theme.changeAmbientDarkness(original);
+            return this.theme.changeAmbientDarkness(original);
         }
 
         return original;
@@ -278,26 +297,27 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
             )
     )
     private long bwo_themeCloudsColor(World world, Operation<Long> original) {
-        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) world.getProperties()).bwo_getTheme()));
-
         if (world.dimension.id == 0) {
-            return theme.getCloudsColor();
+            return this.theme.getCloudsColor();
         }
 
         return original.call(world);
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
-    private void bwo_hardcoreDifficulty(CallbackInfo ci) {
+    private void bwo_tickHardcoreAndBiomeCache(CallbackInfo ci) {
         if (((BWOProperties) this.getProperties()).bwo_isHardcore() && this.difficulty < 3) {
             this.difficulty = 3;
+        }
+
+        if (this.method_1781() instanceof AdvUpdBiomeSource advUpdBiomeSource) {
+            advUpdBiomeSource.tick();
         }
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void bwo_tickTheme(CallbackInfo ci) {
-        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) this.getProperties()).bwo_getTheme()));
-        theme.tick(World.class.cast(this));
+        this.theme.tick(World.class.cast(this));
     }
 
     @WrapOperation(
@@ -308,15 +328,12 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
                             target = "Lnet/minecraft/world/biome/Biome;canSnow()Z"
                     )
     )
-    private boolean bwo_generateSnowAndIceInWinterTheme(Biome biome, Operation<Boolean> original) {
-        BWOProperties bwoProperties = (BWOProperties) properties;
-        Theme theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
-
-        if (theme.isCold()) {
+    private boolean bwo_generateSnowAndIce(Biome biome, Operation<Boolean> original) {
+        if (this.theme.isCold()) {
             return true;
         }
 
-        return original.call(biome);
+        return this.biomeProperties.canSnow(biome);
     }
 
     @WrapOperation(
@@ -328,11 +345,8 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
                             ordinal = 1
                     )
     )
-    private boolean bwo_generateSnowInWinterTheme(World world, Operation<Boolean> original) {
-        BWOProperties bwoProperties = (BWOProperties) properties;
-        Theme theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
-
-        if (theme.isCold()) {
+    private boolean bwo_generateSnowInColdTheme(World world, Operation<Boolean> original) {
+        if (this.theme.isCold()) {
             return true;
         }
 
@@ -340,11 +354,9 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
     }
 
     @ModifyReturnValue(method = "getRainGradient", at = @At("RETURN"))
-    private float bwo_noRainGradientInHellAndParadise(float original) {
-        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) this.getProperties()).bwo_getTheme()));
-
+    private float bwo_noRainGradient(float original) {
         if (this.dimension.id == 0) {
-            if (!theme.allowRain()) {
+            if (!this.theme.allowRain()) {
                 return 0.0F;
             }
         }
@@ -353,11 +365,9 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
     }
 
     @ModifyReturnValue(method = "getThunderGradient", at = @At("RETURN"))
-    private float bwo_noThunderGradientInHellAndParadise(float original) {
-        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) this.getProperties()).bwo_getTheme()));
-
+    private float bwo_noThunderGradient(float original) {
         if (this.dimension.id == 0) {
-            if (!theme.allowRain()) {
+            if (!this.theme.allowRain()) {
                 return 0.0F;
             }
         }
@@ -387,7 +397,27 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
     }
 
     public ChunkSource bwo_getChunkGenerator() {
-        return ((ChunkGeneratorAccessor) this.chunkSource).getChunkGenerator();
+        if (FabricLoaderImpl.INSTANCE.getEnvironmentType() == EnvType.CLIENT) {
+            return ((ChunkGeneratorAccessor) this.chunkSource).getChunkGenerator();
+        } else {
+            return ((ServerChunkGeneratorAccessor) this.chunkSource).getChunkGenerator();
+        }
+    }
+
+    public WorldType bwo_getWorldType() {
+        return this.worldType;
+    }
+
+    public Theme bwo_getTheme() {
+        return this.theme;
+    }
+
+    public BiomeProperties bwo_getBiomeProperties() {
+        return this.biomeProperties;
+    }
+
+    public int bwo_getSeaLevel() {
+        return this.worldType.getSeaLevel();
     }
 }
 
