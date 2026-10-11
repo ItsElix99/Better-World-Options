@@ -333,7 +333,7 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
             return true;
         }
 
-        return this.biomeProperties.canSnow(biome);
+        return original.call(biome);
     }
 
     @WrapOperation(

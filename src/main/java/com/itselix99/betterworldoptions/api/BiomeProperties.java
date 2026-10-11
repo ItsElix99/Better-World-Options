@@ -29,15 +29,30 @@ public class BiomeProperties {
         Identifier biomePropertiesId = BetterWorldOptions.NAMESPACE.id("default");
 
         this.baseBiomes.addAll(OverworldBiomeProviderImpl.getInstance().getBiomes());
-        this.baseBiomes.forEach(biome -> snowBaseBiomes.get(biomePropertiesId).put(biome, biome.canSnow()));
-        this.baseBiomes.forEach(biome -> precipitationBaseBiomes.get(biomePropertiesId).put(biome, biome.canRain()));
 
-        for (Biome biome : BiomeAPI.getOverworldProvider().getBiomes()) {
-            if (!OverworldBiomeProviderImpl.getInstance().getBiomes().contains(biome)) {
-                this.moddedBiomes.add(biome);
-                snowModdedBiomes.put(biome, biome.canSnow());
-                precipitationModdedBiomes.put(biome, biome.canRain());
-                this.setTemperatureAndDownfall(biome, biome.canSnow() ? 0.05F : 0.5F, 0.5F);
+        for (Biome baseBiome : this.baseBiomes) {
+            if (!snowBaseBiomes.get(biomePropertiesId).containsKey(baseBiome)) {
+                snowBaseBiomes.get(biomePropertiesId).put(baseBiome, baseBiome.canSnow());
+            }
+
+            if (!precipitationBaseBiomes.get(biomePropertiesId).containsKey(baseBiome)) {
+                precipitationBaseBiomes.get(biomePropertiesId).put(baseBiome, baseBiome.canRain());
+            }
+        }
+
+        for (Biome moddedBiome : BiomeAPI.getOverworldProvider().getBiomes()) {
+            if (!OverworldBiomeProviderImpl.getInstance().getBiomes().contains(moddedBiome)) {
+                this.moddedBiomes.add(moddedBiome);
+
+                if (!snowModdedBiomes.containsKey(moddedBiome)) {
+                    snowModdedBiomes.put(moddedBiome, moddedBiome.canSnow());
+                }
+
+                if (!precipitationModdedBiomes.containsKey(moddedBiome)) {
+                    precipitationModdedBiomes.put(moddedBiome, moddedBiome.canRain());
+                }
+
+                this.setTemperatureAndDownfall(moddedBiome, moddedBiome.canSnow() ? 0.05F : 0.5F, 0.5F);
             }
         }
 
@@ -84,10 +99,6 @@ public class BiomeProperties {
 
     public float[] getTemperatureAndDownfall(Biome biome) {
         return this.tempAndDownfall.get(biome);
-    }
-
-    public boolean canSnow(Biome biome) {
-        return biome.canSnow();
     }
 
     public boolean getDefaultSnow(Identifier id, Biome biome) {

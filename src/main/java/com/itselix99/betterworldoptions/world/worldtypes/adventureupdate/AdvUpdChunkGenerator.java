@@ -175,8 +175,9 @@ public class AdvUpdChunkGenerator extends BWOChunkGenerator {
                                     var14 = this.theme.getSoilBlock() != -1 ? (var10.soilBlockId == Block.DIRT.id ? this.theme.getSoilBlock() : var10.soilBlockId) : var10.soilBlockId;
                                 }
 
+                                float temp = this.theme.isCold() ? 10.0F : 0.15F;
                                 if (var15 < var5 && var13 == 0) {
-                                    if (temperature < 0.15F) {
+                                    if (temperature < temp) {
                                         var13 = (byte) this.theme.getSurfaceLiquidBlock();
                                     } else {
                                         var13 = (byte) this.theme.getLiquidBlock();
@@ -405,8 +406,9 @@ public class AdvUpdChunkGenerator extends BWOChunkGenerator {
             for(int var23 = var5 + 8; var23 < var5 + 8 + 16; ++var23) {
                 float temperature = (float) this.world.method_1781().getTemperature(var22, var23);
                 int var24 = this.world.getTopSolidBlockY(var22, var23);
+                float temp = this.theme.isCold() ? 10.0F : 0.15F;
 
-                if (temperature <= 0.15F || this.theme.isCold()) {
+                if (!this.theme.isHot() && temperature <= temp) {
                     if (var24 > this.world.getBottomY() && var24 < this.world.getTopY() && this.world.getBrightness(LightType.BLOCK, var22, var24 - 1, var23) < 10) {
                         int water = this.world.getBlockId(var22, var24 - 1, var23);
                         if ((water == Block.WATER.id || water == Block.FLOWING_WATER.id) && this.world.getBlockMeta(var22, var24 - 1, var23) == 0) {
