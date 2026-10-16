@@ -15,11 +15,13 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.dimension.Dimension;
+import net.modificationstation.stationapi.impl.worldgen.BiomeColorsImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,17 +36,28 @@ public class DimensionMixin {
     private BiomeSource bwo_initBiomeSource(World world, Operation<BiomeSource> original) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
         WorldType worldType = ((BWOWorld) world).bwo_getWorldType();
+        Theme theme = ((BWOWorld) world).bwo_getTheme();
         boolean oldFeatures = bwoProperties.bwo_isOldFeatures();
         BiomeProperties biomeProperties = ((BWOWorld) world).bwo_getBiomeProperties();
         String singleBiome = bwoProperties.bwo_getSingleBiome();
-        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(worldType.getId());
+        OldFeaturesProperties oldFeaturesProperties = worldType.getOldFeaturesProperties();
 
-        if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null) {
+        if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldBiome != null) {
             if (Config.BWOConfig.environment.oldTexturesAndSky) {
-                return worldType.getFixedBiomeSource().getDeclaredConstructor(Biome.class, double.class, double.class).newInstance(oldFeaturesProperties.oldFeaturesBiomeSupplier.get(), 1.0D, 0.5D);
+                if (FabricLoaderImpl.INSTANCE.getEnvironmentType() == EnvType.CLIENT) {
+                    oldFeaturesProperties.oldBiome.setGrassColorProvider(oldFeaturesProperties.defaultGrassColor);
+                    oldFeaturesProperties.oldBiome.setLeavesColor(oldFeaturesProperties.defaultLeavesColor);
+                    oldFeaturesProperties.oldBiome.setFogColor(theme.getFogColor() != 1 ? theme.getFogColor() : oldFeaturesProperties.defaultFogColor.getColor(null, 0, 0));
+                }
             } else {
-                return worldType.getFixedBiomeSource().getDeclaredConstructor(Biome.class, double.class, double.class).newInstance(Biome.FOREST, 0.8D, 0.6D);
+                if (FabricLoaderImpl.INSTANCE.getEnvironmentType() == EnvType.CLIENT) {
+                    oldFeaturesProperties.oldBiome.setGrassColorProvider(BiomeColorsImpl.DEFAULT_GRASS_COLOR);
+                    oldFeaturesProperties.oldBiome.setLeavesColor(BiomeColorsImpl.DEFAULT_LEAVES_COLOR);
+                    oldFeaturesProperties.oldBiome.setFogColor(BiomeColorsImpl.DEFAULT_FOG_COLOR);
+                }
             }
+
+            return worldType.getFixedBiomeSource().getDeclaredConstructor(Biome.class, double.class, double.class).newInstance(oldFeaturesProperties.oldBiome, 1.0D, 0.5D);
         } else if (!singleBiome.equals("Off") && !singleBiome.isEmpty()) {
             Biome biome = biomeProperties.getAllBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).findFirst().orElse(null);
 
@@ -102,7 +115,7 @@ public class DimensionMixin {
     @ModifyReturnValue(method = "getBackgroundColor", at = @At(value = "RETURN", ordinal = 0))
     public float[] bwo_removeSunriseAndSunsetColors(float[] original) {
         WorldType worldType = ((BWOWorld) this.world).bwo_getWorldType();
-        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(worldType.getId());
+        OldFeaturesProperties oldFeaturesProperties = worldType.getOldFeaturesProperties();
 
         if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeaturesProperties != null && !oldFeaturesProperties.sunriseAndSunsetColors) {
             return null;

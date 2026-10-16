@@ -25,6 +25,7 @@ public class Structure {
     private final String name;
     private StructureFeature structureFeature;
     private boolean decoration = false;
+    private boolean largeStructure = false;
     private final ArrayList<Biome> biomes = new ArrayList<>();
     private final ArrayList<Identifier> incompatibleWorldTypes = new ArrayList<>();
 
@@ -44,6 +45,10 @@ public class Structure {
 
     public void setStructureFeature(StructureFeature structureFeature) {
         this.structureFeature = structureFeature;
+    }
+
+    public void setLargeStructure(boolean largeStructure) {
+        this.largeStructure = largeStructure;
     }
 
     public static void setMissingBlock(int target, int original) {
@@ -70,6 +75,10 @@ public class Structure {
 
     public boolean isDecoration() {
         return this.decoration;
+    }
+
+    public boolean isLargeStructure() {
+        return this.largeStructure;
     }
 
     public List<Biome> getValidBiomes() {
@@ -109,6 +118,7 @@ public class Structure {
         Mineshaft.addIncompatibleWorldType(BetterWorldOptions.NAMESPACE.id("skylands"));
 
         Structure Village = new Structure(BetterWorldOptions.NAMESPACE.id("village"), "Village", new VillageStructure());
+        Village.setLargeStructure(true);
         Village.addIncompatibleWorldType(BetterWorldOptions.NAMESPACE.id("nether"));
         Village.addIncompatibleWorldType(BetterWorldOptions.NAMESPACE.id("skylands"));
         Village.addBiomes(new ArrayList<>(Arrays.asList(Biome.PLAINS, Biome.DESERT, Biome.SAVANNA, Biome.TUNDRA)));
@@ -122,6 +132,7 @@ public class Structure {
         DesertWell.addBiome(Biome.DESERT);
 
         Structure NotchVillage = new Structure(BetterWorldOptions.NAMESPACE.id("notchVillage"), "Notch Village", new NotchVillageStructure());
+        NotchVillage.setLargeStructure(true);
         NotchVillage.addIncompatibleWorldType(BetterWorldOptions.NAMESPACE.id("nether"));
         NotchVillage.addIncompatibleWorldType(BetterWorldOptions.NAMESPACE.id("skylands"));
         NotchVillage.addBiomes(new ArrayList<>(Arrays.asList(Biome.PLAINS, Biome.DESERT, Biome.SAVANNA, Biome.TUNDRA)));

@@ -564,7 +564,7 @@ public class OverworldChunkGeneratorMixin {
             if (structure.getStructureFeature() != null && this.bwoProperties.bwo_isGenerateStructure(structure.getId())) {
                 boolean valid = structure.getStructureFeature().place(this.world, this.random, x, z);
 
-                if (structure.getId().equals(BetterWorldOptions.NAMESPACE.id("village"))) {
+                if (structure.isLargeStructure()) {
                     generateVillage.set(valid);
                 }
             }

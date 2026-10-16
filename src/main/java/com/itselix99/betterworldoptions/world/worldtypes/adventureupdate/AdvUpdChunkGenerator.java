@@ -5,6 +5,7 @@ import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.world.carver.AdvUpdCaveWorldCarver;
 import com.itselix99.betterworldoptions.world.feature.adventureupdate.AdvUpdLakeFeature;
+import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.Release11BiomeProperties;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.source.AdvUpdBiomeSource;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.util.math.noise.AdvUpdOctavePerlinNoiseSampler;
@@ -157,6 +158,11 @@ public class AdvUpdChunkGenerator extends BWOChunkGenerator {
                     var11 = (int) (this.depthBuffer[var8 + var9 * 16] / 3.0D + 3.0D + this.random.nextDouble() * 0.25D);
                 }
 
+                if (var10 == Release11BiomeProperties.BEACH) {
+                    var13 = this.theme.getBeachTopBlock();
+                    var14 = this.theme.getBeachSoilBlock();
+                }
+
                 for (int var15 = this.world.getTopY() - 1; var15 >= this.world.getBottomY(); --var15) {
                     int var16 = (var9 * 16 + var8) * this.world.getHeight() + var15;
                     if (var15 <= this.world.getBottomY() + this.random.nextInt(5)) {
@@ -173,6 +179,11 @@ public class AdvUpdChunkGenerator extends BWOChunkGenerator {
                                 } else if (var15 >= var5 - 4 && var15 <= var5 + 1) {
                                     var13 = this.theme.getTopBlock() != -1 ? (var10.topBlockId == Block.GRASS_BLOCK.id ? this.theme.getTopBlock() : var10.topBlockId) : var10.topBlockId;
                                     var14 = this.theme.getSoilBlock() != -1 ? (var10.soilBlockId == Block.DIRT.id ? this.theme.getSoilBlock() : var10.soilBlockId) : var10.soilBlockId;
+
+                                    if (var10 == Release11BiomeProperties.BEACH) {
+                                        var13 = this.theme.getBeachTopBlock();
+                                        var14 = this.theme.getBeachSoilBlock();
+                                    }
                                 }
 
                                 float temp = this.theme.isCold() ? 10.0F : 0.15F;
@@ -401,6 +412,7 @@ public class AdvUpdChunkGenerator extends BWOChunkGenerator {
         }
 
         this.advUpdBiomeProperties.decorate(this.world, var6, this.random, var4, var5);
+        AdvUpdNaturalSpawner.populateChunk(this.world, var6, var4 + 8, var5 + 8, 16, 16, this.random);
 
         for(int var22 = var4 + 8; var22 < var4 + 8 + 16; ++var22) {
             for(int var23 = var5 + 8; var23 < var5 + 8 + 16; ++var23) {
@@ -417,7 +429,7 @@ public class AdvUpdChunkGenerator extends BWOChunkGenerator {
                     }
 
                     if (var24 > this.world.getBottomY() && var24 < this.world.getTopY() && this.world.getBrightness(LightType.BLOCK, var22, var24, var23) < 10) {
-                        if (this.world.isAir(var22, var24, var23) && Block.SNOW.canPlaceAt(this.world, var22, var24, var23) && this.world.getBlockId(var22, var24 - 1, var23) != 0 && this.world.getBlockId(var22, var24 - 1, var23) != Block.ICE.id && Block.BLOCKS[this.world.getBlockId(var22, var24 - 1, var23)].material.blocksMovement()) {
+                        if (this.world.isAir(var22, var24, var23) && this.world.getBlockId(var22, var24 - 1, var23) != 0 && this.world.getBlockId(var22, var24 - 1, var23) != Block.ICE.id && Block.BLOCKS[this.world.getBlockId(var22, var24 - 1, var23)].material.blocksMovement()) {
                             this.world.setBlock(var22, var24, var23, Block.SNOW.id);
                         }
                     }
@@ -425,7 +437,6 @@ public class AdvUpdChunkGenerator extends BWOChunkGenerator {
             }
         }
 
-        AdvUpdNaturalSpawner.populateChunk(this.world, var6, var4 + 8, var5 + 8, 16, 16, this.random);
         SandBlock.fallInstantly = false;
     }
 }

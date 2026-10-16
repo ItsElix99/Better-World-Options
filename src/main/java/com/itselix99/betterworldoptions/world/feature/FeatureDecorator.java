@@ -5,6 +5,7 @@ import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.feature.adventureupdate.*;
+import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.Release11BiomeProperties;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -69,7 +70,7 @@ public class FeatureDecorator {
         this.diamondOreVein = new AdvUpdOreFeature(Block.DIAMOND_ORE.id, 7);
         this.lapisOreVein = new AdvUpdOreFeature(Block.LAPIS_ORE.id, 6);
         this.yellowFlower = new PlantPatchFeature(Block.DANDELION.id);
-        this.redFlower = new PlantPatchFeature(Block.DANDELION.id);
+        this.redFlower = new PlantPatchFeature(Block.ROSE.id);
         this.brownMushroom = new PlantPatchFeature(Block.BROWN_MUSHROOM.id);
         this.redMushroom = new PlantPatchFeature(Block.RED_MUSHROOM.id);
         this.hugeRedMushroom = new HugeMushroomFeature();
@@ -92,12 +93,14 @@ public class FeatureDecorator {
     }
 
     public Feature getRandomTreeFeature(Biome biome, Random random) {
-        if (biome == Biome.FOREST) {
+        if (biome == Biome.FOREST || biome == Release11BiomeProperties.FOREST_HILLS) {
             if (random.nextInt(5) == 0) {
                 return this.birchTree;
             } else {
                 return random.nextInt(10) == 0 ? this.largeTree : this.tree;
             }
+        } else if (biome == Release11BiomeProperties.TAIGA_HILLS) {
+            return random.nextInt(3) == 0 ? new PineTreeFeature() : new SpruceTreeFeature();
         } else if (biome == Biome.SWAMPLAND) {
             return this.swampTree;
         }
@@ -193,7 +196,11 @@ public class FeatureDecorator {
                     var20 = this.random.nextInt(128);
                     var21 = this.z + this.random.nextInt(16) + 8;
                     var20 = this.getTopY2(var20, var19, var21, 32);
-                    this.redFlower.generate(this.world, this.random, var19, var20, var21);
+                    if (((BWOWorld) this.world).bwo_getWorldType().getId().equals(this.beta181WorldType)) {
+                        this.yellowFlower.generate(this.world, this.random, var19, var20, var21);
+                    } else {
+                        this.redFlower.generate(this.world, this.random, var19, var20, var21);
+                    }
                 }
             }
         }

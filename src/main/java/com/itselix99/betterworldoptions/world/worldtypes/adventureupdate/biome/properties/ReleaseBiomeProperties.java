@@ -73,7 +73,7 @@ public class ReleaseBiomeProperties extends AdvUpdBiomeProperties {
     }
 
     public Identifier getId() {
-        return BetterWorldOptions.NAMESPACE.id("release");
+        return BetterWorldOptions.NAMESPACE.id("release_1.0");
     }
 
     public List<Biome> getAllBiomesForSingleBiome() {

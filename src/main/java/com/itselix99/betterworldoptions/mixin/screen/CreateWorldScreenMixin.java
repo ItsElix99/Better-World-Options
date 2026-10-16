@@ -120,8 +120,8 @@ public class CreateWorldScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void bwo_initButtons(CallbackInfo ci) {
         List<Option<?>> generalOptions = GeneralOptions.getGeneralOptionsList();
-        WorldType worldTypeEntry = WorldType.getWorldTypeById(Identifier.of(this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "")));
-        this.bwo_checkGeneralOptionsCompatibilityAndValues(generalOptions, worldTypeEntry);
+        WorldType worldType = WorldType.getWorldTypeById(Identifier.of(this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "")));
+        this.bwo_checkGeneralOptionsCompatibilityAndValues(generalOptions, worldType);
 
         this.lastWorldType = WorldType.getWorldTypeById(Identifier.of(this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, ""))).getId();
 
@@ -149,18 +149,17 @@ public class CreateWorldScreenMixin extends Screen {
             this.generalOptionsButton.visible = false;
         }
 
-        String worldType = this.bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "");
-        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
+        OldFeaturesProperties oldFeaturesProperties = worldType.getOldFeaturesProperties();
         Option<?> singleBiomeOption = generalOptions.get(2);
 
-        if (oldFeaturesProperties != null && !oldFeaturesProperties.oldFeaturesHasVanillaBiomes && this.bwoWorldPropertiesStorage.getOptionValue("OldFeatures", OptionType.GENERAL_OPTION, false) || singleBiomeOption.getCompatibleType().equals("Overworld") && worldTypeEntry.isDimension()) {
+        if (oldFeaturesProperties != null && !oldFeaturesProperties.oldFeaturesHasVanillaBiomes && this.bwoWorldPropertiesStorage.getOptionValue("OldFeatures", OptionType.GENERAL_OPTION, false) || singleBiomeOption.getCompatibleType().equals("Overworld") && worldType.isDimension()) {
             this.bwoWorldPropertiesStorage.setOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "Off");
             this.singleBiomeButton.active = false;
             String singleBiome = this.bwoWorldPropertiesStorage.getOptionValue("SingleBiome", OptionType.GENERAL_OPTION, "");
             this.singleBiomeButton.text = this.translation.get("selectWorld.singleBiome") + " " + (!singleBiome.equals("Off") ? singleBiome : this.translation.get("options.off"));
         }
 
-        if (worldTypeEntry.isDimension()) {
+        if (worldType.isDimension()) {
             this.themeButton.active = false;
         }
     }

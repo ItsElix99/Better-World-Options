@@ -7,6 +7,7 @@ import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.config.Config;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -30,15 +31,15 @@ public class BiomeMixin {
     @Environment(EnvType.CLIENT)
     @ModifyReturnValue(method = "getSkyColor", at = @At("RETURN"))
     public int bwo_getSkyColor(int original) {
-        Minecraft minecraft = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
-        String worldType = ((BWOProperties) minecraft.world.getProperties()).bwo_getWorldType();
+        Minecraft minecraft = BetterWorldOptions.getMinecraft();
+        WorldType worldType = ((BWOWorld) minecraft.world).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraft.world.getProperties()).bwo_isOldFeatures();
-        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) minecraft.world.getProperties()).bwo_getTheme()));
-        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
+        Theme theme = ((BWOWorld) minecraft.world).bwo_getTheme();
+        OldFeaturesProperties oldFeaturesProperties = worldType.getOldFeaturesProperties();
 
         if (theme.getSkyColor() != -1) {
             return theme.getFogColor();
-        } else if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && oldFeaturesProperties != null && (oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null || oldFeaturesProperties.defaultSkyColor != -1)) {
+        } else if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && oldFeaturesProperties != null && (oldFeaturesProperties.oldBiome != null || oldFeaturesProperties.defaultSkyColor != -1)) {
             return oldFeaturesProperties.defaultSkyColor;
         }
 

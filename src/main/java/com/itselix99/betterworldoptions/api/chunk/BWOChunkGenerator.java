@@ -88,19 +88,19 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
     }
 
     public boolean placeStructures(World world, Random random, int chunkX, int chunkZ) {
-        boolean generateVillage = false;
+        boolean largeStructure = false;
 
         for (Structure structure : Structure.getStructuresList()) {
             if (structure.getStructureFeature() != null && this.bwoProperties.bwo_isGenerateStructure(structure.getId())) {
                 boolean valid = structure.getStructureFeature().place(world, random, chunkX, chunkZ);
 
-                if (structure.getId().equals(BetterWorldOptions.NAMESPACE.id("village"))) {
-                    generateVillage = valid;
+                if (structure.isLargeStructure()) {
+                    largeStructure = valid;
                 }
             }
         }
 
-        return generateVillage;
+        return largeStructure;
     }
 
     public boolean useSurfaceHeightForStructures() {
@@ -186,7 +186,7 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
             if (y <= 55) {
                 if (limit) {
                     if (y >= 53) {
-                        if (WorldType.getOldFeaturesProperties(this.worldType.getId()) != null && WorldType.getOldFeaturesProperties(this.worldType.getId()).oldFeaturesHasVanillaBiomes) {
+                        if (this.worldType.getOldFeaturesProperties() != null && this.worldType.getOldFeaturesProperties().oldFeaturesHasVanillaBiomes) {
                             blocks[index] = biome.soilBlockId;
                         } else {
                             blocks[index] = this.oldFeatures ? (byte) Block.DIRT.id : biome.soilBlockId;

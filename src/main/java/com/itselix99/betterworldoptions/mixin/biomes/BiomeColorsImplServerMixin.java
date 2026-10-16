@@ -5,6 +5,7 @@ import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -27,12 +28,13 @@ public class BiomeColorsImplServerMixin {
             )
     )
     private static int bwo_modifyGrassColor(int original) {
-        MinecraftServer minecraftServer = (MinecraftServer) FabricLoaderImpl.INSTANCE.getGameInstance();
-        String worldType = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getWorldType();
+        MinecraftServer minecraftServer = BetterWorldOptions.getMinecraftServer();
+        WorldType worldType = ((BWOWorld) minecraftServer.getWorld(0)).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_isOldFeatures();
+        OldFeaturesProperties oldFeaturesProperties = worldType.getOldFeaturesProperties();
 
-        if (oldFeatures && worldType.equals(BetterWorldOptions.NAMESPACE.id("mcpe").toString()) && minecraftServer.getWorld(0).dimension.id == 0) {
-            return 3381555;
+        if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldBiome == null && oldFeaturesProperties.defaultGrassColor != null && minecraftServer.getWorld(0).dimension.id == 0) {
+            return oldFeaturesProperties.defaultGrassColor.getColor(null, 0, 0);
         }
 
         return original;
@@ -46,12 +48,13 @@ public class BiomeColorsImplServerMixin {
             )
     )
     private static int bwo_modifyLeavesColor(int original) {
-        MinecraftServer minecraftServer = (MinecraftServer) FabricLoaderImpl.INSTANCE.getGameInstance();
-        String worldType = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getWorldType();
+        MinecraftServer minecraftServer = BetterWorldOptions.getMinecraftServer();
+        WorldType worldType = ((BWOWorld) minecraftServer.getWorld(0)).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_isOldFeatures();
+        OldFeaturesProperties oldFeaturesProperties = worldType.getOldFeaturesProperties();
 
-        if (oldFeatures && worldType.equals(BetterWorldOptions.NAMESPACE.id("mcpe").toString()) && minecraftServer.getWorld(0).dimension.id == 0) {
-            return 6396257;
+        if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldBiome == null && oldFeaturesProperties.defaultLeavesColor != null && minecraftServer.getWorld(0).dimension.id == 0) {
+            return oldFeaturesProperties.defaultLeavesColor.getColor(null, 0, 0);
         }
 
         return original;
@@ -65,15 +68,15 @@ public class BiomeColorsImplServerMixin {
             )
     )
     private static int bwo_modifyFogColor(int original) {
-        MinecraftServer minecraftServer = (MinecraftServer) FabricLoaderImpl.INSTANCE.getGameInstance();
-        String worldType = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getWorldType();
+        MinecraftServer minecraftServer = BetterWorldOptions.getMinecraftServer();
+        WorldType worldType = ((BWOWorld) minecraftServer.getWorld(0)).bwo_getWorldType();
         boolean oldFeatures = ((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_isOldFeatures();
-        Theme theme = Theme.getThemeById(Identifier.of(((BWOProperties) minecraftServer.getWorld(0).getProperties()).bwo_getTheme()));
-        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(Identifier.of(worldType));
+        Theme theme = ((BWOWorld) minecraftServer.getWorld(0)).bwo_getTheme();
+        OldFeaturesProperties oldFeaturesProperties = worldType.getOldFeaturesProperties();
 
         if (minecraftServer.getWorld(0).dimension.id == 0) {
-            if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() == null && oldFeaturesProperties.defaultFogColor != -1 && (theme.getFogColor() == -1)) {
-                return oldFeaturesProperties.defaultFogColor;
+            if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldBiome == null && oldFeaturesProperties.defaultFogColor != null && (theme.getFogColor() == -1)) {
+                return oldFeaturesProperties.defaultFogColor.getColor(null, 0, 0);
             } else if (theme.getFogColor() != -1) {
                 return theme.getFogColor();
             }

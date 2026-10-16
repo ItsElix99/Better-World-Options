@@ -15,6 +15,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.*;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.biome.Biome;
 import net.modificationstation.stationapi.api.event.network.packet.PacketRegisterEvent;
 import net.modificationstation.stationapi.api.event.registry.BlockRegistryEvent;
@@ -53,13 +54,18 @@ public class BetterWorldOptions implements ModInitializer {
     public static Biome ICE_MOUNTAINS;
     public static Biome MUSHROOM_ISLAND;
     public static Biome MUSHROOM_ISLAND_SHORE;
+    public static Biome BEACH;
+    public static Biome DESERT_HILLS;
+    public static Biome FOREST_HILLS;
+    public static Biome TAIGA_HILLS;
+    public static Biome EXTREME_HILLS_EDGE;
 
     public static Block INVISIBLE_BEDROCK;
 
     @Override
     public void onInitialize() {
         BiomeAPI.init(null, 0);
-        this.initOldTextures();
+        this.initOldFeaturesProperties();
 
         Structure village = Structure.getStructureById(NAMESPACE.id("village"));
         Structure notchVillage = Structure.getStructureById(NAMESPACE.id("notchVillage"));
@@ -97,6 +103,43 @@ public class BetterWorldOptions implements ModInitializer {
         ICE_MOUNTAINS = BiomeBuilder.start("Ice Mountains").snow(true).hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).passiveEntity(SheepEntity.class, 12).passiveEntity(PigEntity.class, 10).passiveEntity(ChickenEntity.class, 10).passiveEntity(CowEntity.class, 8).waterEntity(SquidEntity.class, 10).build();
         MUSHROOM_ISLAND = BiomeBuilder.start("Mushroom Island").grassColor(12823220).build();
         MUSHROOM_ISLAND_SHORE = BiomeBuilder.start("Mushroom Island Shore").grassColor(12823220).build();
+        BEACH = BiomeBuilder.start("Beach").hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).waterEntity(SquidEntity.class, 10).build();
+        BEACH.topBlockId = (byte)Block.SAND.id;
+        BEACH.soilBlockId = (byte)Block.SAND.id;
+
+        DESERT_HILLS = BiomeBuilder.start("Desert Hills").precipitation(false).hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).waterEntity(SquidEntity.class, 10).build();
+        DESERT_HILLS.topBlockId = (byte)Block.SAND.id;
+        DESERT_HILLS.soilBlockId = (byte)Block.SAND.id;
+
+        FOREST_HILLS = BiomeBuilder.start("Forest Hills").hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).passiveEntity(SheepEntity.class, 12).passiveEntity(PigEntity.class, 10).passiveEntity(ChickenEntity.class, 10).passiveEntity(CowEntity.class, 8).passiveEntity(WolfEntity.class, 5).waterEntity(SquidEntity.class, 10).build();
+        TAIGA_HILLS = BiomeBuilder.start("Taiga Hills").snow(true).hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).passiveEntity(SheepEntity.class, 12).passiveEntity(PigEntity.class, 10).passiveEntity(ChickenEntity.class, 10).passiveEntity(CowEntity.class, 8).passiveEntity(WolfEntity.class, 8).waterEntity(SquidEntity.class, 10).build();
+        EXTREME_HILLS_EDGE = BiomeBuilder.start("Extreme Hills Edge").hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).passiveEntity(SheepEntity.class, 12).passiveEntity(PigEntity.class, 10).passiveEntity(ChickenEntity.class, 10).passiveEntity(CowEntity.class, 8).waterEntity(SquidEntity.class, 10).build();
+    }
+
+    private void initOldFeaturesProperties() {
+        WorldType Alpha120 = WorldType.getWorldTypeById(NAMESPACE.id("alpha_1.2.0"));
+        Alpha120.setOldFeaturesProperties(true, true, true);
+
+        WorldType Alpha112 = WorldType.getWorldTypeById(NAMESPACE.id("alpha_1.1.2_01"));
+        Alpha112.setOldFeaturesProperties(Alpha, false, 8961023, true, false);
+
+        WorldType Infdev611 = WorldType.getWorldTypeById(NAMESPACE.id("infdev_20100611"));
+        Infdev611.setOldFeaturesProperties(Infdev, false, 10079487, true, false);
+
+        WorldType Infdev420 = WorldType.getWorldTypeById(NAMESPACE.id("infdev_20100420"));
+        Infdev420.setOldFeaturesProperties(Infdev, false, 10079487, true, false);
+
+        WorldType Infdev415 = WorldType.getWorldTypeById(NAMESPACE.id("infdev_20100415"));
+        Infdev415.setOldFeaturesProperties(Infdev, false, 10079487, true, false);
+
+        WorldType EarlyInfdev = WorldType.getWorldTypeById(NAMESPACE.id("early_infdev"));
+        EarlyInfdev.setOldFeaturesProperties(BetterWorldOptions.EarlyInfdev, false, 200, true, false);
+
+        WorldType Indev223 = WorldType.getWorldTypeById(NAMESPACE.id("indev_20100223"));
+        Indev223.setOldFeaturesProperties(Indev, false, 10079487, true, false);
+
+        WorldType MCPE = WorldType.getWorldTypeById(NAMESPACE.id("mcpe"));
+        MCPE.setOldFeaturesProperties(true, 3381555, 6396257, 6731007, 2907587, false, true);
     }
 
     public static List<Biome> getOldBiomes() {
@@ -108,71 +151,8 @@ public class BetterWorldOptions implements ModInitializer {
         return (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
     }
 
-    private void initOldTextures() {
-        WorldType Alpha120 = WorldType.getWorldTypeById(NAMESPACE.id("alpha_1.2.0"));
-        Alpha120.addOldTexture("GrassBlockSide", TextureListener.alphaGrassBlockSide);
-        Alpha120.addOldTexture("Cobblestone", TextureListener.alphaCobblestone);
-
-        WorldType Alpha112 = WorldType.getWorldTypeById(NAMESPACE.id("alpha_1.1.2_01"));
-        Alpha112.addOldTexture("GrassBlockTop", TextureListener.alphaGrassBlockTop);
-        Alpha112.addOldTexture("GrassBlockSide", TextureListener.alphaGrassBlockSide);
-        Alpha112.addOldTexture("Cobblestone", TextureListener.alphaCobblestone);
-        Alpha112.addOldTexture("IronBlockTop", TextureListener.alphaIronBlock);
-        Alpha112.addOldTexture("IronBlockSide", TextureListener.alphaIronBlockSide);
-        Alpha112.addOldTexture("IronBlockBottom", TextureListener.alphaIronBlockBottom);
-        Alpha112.addOldTexture("GoldBlockTop", TextureListener.alphaGoldBlock);
-        Alpha112.addOldTexture("GoldBlockSide", TextureListener.alphaGoldBlockSide);
-        Alpha112.addOldTexture("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
-        Alpha112.addOldTexture("DiamondBlockTop", TextureListener.alphaDiamondBlock);
-        Alpha112.addOldTexture("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
-        Alpha112.addOldTexture("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
-        Alpha112.addOldTexture("Grass", TextureListener.alphaTallGrass);
-        Alpha112.addOldTexture("Fern", TextureListener.alphaFern);
-        Alpha112.addOldTexture("Leaves", TextureListener.alphaLeaves);
-        Alpha112.addOldTexture("LeavesOpaque", TextureListener.alphaLeavesOpaque);
-        Alpha112.addOldTexture("FurnaceTop", Block.STONE.textureId);
-
-        WorldType Infdev611 = WorldType.getWorldTypeById(NAMESPACE.id("infdev_20100611"));
-        addOldTexturesForInfdevAndIndev(Infdev611);
-
-        WorldType Infdev420 = WorldType.getWorldTypeById(NAMESPACE.id("infdev_20100420"));
-        addOldTexturesForInfdevAndIndev(Infdev420);
-
-        WorldType Infdev415 = WorldType.getWorldTypeById(NAMESPACE.id("infdev_20100415"));
-        addOldTexturesForInfdevAndIndev(Infdev415);
-
-        WorldType EarlyInfdev = WorldType.getWorldTypeById(NAMESPACE.id("early_infdev"));
-        addOldTexturesForInfdevAndIndev(EarlyInfdev);
-
-        WorldType Indev223 = WorldType.getWorldTypeById(NAMESPACE.id("indev_20100223"));
-        addOldTexturesForInfdevAndIndev(Indev223);
-
-        WorldType MCPE = WorldType.getWorldTypeById(NAMESPACE.id("mcpe"));
-        MCPE.addOldTexture("GrassBlockSide", TextureListener.mcpeGrassBlockSide);
-        MCPE.addOldTexture("Leaves", TextureListener.alphaLeaves);
-        MCPE.addOldTexture("LeavesOpaque", TextureListener.alphaLeavesOpaque);
-        MCPE.addOldTexture("Rose", TextureListener.mcpeRose);
-        MCPE.addOldTexture("IceBlock", TextureListener.mcpeIceBlock);
-    }
-
-    private void addOldTexturesForInfdevAndIndev(WorldType worldType) {
-        worldType.addOldTexture("GrassBlockTop", TextureListener.alphaGrassBlockTop);
-        worldType.addOldTexture("GrassBlockSide", TextureListener.alphaGrassBlockSide);
-        worldType.addOldTexture("Cobblestone", TextureListener.alphaCobblestone);
-        worldType.addOldTexture("IronBlockTop", TextureListener.alphaIronBlock);
-        worldType.addOldTexture("IronBlockSide", TextureListener.alphaIronBlockSide);
-        worldType.addOldTexture("IronBlockBottom", TextureListener.alphaIronBlockBottom);
-        worldType.addOldTexture("GoldBlockTop", TextureListener.alphaGoldBlock);
-        worldType.addOldTexture("GoldBlockSide", TextureListener.alphaGoldBlockSide);
-        worldType.addOldTexture("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
-        worldType.addOldTexture("DiamondBlockTop", TextureListener.alphaDiamondBlock);
-        worldType.addOldTexture("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
-        worldType.addOldTexture("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
-        worldType.addOldTexture("Grass", TextureListener.alphaTallGrass);
-        worldType.addOldTexture("Fern", TextureListener.alphaFern);
-        worldType.addOldTexture("Leaves", TextureListener.alphaLeaves);
-        worldType.addOldTexture("LeavesOpaque", TextureListener.alphaLeavesOpaque);
-        worldType.addOldTexture("FurnaceTop", Block.STONE.textureId);
-        worldType.addOldTexture("BrickBlock", TextureListener.infdevBricksBlock);
+    @Environment(EnvType.SERVER)
+    public static MinecraftServer getMinecraftServer() {
+        return (MinecraftServer) FabricLoaderImpl.INSTANCE.getGameInstance();
     }
 }

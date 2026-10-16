@@ -35,6 +35,7 @@ import net.modificationstation.stationapi.api.world.StationFlatteningWorld;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.lang.reflect.InvocationTargetException;
@@ -82,14 +83,14 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
         BiomeProperties.resetDefaultSnowAndPrecipitation();
 
         boolean oldFeatures =  bwoProperties.bwo_isOldFeatures();
-        OldFeaturesProperties oldFeaturesProperties = WorldType.getOldFeaturesProperties(this.worldType.getId());
+        OldFeaturesProperties oldFeaturesProperties = this.worldType.getOldFeaturesProperties();
 
-        if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldFeaturesBiomeSupplier.get() != null) {
-            Biome oldBiome = oldFeaturesProperties.oldFeaturesBiomeSupplier.get();
+        if (oldFeatures && oldFeaturesProperties != null && oldFeaturesProperties.oldBiome != null) {
+            Biome oldBiome = oldFeaturesProperties.oldBiome;
 
             oldBiome.setSnow(this.theme.isCold());
             oldBiome.setPrecipitation(this.theme.allowRain());
-            oldBiome.setFogColor(this.theme.getFogColor() != 1 ? this.theme.getFogColor() : oldFeaturesProperties.defaultFogColor);
+            oldBiome.setFogColor(this.theme.getFogColor() != 1 ? this.theme.getFogColor() : oldFeaturesProperties.defaultFogColor.getColor(null, 0, 0));
         } else {
             if (this.theme.isCold()) {
                 this.biomeProperties.getAllBiomes().forEach(biome -> biome.setSnow(true));
@@ -351,6 +352,29 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
         }
 
         return original.call(world);
+    }
+
+    @WrapOperation(
+            method = "manageChunkUpdatesAndEvents",
+            at = @At(
+                            value = "INVOKE",
+                            target = "Lnet/minecraft/world/World;setBlock(IIII)Z"
+                    ),
+            slice = @Slice(
+                    from = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isRaining()Z"),
+                    to = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onTick(Lnet/minecraft/world/World;IIILjava/util/Random;)V")
+            )
+    )
+    private boolean bwo_advUpdTemperature(World instance, int x, int y, int z, int blockId, Operation<Boolean> original) {
+        if (this.method_1781() instanceof AdvUpdBiomeSource advUpdBiomeSource) {
+            float temperature = (float) advUpdBiomeSource.getTemperature(x, z);
+
+            if (temperature > 0.15F) {
+                return false;
+            }
+        }
+
+        return original.call(instance, x, y, z, blockId);
     }
 
     @ModifyReturnValue(method = "getRainGradient", at = @At("RETURN"))
