@@ -17,14 +17,14 @@ import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.p
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.source.Release11BiomeSource;
 import com.itselix99.betterworldoptions.world.worldtypes.flat.FlatChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.SkylandsChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.alpha112.Alpha112ChunkGenerator;
+import com.itselix99.betterworldoptions.world.worldtypes.Alpha112ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.Alpha120ChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.earlyinfdev.EarlyInfdevChunkGenerator;
+import com.itselix99.betterworldoptions.world.worldtypes.EarlyInfdevChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.flat.biomesource.FlatBiomeSource;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.Indev223ChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.infdev415.Infdev415ChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.infdev420.Infdev420ChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.infdev611.Infdev611ChunkGenerator;
+import com.itselix99.betterworldoptions.world.worldtypes.Infdev415ChunkGenerator;
+import com.itselix99.betterworldoptions.world.worldtypes.Infdev420ChunkGenerator;
+import com.itselix99.betterworldoptions.world.worldtypes.Infdev611ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.MCPEChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.biomesource.MCPEBiomeSource;
 import net.minecraft.block.Block;
@@ -257,6 +257,7 @@ public class WorldType {
 
         WorldType Flat = new WorldType(FlatChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("flat"), "Flat", "/assets/betterworldoptions/gui/flat.png", new String[]{"A completely flat world, perfect for", "building"});
         Flat.setBiomeSource(FlatBiomeSource.class);
+        Flat.setFixedBiomeSource(FlatBiomeSource.class);
         Flat.addBooleanWorldTypeOption("bwoMoreOptions.superflat", "Superflat", null, false);
         Flat.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
@@ -298,6 +299,7 @@ public class WorldType {
         WorldType Infdev415 = new WorldType(Infdev415ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100415"), "Infdev 415", "/assets/betterworldoptions/gui/infdev_20100415.png", new String[]{"Start the world with Infdev 415", "generation"});
 
         WorldType EarlyInfdev = new WorldType(EarlyInfdevChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("early_infdev"), "Early Infdev", "/assets/betterworldoptions/gui/early_infdev.png", new String[]{"Start the world with Infdev 227-325", "generation"});
+        EarlyInfdev.setSeaLevel(65);
         EarlyInfdev.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
         WorldType Indev223 = new WorldType(Indev223ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("indev_20100223"), "Indev 223", "/assets/betterworldoptions/gui/indev_20100223.png", new String[]{"Start the world with Indev 223", "generation"});

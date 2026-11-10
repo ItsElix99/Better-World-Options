@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.world.worldtypes.mcpe.util;
+package com.itselix99.betterworldoptions.util;
 
 import java.io.Serial;
 import java.util.Random;

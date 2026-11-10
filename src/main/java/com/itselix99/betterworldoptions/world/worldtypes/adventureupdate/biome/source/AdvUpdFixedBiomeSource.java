@@ -60,6 +60,10 @@ public class AdvUpdFixedBiomeSource extends AdvUpdBiomeSource {
         return this.getTemperatures(new float[width * depth], x, z, width, depth);
     }
 
+    public double[] getTemperaturesD(int x, int z, int width, int depth) {
+        return this.getTemperatures(new double[width * depth], x, z, width, depth);
+    }
+
     @Environment(EnvType.CLIENT)
     public double getTemperature(int x, int z) {
         return this.temperature;

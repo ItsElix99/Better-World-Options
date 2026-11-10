@@ -6,6 +6,7 @@
   "mixins": [
     "biomes.BiomeMixin",
     "biomes.BiomeSourceMixin",
+    "biomes.FixedBiomeSourceMixin",
     "biomes.ForestBiomeMixin",
     "biomes.RainforestBiomeMixin",
     "blocks.SaplingBlockMixin",

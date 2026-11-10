@@ -1,6 +1,5 @@
 package com.itselix99.betterworldoptions.mixin.chunk;
 
-import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.structure.Structure;
@@ -170,7 +169,7 @@ public class OverworldChunkGeneratorMixin {
         if (Config.BWOConfig.world.beachFix) {
             double x = (chunkX << 4) + var8;
             double z = (chunkZ << 4) + var9;
-            return ((BWONoise)this.perlinNoise2).bwo_generateNoise(x * var6, z * var6, 0.0D) + this.random.nextDouble() * 0.2 > (double)0.0F ? 1 : 0;
+            return ((BWONoise)this.perlinNoise2).bwo_generateNoise(x * var6, z * var6, 0.0D) + this.random.nextDouble() * 0.2D > 0.0D ? 1 : 0;
         }
 
         return original;
@@ -185,7 +184,7 @@ public class OverworldChunkGeneratorMixin {
         if (Config.BWOConfig.world.beachFix) {
             double x = (chunkX << 4) + var8;
             double z = (chunkZ << 4) + var9;
-            return ((BWONoise)this.perlinNoise2).bwo_generateNoise(z * var6, var6, x * var6) + this.random.nextDouble() * 0.2 > (double)3.0F ? 1 : 0;
+            return ((BWONoise)this.perlinNoise2).bwo_generateNoise(x * var6, 109.0134D, z * var6) + this.random.nextDouble() * 0.2D > 3.0D ? 1 : 0;
         }
 
         return original;
@@ -196,11 +195,11 @@ public class OverworldChunkGeneratorMixin {
             at = @At("STORE"),
             name = "var13"
     )
-    private int bwo_fixDepthBuffer(int original, @Local(ordinal = 0, argsOnly = true)int chunkX, @Local(ordinal = 1, argsOnly = true)int chunkZ, @Local(name = "var6")double var6, @Local(name = "var8")int var8, @Local(name = "var9")int var9) {
+    private int bwo_fixErosion(int original, @Local(ordinal = 0, argsOnly = true)int chunkX, @Local(ordinal = 1, argsOnly = true)int chunkZ, @Local(name = "var6")double var6, @Local(name = "var8")int var8, @Local(name = "var9")int var9) {
         if (Config.BWOConfig.world.beachFix) {
             double x = (chunkX << 4) + var8;
             double z = (chunkZ << 4) + var9;
-            return (int)(this.perlinNoise3.sample(x * var6 * 2.0D, z * var6 * 2.0D) / (double)3.0F + (double)3.0F + this.random.nextDouble() * (double)0.25F);
+            return (int)(this.perlinNoise3.sample(x * var6 * 2.0D, z * var6 * 2.0D) / 3.0D + 3.0D + this.random.nextDouble() * 0.25D);
         }
 
         return original;
@@ -230,7 +229,7 @@ public class OverworldChunkGeneratorMixin {
     )
     private int bwo_fixIceNearBeach(Block block, Operation<Integer> original, @Local(name = "var5")int var5, @Local(ordinal = 0)Biome var10, @Local(name = "var17")int var17) {
         if (Config.BWOConfig.world.beachFix) {
-            if (!this.theme.isHot() && (this.theme.isCold() || (var10 == Biome.TAIGA || var10 == Biome.TUNDRA || var10 == Biome.ICE_DESERT)) && var17 >= var5 - 1) {
+            if ((this.theme.isCold() || var10.canSnow()) && var17 >= var5 - 1) {
                 return (byte) (this.theme.getSurfaceLiquidBlock());
             } else {
                 return original.call(block);

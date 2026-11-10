@@ -39,7 +39,7 @@ public class ConfigListener implements PreConfigSavedListener {
                         } else if (oldFeaturesProperties != null && oldFeaturesProperties.oldBiome != null) {
                             oldFeaturesProperties.oldBiome.setGrassColorProvider(oldFeaturesProperties.defaultGrassColor);
                             oldFeaturesProperties.oldBiome.setLeavesColor(oldFeaturesProperties.defaultLeavesColor);
-                            oldFeaturesProperties.oldBiome.setFogColor(theme.getFogColor() != 1 ? theme.getFogColor() : oldFeaturesProperties.defaultFogColor.getColor(null, 0, 0));
+                            oldFeaturesProperties.oldBiome.setFogColor(theme.getFogColor() != -1 ? theme.getFogColor() : oldFeaturesProperties.defaultFogColor.getColor(null, 0, 0));
                         }
                     }
 

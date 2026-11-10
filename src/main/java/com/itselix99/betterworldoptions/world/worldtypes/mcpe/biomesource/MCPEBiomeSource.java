@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.world.worldtypes.mcpe.biomesource;
 
-import com.itselix99.betterworldoptions.world.worldtypes.mcpe.util.MTRandom;
-import com.itselix99.betterworldoptions.world.worldtypes.mcpe.util.math.noise.OctavePerlinNoiseSamplerMCPE;
+import com.itselix99.betterworldoptions.util.MTRandom;
+import com.itselix99.betterworldoptions.util.noise.BWOOctavePerlinNoiseSampler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.math.ChunkPos;
@@ -12,14 +12,14 @@ import net.modificationstation.stationapi.api.worldgen.BiomeAPI;
 import net.modificationstation.stationapi.api.worldgen.biome.BiomeProvider;
 
 public class MCPEBiomeSource extends BiomeSource {
-    private final OctavePerlinNoiseSamplerMCPE mcpeTemperatureSampler;
-    private final OctavePerlinNoiseSamplerMCPE mcpeDownfallSampler;
-    private final OctavePerlinNoiseSamplerMCPE mcpeWeirdnessSampler;
+    private final BWOOctavePerlinNoiseSampler mcpeTemperatureSampler;
+    private final BWOOctavePerlinNoiseSampler mcpeDownfallSampler;
+    private final BWOOctavePerlinNoiseSampler mcpeWeirdnessSampler;
 
     public MCPEBiomeSource(World world) {
-        this.mcpeTemperatureSampler = new OctavePerlinNoiseSamplerMCPE(new MTRandom((int) (world.getSeed() * 9871L)), 4);
-        this.mcpeDownfallSampler = new OctavePerlinNoiseSamplerMCPE(new MTRandom((int) (world.getSeed() * 39811L)), 4);
-        this.mcpeWeirdnessSampler = new OctavePerlinNoiseSamplerMCPE(new MTRandom((int) (world.getSeed() * 543321L)), 2);
+        this.mcpeTemperatureSampler = new BWOOctavePerlinNoiseSampler(new MTRandom((int) (world.getSeed() * 9871L)), 4, true);
+        this.mcpeDownfallSampler = new BWOOctavePerlinNoiseSampler(new MTRandom((int) (world.getSeed() * 39811L)), 4, true);
+        this.mcpeWeirdnessSampler = new BWOOctavePerlinNoiseSampler(new MTRandom((int) (world.getSeed() * 543321L)), 2, true);
     }
 
     public Biome getBiome(ChunkPos chunkPos) {
@@ -32,7 +32,7 @@ public class MCPEBiomeSource extends BiomeSource {
 
     @Environment(EnvType.CLIENT)
     public double getTemperature(int x, int z) {
-        this.temperatureMap = this.mcpeTemperatureSampler.create(this.temperatureMap, x, z, 1, 1, 0.025F, 0.025F, 0.5F);
+        this.temperatureMap = this.mcpeTemperatureSampler.generateNoise(this.temperatureMap, x, z, 1, 1, 0.025D, 0.025D, 0.5D);
         return this.temperatureMap[0];
     }
 
@@ -46,23 +46,23 @@ public class MCPEBiomeSource extends BiomeSource {
             map = new double[width * depth];
         }
 
-        map = this.mcpeTemperatureSampler.create(map, x, z, width, depth, 0.025F, 0.025F, 0.25F);
-        this.weirdnessMap = this.mcpeWeirdnessSampler.create(this.weirdnessMap, x, z, width, depth, 0.25F, 0.25F, 0.5882352941176471);
+        map = this.mcpeTemperatureSampler.generateNoise(map, x, z, width, depth, 0.025D, 0.025D, 0.25D);
+        this.weirdnessMap = this.mcpeWeirdnessSampler.generateNoise(this.weirdnessMap, x, z, width, depth, 0.25D, 0.25D, 0.5882352941176471D);
         int var6 = 0;
 
         for(int var7 = 0; var7 < width; ++var7) {
             for(int var8 = 0; var8 < depth; ++var8) {
-                double var9 = this.weirdnessMap[var6] * 1.1 + (double)0.5F;
-                double var11 = 0.01;
-                double var13 = (double)1.0F - var11;
-                double var15 = (map[var6] * 0.15 + 0.7) * var13 + var9 * var11;
-                var15 = (double)1.0F - ((double)1.0F - var15) * ((double)1.0F - var15);
-                if (var15 < (double)0.0F) {
-                    var15 = (double)0.0F;
+                double var9 = this.weirdnessMap[var6] * 1.1D + 0.5D;
+                double var11 = 0.01D;
+                double var13 = 1.0D - var11;
+                double var15 = (map[var6] * 0.15D + 0.7D) * var13 + var9 * var11;
+                var15 = 1.0D - (1.0D - var15) * (1.0D - var15);
+                if (var15 < 0.0D) {
+                    var15 = 0.0D;
                 }
 
-                if (var15 > (double)1.0F) {
-                    var15 = (double)1.0F;
+                if (var15 > 1.0D) {
+                    var15 = 1.0D;
                 }
 
                 map[var6] = var15;
@@ -78,35 +78,35 @@ public class MCPEBiomeSource extends BiomeSource {
             biomes = new Biome[width * depth];
         }
 
-        this.temperatureMap = this.mcpeTemperatureSampler.create(this.temperatureMap, x, z, width, width, 0.025F, 0.025F, 0.25F);
-        this.downfallMap = this.mcpeDownfallSampler.create(this.downfallMap, x, z, width, width, 0.05F, 0.05F, 0.3333333333333333);
-        this.weirdnessMap = this.mcpeWeirdnessSampler.create(this.weirdnessMap, x, z, width, width, 0.25F, 0.25F, 0.5882352941176471);
+        this.temperatureMap = this.mcpeTemperatureSampler.generateNoise(this.temperatureMap, x, z, width, width, 0.025D, 0.025D, 0.25D);
+        this.downfallMap = this.mcpeDownfallSampler.generateNoise(this.downfallMap, x, z, width, width, 0.05D, 0.05D, 0.3333333333333333D);
+        this.weirdnessMap = this.mcpeWeirdnessSampler.generateNoise(this.weirdnessMap, x, z, width, width, 0.25D, 0.25D, 0.5882352941176471D);
         int var6 = 0;
 
         for(int var7 = 0; var7 < width; ++var7) {
             for(int var8 = 0; var8 < depth; ++var8) {
-                double var9 = this.weirdnessMap[var6] * 1.1 + (double)0.5F;
-                double var11 = 0.01;
-                double var13 = (double)1.0F - var11;
-                double var15 = (this.temperatureMap[var6] * 0.15 + 0.7) * var13 + var9 * var11;
-                var11 = 0.002;
-                var13 = (double)1.0F - var11;
-                double var17 = (this.downfallMap[var6] * 0.15 + (double)0.5F) * var13 + var9 * var11;
-                var15 = (double)1.0F - ((double)1.0F - var15) * ((double)1.0F - var15);
-                if (var15 < (double)0.0F) {
-                    var15 = (double)0.0F;
+                double var9 = this.weirdnessMap[var6] * 1.1D + 0.5D;
+                double var11 = 0.01D;
+                double var13 = 1.0D - var11;
+                double var15 = (this.temperatureMap[var6] * 0.15D + 0.7D) * var13 + var9 * var11;
+                var11 = 0.002D;
+                var13 = 1.0D - var11;
+                double var17 = (this.downfallMap[var6] * 0.15D + 0.5D) * var13 + var9 * var11;
+                var15 = 1.0D - (1.0D - var15) * (1.0D - var15);
+                if (var15 < 0.0D) {
+                    var15 = 0.0D;
                 }
 
-                if (var17 < (double)0.0F) {
-                    var17 = (double)0.0F;
+                if (var17 < 0.0D) {
+                    var17 = 0.0D;
                 }
 
-                if (var15 > (double)1.0F) {
-                    var15 = (double)1.0F;
+                if (var15 > 1.0D) {
+                    var15 = 1.0D;
                 }
 
-                if (var17 > (double)1.0F) {
-                    var17 = (double)1.0F;
+                if (var17 > 1.0D) {
+                    var17 = 1.0D;
                 }
 
                 this.temperatureMap[var6] = var15;

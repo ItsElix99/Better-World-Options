@@ -90,7 +90,7 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
 
             oldBiome.setSnow(this.theme.isCold());
             oldBiome.setPrecipitation(this.theme.allowRain());
-            oldBiome.setFogColor(this.theme.getFogColor() != 1 ? this.theme.getFogColor() : oldFeaturesProperties.defaultFogColor.getColor(null, 0, 0));
+            oldBiome.setFogColor(this.theme.getFogColor() != -1 ? this.theme.getFogColor() : oldFeaturesProperties.defaultFogColor.getColor(null, 0, 0));
         } else {
             if (this.theme.isCold()) {
                 this.biomeProperties.getAllBiomes().forEach(biome -> biome.setSnow(true));
@@ -298,7 +298,7 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
             )
     )
     private long bwo_themeCloudsColor(World world, Operation<Long> original) {
-        if (world.dimension.id == 0) {
+        if (world.dimension.id == 0 && this.theme.getCloudsColor() != -1) {
             return this.theme.getCloudsColor();
         }
 

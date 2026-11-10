@@ -17,8 +17,6 @@ import java.util.Random;
 
 @Mixin(BiomeSource.class)
 public abstract class BiomeSourceMixin implements BWOBiomeSource {
-    @Shadow public abstract Biome[] getBiomesInArea(Biome[] biomes, int x, int z, int width, int depth);
-
     @Shadow public abstract Biome[] getBiomesInArea(int x, int z, int width, int depth);
 
     @Shadow public abstract Biome getBiome(int x, int z);

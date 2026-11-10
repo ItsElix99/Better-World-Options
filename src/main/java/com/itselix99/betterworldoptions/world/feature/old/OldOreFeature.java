@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.world.feature;
+package com.itselix99.betterworldoptions.world.feature.old;
 
 import net.minecraft.block.Block;
 import net.minecraft.util.math.MathHelper;
@@ -31,9 +31,9 @@ public class OldOreFeature extends Feature {
             double var28 = (double) (MathHelper.sin((float) x / 16.0F * (float) Math.PI) + 1.0F) * var26 + 1.0D;
             double var30 = (double) (MathHelper.sin((float) x / 16.0F * (float) Math.PI) + 1.0F) * var26 + 1.0D;
 
-            for (y = (int) (var20 - var28 / 2.0D); y <= (int) (var20 + var28 / 2.0D); ++y) {
-                for (z = (int) (var22 - var30 / 2.0D); z <= (int) (var22 + var30 / 2.0D); ++z) {
-                    for (int var41 = (int) (var24 - var28 / 2.0D); var41 <= (int) (var24 + var28 / 2.0D); ++var41) {
+            for (y = MathHelper.floor(var20 - var28 / 2.0D); y <= MathHelper.floor(var20 + var28 / 2.0D); ++y) {
+                for (z = MathHelper.floor(var22 - var30 / 2.0D); z <= MathHelper.floor(var22 + var30 / 2.0D); ++z) {
+                    for (int var41 = MathHelper.floor(var24 - var28 / 2.0D); var41 <= MathHelper.floor(var24 + var28 / 2.0D); ++var41) {
                         double var35 = ((double) y + 0.5D - var20) / (var28 / 2.0D);
                         double var37 = ((double) z + 0.5D - var22) / (var30 / 2.0D);
                         double var39 = ((double) var41 + 0.5D - var24) / (var28 / 2.0D);

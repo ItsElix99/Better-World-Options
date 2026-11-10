@@ -125,6 +125,10 @@ public class AdvUpdBiomeSource extends BiomeSource implements BWOBiomeSource {
         return this.temperaturesBuffer;
     }
 
+    public double[] getTemperaturesD(int x, int z, int width, int depth) {
+        return this.getTemperatures(this.temperatureMap, x, z, width, depth);
+    }
+
     public float[] getTemperatures(float[] temperatures, int x, int z, int width, int depth) {
         IntCache.next();
         if (temperatures == null || temperatures.length < width * depth) {

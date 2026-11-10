@@ -47,7 +47,7 @@ public class DimensionMixin {
                 if (FabricLoaderImpl.INSTANCE.getEnvironmentType() == EnvType.CLIENT) {
                     oldFeaturesProperties.oldBiome.setGrassColorProvider(oldFeaturesProperties.defaultGrassColor);
                     oldFeaturesProperties.oldBiome.setLeavesColor(oldFeaturesProperties.defaultLeavesColor);
-                    oldFeaturesProperties.oldBiome.setFogColor(theme.getFogColor() != 1 ? theme.getFogColor() : oldFeaturesProperties.defaultFogColor.getColor(null, 0, 0));
+                    oldFeaturesProperties.oldBiome.setFogColor(theme.getFogColor() != -1 ? theme.getFogColor() : oldFeaturesProperties.defaultFogColor.getColor(null, 0, 0));
                 }
             } else {
                 if (FabricLoaderImpl.INSTANCE.getEnvironmentType() == EnvType.CLIENT) {

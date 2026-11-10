@@ -38,7 +38,7 @@ public class BiomeMixin {
         OldFeaturesProperties oldFeaturesProperties = worldType.getOldFeaturesProperties();
 
         if (theme.getSkyColor() != -1) {
-            return theme.getFogColor();
+            return theme.getSkyColor();
         } else if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && oldFeaturesProperties != null && (oldFeaturesProperties.oldBiome != null || oldFeaturesProperties.defaultSkyColor != -1)) {
             return oldFeaturesProperties.defaultSkyColor;
         }
