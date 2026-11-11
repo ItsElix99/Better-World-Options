@@ -132,6 +132,9 @@ public class BetterWorldOptions implements ModInitializer {
         WorldType Infdev415 = WorldType.getWorldTypeById(NAMESPACE.id("infdev_20100415"));
         Infdev415.setOldFeaturesProperties(Infdev, false, 10079487, true, false);
 
+        WorldType Infdev327 = WorldType.getWorldTypeById(NAMESPACE.id("infdev_20100327"));
+        Infdev327.setOldFeaturesProperties(Infdev, false, 10079487, true, false);
+
         WorldType EarlyInfdev = WorldType.getWorldTypeById(NAMESPACE.id("early_infdev"));
         EarlyInfdev.setOldFeaturesProperties(BetterWorldOptions.EarlyInfdev, false, 200, true, false);
 

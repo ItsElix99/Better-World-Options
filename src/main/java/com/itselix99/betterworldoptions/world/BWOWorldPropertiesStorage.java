@@ -256,6 +256,9 @@ public class BWOWorldPropertiesStorage {
         WorldType Infdev415 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100415"));
         addOldTexturesForInfdevAndIndev(Infdev415);
 
+        WorldType Infdev327 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100327"));
+        addOldTexturesForInfdevAndIndev(Infdev327);
+
         WorldType EarlyInfdev = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("early_infdev"));
         addOldTexturesForInfdevAndIndev(EarlyInfdev);
 

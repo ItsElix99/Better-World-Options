@@ -369,12 +369,7 @@ public class MCPEChunkGenerator extends OldChunkGenerator {
             }
         }
 
-        for(int var61 = 0; var61 < var49; ++var61) {
-            int var72 = var4 + this.random.nextInt(16) + 8;
-            int var17 = var5 + this.random.nextInt(16) + 8;
-            Feature var18 = this.getOldTreeFeature(var6);
-            var18.generate(this.world, this.random, var72, this.world.getTopY(var72, var17), var17);
-        }
+        this.generateTrees(var4, var5, var49, this.getOldTreeFeature(var6));
 
         if (this.theme.isFloweryLand()) {
             for(int var73 = 0; var73 < 24; ++var73) {

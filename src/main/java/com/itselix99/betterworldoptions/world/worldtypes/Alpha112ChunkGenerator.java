@@ -294,12 +294,7 @@ public class Alpha112ChunkGenerator extends OldChunkGenerator {
         Feature var18 = this.getOldTreeFeature();
 
         int var16;
-        for(var14 = 0; var14 < var12; ++var14) {
-            var15 = var4 + this.random.nextInt(16) + 8;
-            var16 = var5 + this.random.nextInt(16) + 8;
-            var18.prepare(1.0D, 1.0D, 1.0D);
-            var18.generate(this.world, this.random, var15, this.world.getTopY(var15, var16), var16);
-        }
+        this.generateTrees(var4, var5, var12, var18);
 
         int var17;
         if (this.theme.isFloweryLand()) {

@@ -7,24 +7,17 @@ import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.IntOption;
 import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.api.options.entry.StringOption;
+import com.itselix99.betterworldoptions.world.worldtypes.*;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.Release11BiomeProperties;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.source.AdvUpdFixedBiomeSource;
-import com.itselix99.betterworldoptions.world.worldtypes.AltOverworldChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.AdvUpdChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.source.AdvUpdBiomeSource;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.ReleaseBiomeProperties;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.source.Release11BiomeSource;
 import com.itselix99.betterworldoptions.world.worldtypes.flat.FlatChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.SkylandsChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.Alpha112ChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.Alpha120ChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.EarlyInfdevChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.flat.biomesource.FlatBiomeSource;
 import com.itselix99.betterworldoptions.world.worldtypes.indev223.Indev223ChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.Infdev415ChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.Infdev420ChunkGenerator;
-import com.itselix99.betterworldoptions.world.worldtypes.Infdev611ChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.MCPEChunkGenerator;
 import com.itselix99.betterworldoptions.world.worldtypes.mcpe.biomesource.MCPEBiomeSource;
 import net.minecraft.block.Block;
@@ -297,6 +290,9 @@ public class WorldType {
         WorldType Infdev420 = new WorldType(Infdev420ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100420"), "Infdev 420", "/assets/betterworldoptions/gui/infdev_20100420.png", new String[]{"Start the world with Infdev 420", "generation"});
 
         WorldType Infdev415 = new WorldType(Infdev415ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100415"), "Infdev 415", "/assets/betterworldoptions/gui/infdev_20100415.png", new String[]{"Start the world with Infdev 415", "generation"});
+
+        WorldType Infdev327 = new WorldType(Infdev327ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100327"), "Infdev 327", null, new String[]{"Start the world with Infdev 327", "generation"});
+        Infdev327.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
         WorldType EarlyInfdev = new WorldType(EarlyInfdevChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("early_infdev"), "Early Infdev", "/assets/betterworldoptions/gui/early_infdev.png", new String[]{"Start the world with Infdev 227-325", "generation"});
         EarlyInfdev.setSeaLevel(65);

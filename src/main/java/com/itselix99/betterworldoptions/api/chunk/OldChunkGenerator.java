@@ -98,6 +98,15 @@ public class OldChunkGenerator extends BWOChunkGenerator {
         return new OldOakTreeFeature();
     }
 
+    protected void generateTrees(int x, int z, int treeCount, Feature tree) {
+        for(int var5 = 0; var5 < treeCount; ++var5) {
+            int var6 = x + this.random.nextInt(16) + 8;
+            int var7 = z + this.random.nextInt(16) + 8;
+            tree.prepare(1.0D, 1.0D, 1.0D);
+            tree.generate(this.world, this.random, var6, this.world.getTopY(var6, var7), var7);
+        }
+    }
+
     protected void preOldFeaturesDecorate(ChunkSource source, int x, int z) {
     }
 
@@ -138,12 +147,7 @@ public class OldChunkGenerator extends BWOChunkGenerator {
         int var20 = this.getForestNoiseValue(var4, var5);
         Feature var21 = this.getOldTreeFeature();
 
-        for(int var22 = 0; var22 < var20; ++var22) {
-            int var23 = var4 + this.random.nextInt(16) + 8;
-            int var24 = var5 + this.random.nextInt(16) + 8;
-            var21.prepare(1.0D, 1.0D, 1.0D);
-            var21.generate(this.world, this.random, var23, this.world.getTopY(var23, var24), var24);
-        }
+        this.generateTrees(var4, var5, var20, var21);
 
         if (this.theme.isFloweryLand()) {
             for(int var25 = 0; var25 < 24; ++var25) {
