@@ -1,7 +1,9 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.config.Config;
+import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -10,7 +12,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.OreStorageBlock;
 import net.minecraft.block.material.Material;
-import net.modificationstation.stationapi.api.util.Identifier;
+import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -23,35 +25,44 @@ public class OreStorageBlockMixin extends Block {
 
     @ModifyReturnValue(method = "getTexture", at = @At("RETURN"))
     public int bwo_getOldTextureOreStorage(int original, int side) {
-        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
+        Minecraft minecraft = BetterWorldOptions.getMinecraft();
 
-        String worldType = bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "");
-        boolean oldFeatures = bwoWorldPropertiesStorage.getOptionValue("OldFeatures", OptionType.GENERAL_OPTION, false);
+        if (minecraft != null) {
+            BWOWorld bwoWorld = (BWOWorld) minecraft.world;
 
-        if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
-            if (side == 1) {
-                if (this.id == 57) {
-                    return WorldType.getOldTexture(Identifier.of(worldType), "DiamondBlockTop", original);
-                } else if (this.id == 41) {
-                    return WorldType.getOldTexture(Identifier.of(worldType), "GoldBlockTop", original);
-                } else if (this.id == 42) {
-                    return WorldType.getOldTexture(Identifier.of(worldType), "IronBlockTop", original);
-                }
-            } else if (side == 0) {
-                if (this.id == 57) {
-                    return WorldType.getOldTexture(Identifier.of(worldType), "DiamondBlockBottom", original);
-                } else if (this.id == 41) {
-                    return WorldType.getOldTexture(Identifier.of(worldType), "GoldBlockBottom", original);
-                } else if (this.id == 42) {
-                    return WorldType.getOldTexture(Identifier.of(worldType), "IronBlockBottom", original);
-                }
-            } else {
-                if (this.id == 57) {
-                    return WorldType.getOldTexture(Identifier.of(worldType), "DiamondBlockSide", original);
-                } else if (this.id == 41) {
-                    return WorldType.getOldTexture(Identifier.of(worldType), "GoldBlockSide", original);
-                } else if (this.id == 42) {
-                    return WorldType.getOldTexture(Identifier.of(worldType), "IronBlockSide", original);
+            if (bwoWorld != null) {
+                BWOProperties bwoProperties = (BWOProperties) minecraft.world.getProperties();
+                BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
+
+                WorldType worldType = bwoWorld.bwo_getWorldType();
+                boolean oldFeatures = bwoProperties.bwo_isOldFeatures();
+
+                if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
+                    if (side == 1) {
+                        if (this.id == 57) {
+                            return worldType.getOldTexture("DiamondBlockTop", original);
+                        } else if (this.id == 41) {
+                            return worldType.getOldTexture("GoldBlockTop", original);
+                        } else if (this.id == 42) {
+                            return worldType.getOldTexture("IronBlockTop", original);
+                        }
+                    } else if (side == 0) {
+                        if (this.id == 57) {
+                            return worldType.getOldTexture("DiamondBlockBottom", original);
+                        } else if (this.id == 41) {
+                            return worldType.getOldTexture("GoldBlockBottom", original);
+                        } else if (this.id == 42) {
+                            return worldType.getOldTexture("IronBlockBottom", original);
+                        }
+                    } else {
+                        if (this.id == 57) {
+                            return worldType.getOldTexture("DiamondBlockSide", original);
+                        } else if (this.id == 41) {
+                            return worldType.getOldTexture("GoldBlockSide", original);
+                        } else if (this.id == 42) {
+                            return worldType.getOldTexture("IronBlockSide", original);
+                        }
+                    }
                 }
             }
         }

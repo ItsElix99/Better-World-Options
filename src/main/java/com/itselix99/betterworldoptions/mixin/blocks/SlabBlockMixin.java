@@ -1,14 +1,16 @@
 package com.itselix99.betterworldoptions.mixin.blocks;
 
-import com.itselix99.betterworldoptions.api.options.OptionType;
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.config.Config;
+import com.itselix99.betterworldoptions.interfaces.BWOProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.SlabBlock;
-import net.modificationstation.stationapi.api.util.Identifier;
+import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -18,13 +20,22 @@ public class SlabBlockMixin {
 
     @ModifyReturnValue(method = "getTexture(II)I", at = @At("RETURN"))
     public int bwo_getOldTextureSlab(int original, int side, int meta) {
-        BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
+        Minecraft minecraft = BetterWorldOptions.getMinecraft();
 
-        String worldType = bwoWorldPropertiesStorage.getOptionValue("WorldType", OptionType.GENERAL_OPTION, "");
-        boolean oldFeatures = bwoWorldPropertiesStorage.getOptionValue("OldFeatures", OptionType.GENERAL_OPTION, false);
+        if (minecraft != null) {
+            BWOWorld bwoWorld = (BWOWorld) minecraft.world;
 
-        if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
-            return meta == 3 ? WorldType.getOldTexture(Identifier.of(worldType), "Cobblestone", original) : original;
+            if (bwoWorld != null) {
+                BWOProperties bwoProperties = (BWOProperties) minecraft.world.getProperties();
+                BWOWorldPropertiesStorage bwoWorldPropertiesStorage = BWOWorldPropertiesStorage.getInstance();
+
+                WorldType worldType = bwoWorld.bwo_getWorldType();
+                boolean oldFeatures = bwoProperties.bwo_isOldFeatures();
+
+                if (Config.BWOConfig.environment.oldTexturesAndSky && oldFeatures && bwoWorldPropertiesStorage.oldTextures) {
+                    return meta == 3 ? worldType.getOldTexture("Cobblestone", original) : original;
+                }
+            }
         }
 
         return original;

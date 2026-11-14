@@ -1,8 +1,8 @@
-package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release11;
+package com.itselix99.betterworldoptions.world.biome.layer.release11;
 
 import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
-import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.Layer;
+import com.itselix99.betterworldoptions.world.biome.layer.Layer;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.Release11BiomeProperties;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.ReleaseBiomeProperties;

@@ -31,8 +31,8 @@ public abstract class CaveWorldCarverMixin extends Generator implements CaveGenB
 
     @Unique
     private void bwo_fixedPlaceTunnels(int chunkX, int chunkZ, byte[] blocks, double x, double y, double z, float baseWidth, float yaw, float pitch, int tunnel, int tunnelCount, double widthHeightRatio, Random var17) {
-        double var18 = (double)(chunkX * 16 + 8);
-        double var20 = (double)(chunkZ * 16 + 8);
+        double var18 = chunkX * 16 + 8;
+        double var20 = chunkZ * 16 + 8;
         float var22 = 0.0F;
         float var23 = 0.0F;
         if (tunnelCount <= 0) {
@@ -53,9 +53,9 @@ public abstract class CaveWorldCarverMixin extends Generator implements CaveGenB
             double var29 = var27 * widthHeightRatio;
             float var31 = MathHelper.cos(pitch);
             float var32 = MathHelper.sin(pitch);
-            x += (double)(MathHelper.cos(yaw) * var31);
-            y += (double)var32;
-            z += (double)(MathHelper.sin(yaw) * var31);
+            x += MathHelper.cos(yaw) * var31;
+            y += var32;
+            z += MathHelper.sin(yaw) * var31;
             if (var26) {
                 pitch *= 0.92F;
             } else {
@@ -77,8 +77,8 @@ public abstract class CaveWorldCarverMixin extends Generator implements CaveGenB
             if (var60 || var17.nextInt(4) != 0) {
                 double var33 = x - var18;
                 double var35 = z - var20;
-                double var37 = (double)(tunnelCount - tunnel);
-                double var39 = (double)(baseWidth + 2.0F + 16.0F);
+                double var37 = tunnelCount - tunnel;
+                double var39 = baseWidth + 2.0F + 16.0F;
                 if (var33 * var33 + var35 * var35 > (var37 + var39) * (var37 + var39)) {
                     return;
                 }
@@ -122,7 +122,7 @@ public abstract class CaveWorldCarverMixin extends Generator implements CaveGenB
                         for(int var50 = var45; !var47 && var50 < var46; ++var50) {
                             for(int var51 = var44 + 1; !var47 && var51 >= var43 - 1; --var51) {
                                 var49 = ((var48 * 16 + var50) * net.modificationstation.stationapi.api.util.math.MathHelper.smallestEncompassingPowerOfTwo(stationapi_getWorld().getHeight()) + var51) - stationapi_getWorld().getBottomY();
-                                if (var51 >= 0 && var51 < 128) {
+                                if (var51 >= stationapi_getWorld().getBottomY() && var51 < stationapi_getWorld().getTopY()) {
                                     if (blocks[var49] == Block.FLOWING_WATER.id || blocks[var49] == Block.WATER.id) {
                                         var47 = true;
                                     }
@@ -153,7 +153,7 @@ public abstract class CaveWorldCarverMixin extends Generator implements CaveGenB
                                             }
 
                                             if (var59 == Block.STONE.id || var59 == Block.DIRT.id|| var59 == Block.GRASS_BLOCK.id) {
-                                                if (var56 < 10) {
+                                                if (var56 < stationapi_getWorld().getBottomY() + 10) {
                                                     blocks[var54] = (byte)Block.FLOWING_LAVA.id;
                                                 } else {
                                                     blocks[var54] = 0;

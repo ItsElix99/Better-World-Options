@@ -201,8 +201,8 @@ public class WorldType {
         return getWorldTypeList().stream().filter(worldType -> id.equals(worldType.id)).findFirst().orElse(defaultWorldType);
     }
 
-    public static int getOldTexture(Identifier worldTypeId, String textureName, int originalTexture) {
-        return getWorldTypeById(worldTypeId).oldTextures.getOrDefault(textureName, originalTexture);
+    public int getOldTexture(String textureName, int originalTexture) {
+        return this.oldTextures.getOrDefault(textureName, originalTexture);
     }
 
     public OldFeaturesProperties getOldFeaturesProperties() {

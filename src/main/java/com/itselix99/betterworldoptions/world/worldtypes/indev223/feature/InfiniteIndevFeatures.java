@@ -107,7 +107,7 @@ public class InfiniteIndevFeatures {
         }
     }
 
-    public static void placeLakes(Random random, byte[] blocks, Theme theme) {
+    public static void placeLakes(World world, Random random, byte[] blocks, Theme theme) {
         int liquid = theme.getLiquidBlock();
         int totalAttempts = 32;
 
@@ -116,21 +116,21 @@ public class InfiniteIndevFeatures {
             int y = random.nextInt(128);
             int z = random.nextInt(16);
 
-            int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
+            int index = (x * 16 + z) * world.getHeight() + y;
 
             if (blocks[index] == 0) {
-                long lakeSize = floodFill(x, y, z, 0, 255, blocks);
+                long lakeSize = floodFill(world, x, y, z, 0, 255, blocks);
 
                 if (lakeSize > 0L && lakeSize < 640L) {
-                    floodFill(x, y, z, 255, liquid, blocks);
+                    floodFill(world, x, y, z, 255, liquid, blocks);
                 } else {
-                    floodFill(x, y, z, 255, 0, blocks);
+                    floodFill(world, x, y, z, 255, 0, blocks);
                 }
             }
         }
     }
 
-    public static void placeUndergroundLakes(Random random, byte[] blocks) {
+    public static void placeUndergroundLakes(World world, Random random, byte[] blocks) {
         int totalAttempts = 64;
         int maxLakeY = 60;
 
@@ -139,24 +139,24 @@ public class InfiniteIndevFeatures {
             int z = random.nextInt(16);
             int y = Math.min(Math.min(random.nextInt(maxLakeY), random.nextInt(maxLakeY)), Math.min(random.nextInt(maxLakeY), random.nextInt(maxLakeY)));
 
-            int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
+            int index = (x * 16 + z) * world.getHeight() + y;
             if (blocks[index] == 0) {
-                long lakeSize = floodFill(x, y, z, 0, 255, blocks);
+                long lakeSize = floodFill(world, x, y, z, 0, 255, blocks);
 
                 if (lakeSize > 0L && lakeSize < 640L) {
-                    floodFill(x, y, z, 255, Block.LAVA.id, blocks);
+                    floodFill(world, x, y, z, 255, Block.LAVA.id, blocks);
                 } else {
-                    floodFill( x, y, z, 255, 0, blocks);
+                    floodFill(world, x, y, z, 255, 0, blocks);
                 }
             }
         }
     }
 
-    public static long floodFill(int startX, int startY, int startZ, int targetBlock, int fillBlock, byte[] blocks) {
+    public static long floodFill(World world, int startX, int startY, int startZ, int targetBlock, int fillBlock, byte[] blocks) {
         byte fill = (byte) fillBlock;
         byte target = (byte) targetBlock;
 
-        int height = Config.BWOConfig.world.worldHeightLimit.getIntValue();
+        int height = world.getHeight();
 
         final int WIDTH = 16;
         final int DEPTH = 16;

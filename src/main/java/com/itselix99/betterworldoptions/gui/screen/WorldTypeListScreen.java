@@ -37,8 +37,6 @@ public class WorldTypeListScreen extends Screen {
     public WorldTypeListScreen(Screen parent, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {
         this.parent = parent;
         this.bwoWorldPropertiesStorage = bwoWorldPropertiesStorage;
-
-        BWOWorldPropertiesStorage.initDimensionWorldTypes();
     }
 
     @SuppressWarnings("unchecked")

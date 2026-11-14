@@ -1,7 +1,7 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.source;
 
-import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.Layer;
-import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release11.Release11Layer;
+import com.itselix99.betterworldoptions.world.biome.layer.Layer;
+import com.itselix99.betterworldoptions.world.biome.layer.release11.Release11Layer;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.Release11BiomeProperties;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;

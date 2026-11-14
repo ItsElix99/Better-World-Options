@@ -17,12 +17,16 @@ import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.biome.Biome;
+import net.modificationstation.stationapi.api.event.init.InitFinishedEvent;
 import net.modificationstation.stationapi.api.event.network.packet.PacketRegisterEvent;
 import net.modificationstation.stationapi.api.event.registry.BlockRegistryEvent;
 import net.modificationstation.stationapi.api.event.world.biome.BiomeRegisterEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
+import net.modificationstation.stationapi.api.registry.DimensionContainer;
+import net.modificationstation.stationapi.api.registry.DimensionRegistry;
 import net.modificationstation.stationapi.api.registry.PacketTypeRegistry;
 import net.modificationstation.stationapi.api.registry.Registry;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.Namespace;
 import net.modificationstation.stationapi.api.util.Null;
 import net.modificationstation.stationapi.api.worldgen.BiomeAPI;
@@ -33,6 +37,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class BetterWorldOptions implements ModInitializer {
     @Entrypoint.Namespace
@@ -78,6 +83,12 @@ public class BetterWorldOptions implements ModInitializer {
     }
 
     @EventListener
+    public void initFinished(InitFinishedEvent event) {
+        this.initDimensionWorldTypes();
+        this.initOldTextures();
+    }
+
+    @EventListener
     public void registerBlocks(BlockRegistryEvent event) {
         INVISIBLE_BEDROCK = new InvisibleBedrock(NAMESPACE.id("invisible_bedrock"), TextureListener.invisibleBedrock, Material.AIR).setUnbreakable().setResistance(6000000.0F).setSoundGroup(Block.STONE_SOUND_GROUP).setTranslationKey(NAMESPACE, "invisible_bedrock").disableTrackingStatistics();
     }
@@ -116,6 +127,27 @@ public class BetterWorldOptions implements ModInitializer {
         EXTREME_HILLS_EDGE = BiomeBuilder.start("Extreme Hills Edge").hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).passiveEntity(SheepEntity.class, 12).passiveEntity(PigEntity.class, 10).passiveEntity(ChickenEntity.class, 10).passiveEntity(CowEntity.class, 8).waterEntity(SquidEntity.class, 10).build();
     }
 
+    private void initDimensionWorldTypes() {
+        for (DimensionContainer<?> dimensionContainer : DimensionRegistry.INSTANCE.serialView.values()) {
+            if (dimensionContainer.getLegacyID() > 1) {
+                String modName = DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString();
+                if (modName.startsWith("mod_")) modName = modName.substring(4);
+
+                Map<String, String[]>[] dimensionWorldTypeInfo = WorldType.getDimensionWorldTypeInfo();
+                String[] info = dimensionWorldTypeInfo[0].getOrDefault(modName, new String[]{modName, modName, null});
+                String[] desc = dimensionWorldTypeInfo[1].getOrDefault(modName, null);
+
+                WorldType worldType = new WorldType(Identifier.of(Namespace.of(DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString()), info[0]), info[1], info[2], desc);
+                worldType.setIsDimension(true);
+                worldType.setDimensionId(dimensionContainer.getLegacyID());
+
+                for (Structure structure : Structure.getStructuresList()) {
+                    structure.addIncompatibleWorldType(Identifier.of(Namespace.of(DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString()), info[0]));
+                }
+            }
+        }
+    }
+
     private void initOldFeaturesProperties() {
         WorldType Alpha120 = WorldType.getWorldTypeById(NAMESPACE.id("alpha_1.2.0"));
         Alpha120.setOldFeaturesProperties(true, true, true);
@@ -143,6 +175,77 @@ public class BetterWorldOptions implements ModInitializer {
 
         WorldType MCPE = WorldType.getWorldTypeById(NAMESPACE.id("mcpe"));
         MCPE.setOldFeaturesProperties(true, 3381555, 6396257, 6731007, 2907587, false, true);
+    }
+
+    private void initOldTextures() {
+        WorldType Alpha120 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("alpha_1.2.0"));
+        Alpha120.addOldTexture("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        Alpha120.addOldTexture("Cobblestone", TextureListener.alphaCobblestone);
+
+        WorldType Alpha112 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("alpha_1.1.2_01"));
+        Alpha112.addOldTexture("GrassBlockTop", TextureListener.alphaGrassBlockTop);
+        Alpha112.addOldTexture("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        Alpha112.addOldTexture("Cobblestone", TextureListener.alphaCobblestone);
+        Alpha112.addOldTexture("IronBlockTop", TextureListener.alphaIronBlock);
+        Alpha112.addOldTexture("IronBlockSide", TextureListener.alphaIronBlockSide);
+        Alpha112.addOldTexture("IronBlockBottom", TextureListener.alphaIronBlockBottom);
+        Alpha112.addOldTexture("GoldBlockTop", TextureListener.alphaGoldBlock);
+        Alpha112.addOldTexture("GoldBlockSide", TextureListener.alphaGoldBlockSide);
+        Alpha112.addOldTexture("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
+        Alpha112.addOldTexture("DiamondBlockTop", TextureListener.alphaDiamondBlock);
+        Alpha112.addOldTexture("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
+        Alpha112.addOldTexture("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
+        Alpha112.addOldTexture("Grass", TextureListener.alphaTallGrass);
+        Alpha112.addOldTexture("Fern", TextureListener.alphaFern);
+        Alpha112.addOldTexture("Leaves", TextureListener.alphaLeaves);
+        Alpha112.addOldTexture("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        Alpha112.addOldTexture("FurnaceTop", Block.STONE.textureId);
+
+        WorldType Infdev611 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100611"));
+        addOldTexturesForInfdevAndIndev(Infdev611);
+
+        WorldType Infdev420 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100420"));
+        addOldTexturesForInfdevAndIndev(Infdev420);
+
+        WorldType Infdev415 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100415"));
+        addOldTexturesForInfdevAndIndev(Infdev415);
+
+        WorldType Infdev327 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100327"));
+        addOldTexturesForInfdevAndIndev(Infdev327);
+
+        WorldType EarlyInfdev = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("early_infdev"));
+        addOldTexturesForInfdevAndIndev(EarlyInfdev);
+
+        WorldType Indev223 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("indev_20100223"));
+        addOldTexturesForInfdevAndIndev(Indev223);
+
+        WorldType MCPE = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("mcpe"));
+        MCPE.addOldTexture("GrassBlockSide", TextureListener.mcpeGrassBlockSide);
+        MCPE.addOldTexture("Leaves", TextureListener.alphaLeaves);
+        MCPE.addOldTexture("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        MCPE.addOldTexture("Rose", TextureListener.mcpeRose);
+        MCPE.addOldTexture("IceBlock", TextureListener.mcpeIceBlock);
+    }
+
+    private void addOldTexturesForInfdevAndIndev(WorldType worldType) {
+        worldType.addOldTexture("GrassBlockTop", TextureListener.alphaGrassBlockTop);
+        worldType.addOldTexture("GrassBlockSide", TextureListener.alphaGrassBlockSide);
+        worldType.addOldTexture("Cobblestone", TextureListener.alphaCobblestone);
+        worldType.addOldTexture("IronBlockTop", TextureListener.alphaIronBlock);
+        worldType.addOldTexture("IronBlockSide", TextureListener.alphaIronBlockSide);
+        worldType.addOldTexture("IronBlockBottom", TextureListener.alphaIronBlockBottom);
+        worldType.addOldTexture("GoldBlockTop", TextureListener.alphaGoldBlock);
+        worldType.addOldTexture("GoldBlockSide", TextureListener.alphaGoldBlockSide);
+        worldType.addOldTexture("GoldBlockBottom", TextureListener.alphaGoldBlockBottom);
+        worldType.addOldTexture("DiamondBlockTop", TextureListener.alphaDiamondBlock);
+        worldType.addOldTexture("DiamondBlockSide", TextureListener.alphaDiamondBlockSide);
+        worldType.addOldTexture("DiamondBlockBottom", TextureListener.alphaDiamondBlockBottom);
+        worldType.addOldTexture("Grass", TextureListener.alphaTallGrass);
+        worldType.addOldTexture("Fern", TextureListener.alphaFern);
+        worldType.addOldTexture("Leaves", TextureListener.alphaLeaves);
+        worldType.addOldTexture("LeavesOpaque", TextureListener.alphaLeavesOpaque);
+        worldType.addOldTexture("FurnaceTop", Block.STONE.textureId);
+        worldType.addOldTexture("BrickBlock", TextureListener.infdevBricksBlock);
     }
 
     public static List<Biome> getOldBiomes() {

@@ -481,7 +481,7 @@ public class BWOChunkGenerator extends OverworldChunkGenerator {
         if (this.finiteWorld && this.finiteWorldType.equals("LCE")) {
             double x2 = (chunkX << 4) + x;
             double z2 = (chunkZ << 4) + z;
-            int index = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
+            int index = (x * 16 + z) * this.world.getHeight() + y;
             double minX = -this.width / 2.0D;
             double maxX = this.width / 2.0D - 1.0D;
             double minZ = -this.length / 2.0D;

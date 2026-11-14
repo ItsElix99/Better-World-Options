@@ -4,6 +4,7 @@ import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.theme.Theme;
+import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -16,7 +17,6 @@ import net.minecraft.world.ServerWorld;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSource;
 import net.minecraft.world.chunk.storage.ChunkStorage;
-import net.modificationstation.stationapi.api.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerChunkCache.class)
 public class ServerChunkCacheMixin {
     @Shadow private ServerWorld world;
-    @Unique private String worldType;
+    @Unique private WorldType worldType;
     @Unique private Theme theme;
     @Unique private boolean oldFeatures;
     @Unique private boolean superflat;
@@ -36,8 +36,8 @@ public class ServerChunkCacheMixin {
     @Inject(method = "<init>", at = @At("TAIL"))
     private void bwo_init(ServerWorld world, ChunkStorage storage, ChunkSource generator, CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) world.getProperties();
-        this.worldType = bwoProperties.bwo_getWorldType();
-        this.theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
+        this.worldType = ((BWOWorld) world).bwo_getWorldType();
+        this.theme = ((BWOWorld) world).bwo_getTheme();
         this.oldFeatures = bwoProperties.bwo_isOldFeatures();
         this.superflat = bwoProperties.bwo_getOptionValue("Superflat", OptionType.WORLD_TYPE_OPTION, false);
         this.finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
@@ -54,7 +54,7 @@ public class ServerChunkCacheMixin {
     )
     private boolean bwo_cancelDecorateInFiniteAndFlatWorld(Chunk chunk, Operation<Boolean> original, @Local(ordinal = 0, argsOnly = true) int x, @Local(ordinal = 1, argsOnly = true) int z) {
         if (this.world.dimension.id == 0) {
-            if (this.worldType.equals(BetterWorldOptions.NAMESPACE.id("flat").toString()) && !this.superflat) {
+            if (this.worldType.getId().equals(BetterWorldOptions.NAMESPACE.id("flat")) && !this.superflat) {
                 BWOChunkGenerator bwoChunkGenerator = (BWOChunkGenerator) ((BWOWorld) this.world).bwo_getChunkGenerator();
                 bwoChunkGenerator.placeStructures(this.world, bwoChunkGenerator.getRandom(), x, z);
 
@@ -65,14 +65,14 @@ public class ServerChunkCacheMixin {
                     for(int var1 = blockX + 8; var1 < blockX + 8 + 16; ++var1) {
                         for(int var2 = blockZ + 8; var2 < blockZ + 8 + 16; ++var2) {
                             int var3 = this.world.getTopSolidBlockY(var1, var2);
-                            if (var3 > 0 && var3 < this.world.dimension.getHeight() && this.world.isAir(var1, var3, var2) && this.world.getMaterial(var1, var3 - 1, var2).blocksMovement() && this.world.getMaterial(var1, var3 - 1, var2) != Material.ICE) {
+                            if (var3 > this.world.getBottomY() && var3 < this.world.getTopY() && this.world.isAir(var1, var3, var2) && this.world.getMaterial(var1, var3 - 1, var2).blocksMovement() && this.world.getMaterial(var1, var3 - 1, var2) != Material.ICE) {
                                 this.world.setBlock(var1, var3, var2, Block.SNOW.id);
                             }
                         }
                     }
                 }
                 return true;
-            } else if (this.finiteWorld && this.oldFeatures && this.worldType.equals(BetterWorldOptions.NAMESPACE.id("mcpe").toString())) {
+            } else if (this.finiteWorld && this.oldFeatures && this.worldType.getId().equals(BetterWorldOptions.NAMESPACE.id("mcpe"))) {
                 int blockX = x * 16;
                 int blockZ = z * 16;
                 int[] sizeLimits = BWOChunkGenerator.getSizeLimits();

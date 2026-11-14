@@ -6,6 +6,7 @@ import com.itselix99.betterworldoptions.api.chunk.FiniteChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.compat.CompatMods;
+import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.mixin.chunk.ChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
@@ -63,8 +64,8 @@ public class MinecraftMixin {
             )
     )
     private boolean bwo_respawnPlayerInOtherDimensions(Dimension instance, Operation<Boolean> original) {
-        String worldType = ((BWOProperties) this.world.getProperties()).bwo_getWorldType();
-        if (worldType.equals("Aether")) {
+        WorldType worldType = ((BWOWorld) this.world).bwo_getWorldType();
+        if (worldType.isDimension()) {
             return true;
         } else {
             return original.call(instance);

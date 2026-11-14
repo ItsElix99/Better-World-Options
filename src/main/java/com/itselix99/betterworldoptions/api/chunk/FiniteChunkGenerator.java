@@ -113,7 +113,7 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
             int startZ = chunkZ * 16;
 
             int worldHeight = 64;
-            int chunkHeight = Config.BWOConfig.world.worldHeightLimit.getIntValue();
+            int chunkHeight = this.world.getHeight();
             int yOffset = 32;
 
             for (int x = 0; x < 16; x++) {
@@ -122,7 +122,7 @@ public class FiniteChunkGenerator extends BWOChunkGenerator {
                     int worldZ = startZ + z;
 
                     for (int y = 0; y < chunkHeight; y++) {
-                        int chunkIndex = (x * 16 + z) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + y;
+                        int chunkIndex = (x * 16 + z) * this.world.getHeight() + y;
 
                         int worldY = y - yOffset;
                         if (worldX >= 0 && worldX < this.width && worldZ >= 0 && worldZ < this.length) {

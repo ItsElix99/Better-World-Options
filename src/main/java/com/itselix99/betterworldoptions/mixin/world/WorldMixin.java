@@ -119,18 +119,6 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
         BWOWorldPropertiesStorage.getInstance().setOldTextures(this.dimension.id == 0 && ((BWOProperties) this.getProperties()).bwo_isOldFeatures());
     }
 
-    @Inject(
-            method = {
-                    "<init>(Lnet/minecraft/world/World;Lnet/minecraft/world/dimension/Dimension;)V",
-                    "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;Lnet/minecraft/world/dimension/Dimension;J)V",
-                    "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;JLnet/minecraft/world/dimension/Dimension;)V"
-            },
-            at = @At("HEAD")
-    )
-    private static void bwo_initDimensionWorldTypes(CallbackInfo ci) {
-        BWOWorldPropertiesStorage.initDimensionWorldTypes();
-    }
-
     @Inject(method = "initializeSpawnPoint", at = @At("HEAD"), cancellable = true)
     private void bwo_initializeSpawnPoint(CallbackInfo ci) {
         BWOProperties bwoProperties = (BWOProperties) properties;
@@ -368,8 +356,9 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
     private boolean bwo_advUpdTemperature(World instance, int x, int y, int z, int blockId, Operation<Boolean> original) {
         if (this.method_1781() instanceof AdvUpdBiomeSource advUpdBiomeSource) {
             float temperature = (float) advUpdBiomeSource.getTemperature(x, z);
+            float temp = this.theme.isCold() ? 10.0F : 0.15F;
 
-            if (temperature > 0.15F) {
+            if (temperature > temp) {
                 return false;
             }
         }

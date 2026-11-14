@@ -1,10 +1,10 @@
-package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release11;
+package com.itselix99.betterworldoptions.world.biome.layer.release11;
 
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
-import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.*;
-import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release.*;
+import com.itselix99.betterworldoptions.world.biome.layer.*;
+import com.itselix99.betterworldoptions.world.biome.layer.release.*;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
 import net.minecraft.world.World;
 

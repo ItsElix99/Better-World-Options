@@ -1,4 +1,4 @@
-package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer;
+package com.itselix99.betterworldoptions.world.biome.layer;
 
 import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;

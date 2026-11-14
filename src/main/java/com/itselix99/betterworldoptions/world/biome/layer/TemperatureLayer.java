@@ -1,11 +1,11 @@
-package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer;
+package com.itselix99.betterworldoptions.world.biome.layer;
 
 import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
 
-public class DownfallLayer extends Layer {
-    public DownfallLayer(Layer parent) {
+public class TemperatureLayer extends Layer {
+    public TemperatureLayer(Layer parent) {
         super(0L);
         this.parent = parent;
     }
@@ -15,7 +15,7 @@ public class DownfallLayer extends Layer {
         int[] var6 = IntCache.get(sizeX * sizeZ);
 
         for(int var7 = 0; var7 < sizeX * sizeZ; ++var7) {
-            var6[var7] = ((BWOBiome) AdvUpdBiomeProperties.BY_ID[var5[var7]]).bwo_getScaledDownfall();
+            var6[var7] = ((BWOBiome) AdvUpdBiomeProperties.BY_ID[var5[var7]]).bwo_getScaledTemperature();
         }
 
         return var6;

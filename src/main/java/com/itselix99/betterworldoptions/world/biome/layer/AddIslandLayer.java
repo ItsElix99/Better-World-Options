@@ -1,12 +1,9 @@
-package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release;
+package com.itselix99.betterworldoptions.world.biome.layer;
 
-import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
-import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.Layer;
-import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.ReleaseBiomeProperties;
 
-public class AddMushroomIslandLayer extends Layer {
-    public AddMushroomIslandLayer(long seed, Layer parent) {
+public class AddIslandLayer extends Layer {
+    public AddIslandLayer(long seed, Layer parent) {
         super(seed);
         this.parent = parent;
     }
@@ -27,10 +24,14 @@ public class AddMushroomIslandLayer extends Layer {
                 int var16 = var9[var12 + 2 + (var11 + 2) * var7];
                 int var17 = var9[var12 + 1 + (var11 + 1) * var7];
                 this.setChunkSeed(var12 + x, var11 + z);
-                if(var17 == 0 && var13 == 0 && var14 == 0 && var15 == 0 && var16 == 0 && this.nextInt(100) == 0) {
-                    var10[var12 + var11 * sizeX] = ((BWOBiome) ReleaseBiomeProperties.MUSHROOM_ISLAND).bwo_getBiomeId();
+                if (var17 != 0 || var13 == 0 && var14 == 0 && var15 == 0 && var16 == 0) {
+                    if (var17 != 1 || var13 == 1 && var14 == 1 && var15 == 1 && var16 == 1) {
+                        var10[var12 + var11 * sizeX] = var17;
+                    } else {
+                        var10[var12 + var11 * sizeX] = 1 - this.nextInt(5) / 4;
+                    }
                 } else {
-                    var10[var12 + var11 * sizeX] = var17;
+                    var10[var12 + var11 * sizeX] = this.nextInt(3) / 2;
                 }
             }
         }

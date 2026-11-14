@@ -169,7 +169,7 @@ public class OverworldChunkGeneratorMixin {
         if (Config.BWOConfig.world.beachFix) {
             double x = (chunkX << 4) + var8;
             double z = (chunkZ << 4) + var9;
-            return ((BWONoise)this.perlinNoise2).bwo_generateNoise(x * var6, z * var6, 0.0D) + this.random.nextDouble() * 0.2D > 0.0D ? 1 : 0;
+            return ((BWONoise)this.perlinNoise2).bwo_sample(x * var6, z * var6, 0.0D) + this.random.nextDouble() * 0.2D > 0.0D ? 1 : 0;
         }
 
         return original;
@@ -184,7 +184,7 @@ public class OverworldChunkGeneratorMixin {
         if (Config.BWOConfig.world.beachFix) {
             double x = (chunkX << 4) + var8;
             double z = (chunkZ << 4) + var9;
-            return ((BWONoise)this.perlinNoise2).bwo_generateNoise(x * var6, 109.0134D, z * var6) + this.random.nextDouble() * 0.2D > 3.0D ? 1 : 0;
+            return ((BWONoise)this.perlinNoise2).bwo_sample(x * var6, 109.0134D, z * var6) + this.random.nextDouble() * 0.2D > 3.0D ? 1 : 0;
         }
 
         return original;
@@ -314,7 +314,7 @@ public class OverworldChunkGeneratorMixin {
         if (this.finiteWorld && this.finiteWorldType.equals("LCE")) {
             double x2 = (chunkX << 4) + var8;
             double z2 = (chunkZ << 4) + var9;
-            int index = (var8 * 16 + var9) * Config.BWOConfig.world.worldHeightLimit.getIntValue() + var17;
+            int index = (var8 * 16 + var9) * this.world.getHeight() + var17;
             double minX = -this.width / 2.0D;
             double maxX = this.width / 2.0D - 1.0D;
             double minZ = -this.length / 2.0D;
@@ -558,13 +558,13 @@ public class OverworldChunkGeneratorMixin {
                             shift = At.Shift.AFTER
                     )
     )
-    private void bwo_generateStructures(ChunkSource source, int x, int z, CallbackInfo ci, @Share("generateVillage") LocalBooleanRef generateVillage) {
+    private void bwo_generateStructures(ChunkSource source, int x, int z, CallbackInfo ci, @Share("largeStructure") LocalBooleanRef largeStructure) {
         for (Structure structure : Structure.getStructuresList()) {
             if (structure.getStructureFeature() != null && this.bwoProperties.bwo_isGenerateStructure(structure.getId())) {
                 boolean valid = structure.getStructureFeature().place(this.world, this.random, x, z);
 
                 if (structure.isLargeStructure()) {
-                    generateVillage.set(valid);
+                    largeStructure.set(valid);
                 }
             }
         }
@@ -578,8 +578,8 @@ public class OverworldChunkGeneratorMixin {
                     ordinal = 0
             )
     )
-    private boolean bwo_cancelLakeGenerationWithVillage(LakeFeature instance, World world, Random random, int x, int y, int z, Operation<Boolean> original, @Share("generateVillage") LocalBooleanRef generateVillage) {
-        if (!generateVillage.get()) {
+    private boolean bwo_cancelLakeGenerationWithVillage(LakeFeature instance, World world, Random random, int x, int y, int z, Operation<Boolean> original, @Share("largeStructure") LocalBooleanRef largeStructure) {
+        if (!largeStructure.get()) {
             return original.call(instance, world, random, x, y, z);
         }
 
@@ -594,8 +594,8 @@ public class OverworldChunkGeneratorMixin {
                     ordinal = 1
             )
     )
-    private boolean bwo_cancelLakeGenerationWithVillage2(LakeFeature instance, World world, Random random, int x, int y, int z, Operation<Boolean> original, @Share("generateVillage") LocalBooleanRef generateVillage) {
-        if (!generateVillage.get()) {
+    private boolean bwo_cancelLakeGenerationWithVillage2(LakeFeature instance, World world, Random random, int x, int y, int z, Operation<Boolean> original, @Share("largeStructure") LocalBooleanRef largeStructure) {
+        if (!largeStructure.get()) {
             return original.call(instance, world, random, x, y, z);
         }
 

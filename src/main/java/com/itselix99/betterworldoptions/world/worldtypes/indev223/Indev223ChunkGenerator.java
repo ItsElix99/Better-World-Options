@@ -593,8 +593,8 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
                     }
                 }
 
-                InfiniteIndevFeatures.placeUndergroundLakes(this.random, blocks);
-                InfiniteIndevFeatures.placeLakes(this.random, blocks, this.theme);
+                InfiniteIndevFeatures.placeUndergroundLakes(this.world, this.random, blocks);
+                InfiniteIndevFeatures.placeLakes(this.world, this.random, blocks, this.theme);
             }
 
             if(this.indevWorldType.equals("Floating")) {
@@ -606,13 +606,13 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
             int liquid = this.theme.getLiquidBlock();
 
             for (int x = 0; x < 16; ++x) {
-                InfiniteIndevFeatures.floodFill(x, surroundingWaterHeight - 1, 0, 0, liquid, blocks);
-                InfiniteIndevFeatures.floodFill(x, surroundingWaterHeight - 1, 15, 0, liquid, blocks);
+                InfiniteIndevFeatures.floodFill(this.world, x, surroundingWaterHeight - 1, 0, 0, liquid, blocks);
+                InfiniteIndevFeatures.floodFill(this.world, x, surroundingWaterHeight - 1, 15, 0, liquid, blocks);
             }
 
             for (int z = 0; z < 16; ++z) {
-                InfiniteIndevFeatures.floodFill(15, surroundingWaterHeight - 1, z, 0, liquid, blocks);
-                InfiniteIndevFeatures.floodFill(0, surroundingWaterHeight - 1, z, 0, liquid, blocks);
+                InfiniteIndevFeatures.floodFill(this.world, 15, surroundingWaterHeight - 1, z, 0, liquid, blocks);
+                InfiniteIndevFeatures.floodFill(this.world, 0, surroundingWaterHeight - 1, z, 0, liquid, blocks);
             }
         }
 
