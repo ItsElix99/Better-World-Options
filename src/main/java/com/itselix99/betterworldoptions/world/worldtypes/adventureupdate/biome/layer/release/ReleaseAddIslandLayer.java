@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release;
 
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.Layer;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.ReleaseBiomeProperties;
@@ -29,8 +30,8 @@ public class ReleaseAddIslandLayer extends Layer {
 				if(var17 != 0 || var13 == 0 && var14 == 0 && var15 == 0 && var16 == 0) {
 					if(var17 > 0 && (var13 == 0 || var14 == 0 || var15 == 0 || var16 == 0)) {
 						if(this.nextInt(5) == 0) {
-							if(var17 == advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.ICE_PLAINS)) {
-								var10[var12 + var11 * sizeX] = advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.FROZEN_OCEAN);
+							if(var17 == ((BWOBiome) ReleaseBiomeProperties.ICE_PLAINS).bwo_getBiomeId()) {
+								var10[var12 + var11 * sizeX] = ((BWOBiome) ReleaseBiomeProperties.FROZEN_OCEAN).bwo_getBiomeId();
 							} else {
 								var10[var12 + var11 * sizeX] = 0;
 							}
@@ -61,8 +62,8 @@ public class ReleaseAddIslandLayer extends Layer {
 
 					if(this.nextInt(3) == 0) {
 						var10[var12 + var11 * sizeX] = var19;
-					} else if(var19 == advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.ICE_PLAINS)) {
-						var10[var12 + var11 * sizeX] = advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.FROZEN_OCEAN);
+					} else if(var19 == ((BWOBiome) ReleaseBiomeProperties.ICE_PLAINS).bwo_getBiomeId()) {
+						var10[var12 + var11 * sizeX] = ((BWOBiome) ReleaseBiomeProperties.FROZEN_OCEAN).bwo_getBiomeId();
 					} else {
 						var10[var12 + var11 * sizeX] = 0;
 					}

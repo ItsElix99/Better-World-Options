@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer;
 
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
 
@@ -28,10 +29,10 @@ public class RiverLayer extends Layer {
                     if (var17 == var13 && var17 == var15 && var17 == var14 && var17 == var16) {
                         var10[var12 + var11 * sizeX] = -1;
                     } else {
-                        var10[var12 + var11 * sizeX] = advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.RIVER);
+                        var10[var12 + var11 * sizeX] = ((BWOBiome) AdvUpdBiomeProperties.RIVER).bwo_getBiomeId();
                     }
                 } else {
-                    var10[var12 + var11 * sizeX] = advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.RIVER);
+                    var10[var12 + var11 * sizeX] = ((BWOBiome) AdvUpdBiomeProperties.RIVER).bwo_getBiomeId();
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer;
 
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
 
@@ -20,7 +21,7 @@ public class DownfallBlendLayer extends Layer {
         int[] var7 = IntCache.get(sizeX * sizeZ);
 
         for(int var8 = 0; var8 < sizeX * sizeZ; ++var8) {
-            var7[var8] = var6[var8] + (advUpdBiomeProperties.getScaledDownfall(AdvUpdBiomeProperties.BY_ID[var5[var8]]) - var6[var8]) / (this.step + 1);
+            var7[var8] = var6[var8] + (((BWOBiome) AdvUpdBiomeProperties.BY_ID[var5[var8]]).bwo_getScaledDownfall() - var6[var8]) / (this.step + 1);
         }
 
         return var7;

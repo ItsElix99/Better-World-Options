@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release11;
 
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.Layer;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.Release11BiomeProperties;
@@ -22,16 +23,16 @@ public class RegionHillsLayer extends Layer {
 				int var9 = var5[var8 + 1 + (var7 + 1) * (sizeX + 2)];
 				if(this.nextInt(3) == 0) {
 					int var10 = var9;
-					if(var9 == advUpdBiomeProperties.getBiomeId(Biome.DESERT)) {
-						var10 = advUpdBiomeProperties.getBiomeId(Release11BiomeProperties.DESERT_HILLS);
-					} else if(var9 == advUpdBiomeProperties.getBiomeId(Biome.FOREST)) {
-						var10 = advUpdBiomeProperties.getBiomeId(Release11BiomeProperties.FOREST_HILLS);
-					} else if(var9 == advUpdBiomeProperties.getBiomeId(Biome.TAIGA)) {
-						var10 = advUpdBiomeProperties.getBiomeId(Release11BiomeProperties.TAIGA_HILLS);
-					} else if(var9 == advUpdBiomeProperties.getBiomeId(Biome.PLAINS)) {
-						var10 = advUpdBiomeProperties.getBiomeId(Biome.FOREST);
-					} else if(var9 == advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.ICE_PLAINS)) {
-						var10 = advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.ICE_MOUNTAINS);
+					if(var9 == ((BWOBiome) Biome.DESERT).bwo_getBiomeId()) {
+						var10 = ((BWOBiome) Release11BiomeProperties.DESERT_HILLS).bwo_getBiomeId();
+					} else if(var9 == ((BWOBiome) Biome.FOREST).bwo_getBiomeId()) {
+						var10 = ((BWOBiome) Release11BiomeProperties.FOREST_HILLS).bwo_getBiomeId();
+					} else if(var9 == ((BWOBiome) Biome.TAIGA).bwo_getBiomeId()) {
+						var10 = ((BWOBiome) Release11BiomeProperties.TAIGA_HILLS).bwo_getBiomeId();
+					} else if(var9 == ((BWOBiome) Biome.PLAINS).bwo_getBiomeId()) {
+						var10 = ((BWOBiome) Biome.FOREST).bwo_getBiomeId();
+					} else if(var9 == ((BWOBiome) ReleaseBiomeProperties.ICE_PLAINS).bwo_getBiomeId()) {
+						var10 = ((BWOBiome) ReleaseBiomeProperties.ICE_MOUNTAINS).bwo_getBiomeId();
 					}
 
 					if(var10 != var9) {

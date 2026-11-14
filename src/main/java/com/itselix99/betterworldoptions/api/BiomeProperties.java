@@ -1,20 +1,17 @@
 package com.itselix99.betterworldoptions.api;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import net.minecraft.world.biome.Biome;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.worldgen.BiomeAPI;
 import net.modificationstation.stationapi.impl.worldgen.OverworldBiomeProviderImpl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BiomeProperties {
     protected List<Biome> baseBiomes = new ArrayList<>();
     protected List<Biome> moddedBiomes = new ArrayList<>();
-    protected final Map<Biome, float[]> tempAndDownfall = new HashMap<>();
     protected static Map<Identifier, Map<Biome, Boolean>> snowBaseBiomes = new HashMap<>();
     protected static Map<Identifier, Map<Biome, Boolean>> precipitationBaseBiomes = new HashMap<>();
     protected static Map<Biome, Boolean> snowModdedBiomes = new HashMap<>();
@@ -52,25 +49,21 @@ public class BiomeProperties {
                     precipitationModdedBiomes.put(moddedBiome, moddedBiome.canRain());
                 }
 
-                this.setTemperatureAndDownfall(moddedBiome, moddedBiome.canSnow() ? 0.05F : 0.5F, 0.5F);
+                ((BWOBiome) moddedBiome).bwo_setTemperatureAndDownfall(moddedBiome.canSnow() ? 0.05F : 0.5F, 0.5F);
             }
         }
 
-        this.setTemperatureAndDownfall(Biome.TUNDRA, 0.05F, 0.2F);
-        this.setTemperatureAndDownfall(Biome.SAVANNA, 0.7F, 0.1F);
-        this.setTemperatureAndDownfall(Biome.DESERT, 1.0F, 0.05F);
-        this.setTemperatureAndDownfall(Biome.SWAMPLAND, 0.6F, 0.8F);
-        this.setTemperatureAndDownfall(Biome.TAIGA, 0.4F, 0.4F);
-        this.setTemperatureAndDownfall(Biome.SHRUBLAND, 0.8F, 0.3F);
-        this.setTemperatureAndDownfall(Biome.FOREST, 0.8F, 0.6F);
-        this.setTemperatureAndDownfall(Biome.PLAINS, 1.0F, 0.4F);
-        this.setTemperatureAndDownfall(Biome.SEASONAL_FOREST, 1.0F, 0.7F);
-        this.setTemperatureAndDownfall(Biome.RAINFOREST, 1.0F, 0.85F);
-        this.setTemperatureAndDownfall(Biome.ICE_DESERT, 0.05F, 0.05F);
-    }
-
-    public void setTemperatureAndDownfall(Biome biome, float temperature, float downfall) {
-        this.tempAndDownfall.put(biome, new float[]{temperature, downfall});
+        ((BWOBiome) Biome.TUNDRA).bwo_setTemperatureAndDownfall(0.05F, 0.2F);
+        ((BWOBiome) Biome.SAVANNA).bwo_setTemperatureAndDownfall(0.7F, 0.1F);
+        ((BWOBiome) Biome.DESERT).bwo_setTemperatureAndDownfall(1.0F, 0.05F);
+        ((BWOBiome) Biome.SWAMPLAND).bwo_setTemperatureAndDownfall(0.6F, 0.8F);
+        ((BWOBiome) Biome.TAIGA).bwo_setTemperatureAndDownfall(0.4F, 0.4F);
+        ((BWOBiome) Biome.SHRUBLAND).bwo_setTemperatureAndDownfall(0.8F, 0.3F);
+        ((BWOBiome) Biome.FOREST).bwo_setTemperatureAndDownfall(0.8F, 0.6F);
+        ((BWOBiome) Biome.PLAINS).bwo_setTemperatureAndDownfall(1.0F, 0.4F);
+        ((BWOBiome) Biome.SEASONAL_FOREST).bwo_setTemperatureAndDownfall(1.0F, 0.7F);
+        ((BWOBiome) Biome.RAINFOREST).bwo_setTemperatureAndDownfall(1.0F, 0.85F);
+        ((BWOBiome) Biome.ICE_DESERT).bwo_setTemperatureAndDownfall(0.05F, 0.05F);
     }
 
     public Identifier getId() {
@@ -95,10 +88,6 @@ public class BiomeProperties {
 
     public List<Biome> getAllBiomesForSingleBiome() {
         return new ArrayList<>(BiomeAPI.getOverworldProvider().getBiomes());
-    }
-
-    public float[] getTemperatureAndDownfall(Biome biome) {
-        return this.tempAndDownfall.get(biome);
     }
 
     public boolean getDefaultSnow(Identifier id, Biome biome) {

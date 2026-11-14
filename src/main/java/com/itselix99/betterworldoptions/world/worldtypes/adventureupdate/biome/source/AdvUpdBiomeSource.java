@@ -94,29 +94,8 @@ public class AdvUpdBiomeSource extends BiomeSource implements BWOBiomeSource {
         return downfalls;
     }
 
-    public double[] getDownfalls(double[] downfalls, int x, int z, int width, int depth) {
-        IntCache.next();
-        if (downfalls == null || downfalls.length < width * depth) {
-            downfalls = new double[width * depth];
-        }
-
-        int[] var6 = this.downfalls.getArea(x, z, width, depth);
-
-        for(int var7 = 0; var7 < width * depth; ++var7) {
-            float var8 = (float)var6[var7] / 65536.0F;
-            if (var8 > 1.0F) {
-                var8 = 1.0F;
-            }
-
-            downfalls[var7] = var8;
-        }
-
-        return downfalls;
-    }
-
     @Environment(EnvType.CLIENT)
     public double getTemperature(int x, int z) {
-        this.temperatureMap = this.getTemperatures(this.temperatureMap, x, z, 1, 1);
         return this.cache.getTemperature(x, z);
     }
 
@@ -203,18 +182,46 @@ public class AdvUpdBiomeSource extends BiomeSource implements BWOBiomeSource {
             biomes = new Biome[width * depth];
         }
 
-        this.temperatureMap = this.getTemperatures(this.temperatureMap, x, z, width, depth);
-        this.downfallMap = this.getDownfalls(this.downfallMap, x, z, width, depth);
+        if (this.temperatureMap == null || this.temperatureMap.length < width * depth) {
+            this.temperatureMap = new double[width * depth];
+        }
+
+        if (this.downfallMap == null || this.downfallMap.length < width * depth) {
+            this.downfallMap = new double[width * depth];
+        }
 
         if (useCache && width == 16 && depth == 16 && (x & 15) == 0 && (z & 15) == 0) {
             Biome[] var9 = this.cache.getBiomes(x, z);
+            float[] temperatures = this.cache.getTemperatures(x, z);
+            float[] downfalls = this.cache.getDownfalls(x, z);
             System.arraycopy(var9, 0, biomes, 0, width * depth);
+
+            for (int i = 0; i < width * depth; ++i) {
+                this.temperatureMap[i] = temperatures[i];
+                this.downfallMap[i] = downfalls[i];
+            }
+
             return biomes;
         } else {
             int[] var7 = this.biomes.getArea(x, z, width, depth);
+            int[] temperatures = this.temperatures.getArea(x, z, width, depth);
+            int[] downfalls = this.downfalls.getArea(x, z, width, depth);
 
             for(int var8 = 0; var8 < width * depth; ++var8) {
                 biomes[var8] = AdvUpdBiomeProperties.BY_ID[var7[var8]];
+
+                float temperature = (float)temperatures[var8] / 65536.0F;
+                if (temperature > 1.0F) {
+                    temperature = 1.0F;
+                }
+
+                float downfall = (float)downfalls[var8] / 65536.0F;
+                if (downfall > 1.0F) {
+                    downfall = 1.0F;
+                }
+
+                this.temperatureMap[var8] = temperature;
+                this.downfallMap[var8] = downfall;
             }
 
             return biomes;

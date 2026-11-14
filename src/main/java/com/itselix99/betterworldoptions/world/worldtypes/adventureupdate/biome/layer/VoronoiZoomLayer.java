@@ -28,16 +28,16 @@ public class VoronoiZoomLayer extends Layer {
 
             for(int var18 = 0; var18 < var9 - 1; ++var18) {
                 double var19 = (double)var6 * 0.9D;
-                this.setChunkSeed((long)(var18 + var7 << var5), (long)(var15 + var8 << var5));
+                this.setChunkSeed((long) var18 + var7 << var5, (long) var15 + var8 << var5);
                 double var21 = ((double)this.nextInt(1024) / 1024.0D - 0.5D) * var19;
                 double var23 = ((double)this.nextInt(1024) / 1024.0D - 0.5D) * var19;
-                this.setChunkSeed((long)(var18 + var7 + 1 << var5), (long)(var15 + var8 << var5));
+                this.setChunkSeed((long) var18 + var7 + 1 << var5, (long) var15 + var8 << var5);
                 double var25 = ((double)this.nextInt(1024) / 1024.0D - 0.5D) * var19 + (double)var6;
                 double var27 = ((double)this.nextInt(1024) / 1024.0D - 0.5D) * var19;
-                this.setChunkSeed((long)(var18 + var7 << var5), (long)(var15 + var8 + 1 << var5));
+                this.setChunkSeed((long) var18 + var7 << var5, (long) var15 + var8 + 1 << var5);
                 double var29 = ((double)this.nextInt(1024) / 1024.0D - 0.5D) * var19;
                 double var31 = ((double)this.nextInt(1024) / 1024.0D - 0.5D) * var19 + (double)var6;
-                this.setChunkSeed((long)(var18 + var7 + 1 << var5), (long)(var15 + var8 + 1 << var5));
+                this.setChunkSeed((long) var18 + var7 + 1 << var5, (long) var15 + var8 + 1 << var5);
                 double var33 = ((double)this.nextInt(1024) / 1024.0D - 0.5D) * var19 + (double)var6;
                 double var35 = ((double)this.nextInt(1024) / 1024.0D - 0.5D) * var19 + (double)var6;
                 int var37 = var11[var18 + 1 + (var15) * var9];

@@ -1,6 +1,7 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties;
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.feature.FeatureDecorator;
 import net.minecraft.world.biome.Biome;
 import net.modificationstation.stationapi.api.util.Identifier;
@@ -26,43 +27,37 @@ public class ReleaseBiomeProperties extends AdvUpdBiomeProperties {
         super();
         FeatureDecorator featureDecorator;
 
-        this.setHeight(OCEAN, -1.0F, 0.4F);
+        ((BWOBiome) OCEAN).bwo_setHeight(-1.0F, 0.4F);
 
-        FROZEN_OCEAN = BetterWorldOptions.FROZEN_OCEAN;
-        this.initBiome(FROZEN_OCEAN, 10, FROZEN_OCEAN.canSnow(), true);
-        this.setHeight(FROZEN_OCEAN, -1.0F, 0.5F);
-        this.setTemperatureAndDownfall(FROZEN_OCEAN, 0.0F, 0.5F);
+        FROZEN_OCEAN = this.initBiome(BetterWorldOptions.FROZEN_OCEAN, 10, BetterWorldOptions.FROZEN_OCEAN.canSnow(), true);
+        ((BWOBiome) FROZEN_OCEAN).bwo_setHeight(-1.0F, 0.5F);
+        ((BWOBiome) FROZEN_OCEAN).bwo_setTemperatureAndDownfall(0.0F, 0.5F);
 
-        FROZEN_RIVER = BetterWorldOptions.FROZEN_RIVER;
-        this.initBiome(FROZEN_RIVER, 11, FROZEN_RIVER.canSnow(), true);
-        this.setHeight(FROZEN_RIVER, -0.5F, 0.0F);
-        this.setTemperatureAndDownfall(FROZEN_RIVER, 0.0F, 0.5F);
+        FROZEN_RIVER = this.initBiome(BetterWorldOptions.FROZEN_RIVER, 11, BetterWorldOptions.FROZEN_RIVER.canSnow(), true);
+        ((BWOBiome) FROZEN_RIVER).bwo_setHeight(-0.5F, 0.0F);
+        ((BWOBiome) FROZEN_RIVER).bwo_setTemperatureAndDownfall(0.0F, 0.5F);
 
-        ICE_PLAINS = BetterWorldOptions.ICE_PLAINS;
-        this.initBiome(ICE_PLAINS, 12, ICE_PLAINS.canSnow(), true);
-        this.setTemperatureAndDownfall(ICE_PLAINS, 0.0F, 0.5F);
+        ICE_PLAINS = this.initBiome(BetterWorldOptions.ICE_PLAINS, 12, BetterWorldOptions.ICE_PLAINS.canSnow(), true);
+        ((BWOBiome) ICE_PLAINS).bwo_setTemperatureAndDownfall(0.0F, 0.5F);
 
-        ICE_MOUNTAINS = BetterWorldOptions.ICE_MOUNTAINS;
-        this.initBiome(ICE_MOUNTAINS, 13, ICE_MOUNTAINS.canSnow(), true);
-        this.setHeight(ICE_MOUNTAINS, 0.2F, 1.8F);
-        this.setTemperatureAndDownfall(ICE_MOUNTAINS, 0.0F, 0.5F);
+        ICE_MOUNTAINS = this.initBiome(BetterWorldOptions.ICE_MOUNTAINS, 13, BetterWorldOptions.ICE_MOUNTAINS.canSnow(), true);
+        ((BWOBiome) ICE_MOUNTAINS).bwo_setHeight(0.2F, 1.8F);
+        ((BWOBiome) ICE_MOUNTAINS).bwo_setTemperatureAndDownfall(0.0F, 0.5F);
 
-        MUSHROOM_ISLAND = BetterWorldOptions.MUSHROOM_ISLAND;
-        this.initBiome(MUSHROOM_ISLAND, 14, MUSHROOM_ISLAND.canSnow(), true);
-        this.setHeight(MUSHROOM_ISLAND, 0.2F, 1.0F);
-        this.setTemperatureAndDownfall(MUSHROOM_ISLAND, 0.9F, 1.0F);
-        featureDecorator = this.getFeatureDecorator(MUSHROOM_ISLAND);
+        MUSHROOM_ISLAND = this.initBiome(BetterWorldOptions.MUSHROOM_ISLAND, 14, BetterWorldOptions.MUSHROOM_ISLAND.canSnow(), true);
+        ((BWOBiome) MUSHROOM_ISLAND).bwo_setHeight(0.2F, 1.0F);
+        ((BWOBiome) MUSHROOM_ISLAND).bwo_setTemperatureAndDownfall(0.9F, 1.0F);
+        featureDecorator = ((BWOBiome) MUSHROOM_ISLAND).bwo_getFeatureDecorator();
         featureDecorator.treeAttempts = -100;
         featureDecorator.flowerAttempts = -100;
         featureDecorator.grassAttempts = -100;
         featureDecorator.mushroomAttempts = 1;
         featureDecorator.hugeMushroomAttempts = 1;
 
-        MUSHROOM_ISLAND_SHORE = BetterWorldOptions.MUSHROOM_ISLAND_SHORE;
-        this.initBiome(MUSHROOM_ISLAND_SHORE, 15, MUSHROOM_ISLAND_SHORE.canSnow(), true);
-        this.setHeight(MUSHROOM_ISLAND_SHORE, -1.0F, 0.1F);
-        this.setTemperatureAndDownfall(MUSHROOM_ISLAND_SHORE, 0.9F, 1.0F);
-        featureDecorator = this.getFeatureDecorator(MUSHROOM_ISLAND_SHORE);
+        MUSHROOM_ISLAND_SHORE = this.initBiome(BetterWorldOptions.MUSHROOM_ISLAND_SHORE, 15, BetterWorldOptions.MUSHROOM_ISLAND_SHORE.canSnow(), true);
+        ((BWOBiome) MUSHROOM_ISLAND_SHORE).bwo_setHeight(-1.0F, 0.1F);
+        ((BWOBiome) MUSHROOM_ISLAND_SHORE).bwo_setTemperatureAndDownfall(0.9F, 1.0F);
+        featureDecorator = ((BWOBiome) MUSHROOM_ISLAND_SHORE).bwo_getFeatureDecorator();
         featureDecorator.treeAttempts = -100;
         featureDecorator.flowerAttempts = -100;
         featureDecorator.grassAttempts = -100;

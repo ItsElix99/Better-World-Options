@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release;
 
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.Layer;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.ReleaseBiomeProperties;
@@ -27,7 +28,7 @@ public class AddSnowyBiomesLayer extends Layer {
                 } else {
                     int var14 = this.nextInt(5);
                     if (var14 == 0) {
-                        var14 = advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.ICE_PLAINS);
+                        var14 = ((BWOBiome) ReleaseBiomeProperties.ICE_PLAINS).bwo_getBiomeId();
                     } else {
                         var14 = 1;
                     }

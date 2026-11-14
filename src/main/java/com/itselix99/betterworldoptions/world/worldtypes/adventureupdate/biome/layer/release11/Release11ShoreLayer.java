@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release11;
 
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.Layer;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
@@ -25,35 +26,35 @@ public class Release11ShoreLayer extends Layer {
                 int var11;
                 int var12;
                 int var13;
-                if(var9 == advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.MUSHROOM_ISLAND)) {
+                if(var9 == ((BWOBiome) ReleaseBiomeProperties.MUSHROOM_ISLAND).bwo_getBiomeId()) {
                     var10 = var5[var8 + 1 + (var7 + 1 - 1) * (sizeX + 2)];
                     var11 = var5[var8 + 1 + 1 + (var7 + 1) * (sizeX + 2)];
                     var12 = var5[var8 + 1 - 1 + (var7 + 1) * (sizeX + 2)];
                     var13 = var5[var8 + 1 + (var7 + 1 + 1) * (sizeX + 2)];
-                    if(var10 != advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.OCEAN) && var11 != advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.OCEAN) && var12 != advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.OCEAN) && var13 != advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.OCEAN)) {
+                    if(var10 != ((BWOBiome) AdvUpdBiomeProperties.OCEAN).bwo_getBiomeId() && var11 != ((BWOBiome) AdvUpdBiomeProperties.OCEAN).bwo_getBiomeId() && var12 != ((BWOBiome) AdvUpdBiomeProperties.OCEAN).bwo_getBiomeId() && var13 != ((BWOBiome) AdvUpdBiomeProperties.OCEAN).bwo_getBiomeId()) {
                         var6[var8 + var7 * sizeX] = var9;
                     } else {
-                        var6[var8 + var7 * sizeX] = advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.MUSHROOM_ISLAND_SHORE);
+                        var6[var8 + var7 * sizeX] = ((BWOBiome) ReleaseBiomeProperties.MUSHROOM_ISLAND_SHORE).bwo_getBiomeId();
                     }
-                } else if(var9 != advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.OCEAN) && var9 != advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.RIVER) && var9 != advUpdBiomeProperties.getBiomeId(Biome.SWAMPLAND) && var9 != advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.EXTREME_HILLS)) {
+                } else if(var9 != ((BWOBiome) AdvUpdBiomeProperties.OCEAN).bwo_getBiomeId() && var9 != ((BWOBiome) AdvUpdBiomeProperties.RIVER).bwo_getBiomeId() && var9 != ((BWOBiome) Biome.SWAMPLAND).bwo_getBiomeId() && var9 != ((BWOBiome) AdvUpdBiomeProperties.EXTREME_HILLS).bwo_getBiomeId()) {
                     var10 = var5[var8 + 1 + (var7 + 1 - 1) * (sizeX + 2)];
                     var11 = var5[var8 + 1 + 1 + (var7 + 1) * (sizeX + 2)];
                     var12 = var5[var8 + 1 - 1 + (var7 + 1) * (sizeX + 2)];
                     var13 = var5[var8 + 1 + (var7 + 1 + 1) * (sizeX + 2)];
-                    if(var10 != advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.OCEAN) && var11 != advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.OCEAN) && var12 != advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.OCEAN) && var13 != advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.OCEAN)) {
+                    if(var10 != ((BWOBiome) AdvUpdBiomeProperties.OCEAN).bwo_getBiomeId() && var11 != ((BWOBiome) AdvUpdBiomeProperties.OCEAN).bwo_getBiomeId() && var12 != ((BWOBiome) AdvUpdBiomeProperties.OCEAN).bwo_getBiomeId() && var13 != ((BWOBiome) AdvUpdBiomeProperties.OCEAN).bwo_getBiomeId()) {
                         var6[var8 + var7 * sizeX] = var9;
                     } else {
-                        var6[var8 + var7 * sizeX] = advUpdBiomeProperties.getBiomeId(Release11BiomeProperties.BEACH);
+                        var6[var8 + var7 * sizeX] = ((BWOBiome) Release11BiomeProperties.BEACH).bwo_getBiomeId();
                     }
-                } else if(var9 == advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.EXTREME_HILLS)) {
+                } else if(var9 == ((BWOBiome) AdvUpdBiomeProperties.EXTREME_HILLS).bwo_getBiomeId()) {
                     var10 = var5[var8 + 1 + (var7 + 1 - 1) * (sizeX + 2)];
                     var11 = var5[var8 + 1 + 1 + (var7 + 1) * (sizeX + 2)];
                     var12 = var5[var8 + 1 - 1 + (var7 + 1) * (sizeX + 2)];
                     var13 = var5[var8 + 1 + (var7 + 1 + 1) * (sizeX + 2)];
-                    if(var10 == advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.EXTREME_HILLS) && var11 == advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.EXTREME_HILLS) && var12 == advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.EXTREME_HILLS) && var13 == advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.EXTREME_HILLS)) {
+                    if(var10 == ((BWOBiome) AdvUpdBiomeProperties.EXTREME_HILLS).bwo_getBiomeId() && var11 == ((BWOBiome) AdvUpdBiomeProperties.EXTREME_HILLS).bwo_getBiomeId() && var12 == ((BWOBiome) AdvUpdBiomeProperties.EXTREME_HILLS).bwo_getBiomeId() && var13 == ((BWOBiome) AdvUpdBiomeProperties.EXTREME_HILLS).bwo_getBiomeId()) {
                         var6[var8 + var7 * sizeX] = var9;
                     } else {
-                        var6[var8 + var7 * sizeX] = advUpdBiomeProperties.getBiomeId(Release11BiomeProperties.EXTREME_HILLS_EDGE);
+                        var6[var8 + var7 * sizeX] = ((BWOBiome) Release11BiomeProperties.EXTREME_HILLS_EDGE).bwo_getBiomeId();
                     }
                 } else {
                     var6[var8 + var7 * sizeX] = var9;

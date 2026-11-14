@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer;
 
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
 
@@ -25,7 +26,7 @@ public class OceanRiverMixerLayer extends Layer {
         int[] var7 = IntCache.get(sizeX * sizeZ);
 
         for(int var8 = 0; var8 < sizeX * sizeZ; ++var8) {
-            if (var5[var8] == advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.OCEAN)) {
+            if (var5[var8] == ((BWOBiome) AdvUpdBiomeProperties.OCEAN).bwo_getBiomeId()) {
                 var7[var8] = var5[var8];
             } else {
                 var7[var8] = var6[var8] >= 0 ? var6[var8] : var5[var8];

@@ -78,15 +78,6 @@ public class AdvUpdFixedBiomeSource extends AdvUpdBiomeSource {
         return downfalls;
     }
 
-    public double[] getDownfalls(double[] downfalls, int x, int z, int width, int depth) {
-        if (downfalls == null || downfalls.length < width * depth) {
-            downfalls = new double[width * depth];
-        }
-
-        Arrays.fill(downfalls, 0, width * depth, this.downfall);
-        return downfalls;
-    }
-
     @Environment(EnvType.CLIENT)
     public float getDownfall(int x, int z) {
         return (float) this.downfall;
@@ -108,6 +99,9 @@ public class AdvUpdFixedBiomeSource extends AdvUpdBiomeSource {
 
         if (this.temperatureMap == null || this.temperatureMap.length < width * depth) {
             this.temperatureMap = new double[width * depth];
+        }
+
+        if (this.downfallMap == null || this.downfallMap.length < width * depth) {
             this.downfallMap = new double[width * depth];
         }
 

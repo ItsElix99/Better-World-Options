@@ -72,6 +72,14 @@ public class BiomeCache {
         return this.getEntry(x, z).biomes;
     }
 
+    public float[] getTemperatures(int x, int z) {
+        return this.getEntry(x, z).temperatures;
+    }
+
+    public float[] getDownfalls(int x, int z) {
+        return this.getEntry(x, z).downfalls;
+    }
+
     static AdvUpdBiomeSource getBiomeSource(BiomeCache var0) {
         return (AdvUpdBiomeSource) var0.source;
     }

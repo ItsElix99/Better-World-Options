@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release;
 
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.Layer;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
@@ -25,12 +26,12 @@ public class ReleaseBiomeInitLayer extends Layer {
                 int var9 = var5[var8 + var7 * sizeX];
                 if(var9 == 0) {
                     var6[var8 + var7 * sizeX] = 0;
-                } else if(var9 == advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.MUSHROOM_ISLAND)) {
+                } else if(var9 == ((BWOBiome) ReleaseBiomeProperties.MUSHROOM_ISLAND).bwo_getBiomeId()) {
                     var6[var8 + var7 * sizeX] = var9;
                 } else if(var9 == 1) {
-                    var6[var8 + var7 * sizeX] = advUpdBiomeProperties.getBiomeId(this.biomes[this.nextInt(this.biomes.length)]);
+                    var6[var8 + var7 * sizeX] = ((BWOBiome) this.biomes[this.nextInt(this.biomes.length)]).bwo_getBiomeId();
                 } else {
-                    var6[var8 + var7 * sizeX] = advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.ICE_PLAINS);
+                    var6[var8 + var7 * sizeX] = ((BWOBiome) ReleaseBiomeProperties.ICE_PLAINS).bwo_getBiomeId();
                 }
             }
         }

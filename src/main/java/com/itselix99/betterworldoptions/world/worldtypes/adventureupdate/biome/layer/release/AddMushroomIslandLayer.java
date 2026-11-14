@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release;
 
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.Layer;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.ReleaseBiomeProperties;
@@ -27,7 +28,7 @@ public class AddMushroomIslandLayer extends Layer {
                 int var17 = var9[var12 + 1 + (var11 + 1) * var7];
                 this.setChunkSeed(var12 + x, var11 + z);
                 if(var17 == 0 && var13 == 0 && var14 == 0 && var15 == 0 && var16 == 0 && this.nextInt(100) == 0) {
-                    var10[var12 + var11 * sizeX] = advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.MUSHROOM_ISLAND);
+                    var10[var12 + var11 * sizeX] = ((BWOBiome) ReleaseBiomeProperties.MUSHROOM_ISLAND).bwo_getBiomeId();
                 } else {
                     var10[var12 + var11 * sizeX] = var17;
                 }

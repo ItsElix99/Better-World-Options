@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer;
 
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
 import net.minecraft.world.biome.Biome;
@@ -20,7 +21,7 @@ public class BiomeInitLayer extends Layer {
         for(int var7 = 0; var7 < sizeZ; ++var7) {
             for(int var8 = 0; var8 < sizeX; ++var8) {
                 this.setChunkSeed(var8 + x, var7 + z);
-                var6[var8 + var7 * sizeX] = var5[var8 + var7 * sizeX] > 0 ? advUpdBiomeProperties.getBiomeId(this.biomes[this.nextInt(this.biomes.length)]) : 0;
+                var6[var8 + var7 * sizeX] = var5[var8 + var7 * sizeX] > 0 ? ((BWOBiome) this.biomes[this.nextInt(this.biomes.length)]).bwo_getBiomeId() : 0;
             }
         }
 

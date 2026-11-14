@@ -24,7 +24,7 @@ public class FuzzyZoomLayer extends Layer {
             int var16 = var9[(var12 + 1) * var7];
 
             for(int var17 = 0; var17 < var7 - 1; ++var17) {
-                this.setChunkSeed((long)(var17 + var5 << 1), (long)(var12 + var6 << 1));
+                this.setChunkSeed((long) var17 + var5 << 1, (long) var12 + var6 << 1);
                 int var18 = var9[var17 + 1 + (var12) * var7];
                 int var19 = var9[var17 + 1 + (var12 + 1) * var7];
                 var10[var14] = var15;

@@ -2,8 +2,8 @@ package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.
 
 import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.BiomeProperties;
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.feature.FeatureDecorator;
-import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.worldgen.BiomeAPI;
@@ -13,9 +13,6 @@ import java.util.*;
 
 public class AdvUpdBiomeProperties extends BiomeProperties {
     public static final Biome[] BY_ID = new Biome[256];
-    protected final Map<Biome, Integer> biomeId = new HashMap<>();
-    protected final Map<Biome, float[]> height = new HashMap<>();
-    protected final Map<Biome, FeatureDecorator> decorator = new HashMap<>();
 
     public static Biome OCEAN;
     public static Biome EXTREME_HILLS;
@@ -31,48 +28,46 @@ public class AdvUpdBiomeProperties extends BiomeProperties {
 
         FeatureDecorator featureDecorator;
 
-        OCEAN = BetterWorldOptions.OCEAN;
-        this.initBiome(OCEAN, 0, OCEAN.canSnow(), true);
-        this.setHeight(OCEAN, -1.0F, 0.5F);
+        OCEAN = this.initBiome(BetterWorldOptions.OCEAN, 0, BetterWorldOptions.OCEAN.canSnow(), true);
+        ((BWOBiome) OCEAN).bwo_setHeight(-1.0F, 0.5F);
 
         this.initBiome(Biome.PLAINS, 1, Biome.PLAINS.canSnow(), true);
-        this.setTemperatureAndDownfall(Biome.PLAINS, 0.8F, 0.4F);
-        featureDecorator = this.getFeatureDecorator(Biome.PLAINS);
+        ((BWOBiome) Biome.PLAINS).bwo_setTemperatureAndDownfall(0.8F, 0.4F);
+        featureDecorator = ((BWOBiome) Biome.PLAINS).bwo_getFeatureDecorator();
         featureDecorator.treeAttempts = -999;
         featureDecorator.flowerAttempts = 4;
         featureDecorator.grassAttempts = 10;
 
         this.initBiome(Biome.DESERT, 2, Biome.DESERT.canSnow(), true);
-        this.setTemperatureAndDownfall(Biome.DESERT, 2.0F, 0.0F);
-        this.setHeight(Biome.DESERT, 0.1F, 0.2F);
-        featureDecorator = this.getFeatureDecorator(Biome.DESERT);
+        ((BWOBiome) Biome.DESERT).bwo_setTemperatureAndDownfall(2.0F, 0.0F);
+        ((BWOBiome) Biome.DESERT).bwo_setHeight(0.1F, 0.2F);
+        featureDecorator = ((BWOBiome) Biome.DESERT).bwo_getFeatureDecorator();
         featureDecorator.treeAttempts = -999;
         featureDecorator.deadBushAttempts = 2;
         featureDecorator.sugarcaneAttempts = 50;
         featureDecorator.cactusAttempts = 10;
 
-        EXTREME_HILLS = BetterWorldOptions.EXTREME_HILLS;
-        this.initBiome(EXTREME_HILLS, 3, EXTREME_HILLS.canSnow(), true);
-        this.setHeight(EXTREME_HILLS, 0.2F, 1.8F);
-        this.setTemperatureAndDownfall(EXTREME_HILLS, 0.2F, 0.3F);
+        EXTREME_HILLS = this.initBiome(BetterWorldOptions.EXTREME_HILLS, 3, BetterWorldOptions.EXTREME_HILLS.canSnow(), true);
+        ((BWOBiome) EXTREME_HILLS).bwo_setHeight(0.2F, 1.8F);
+        ((BWOBiome) EXTREME_HILLS).bwo_setTemperatureAndDownfall(0.2F, 0.3F);
 
         this.initBiome(Biome.FOREST, 4, Biome.FOREST.canSnow(), true);
-        this.setTemperatureAndDownfall(Biome.FOREST, 0.7F, 0.8F);
-        featureDecorator = this.getFeatureDecorator(Biome.FOREST);
+        ((BWOBiome) Biome.FOREST).bwo_setTemperatureAndDownfall(0.7F, 0.8F);
+        featureDecorator = ((BWOBiome) Biome.FOREST).bwo_getFeatureDecorator();
         featureDecorator.treeAttempts = 10;
         featureDecorator.grassAttempts = 2;
 
         this.initBiome(Biome.TAIGA, 5, false, true);
-        this.setTemperatureAndDownfall(Biome.TAIGA, 0.3F, 0.8F);
-        this.setHeight(Biome.TAIGA, 0.1F, 0.4F);
-        featureDecorator = this.getFeatureDecorator(Biome.TAIGA);
+        ((BWOBiome) Biome.TAIGA).bwo_setTemperatureAndDownfall(0.3F, 0.8F);
+        ((BWOBiome) Biome.TAIGA).bwo_setHeight(0.1F, 0.4F);
+        featureDecorator = ((BWOBiome) Biome.TAIGA).bwo_getFeatureDecorator();
         featureDecorator.treeAttempts = 10;
         featureDecorator.grassAttempts = 1;
 
         this.initBiome(Biome.SWAMPLAND, 6, Biome.SWAMPLAND.canSnow(), true);
-        this.setTemperatureAndDownfall(Biome.SWAMPLAND, 0.8F, 0.9F);
-        this.setHeight(Biome.SWAMPLAND, -0.2F, 0.1F);
-        featureDecorator = this.getFeatureDecorator(Biome.SWAMPLAND);
+        ((BWOBiome) Biome.SWAMPLAND).bwo_setTemperatureAndDownfall(0.8F, 0.9F);
+        ((BWOBiome) Biome.SWAMPLAND).bwo_setHeight(-0.2F, 0.1F);
+        featureDecorator = ((BWOBiome) Biome.SWAMPLAND).bwo_getFeatureDecorator();
         featureDecorator.treeAttempts = 2;
         featureDecorator.flowerAttempts = -999;
         featureDecorator.deadBushAttempts = 1;
@@ -81,9 +76,8 @@ public class AdvUpdBiomeProperties extends BiomeProperties {
         featureDecorator.clayPatchAttempts = 1;
         featureDecorator.lilyPadAttempts = 4;
 
-        RIVER = BetterWorldOptions.RIVER;
-        this.initBiome(RIVER, 7, RIVER.canSnow(), true);
-        this.setHeight(RIVER, -0.5F, 0.0F);
+        RIVER = this.initBiome(BetterWorldOptions.RIVER, 7, BetterWorldOptions.RIVER.canSnow(), true);
+        ((BWOBiome) RIVER).bwo_setHeight(-0.5F, 0.0F);
 
         this.initBiome(Biome.HELL, 8, Biome.HELL.canSnow(), false);
         this.initBiome(Biome.SKY, 9, Biome.SKY.canSnow(), false);
@@ -91,12 +85,12 @@ public class AdvUpdBiomeProperties extends BiomeProperties {
         this.initModdedBiome();
     }
 
-    protected void initBiome(Biome biome, int id, boolean snow, boolean baseBiome) {
+    protected Biome initBiome(Biome biome, int id, boolean snow, boolean baseBiome) {
         BY_ID[id] = biome;
-        this.biomeId.put(biome, id);
-        this.height.put(biome, new float[]{0.1F, 0.3F});
-        this.tempAndDownfall.put(biome, new float[]{0.5F, 0.5F});
-        this.decorator.put(biome, new FeatureDecorator(biome));
+        ((BWOBiome) biome).bwo_setBiomeId(id);
+        ((BWOBiome) biome).bwo_setHeight(0.1F, 0.3F);
+        ((BWOBiome) biome).bwo_setTemperatureAndDownfall(0.5F, 0.5F);
+        ((BWOBiome) biome).bwo_setFeatureDecorator(new FeatureDecorator(biome));
 
         if (baseBiome) {
             if (OverworldBiomeProviderImpl.getInstance().getBiomes().contains(biome) && biome.canSnow() && !snow) {
@@ -113,19 +107,17 @@ public class AdvUpdBiomeProperties extends BiomeProperties {
                 precipitationBaseBiomes.get(this.getId()).put(biome, biome.canRain());
             }
         }
+
+        return biome;
     }
 
     protected void initModdedBiome() {
         for (Biome moddedBiome : this.moddedBiomes) {
-            this.initBiome(moddedBiome, this.biomeId.size(), moddedBiome.canSnow(), false);
+            Biome biome = this.initBiome(moddedBiome, this.getAllBiomes().size(), moddedBiome.canSnow(), false);
             if (moddedBiome.canSnow()) {
-                this.setTemperatureAndDownfall(moddedBiome, 0.0F, 0.5F);
+                ((BWOBiome) biome).bwo_setTemperatureAndDownfall(0.0F, 0.5F);
             }
         }
-    }
-
-    public void setHeight(Biome biome, float baseHeight, float heightVariation) {
-        this.height.put(biome, new float[]{baseHeight, heightVariation});
     }
 
     public Identifier getId() {
@@ -151,29 +143,5 @@ public class AdvUpdBiomeProperties extends BiomeProperties {
             }
         }
         return allBiomes;
-    }
-
-    public int getBiomeId(Biome biome) {
-        return this.biomeId.get(biome);
-    }
-
-    public float[] getHeight(Biome biome) {
-        return this.height.get(biome);
-    }
-
-    public FeatureDecorator getFeatureDecorator(Biome biome) {
-        return this.decorator.get(biome);
-    }
-
-    public int getScaledDownfall(Biome biome) {
-        return (int)(this.tempAndDownfall.get(biome)[1] * 65536.0F);
-    }
-
-    public int getScaledTemperature(Biome biome) {
-        return (int)(this.tempAndDownfall.get(biome)[0] * 65536.0F);
-    }
-
-    public void decorate(World world, Biome biome, Random random, int x, int z) {
-        this.decorator.get(biome).decorate(world, random, x, z);
     }
 }

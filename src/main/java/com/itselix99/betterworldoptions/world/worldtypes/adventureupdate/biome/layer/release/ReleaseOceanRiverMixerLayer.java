@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release;
 
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.Layer;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
@@ -27,15 +28,15 @@ public class ReleaseOceanRiverMixerLayer extends Layer {
         int[] var7 = IntCache.get(sizeX * sizeZ);
 
         for(int var8 = 0; var8 < sizeX * sizeZ; ++var8) {
-            if(var5[var8] == advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.OCEAN)) {
+            if(var5[var8] == ((BWOBiome) AdvUpdBiomeProperties.OCEAN).bwo_getBiomeId()) {
                 var7[var8] = var5[var8];
             } else if(var6[var8] >= 0) {
-                if(var5[var8] == advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.ICE_PLAINS)) {
-                    var7[var8] = advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.FROZEN_RIVER);
-                } else if(var5[var8] != advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.MUSHROOM_ISLAND) && var5[var8] != advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.MUSHROOM_ISLAND_SHORE)) {
+                if(var5[var8] == ((BWOBiome) ReleaseBiomeProperties.ICE_PLAINS).bwo_getBiomeId()) {
+                    var7[var8] = ((BWOBiome) ReleaseBiomeProperties.FROZEN_RIVER).bwo_getBiomeId();
+                } else if(var5[var8] != ((BWOBiome) ReleaseBiomeProperties.MUSHROOM_ISLAND).bwo_getBiomeId() && var5[var8] != ((BWOBiome) ReleaseBiomeProperties.MUSHROOM_ISLAND_SHORE).bwo_getBiomeId()) {
                     var7[var8] = var6[var8];
                 } else {
-                    var7[var8] = advUpdBiomeProperties.getBiomeId(ReleaseBiomeProperties.MUSHROOM_ISLAND_SHORE);
+                    var7[var8] = ((BWOBiome) ReleaseBiomeProperties.MUSHROOM_ISLAND_SHORE).bwo_getBiomeId();
                 }
             } else {
                 var7[var8] = var5[var8];

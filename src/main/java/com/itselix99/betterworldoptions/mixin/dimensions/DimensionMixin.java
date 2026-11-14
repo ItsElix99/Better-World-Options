@@ -5,6 +5,7 @@ import com.itselix99.betterworldoptions.api.BiomeProperties;
 import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
 import com.itselix99.betterworldoptions.config.Config;
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
@@ -62,8 +63,7 @@ public class DimensionMixin {
             Biome biome = biomeProperties.getAllBiomes().stream().filter(biome1 -> biome1.name.equals(singleBiome)).findFirst().orElse(null);
 
             if (biome != null) {
-                float[] tempAndDownfall = biomeProperties.getTemperatureAndDownfall(biome);
-                return worldType.getFixedBiomeSource().getDeclaredConstructor(Biome.class, double.class, double.class).newInstance(biome, tempAndDownfall[0], tempAndDownfall[1]);
+                return worldType.getFixedBiomeSource().getDeclaredConstructor(Biome.class, double.class, double.class).newInstance(biome, ((BWOBiome) biome).bwo_getTemperature(), ((BWOBiome) biome).bwo_getDownfall());
             }
         }
 

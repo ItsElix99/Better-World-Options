@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.release11;
 
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.world.biome.IntCache;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.layer.Layer;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.AdvUpdBiomeProperties;
@@ -19,8 +20,8 @@ public class HumidLakesLayer extends Layer {
 			for(int var8 = 0; var8 < sizeX; ++var8) {
 				this.setChunkSeed(var8 + x, var7 + z);
 				int var9 = var5[var8 + 1 + (var7 + 1) * (sizeX + 2)];
-				if(var9 == advUpdBiomeProperties.getBiomeId(Biome.SWAMPLAND) && this.nextInt(6) == 0) {
-					var6[var8 + var7 * sizeX] = advUpdBiomeProperties.getBiomeId(AdvUpdBiomeProperties.RIVER);
+				if(var9 == ((BWOBiome) Biome.SWAMPLAND).bwo_getBiomeId() && this.nextInt(6) == 0) {
+					var6[var8 + var7 * sizeX] = ((BWOBiome) AdvUpdBiomeProperties.RIVER).bwo_getBiomeId();
 				} else {
 					var6[var8 + var7 * sizeX] = var9;
 				}

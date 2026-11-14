@@ -3,6 +3,7 @@ package com.itselix99.betterworldoptions.world.worldtypes.adventureupdate;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.config.Config;
+import com.itselix99.betterworldoptions.interfaces.BWOBiome;
 import com.itselix99.betterworldoptions.util.noise.BWOOctavePerlinNoiseSampler;
 import com.itselix99.betterworldoptions.world.carver.AdvUpdCaveWorldCarver;
 import com.itselix99.betterworldoptions.world.feature.adventureupdate.AdvUpdLakeFeature;
@@ -21,7 +22,7 @@ import net.modificationstation.stationapi.impl.world.CaveGenBaseImpl;
 import net.modificationstation.stationapi.impl.worldgen.WorldDecoratorImpl;
 
 public class AdvUpdChunkGenerator extends BWOChunkGenerator {
-    float[] biomeWeights;
+    protected float[] biomeWeights;
     protected final AdvUpdBiomeProperties advUpdBiomeProperties;
     private final boolean amplified;
 
@@ -48,7 +49,7 @@ public class AdvUpdChunkGenerator extends BWOChunkGenerator {
 
     public void buildSurfaces(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes) {
         this.biomes = this.world.method_1781().getBiomesInArea(this.biomes, chunkX * 16, chunkZ * 16, 16, 16);
-        super.buildSurfaces(chunkX, chunkZ, blocks, biomes);
+        super.buildSurfaces(chunkX, chunkZ, blocks, this.biomes);
     }
 
     protected void initBuffers(int chunkX, int chunkZ, double scale) {
@@ -100,6 +101,10 @@ public class AdvUpdChunkGenerator extends BWOChunkGenerator {
         }
     }
 
+    protected Biome[] getBiomes(int chunkX, int chunkZ) {
+        return new Biome[]{};
+    }
+
     protected double[] getTemperatures(int chunkX, int chunkZ) {
         return ((AdvUpdBiomeSource) this.world.method_1781()).getTemperaturesD(chunkX * 16, chunkZ * 16, 16, 16);
     }
@@ -147,8 +152,8 @@ public class AdvUpdChunkGenerator extends BWOChunkGenerator {
                 for (int var24 = -var22; var24 <= var22; ++var24) {
                     for (int var25 = -var22; var25 <= var22; ++var25) {
                         Biome var26 = this.biomes[var17 + var24 + 2 + (var18 + var25 + 2) * (sizeX + 5)];
-                        float baseHeight = this.advUpdBiomeProperties.getHeight(var26)[0];
-                        float heightVariation = this.advUpdBiomeProperties.getHeight(var26)[1];
+                        float baseHeight = ((BWOBiome) var26).bwo_getBaseHeight();
+                        float heightVariation = ((BWOBiome) var26).bwo_getHeightVariation();
 
                         if (this.amplified && baseHeight > 0.0F) {
                             baseHeight = 1.0F + baseHeight * 2.0F;
@@ -156,7 +161,7 @@ public class AdvUpdChunkGenerator extends BWOChunkGenerator {
                         }
 
                         float var27 = this.biomeWeights[var24 + 2 + (var25 + 2) * 5] / (baseHeight + 2.0F);
-                        if (this.advUpdBiomeProperties.getHeight(var26)[0] > this.advUpdBiomeProperties.getHeight(var23)[0]) {
+                        if (((BWOBiome) var26).bwo_getBaseHeight() > ((BWOBiome) var23).bwo_getBaseHeight()) {
                             var27 /= 2.0F;
                         }
 
@@ -283,7 +288,7 @@ public class AdvUpdChunkGenerator extends BWOChunkGenerator {
             (new DungeonFeature()).generate(this.world, this.random, var19, var20, var21);
         }
 
-        this.advUpdBiomeProperties.decorate(this.world, var6, this.random, var4, var5);
+        ((BWOBiome) var6).bwo_decorate(this.world, this.random, var4, var5);
         AdvUpdNaturalSpawner.populateChunk(this.world, var6, var4 + 8, var5 + 8, 16, 16, this.random);
 
         for(int var22 = var4 + 8; var22 < var4 + 8 + 16; ++var22) {
