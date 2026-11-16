@@ -2,12 +2,15 @@ package com.itselix99.betterworldoptions.world.worldtypes;
 
 import java.util.Random;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.chunk.BWOChunkGenerator;
 import com.itselix99.betterworldoptions.api.chunk.OldChunkGenerator;
+import com.itselix99.betterworldoptions.api.structure.Structure;
 import com.itselix99.betterworldoptions.util.noise.BWOOctavePerlinNoiseSampler;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.ChunkSource;
 
 public class EarlyInfdevChunkGenerator extends OldChunkGenerator {
     private final Random brickRandom = new Random();
@@ -93,38 +96,40 @@ public class EarlyInfdevChunkGenerator extends OldChunkGenerator {
                         var17 = this.getWaterBlock(temperature, var16, false);
                     }
 
-                    this.brickRandom.setSeed(var10 + var11 * 13871L);
-                    int var18 = (var10 << 10) + 128 + this.brickRandom.nextInt(512);
-                    int var19 = (var11 << 10) + 128 + this.brickRandom.nextInt(512);
-                    var18 = var8 - var18;
-                    var19 = var9 - var19;
-                    if(var18 < 0) {
-                        var18 = -var18;
-                    }
+                    if (this.bwoProperties.bwo_isGenerateStructure(BetterWorldOptions.NAMESPACE.id("brickPyramid"))) {
+                        this.brickRandom.setSeed(var10 + var11 * 13871L);
+                        int var18 = (var10 << 10) + 128 + this.brickRandom.nextInt(512);
+                        int var19 = (var11 << 10) + 128 + this.brickRandom.nextInt(512);
+                        var18 = var8 - var18;
+                        var19 = var9 - var19;
+                        if (var18 < 0) {
+                            var18 = -var18;
+                        }
 
-                    if(var19 < 0) {
-                        var19 = -var19;
-                    }
+                        if (var19 < 0) {
+                            var19 = -var19;
+                        }
 
-                    if(var19 > var18) {
-                        var18 = var19;
-                    }
+                        if (var19 > var18) {
+                            var18 = var19;
+                        }
 
-                    var18 = 127 - var18;
-                    if(var18 == 255) {
-                        var18 = 1;
-                    }
+                        var18 = 127 - var18;
+                        if (var18 == 255) {
+                            var18 = 1;
+                        }
 
-                    if(var18 < var15) {
-                        var18 = var15;
-                    }
+                        if (var18 < var15) {
+                            var18 = var15;
+                        }
 
-                    if(var16 <= var18 && (var17 == 0 || var17 == this.theme.getSurfaceLiquidBlock() || var17 == this.theme.getLiquidBlock() || var17 == this.theme.getFlowingLiquidBlock())) {
-                        var17 = Block.BRICKS.id;
-                    }
+                        if (var16 <= var18 && (var17 == 0 || var17 == this.theme.getSurfaceLiquidBlock() || var17 == this.theme.getLiquidBlock() || var17 == this.theme.getFlowingLiquidBlock())) {
+                            var17 = Block.BRICKS.id;
+                        }
 
-                    if(var17 < 0) {
-                        var17 = 0;
+                        if (var17 < 0) {
+                            var17 = 0;
+                        }
                     }
 
                     blocks[var7++] = (byte)var17;
@@ -149,6 +154,34 @@ public class EarlyInfdevChunkGenerator extends OldChunkGenerator {
         int erosion = (int)(this.perlinNoise3.sampleInverse(worldX * scale * 2.0D, worldZ * scale * 2.0D) / 3.0D + 3.0D + this.random.nextDouble() * 0.25D);
 
         return new int[]{sandBeach, gravelBeach, erosion};
+    }
+
+    protected void buildStructures(ChunkSource source, World world, int chunkX, int chunkZ, byte[] blocks) {
+        for (Structure structure : Structure.getStructuresList()) {
+            if (structure.getStructureFeature() != null && this.bwoProperties.bwo_isGenerateStructure(structure.getId())) {
+                if (!structure.getId().equals(BetterWorldOptions.NAMESPACE.id("brickPyramid"))) {
+                    structure.getStructureFeature().place(source, world, chunkX, chunkZ, blocks);
+                }
+            }
+        }
+    }
+
+    public boolean placeStructures(World world, Random random, int chunkX, int chunkZ) {
+        boolean largeStructure = false;
+
+        for (Structure structure : Structure.getStructuresList()) {
+            if (structure.getStructureFeature() != null && this.bwoProperties.bwo_isGenerateStructure(structure.getId())) {
+                if (!structure.getId().equals(BetterWorldOptions.NAMESPACE.id("brickPyramid"))) {
+                    boolean valid = structure.getStructureFeature().place(world, random, chunkX, chunkZ);
+
+                    if (structure.isLargeStructure()) {
+                        largeStructure = valid;
+                    }
+                }
+            }
+        }
+
+        return largeStructure;
     }
 
     protected int getForestNoiseValue(int x, int z) {

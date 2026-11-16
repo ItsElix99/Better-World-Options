@@ -4,6 +4,7 @@ import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.world.feature.desertwell.DesertWellStructure;
 import com.itselix99.betterworldoptions.world.feature.notchHouse.NotchHouseStructure;
 import com.itselix99.betterworldoptions.world.structures.TemplePieces;
+import com.itselix99.betterworldoptions.world.structures.brickPyramid.BrickPyramidStructure;
 import com.itselix99.betterworldoptions.world.structures.mineshaft.MineshaftStructure;
 import com.itselix99.betterworldoptions.world.structures.desertPyramid.DesertPyramidStructure;
 import com.itselix99.betterworldoptions.world.structures.notchVillage.NotchVillageStructure;
@@ -136,6 +137,11 @@ public class Structure {
         NotchVillage.addIncompatibleWorldType(BetterWorldOptions.NAMESPACE.id("nether"));
         NotchVillage.addIncompatibleWorldType(BetterWorldOptions.NAMESPACE.id("skylands"));
         NotchVillage.addBiomes(new ArrayList<>(Arrays.asList(Biome.PLAINS, Biome.DESERT, Biome.SAVANNA, Biome.TUNDRA)));
+
+        Structure BrickPyramid = new Structure(BetterWorldOptions.NAMESPACE.id("brickPyramid"), "Brick Pyramid", new BrickPyramidStructure());
+        BrickPyramid.setLargeStructure(true);
+        BrickPyramid.addIncompatibleWorldType(BetterWorldOptions.NAMESPACE.id("nether"));
+        BrickPyramid.addIncompatibleWorldType(BetterWorldOptions.NAMESPACE.id("skylands"));
 
 //        Structure NotchHouse = new NotchHouseStructure(BetterWorldOptions.NAMESPACE.id("notchHouse"), "Notch House", true);
 //        NotchHouse.addIncompatibleWorldType(BetterWorldOptions.NAMESPACE.id("nether"));
