@@ -50,8 +50,6 @@ public class Indev223ChunkGenerator extends FiniteChunkGenerator {
         }
 
         if (!this.finiteWorldType.equals("MCPE")) {
-            this.finiteWorldType = null;
-        } else {
             this.finiteWorldType = this.indevWorldType;
         }
     }

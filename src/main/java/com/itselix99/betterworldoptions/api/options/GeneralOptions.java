@@ -136,5 +136,9 @@ public class GeneralOptions {
         FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("mcpe"));
         FarlandsDistance.setStep(2);
         addDependentOption(Farlands, FarlandsDistance);
+
+        BooleanOption StarterHouse = new BooleanOption("Starter House:", "StarterHouse", null, OptionType.GENERAL_OPTION, false);
+
+        BooleanOption BonusChest = new BooleanOption("Bonus Chest:", "BonusChest", null, OptionType.GENERAL_OPTION, false);
     }
 }

@@ -11,35 +11,6 @@ import net.minecraft.world.gen.feature.OakTreeFeature;
 import java.util.*;
 
 public class InfiniteIndevFeatures {
-    public static void placeSpawnBuilding(World world) {
-        int var1 = world.getProperties().getSpawnX();
-        int var2 = world.getProperties().getSpawnY() + 2;
-        int var3 = world.getProperties().getSpawnZ();
-
-        for(int var4 = var1 - 3; var4 <= var1 + 3; ++var4) {
-            for(int var5 = var2 - 2; var5 <= var2 + 2; ++var5) {
-                for(int var6 = var3 - 3; var6 <= var3 + 3; ++var6) {
-                    int blockId = var5 < var2 - 1 ? Block.OBSIDIAN.id : 0;
-                    if (var4 == var1 - 3 || var6 == var3 - 3 || var4 == var1 + 3 || var6 == var3 + 3 || var5 == var2 - 2 || var5 == var2 + 2) {
-                        blockId = Block.STONE.id;
-                        if (var5 >= var2 - 1) {
-                            blockId = Block.PLANKS.id;
-                        }
-                    }
-
-                    if (var6 == var3 - 3 && var4 == var1 && var5 >= var2 - 1 && var5 <= var2) {
-                        blockId = 0;
-                    }
-
-                    world.setBlock(var4, var5, var6, blockId);
-                }
-            }
-        }
-
-        world.setBlock(var1 - 3 + 1, var2, var3, Block.TORCH.id);
-        world.setBlock(var1 + 3 - 1, var2, var3, Block.TORCH.id);
-    }
-
     public static void generateTrees(World world, Random random, int chance, int x, int z) {
         for(int var1 = 0; var1 < chance; ++var1) {
             int var2 = x + random.nextInt(16) + 8 + (random.nextInt(12) - random.nextInt(12));

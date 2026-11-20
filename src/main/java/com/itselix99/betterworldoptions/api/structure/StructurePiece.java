@@ -430,22 +430,7 @@ public abstract class StructurePiece {
             world.setBlock(var1, var2, var3, Block.CHEST.id);
             ChestBlockEntity chestBlockEntity = (ChestBlockEntity)world.getBlockEntity(var1, var2, var3);
             if (chestBlockEntity != null) {
-                placeLootInChest(random, loot, chestBlockEntity, attempts);
-            }
-        }
-
-    }
-
-    private static void placeLootInChest(Random random, LootEntry[] loot, ChestBlockEntity chest, int attempts) {
-        for(int var1 = 0; var1 < attempts; ++var1) {
-            LootEntry lootEntry = WeightedPicker.getRandom(random, Arrays.stream(loot).toList());
-            int var2 = lootEntry.minItemChance + random.nextInt(lootEntry.maxItemChance - lootEntry.minItemChance + 1);
-            if (Item.ITEMS[lootEntry.item].getMaxCount() >= var2) {
-                chest.setStack(random.nextInt(chest.size()), new ItemStack(lootEntry.item, var2, lootEntry.itemMetadata));
-            } else {
-                for(int var3 = 0; var3 < var2; ++var3) {
-                    chest.setStack(random.nextInt(chest.size()), new ItemStack(lootEntry.item, 1, lootEntry.itemMetadata));
-                }
+                LootEntry.addLoot(random, loot, chestBlockEntity, attempts);
             }
         }
 

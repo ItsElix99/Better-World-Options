@@ -1,18 +1,15 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
-import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.BiomeProperties;
-import com.itselix99.betterworldoptions.api.chunk.FiniteChunkGenerator;
-import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
+import com.itselix99.betterworldoptions.api.worldtype.SpawnPoint;
 import com.itselix99.betterworldoptions.api.worldtype.WorldType;
 import com.itselix99.betterworldoptions.interfaces.BWOWorld;
 import com.itselix99.betterworldoptions.mixin.chunk.ChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.mixin.chunk.ServerChunkGeneratorAccessor;
 import com.itselix99.betterworldoptions.world.BWOWorldPropertiesStorage;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.source.AdvUpdBiomeSource;
-import com.itselix99.betterworldoptions.world.worldtypes.indev223.feature.InfiniteIndevFeatures;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -21,7 +18,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import com.itselix99.betterworldoptions.interfaces.BWOProperties;
 import net.minecraft.world.WorldProperties;
@@ -39,7 +35,6 @@ import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Random;
 
 @Mixin(World.class)
@@ -54,6 +49,7 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
     @Unique private WorldType worldType;
     @Unique private Theme theme;
     @Unique private BiomeProperties biomeProperties;
+    @Unique private SpawnPoint spawnPoint;
 
     @Shadow public abstract int getBlockId(int x, int y, int z);
     @Shadow public abstract WorldProperties getProperties();
@@ -79,6 +75,7 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
         this.worldType = WorldType.getWorldTypeById(Identifier.of(bwoProperties.bwo_getWorldType()));
         this.theme = Theme.getThemeById(Identifier.of(bwoProperties.bwo_getTheme()));
         this.biomeProperties = this.worldType.getBiomeProperties().getClass().getDeclaredConstructor().newInstance();
+        this.spawnPoint = this.worldType.getSpawnPoint().getDeclaredConstructor(BWOProperties.class).newInstance(bwoProperties);
 
         BiomeProperties.resetDefaultSnowAndPrecipitation();
 
@@ -121,148 +118,11 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
 
     @Inject(method = "initializeSpawnPoint", at = @At("HEAD"), cancellable = true)
     private void bwo_initializeSpawnPoint(CallbackInfo ci) {
-        BWOProperties bwoProperties = (BWOProperties) properties;
-
-        boolean finiteWorld = bwoProperties.bwo_getOptionValue("FiniteWorld", OptionType.GENERAL_OPTION, false);
-        String finiteWorldType = bwoProperties.bwo_getOptionValue("FiniteWorldType", OptionType.GENERAL_OPTION, "");
-        int width = bwoProperties.bwo_getOptionValue("Width", OptionType.GENERAL_OPTION, 0);
-        int length = bwoProperties.bwo_getOptionValue("Length", OptionType.GENERAL_OPTION, 0);
-
-        boolean farlands = bwoProperties.bwo_getOptionValue("Farlands", OptionType.GENERAL_OPTION, false);
-        String farlandsShape = bwoProperties.bwo_getOptionValue("FarlandsShape", OptionType.GENERAL_OPTION, "");
-        int farlandsDistance = bwoProperties.bwo_getOptionValue("FarlandsDistance", OptionType.GENERAL_OPTION, 0) / 2;
-
-        boolean generateIndevHouse = bwoProperties.bwo_getOptionValue("GenerateIndevHouse", OptionType.WORLD_TYPE_OPTION, false);
-
-        if (this.worldType.getId().equals(BetterWorldOptions.NAMESPACE.id("indev_20100223"))) {
-            this.eventProcessingEnabled = true;
-            if (this.bwo_getChunkGenerator() instanceof FiniteChunkGenerator finiteChunkGenerator && finiteWorld) {
-                finiteChunkGenerator.setCurrentStage("Spawning");
-            }
-
-            boolean isValidSpawnArea = false;
-            int attempts = 0;
-            int var1 = 0;
-            int var2 = 64;
-            int var3 = 0;
-
-            while (!isValidSpawnArea) {
-                if (!finiteWorld) {
-                    var1 += this.random.nextInt(64) - this.random.nextInt(64);
-                    var3 += this.random.nextInt(64) - this.random.nextInt(64);
-                } else {
-                    ++attempts;
-                    var1 = this.random.nextInt(width / 2) + width / 4;
-                    var3 = this.random.nextInt(length / 2) + length / 4;
-                }
-
-                var2 = this.getTopSolidBlockY(var1, var3);
-
-                if(attempts >= 1000000) {
-                    break;
-                }
-
-                if (!generateIndevHouse && this.dimension.isValidSpawnPoint(var1, var3) || this.bwo_isValidSpawnArea(var1, var2, var3)) {
-                    isValidSpawnArea = true;
-                }
-            }
-
-            this.properties.setSpawn(var1, var2 - 1, var3);
-            this.eventProcessingEnabled = false;
-            if (generateIndevHouse && isValidSpawnArea) {
-                InfiniteIndevFeatures.placeSpawnBuilding(World.class.cast(this));
-            }
-            ci.cancel();
-        } else if (farlands) {
-            this.eventProcessingEnabled = true;
-            int var1 = 0;
-            int var2 = 64;
-
-            int min = -farlandsDistance * 16;
-            int max = (farlandsDistance * 16) + 15;
-
-            int var3;
-            for(var3 = 0; !this.dimension.isValidSpawnPoint(var1, var3); var3 += this.random.nextInt(64) - this.random.nextInt(64)) {
-                var1 += this.random.nextInt(64) - this.random.nextInt(64);
-
-                if (farlandsShape.equals("Linear")) {
-                    var1 = Math.max(min, Math.min(max, var1));
-                } else if (farlandsShape.equals("Square")) {
-                    var1 = Math.max(min, Math.min(max, var1));
-                    var3 = Math.max(min, Math.min(max, var3));
-                }
-            }
-
-            this.properties.setSpawn(var1, var2, var3);
-            this.eventProcessingEnabled = false;
-            ci.cancel();
-        } else if (finiteWorld && finiteWorldType.equals("MCPE")) {
-            this.eventProcessingEnabled = true;
-            int var1 = width / 2;
-            int var2 = 64;
-            int var3;
-
-            for (var3 = length / 2; !this.dimension.isValidSpawnPoint(var1, var3); var3 += this.random.nextInt(64) - this.random.nextInt(64)) {
-                var1 += this.random.nextInt(64) - this.random.nextInt(64);
-            }
-
-            this.properties.setSpawn(var1, var2, var3);
-            this.eventProcessingEnabled = false;
-            ci.cancel();
-        } else if (this.method_1781() instanceof AdvUpdBiomeSource advUpdBiomeSource) {
-            this.eventProcessingEnabled = true;
-            List<Biome> biomesList = advUpdBiomeSource.getBiomesForSpawnPoint();
-            Random random = new Random(this.getSeed());
-            BlockPos blockPos = advUpdBiomeSource.bwo_findBiome(0, 0, 256, biomesList, random);
-            int x = 0;
-            int y = 64;
-            int z = 0;
-            if (blockPos != null) {
-                x = blockPos.x;
-                z = blockPos.z;
-            } else {
-                System.out.println("Unable to find spawn biome");
-            }
-
-            int var1 = 0;
-
-            while(!this.dimension.isValidSpawnPoint(x, z)) {
-                x += random.nextInt(64) - random.nextInt(64);
-                z += random.nextInt(64) - random.nextInt(64);
-                ++var1;
-                if (var1 == 1000) {
-                    break;
-                }
-            }
-
-            this.properties.setSpawn(x, y, z);
-            this.eventProcessingEnabled = false;
-            ci.cancel();
-        }
-    }
-
-    @Unique
-    private boolean bwo_isValidSpawnArea(int centerX, int centerY, int centerZ) {
-        for (int x = centerX - 3; x <= centerX + 3; x++) {
-            for (int y = centerY; y <= centerY + 3; y++) {
-                for (int z = centerZ - 3; z <= centerZ + 3; z++) {
-                    if (this.getMaterial(x, y, z).isSolid()) {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        int floorY = centerY - 1;
-        for (int x = centerX - 3; x <= centerX + 3; x++) {
-            for (int z = centerZ - 5; z <= centerZ + 3; z++) {
-                if (!Block.BLOCKS_OPAQUE[this.getBlockId(x, floorY, z)]) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        this.eventProcessingEnabled = true;
+        this.spawnPoint.init(World.class.cast(this), this.dimension, this.random, this.properties);
+        this.eventProcessingEnabled = false;
+        this.spawnPoint.generateStarterHouseAndBonusChest(World.class.cast(this), this.properties, this.random, this.properties.getSpawnX(), this.getTopSolidBlockY(this.properties.getSpawnX(), this.properties.getSpawnZ()) + 1, this.properties.getSpawnZ());
+        ci.cancel();
     }
 
     @ModifyReturnValue(

@@ -7,7 +7,11 @@ import com.itselix99.betterworldoptions.api.options.OptionType;
 import com.itselix99.betterworldoptions.api.options.entry.IntOption;
 import com.itselix99.betterworldoptions.api.options.entry.Option;
 import com.itselix99.betterworldoptions.api.options.entry.StringOption;
+import com.itselix99.betterworldoptions.world.spawnpoint.IndevSpawnPoint;
+import com.itselix99.betterworldoptions.world.spawnpoint.InfdevSpawnPoint;
+import com.itselix99.betterworldoptions.world.spawnpoint.MCPESpawnPoint;
 import com.itselix99.betterworldoptions.world.worldtypes.*;
+import com.itselix99.betterworldoptions.world.spawnpoint.AdvUpdSpawnPoint;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.properties.Release11BiomeProperties;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.biome.source.AdvUpdFixedBiomeSource;
 import com.itselix99.betterworldoptions.world.worldtypes.adventureupdate.AdvUpdChunkGenerator;
@@ -47,6 +51,7 @@ public class WorldType {
     private Class<? extends BiomeSource> biomeSource = BiomeSource.class;
     private Class<? extends BiomeSource> fixedBiomeSource = FixedBiomeSource.class;
     private BiomeProperties biomeProperties = new BiomeProperties(BetterWorldOptions.NAMESPACE.id("default"));
+    private Class<? extends SpawnPoint> spawnPoint = SpawnPoint.class;
     private int seaLevel = 64;
     private Map<String, Integer> oldTextures = new HashMap<>();
     private OldFeaturesProperties oldFeaturesProperties;
@@ -103,6 +108,10 @@ public class WorldType {
 
     public void setBiomeProperties(BiomeProperties biomeProperties) {
         this.biomeProperties = biomeProperties;
+    }
+
+    public void setSpawnPoint(Class<? extends SpawnPoint> spawnPoint) {
+        this.spawnPoint = spawnPoint;
     }
 
     public void setSeaLevel(int seaLevel) {
@@ -167,6 +176,10 @@ public class WorldType {
 
     public BiomeProperties getBiomeProperties() {
         return this.biomeProperties;
+    }
+
+    public Class<? extends SpawnPoint> getSpawnPoint() {
+        return this.spawnPoint;
     }
 
     public int getSeaLevel() {
@@ -258,6 +271,7 @@ public class WorldType {
         Release11.setBiomeSource(Release11BiomeSource.class);
         Release11.setFixedBiomeSource(AdvUpdFixedBiomeSource.class);
         Release11.setBiomeProperties(new Release11BiomeProperties(BetterWorldOptions.NAMESPACE.id("release_1.1")));
+        Release11.setSpawnPoint(AdvUpdSpawnPoint.class);
         Release11.setSeaLevel(63);
         Release11.addBooleanWorldTypeOption("Amplified:", "Amplified", null, false);
         Release11.addBooleanWorldTypeOption("Large Biomes:", "Large Biomes", null, false);
@@ -267,6 +281,7 @@ public class WorldType {
         Release10.setBiomeSource(AdvUpdBiomeSource.class);
         Release10.setFixedBiomeSource(AdvUpdFixedBiomeSource.class);
         Release10.setBiomeProperties(new ReleaseBiomeProperties(BetterWorldOptions.NAMESPACE.id("release_1.0")));
+        Release10.setSpawnPoint(AdvUpdSpawnPoint.class);
         Release10.setSeaLevel(63);
         Release10.addBooleanWorldTypeOption("Amplified:", "Amplified", null, false);
         Release10.addBooleanWorldTypeOption("Large Biomes:", "Large Biomes", null, false);
@@ -276,6 +291,7 @@ public class WorldType {
         Beta181.setBiomeSource(AdvUpdBiomeSource.class);
         Beta181.setFixedBiomeSource(AdvUpdFixedBiomeSource.class);
         Beta181.setBiomeProperties(new AdvUpdBiomeProperties(BetterWorldOptions.NAMESPACE.id("beta_1.8.1")));
+        Beta181.setSpawnPoint(AdvUpdSpawnPoint.class);
         Beta181.setSeaLevel(63);
         Beta181.addBooleanWorldTypeOption("Amplified:", "Amplified", null, false);
         Beta181.addBooleanWorldTypeOption("Large Biomes:", "Large Biomes", null, false);
@@ -288,23 +304,28 @@ public class WorldType {
         WorldType Infdev611 = new WorldType(Infdev611ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100611"), "Infdev 611", "/assets/betterworldoptions/gui/infdev_20100611.png", new String[]{"Start the world with Infdev 611", "generation"});
 
         WorldType Infdev420 = new WorldType(Infdev420ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100420"), "Infdev 420", "/assets/betterworldoptions/gui/infdev_20100420.png", new String[]{"Start the world with Infdev 420", "generation"});
+        Infdev420.setSpawnPoint(InfdevSpawnPoint.class);
 
         WorldType Infdev415 = new WorldType(Infdev415ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100415"), "Infdev 415", "/assets/betterworldoptions/gui/infdev_20100415.png", new String[]{"Start the world with Infdev 415", "generation"});
+        Infdev415.setSpawnPoint(InfdevSpawnPoint.class);
 
         WorldType Infdev327 = new WorldType(Infdev327ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100327"), "Infdev 327", null, new String[]{"Start the world with Infdev 327", "generation"});
+        Infdev327.setSpawnPoint(InfdevSpawnPoint.class);
         Infdev327.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
         WorldType EarlyInfdev = new WorldType(EarlyInfdevChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("early_infdev"), "Early Infdev", "/assets/betterworldoptions/gui/early_infdev.png", new String[]{"Start the world with Infdev 227-325", "generation"});
+        EarlyInfdev.setSpawnPoint(InfdevSpawnPoint.class);
         EarlyInfdev.setSeaLevel(65);
         EarlyInfdev.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
         WorldType Indev223 = new WorldType(Indev223ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("indev_20100223"), "Indev 223", "/assets/betterworldoptions/gui/indev_20100223.png", new String[]{"Start the world with Indev 223", "generation"});
+        Indev223.setSpawnPoint(IndevSpawnPoint.class);
         Indev223.setPregenerateFiniteWorld(true);
         Indev223.addStringWorldTypeOption("bwoMoreOptions.indevWorldType", "IndevWorldType", null, new ArrayList<>(Arrays.asList("Island", "Floating", "Flat", "Inland")), 0);
-        Indev223.addBooleanWorldTypeOption("bwoMoreOptions.generateIndevHouse", "GenerateIndevHouse", null, true);
         Indev223.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
         WorldType MCPE = new WorldType(MCPEChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("mcpe"), "MCPE", "/assets/betterworldoptions/gui/mcpe.png", new String[]{"Start the world with MCPE 0.1.0-0.8.1", "generation"});
+        MCPE.setSpawnPoint(MCPESpawnPoint.class);
         MCPE.setBiomeSource(MCPEBiomeSource.class);
 
         addDimensionWorldTypeInfo(Identifier.of(Namespace.of("aether"), "the_aether"), "Aether", "/assets/betterworldoptions/gui/aether.png", new String[]{"Start the world in a hostile paradise"});
