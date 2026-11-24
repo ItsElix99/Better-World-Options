@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.structures;
 
+import com.itselix99.betterworldoptions.api.MissingBlocks;
 import com.itselix99.betterworldoptions.api.structure.LootEntry;
 import com.itselix99.betterworldoptions.api.structure.StructureBox;
 import com.itselix99.betterworldoptions.api.structure.StructurePiece;
@@ -8,17 +9,9 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 public class TemplePieces {
-    public static Map<Integer, Integer> blocks = new HashMap<>();
-
-    static {
-        blocks.put(Block.SANDSTONE.id, Block.SANDSTONE.id);
-    }
-
     abstract static class ScatteredStructurePiece extends StructurePiece {
         protected final int width;
         protected final int height;
@@ -116,24 +109,24 @@ public class TemplePieces {
                 }
             }
 
-            int var4 = this.postProcessBlockMetadata(blocks.get(Block.SANDSTONE.id), 3);
-            int var5 = this.postProcessBlockMetadata(blocks.get(Block.SANDSTONE.id), 2);
-            int var6 = this.postProcessBlockMetadata(blocks.get(Block.SANDSTONE.id), 0);
-            int var7 = this.postProcessBlockMetadata(blocks.get(Block.SANDSTONE.id), 1);
+            int var4 = this.postProcessBlockMetadata(MissingBlocks.sandstoneStairs.id, 3);
+            int var5 = this.postProcessBlockMetadata(MissingBlocks.sandstoneStairs.id, 2);
+            int var6 = this.postProcessBlockMetadata(MissingBlocks.sandstoneStairs.id, 0);
+            int var7 = this.postProcessBlockMetadata(MissingBlocks.sandstoneStairs.id, 1);
             int var8 = 1;
             int var9 = 11;
             this.fillWithOutline(world, bounds, 0, 0, 0, 4, 9, 4, Block.SANDSTONE.id, 0, false);
             this.fillWithOutline(world, bounds, 1, 10, 1, 3, 10, 3, Block.SANDSTONE.id, Block.SANDSTONE.id, false);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var4, 2, 10, 0, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var5, 2, 10, 4, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var6, 0, 10, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var7, 4, 10, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var4, 2, 10, 0, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var5, 2, 10, 4, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var6, 0, 10, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var7, 4, 10, 2, bounds);
             this.fillWithOutline(world, bounds, this.width - 5, 0, 0, this.width - 1, 9, 4, Block.SANDSTONE.id, 0, false);
             this.fillWithOutline(world, bounds, this.width - 4, 10, 1, this.width - 2, 10, 3, Block.SANDSTONE.id, Block.SANDSTONE.id, false);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var4, this.width - 3, 10, 0, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var5, this.width - 3, 10, 4, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var6, this.width - 5, 10, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var7, this.width - 1, 10, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var4, this.width - 3, 10, 0, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var5, this.width - 3, 10, 4, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var6, this.width - 5, 10, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var7, this.width - 1, 10, 2, bounds);
             this.fillWithOutline(world, bounds, 8, 0, 0, 12, 4, 4, Block.SANDSTONE.id, 0, false);
             this.fillWithOutline(world, bounds, 9, 1, 0, 11, 3, 4, 0, 0, false);
             this.setBlockWithMetadata(world, Block.SANDSTONE.id, 2, 9, 1, 1, bounds);
@@ -167,18 +160,18 @@ public class TemplePieces {
             this.setBlockWithMetadata(world, 0, 0, this.width - 7, 6, 10, bounds);
             this.fillWithOutline(world, bounds, 2, 4, 4, 2, 6, 4, 0, 0, false);
             this.fillWithOutline(world, bounds, this.width - 3, 4, 4, this.width - 3, 6, 4, 0, 0, false);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var4, 2, 4, 5, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var4, 2, 3, 4, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var4, this.width - 3, 4, 5, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var4, this.width - 3, 3, 4, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var4, 2, 4, 5, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var4, 2, 3, 4, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var4, this.width - 3, 4, 5, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var4, this.width - 3, 3, 4, bounds);
             this.fillWithOutline(world, bounds, 1, 1, 3, 2, 2, 3, Block.SANDSTONE.id, Block.SANDSTONE.id, false);
             this.fillWithOutline(world, bounds, this.width - 3, 1, 3, this.width - 2, 2, 3, Block.SANDSTONE.id, Block.SANDSTONE.id, false);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), 0, 1, 1, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), 0, this.width - 2, 1, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, 0, 1, 1, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, 0, this.width - 2, 1, 2, bounds);
             this.setBlockWithMetadata(world, Block.SLAB.id, 1, 1, 2, 2, bounds);
             this.setBlockWithMetadata(world, Block.SLAB.id, 1, this.width - 2, 2, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var7, 2, 1, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.SANDSTONE.id), var6, this.width - 3, 1, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var7, 2, 1, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.sandstoneStairs.id, var6, this.width - 3, 1, 2, bounds);
             this.fillWithOutline(world, bounds, 4, 3, 5, 4, 3, 18, Block.SANDSTONE.id, Block.SANDSTONE.id, false);
             this.fillWithOutline(world, bounds, this.width - 5, 3, 5, this.width - 5, 3, 17, Block.SANDSTONE.id, Block.SANDSTONE.id, false);
             this.fillWithOutline(world, bounds, 3, 1, 5, 4, 2, 16, 0, 0, false);

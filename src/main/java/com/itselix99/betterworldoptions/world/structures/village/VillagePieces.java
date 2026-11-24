@@ -2,6 +2,7 @@ package com.itselix99.betterworldoptions.world.structures.village;
 
 import java.util.*;
 
+import com.itselix99.betterworldoptions.api.MissingBlocks;
 import com.itselix99.betterworldoptions.api.structure.LootEntry;
 import com.itselix99.betterworldoptions.api.structure.StructureBox;
 import com.itselix99.betterworldoptions.api.structure.StructurePiece;
@@ -13,8 +14,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 
 public class VillagePieces {
-    public static Map<Integer, Integer> blocks = new HashMap<>();
-
     public static ArrayList<VillagePieceWeight> getPieceWeights(Random random, int size) {
         ArrayList<VillagePieceWeight> var1 = new ArrayList<>();
         var1.add(new VillagePieceWeight(SmallHouse.class, 4, MathUtil.nextInt(random, 2 + size, 4 + size * 2)));
@@ -152,11 +151,6 @@ public class VillagePieces {
         } else {
             return null;
         }
-    }
-
-    static {
-        blocks.put(Block.GLASS.id, Block.GLASS.id);
-        blocks.put(Block.FENCE.id, Block.FENCE.id);
     }
 
     public static class VillagePieceWeight {
@@ -474,9 +468,9 @@ public class VillagePieces {
             this.fillWithOutline(world, bounds, 0, 1, 1, 0, 3, 3, Block.PLANKS.id, Block.PLANKS.id, false);
             this.fillWithOutline(world, bounds, 4, 1, 1, 4, 3, 3, Block.PLANKS.id, Block.PLANKS.id, false);
             this.fillWithOutline(world, bounds, 1, 1, 4, 3, 3, 4, Block.PLANKS.id, Block.PLANKS.id, false);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 2, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 2, 2, 4, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 4, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 2, 2, 4, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 4, 2, 2, bounds);
             this.setBlockWithMetadata(world, Block.PLANKS.id, 0, 1, 1, 0, bounds);
             this.setBlockWithMetadata(world, Block.PLANKS.id, 0, 1, 2, 0, bounds);
             this.setBlockWithMetadata(world, Block.PLANKS.id, 0, 1, 3, 0, bounds);
@@ -579,21 +573,21 @@ public class VillagePieces {
             this.setBlockWithMetadata(world, Block.COBBLESTONE_STAIRS.id, this.postProcessBlockMetadata(Block.COBBLESTONE_STAIRS.id, 3), 3, 1, 5, bounds);
             this.setBlockWithMetadata(world, Block.COBBLESTONE_STAIRS.id, this.postProcessBlockMetadata(Block.COBBLESTONE_STAIRS.id, 1), 1, 2, 7, bounds);
             this.setBlockWithMetadata(world, Block.COBBLESTONE_STAIRS.id, this.postProcessBlockMetadata(Block.COBBLESTONE_STAIRS.id, 0), 3, 2, 7, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 2, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 3, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 4, 2, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 4, 3, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 6, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 7, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 4, 6, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 4, 7, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 2, 6, 0, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 2, 7, 0, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 2, 6, 4, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 2, 7, 4, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 3, 6, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 4, 3, 6, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 2, 3, 8, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 3, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 4, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 4, 3, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 6, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 7, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 4, 6, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 4, 7, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 2, 6, 0, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 2, 7, 0, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 2, 6, 4, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 2, 7, 4, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 3, 6, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 4, 3, 6, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 2, 3, 8, bounds);
             this.setBlockWithMetadata(world, Block.TORCH.id, 0, 2, 4, 7, bounds);
             this.setBlockWithMetadata(world, Block.TORCH.id, 0, 1, 4, 6, bounds);
             this.setBlockWithMetadata(world, Block.TORCH.id, 0, 3, 4, 6, bounds);
@@ -674,24 +668,24 @@ public class VillagePieces {
             this.fillWithOutline(world, bounds, 1, 2, 5, 7, 4, 5, Block.PLANKS.id, Block.PLANKS.id, false);
             this.fillWithOutline(world, bounds, 8, 2, 1, 8, 4, 4, Block.PLANKS.id, Block.PLANKS.id, false);
             this.fillWithOutline(world, bounds, 1, 2, 0, 7, 4, 0, Block.PLANKS.id, Block.PLANKS.id, false);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 4, 2, 0, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 5, 2, 0, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 6, 2, 0, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 4, 3, 0, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 5, 3, 0, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 6, 3, 0, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 2, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 2, 3, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 3, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 3, 3, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 8, 2, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 8, 2, 3, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 8, 3, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 8, 3, 3, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 2, 2, 5, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 3, 2, 5, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 5, 2, 5, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 6, 2, 5, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 4, 2, 0, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 5, 2, 0, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 6, 2, 0, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 4, 3, 0, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 5, 3, 0, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 6, 3, 0, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 2, 3, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 3, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 3, 3, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 8, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 8, 2, 3, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 8, 3, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 8, 3, 3, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 2, 2, 5, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 3, 2, 5, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 5, 2, 5, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 6, 2, 5, bounds);
             this.fillWithOutline(world, bounds, 1, 4, 1, 7, 4, 1, Block.PLANKS.id, Block.PLANKS.id, false);
             this.fillWithOutline(world, bounds, 1, 4, 4, 7, 4, 4, Block.PLANKS.id, Block.PLANKS.id, false);
             this.fillWithOutline(world, bounds, 1, 3, 4, 7, 3, 4, Block.BOOKSHELF.id, Block.BOOKSHELF.id, false);
@@ -781,8 +775,8 @@ public class VillagePieces {
             this.fillWithOutline(world, bounds, 3, 1, 1, 3, 3, 3, Block.PLANKS.id, Block.PLANKS.id, false);
             this.fillWithOutline(world, bounds, 1, 1, 0, 2, 3, 0, Block.PLANKS.id, Block.PLANKS.id, false);
             this.fillWithOutline(world, bounds, 1, 1, 4, 2, 3, 4, Block.PLANKS.id, Block.PLANKS.id, false);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 2, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 3, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 3, 2, 2, bounds);
             if (this.tablePosition > 0) {
                 this.setBlockWithMetadata(world, Block.FENCE.id, 0, this.tablePosition, 1, 3, bounds);
                 this.setBlockWithMetadata(world, Block.WOODEN_PRESSURE_PLATE.id, 0, this.tablePosition, 2, 3, bounds);
@@ -865,14 +859,14 @@ public class VillagePieces {
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 0, 2, 4, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 8, 2, 1, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 8, 2, 4, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 2, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 2, 3, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 8, 2, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 8, 2, 3, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 2, 2, 5, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 3, 2, 5, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 5, 2, 0, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 6, 2, 5, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 2, 3, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 8, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 8, 2, 3, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 2, 2, 5, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 3, 2, 5, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 5, 2, 0, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 6, 2, 5, bounds);
             this.setBlockWithMetadata(world, Block.FENCE.id, 0, 2, 1, 3, bounds);
             this.setBlockWithMetadata(world, Block.WOODEN_PRESSURE_PLATE.id, 0, 2, 2, 3, bounds);
             this.setBlockWithMetadata(world, Block.PLANKS.id, 0, 1, 1, 4, bounds);
@@ -990,26 +984,26 @@ public class VillagePieces {
 
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 0, 2, 1, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 0, 2, 4, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 2, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 2, 3, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 2, 3, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 4, 2, 0, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 5, 2, 0, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 5, 2, 0, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 6, 2, 0, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 8, 2, 1, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 8, 2, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 8, 2, 3, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 8, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 8, 2, 3, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 8, 2, 4, bounds);
             this.setBlockWithMetadata(world, Block.PLANKS.id, 0, 8, 2, 5, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 8, 2, 6, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 8, 2, 7, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 8, 2, 8, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 8, 2, 7, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 8, 2, 8, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 8, 2, 9, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 2, 2, 6, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 2, 2, 7, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 2, 2, 8, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 2, 2, 7, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 2, 2, 8, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 2, 2, 9, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 4, 4, 10, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 5, 4, 10, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 5, 4, 10, bounds);
             this.setBlockWithMetadata(world, Block.LOG.id, 0, 6, 4, 10, bounds);
             this.setBlockWithMetadata(world, Block.PLANKS.id, 0, 5, 5, 10, bounds);
             this.setBlockWithMetadata(world, 0, 0, 2, 1, 0, bounds);
@@ -1083,17 +1077,17 @@ public class VillagePieces {
             this.fillWithOutline(world, bounds, 6, 1, 4, 9, 4, 6, Block.COBBLESTONE.id, Block.COBBLESTONE.id, false);
             this.setBlockWithMetadata(world, Block.FLOWING_LAVA.id, 0, 7, 1, 5, bounds);
             this.setBlockWithMetadata(world, Block.FLOWING_LAVA.id, 0, 8, 1, 5, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.FENCE.id), 0, 9, 2, 5, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.FENCE.id), 0, 9, 2, 4, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.ironBars.id, 0, 9, 2, 5, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.ironBars.id, 0, 9, 2, 4, bounds);
             this.fillWithOutline(world, bounds, 7, 2, 4, 8, 2, 5, 0, 0, false);
             this.setBlockWithMetadata(world, Block.COBBLESTONE.id, 0, 6, 1, 3, bounds);
             this.setBlockWithMetadata(world, Block.FURNACE.id, 0, 6, 2, 3, bounds);
             this.setBlockWithMetadata(world, Block.FURNACE.id, 0, 6, 3, 3, bounds);
             this.setBlockWithMetadata(world, Block.DOUBLE_SLAB.id, 0, 8, 1, 1, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 2, 2, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 0, 2, 4, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 2, 2, 6, bounds);
-            this.setBlockWithMetadata(world, blocks.get(Block.GLASS.id), 0, 4, 2, 6, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 2, 2, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 0, 2, 4, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 2, 2, 6, bounds);
+            this.setBlockWithMetadata(world, MissingBlocks.glassPane.id, 0, 4, 2, 6, bounds);
             this.setBlockWithMetadata(world, Block.FENCE.id, 0, 2, 1, 4, bounds);
             this.setBlockWithMetadata(world, Block.WOODEN_PRESSURE_PLATE.id, 0, 2, 2, 4, bounds);
             this.setBlockWithMetadata(world, Block.PLANKS.id, 0, 1, 1, 5, bounds);

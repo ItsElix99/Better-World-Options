@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.feature.adventureupdate;
 
+import com.itselix99.betterworldoptions.api.MissingBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
@@ -8,8 +9,6 @@ import net.minecraft.world.gen.feature.Feature;
 import java.util.Random;
 
 public class SwampTreeFeature extends Feature {
-    private static int vineBlock = 0;
-
     public boolean generate(World world, Random random, int x, int y, int z) {
         int var6;
         for(var6 = random.nextInt(4) + 5; world.getMaterial(x, y - 1, z) == Material.WATER; --y) {
@@ -131,12 +130,9 @@ public class SwampTreeFeature extends Feature {
         return false;
     }
 
-    public static void setVineBlock(int blockId) {
-        vineBlock = blockId;
-    }
-
     private void placeVine(World world, int x, int y, int z, int metadata) {
-        world.setBlock(x, y, z, vineBlock, metadata);
+        int vineBlockId = MissingBlocks.vine != null ? MissingBlocks.vine.id : 0;
+        world.setBlock(x, y, z, vineBlockId, metadata);
         int var6 = 4;
 
         while(true) {
@@ -145,7 +141,7 @@ public class SwampTreeFeature extends Feature {
                 return;
             }
 
-            world.setBlock(x, y, z, vineBlock, metadata);
+            world.setBlock(x, y, z, vineBlockId, metadata);
             --var6;
         }
     }

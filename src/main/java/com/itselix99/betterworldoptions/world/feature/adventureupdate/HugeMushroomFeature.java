@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.world.feature.adventureupdate;
 
+import com.itselix99.betterworldoptions.api.MissingBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
@@ -8,14 +9,17 @@ import java.util.Random;
 
 public class HugeMushroomFeature extends Feature {
 	private int variant = -1;
-	private static int myceliumBlockId = Block.GRASS_BLOCK.id;
-	private static int[] mushroomBlockId = new int[]{Block.WOOL.id, Block.WOOL.id};
+	private final int[] mushroomBlocksId = new int[2];
 
 	public HugeMushroomFeature(int var1) {
 		this.variant = var1;
+		this.mushroomBlocksId[0] = MissingBlocks.brownMushroomBlock.id;
+		this.mushroomBlocksId[1] = MissingBlocks.redMushroomBlock.id;
 	}
 
 	public HugeMushroomFeature() {
+		this.mushroomBlocksId[0] = MissingBlocks.brownMushroomBlock.id;
+		this.mushroomBlocksId[1] = MissingBlocks.redMushroomBlock.id;
 	}
 
 	public boolean generate(World world, Random random, int x, int y, int z) {
@@ -55,7 +59,7 @@ public class HugeMushroomFeature extends Feature {
 				return false;
 			} else {
 				var9 = world.getBlockId(x, y - 1, z);
-				if(var9 != Block.DIRT.id && var9 != Block.GRASS_BLOCK.id && var9 != myceliumBlockId) {
+				if(var9 != Block.DIRT.id && var9 != Block.GRASS_BLOCK.id && var9 != MissingBlocks.getMyceliumBlock().id) {
 					return false;
 				} else if(!Block.BROWN_MUSHROOM.canPlaceAt(world, x, y, z)) {
 					return false;
@@ -138,7 +142,7 @@ public class HugeMushroomFeature extends Feature {
 								}
 
 								if((var15 != 0 || y >= y + var7 - 1) && !Block.BLOCKS_OPAQUE[world.getBlockId(var13, var11, var14)]) {
-									int mushroomBlockID = mushroomBlockId[var6];
+									int mushroomBlockID = this.mushroomBlocksId[var6];
 									if (mushroomBlockID == Block.WOOL.id) {
 										var15 = var6 == 0 ? 12 : 14;
 									}
@@ -152,7 +156,7 @@ public class HugeMushroomFeature extends Feature {
 					for(var11 = 0; var11 < var7; ++var11) {
 						var12 = world.getBlockId(x, y + var11, z);
 						if(!Block.BLOCKS_OPAQUE[var12]) {
-							int mushroomBlockID = mushroomBlockId[var6];
+							int mushroomBlockID = this.mushroomBlocksId[var6];
 							int metadata = 10;
 
 							if (mushroomBlockID == Block.WOOL.id) {
@@ -169,14 +173,5 @@ public class HugeMushroomFeature extends Feature {
 		} else {
 			return false;
 		}
-	}
-
-	public static void setMyceliumBlock(int blockId) {
-		myceliumBlockId = blockId;
-	}
-
-	public static void setMushroomBlock(int brownBlockId, int redBlockId) {
-		mushroomBlockId[0] = brownBlockId;
-		mushroomBlockId[1] = redBlockId;
 	}
 }

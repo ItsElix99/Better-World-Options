@@ -1,9 +1,11 @@
 package com.itselix99.betterworldoptions.world.feature.adventureupdate;
 
+import com.itselix99.betterworldoptions.api.MissingBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 
 import java.util.Random;
@@ -80,7 +82,12 @@ public class AdvUpdLakeFeature extends Feature {
             for(int var41 = 0; var41 < 16; ++var41) {
                 for(int var42 = 4; var42 < 8; ++var42) {
                     if (var6[(var40 * 16 + var41) * 8 + var42] && world.getBlockId(x + var40, y + var42 - 1, z + var41) == Block.DIRT.id && world.getBrightness(LightType.SKY, x + var40, y + var42, z + var41) > 0) {
-                        world.setBlockWithoutNotifyingNeighbors(x + var40, y + var42 - 1, z + var41, Block.GRASS_BLOCK.id);
+                        Biome var34 = world.method_1781().getBiome(x + var40, z + var41);
+                        if(var34.topBlockId == MissingBlocks.getMyceliumBlock().id) {
+                            world.setBlockWithoutNotifyingNeighbors(x + var40, y + var42 - 1, z + var41, MissingBlocks.getMyceliumBlock().id);
+                        } else {
+                            world.setBlockWithoutNotifyingNeighbors(x + var40, y + var42 - 1, z + var41, Block.GRASS_BLOCK.id);
+                        }
                     }
                 }
             }
