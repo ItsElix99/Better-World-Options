@@ -125,7 +125,14 @@ public class WorldPropertiesMixin implements BWOProperties {
         NbtCompound betterWorldOptionsTag = nbt.getCompound("BetterWorldOptions");
 
         String worldType = this.bwo_getStringOrDefault(betterWorldOptionsTag, GeneralOptions.getGeneralOptionByName("WorldType"));
-        WorldType worldTypeEntry = WorldType.getWorldTypeById(Identifier.of(worldType));
+        WorldType worldTypeEntry;
+
+        if (worldType.contains(":")) {
+            worldTypeEntry = WorldType.getWorldTypeById(Identifier.of(worldType));
+        } else {
+            worldTypeEntry = WorldType.getWorldTypeByLegacyId(worldType);
+            worldType = worldTypeEntry.getId().toString();
+        }
 
         if (this.bwo_getBooleanOrDefault(betterWorldOptionsTag, GeneralOptions.getGeneralOptionByName("FiniteWorld")) && worldTypeEntry.isPregenerateFiniteWorld()) {
             this.pregeneratingFiniteWorld = betterWorldOptionsTag.getBoolean("PregeneratingFiniteWorld");
@@ -137,6 +144,9 @@ public class WorldPropertiesMixin implements BWOProperties {
             if (generalOption.allowSave() && (generalOption.getCompatibleType().equals("All") || generalOption.getCompatibleWorldTypes().contains(Identifier.of(worldType)) || generalOption.getCompatibleType().equals("Overworld") && !worldTypeEntry.isDimension())) {
                 if (option.getValue() instanceof String) {
                     String value = this.bwo_getStringOrDefault(betterWorldOptionsTag, generalOption);
+                    if (option.getName().equals("WorldType") && !value.contains(":")) {
+                        value = worldType;
+                    }
 
                     if (generalOption.getParentOption() != null && !this.bwo_getBooleanOrDefault(betterWorldOptionsTag, generalOption.getParentOption())) {
                         continue;
@@ -167,7 +177,7 @@ public class WorldPropertiesMixin implements BWOProperties {
 
         bwoWorldPropertiesStorage.setOptionsMap(this.generalOptions, OptionType.GENERAL_OPTION);
 
-        Map<String, Option<?>> worldTypeOptions = WorldType.getWorldTypeById(Identifier.of(this.bwo_getStringOrDefault(betterWorldOptionsTag, GeneralOptions.getGeneralOptionByName("WorldType")))).getWorldTypeOptions();
+        Map<String, Option<?>> worldTypeOptions = worldTypeEntry.getWorldTypeOptions();
         if (!worldTypeOptions.isEmpty()) {
             NbtCompound worldTypeOptionsTag = betterWorldOptionsTag.getCompound("WorldTypeOptions");
 

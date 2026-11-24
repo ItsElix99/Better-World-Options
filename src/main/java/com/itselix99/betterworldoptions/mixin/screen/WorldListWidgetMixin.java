@@ -40,7 +40,11 @@ public class WorldListWidgetMixin {
         boolean isHardcore = ((BWOProperties) worldSaveInfo).bwo_isHardcore();
 
         if (worldType.isEmpty()) {
-            worldType = WorldType.defaultWorldType.getName();
+            worldType = WorldType.defaultWorldType.getId().toString();
+        } else {
+            if (!worldType.contains(":")) {
+                worldType = WorldType.getWorldTypeByLegacyId(worldType).getId().toString();
+            }
         }
 
         if (isHardcore) {
@@ -70,8 +74,13 @@ public class WorldListWidgetMixin {
         String worldType = ((BWOProperties) worldSaveInfo).bwo_getWorldType();
 
         if (worldType.isEmpty()) {
-            worldType = WorldType.defaultWorldType.getName();
+            worldType = WorldType.defaultWorldType.getId().toString();
+        } else {
+            if (!worldType.contains(":")) {
+                worldType = WorldType.getWorldTypeByLegacyId(worldType).getId().toString();
+            }
         }
+
         int offset = minecraft.textRenderer.getWidth("World Type:" + " " + WorldType.getWorldTypeById(Identifier.of(worldType)).getName()) + 10;
 
         args.set(2, x + offset);

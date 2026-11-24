@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.gui.screen;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.BiomeProperties;
 import com.itselix99.betterworldoptions.api.options.entry.BooleanOption;
 import com.itselix99.betterworldoptions.api.options.entry.IntOption;
@@ -37,6 +38,8 @@ public class WorldTypeListScreen extends Screen {
     public WorldTypeListScreen(Screen parent, BWOWorldPropertiesStorage bwoWorldPropertiesStorage) {
         this.parent = parent;
         this.bwoWorldPropertiesStorage = bwoWorldPropertiesStorage;
+
+        BetterWorldOptions.initDimensionWorldTypes();
     }
 
     @SuppressWarnings("unchecked")
@@ -153,7 +156,7 @@ public class WorldTypeListScreen extends Screen {
             tessellator.vertex(x, y, 0.0F, 0.0F, 0.0F);
             tessellator.draw();
 
-            WorldTypeListScreen.this.drawTextWithShadow(WorldTypeListScreen.this.minecraft.textRenderer, var1.getName(), x + 32 + 2, y + 1, 16777215);
+            WorldTypeListScreen.this.drawTextWithShadow(WorldTypeListScreen.this.minecraft.textRenderer, var1.getDisplayName(), x + 32 + 2, y + 1, 16777215);
 
             if (var1.getDescription() != null) {
                 for (int var2 = 0; var2 < var1.getDescription().length; ++var2) {

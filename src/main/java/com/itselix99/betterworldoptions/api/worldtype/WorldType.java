@@ -39,15 +39,17 @@ import java.util.*;
 
 public class WorldType {
     private static final List<WorldType> worldTypeList = new ArrayList<>();
-    public static final WorldType defaultWorldType = new WorldType(BetterWorldOptions.NAMESPACE.id("default"), "Default", "/assets/betterworldoptions/gui/default.png", new String[]{"Minecraft's default world generator"});
+    public static final WorldType defaultWorldType = new WorldType(BetterWorldOptions.NAMESPACE.id("default"), "Default", "Default", "/assets/betterworldoptions/gui/default.png", new String[]{"Minecraft's default world generator"});
     private static final Map<String, String[]> dimensionWorldTypeInfo = new HashMap<>();
     private static final Map<String, String[]> dimensionWorldTypeDesc = new HashMap<>();
 
     private Map<Integer, Class<? extends ChunkSource>> chunkGenerators = new HashMap<>();
     private final Identifier id;
+    private final String displayName;
     private final String name;
     private final String icon;
     private final String[] description;
+    private String legacyId;
     private Class<? extends BiomeSource> biomeSource = BiomeSource.class;
     private Class<? extends BiomeSource> fixedBiomeSource = FixedBiomeSource.class;
     private BiomeProperties biomeProperties = new BiomeProperties(BetterWorldOptions.NAMESPACE.id("default"));
@@ -61,11 +63,12 @@ public class WorldType {
     private boolean pregenerateFiniteWorld = false;
     private int blockToSpawn = Block.SAND.id;
 
-    public WorldType(Identifier id, String name, String icon, String[] description) {
+    public WorldType(Identifier id, String displayName, String name, String icon, String[] description) {
         this.chunkGenerators.put(0, OverworldChunkGenerator.class);
         this.chunkGenerators.put(-1, NetherChunkGenerator.class);
         this.chunkGenerators.put(1, SkyChunkGenerator.class);
         this.id = id;
+        this.displayName = displayName;
         this.name = name;
         this.icon = icon;
         this.description = description;
@@ -74,11 +77,12 @@ public class WorldType {
         worldTypeList.add(this);
     }
 
-    public WorldType(Class<? extends ChunkSource> overworldChunkGenerator, Identifier id, String name, String icon, String[] description) {
+    public WorldType(Class<? extends ChunkSource> overworldChunkGenerator, Identifier id, String displayName, String name, String icon, String[] description) {
         this.chunkGenerators.put(0, overworldChunkGenerator);
         this.chunkGenerators.put(-1, NetherChunkGenerator.class);
         this.chunkGenerators.put(1, SkyChunkGenerator.class);
         this.id = id;
+        this.displayName = displayName;
         this.name = name;
         this.icon = icon;
         this.description = description;
@@ -87,15 +91,20 @@ public class WorldType {
         worldTypeList.add(this);
     }
 
-    public WorldType(Map<Integer, Class<? extends ChunkSource>> chunkGenerators, Identifier id, String name, String icon, String[] description) {
+    public WorldType(Map<Integer, Class<? extends ChunkSource>> chunkGenerators, Identifier id, String displayName, String name, String icon, String[] description) {
         this.chunkGenerators = chunkGenerators;
         this.id = id;
+        this.displayName = displayName;
         this.name = name;
         this.icon = icon;
         this.description = description;
         this.isDimension = false;
         this.dimensionId = 0;
         worldTypeList.add(this);
+    }
+
+    public void setLegacyId(String legacyId) {
+        this.legacyId = legacyId;
     }
 
     public void setBiomeSource(Class<? extends BiomeSource> biomeSource) {
@@ -154,6 +163,10 @@ public class WorldType {
         return this.id;
     }
 
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
     public String getName() {
         return this.name;
     }
@@ -164,6 +177,10 @@ public class WorldType {
 
     public String[] getDescription() {
         return this.description;
+    }
+
+    public String getLegacyId() {
+        return this.legacyId;
     }
 
     public Class<? extends BiomeSource> getBiomeSource() {
@@ -214,6 +231,10 @@ public class WorldType {
         return getWorldTypeList().stream().filter(worldType -> id.equals(worldType.id)).findFirst().orElse(defaultWorldType);
     }
 
+    public static WorldType getWorldTypeByLegacyId(String legacyId) {
+        return getWorldTypeList().stream().filter(worldType -> legacyId.equals(worldType.legacyId)).findFirst().orElse(defaultWorldType);
+    }
+
     public int getOldTexture(String textureName, int originalTexture) {
         return this.oldTextures.getOrDefault(textureName, originalTexture);
     }
@@ -245,29 +266,35 @@ public class WorldType {
         this.worldTypeOptions.put(intOption.getName(), intOption);
     }
 
-    public static void addDimensionWorldTypeInfo(Identifier id, String name, String icon, String[] desc) {
-        dimensionWorldTypeInfo.put(id.getNamespace().toString(), new String[]{id.getPath(), name, icon});
+    public static void addDimensionWorldTypeInfo(Identifier id, String displayName, String name, String icon, String[] desc, String legacyId) {
+        dimensionWorldTypeInfo.put(id.getNamespace().toString(), new String[]{id.getPath(), displayName, name, icon, legacyId});
         dimensionWorldTypeDesc.put(id.getNamespace().toString(), desc);
     }
 
     static {
-        WorldType Amplified = new WorldType(AltOverworldChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("amplified"), "Amplified", "/assets/betterworldoptions/gui/amplified.png", new String[]{"Minecraft's default world generator", "but AMPLIFIED"});
+        defaultWorldType.setLegacyId("Default");
 
-        WorldType Nether = new WorldType(BetterWorldOptions.NAMESPACE.id("nether"), "Nether", "/assets/betterworldoptions/gui/nether.png", new String[]{"Start the world in the Nether", "dimension"});
+        WorldType Amplified = new WorldType(AltOverworldChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("amplified"), "Amplified", "Amplified", "/assets/betterworldoptions/gui/amplified.png", new String[]{"Minecraft's default world generator", "but AMPLIFIED"});
+        Amplified.setLegacyId("Amplified");
+
+        WorldType Nether = new WorldType(BetterWorldOptions.NAMESPACE.id("nether"), "Nether", "Nether", "/assets/betterworldoptions/gui/nether.png", new String[]{"Start the world in the Nether", "dimension"});
         Nether.setIsDimension(true);
         Nether.setDimensionId(-1);
+        Nether.setLegacyId("Nether");
 
-        WorldType Skylands = new WorldType(SkylandsChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("skylands"), "Skylands", "/assets/betterworldoptions/gui/skylands.png", new String[]{"Start the world on the floating", "islands"});
+        WorldType Skylands = new WorldType(SkylandsChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("skylands"), "Skylands", "Skylands", "/assets/betterworldoptions/gui/skylands.png", new String[]{"Start the world on the floating", "islands"});
         Skylands.addBooleanWorldTypeOption("bwoMoreOptions.skyDimension", "SkyDimension", null, false);
         Skylands.setBlockToSpawn(Block.GRASS_BLOCK.id);
+        Skylands.setLegacyId("Skylands");
 
-        WorldType Flat = new WorldType(FlatChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("flat"), "Flat", "/assets/betterworldoptions/gui/flat.png", new String[]{"A completely flat world, perfect for", "building"});
+        WorldType Flat = new WorldType(FlatChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("flat"), "Flat", "Flat", "/assets/betterworldoptions/gui/flat.png", new String[]{"A completely flat world, perfect for", "building"});
         Flat.setBiomeSource(FlatBiomeSource.class);
         Flat.setFixedBiomeSource(FlatBiomeSource.class);
         Flat.addBooleanWorldTypeOption("bwoMoreOptions.superflat", "Superflat", null, false);
         Flat.setBlockToSpawn(Block.GRASS_BLOCK.id);
+        Flat.setLegacyId("Flat");
 
-        WorldType Release11 = new WorldType(AdvUpdChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("release_1.1"), "Release 1.1", null, new String[]{"Start the world with Release 1.1", "generation"});
+        WorldType Release11 = new WorldType(AdvUpdChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("release_1.1"), "Release 1.1", "Release 1.1", null, new String[]{"Start the world with Release 1.1", "generation"});
         Release11.setBiomeSource(Release11BiomeSource.class);
         Release11.setFixedBiomeSource(AdvUpdFixedBiomeSource.class);
         Release11.setBiomeProperties(new Release11BiomeProperties(BetterWorldOptions.NAMESPACE.id("release_1.1")));
@@ -277,7 +304,7 @@ public class WorldType {
         Release11.addBooleanWorldTypeOption("Large Biomes:", "Large Biomes", null, false);
         Release11.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
-        WorldType Release10 = new WorldType(AdvUpdChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("release_1.0"), "Release 1.0", null, new String[]{"Start the world with Release 1.0", "generation"});
+        WorldType Release10 = new WorldType(AdvUpdChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("release_1.0"), "Release 1.0", "Release 1.0", null, new String[]{"Start the world with Release 1.0", "generation"});
         Release10.setBiomeSource(AdvUpdBiomeSource.class);
         Release10.setFixedBiomeSource(AdvUpdFixedBiomeSource.class);
         Release10.setBiomeProperties(new ReleaseBiomeProperties(BetterWorldOptions.NAMESPACE.id("release_1.0")));
@@ -287,7 +314,7 @@ public class WorldType {
         Release10.addBooleanWorldTypeOption("Large Biomes:", "Large Biomes", null, false);
         Release10.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
-        WorldType Beta181 = new WorldType(AdvUpdChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("beta_1.8.1"), "Beta 1.8.1", null, new String[]{"Start the world with Beta 1.8.1", "generation"});
+        WorldType Beta181 = new WorldType(AdvUpdChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("beta_1.8.1"), "Beta 1.8.1", "Beta 1.8.1", null, new String[]{"Start the world with Beta 1.8.1", "generation"});
         Beta181.setBiomeSource(AdvUpdBiomeSource.class);
         Beta181.setFixedBiomeSource(AdvUpdFixedBiomeSource.class);
         Beta181.setBiomeProperties(new AdvUpdBiomeProperties(BetterWorldOptions.NAMESPACE.id("beta_1.8.1")));
@@ -297,43 +324,51 @@ public class WorldType {
         Beta181.addBooleanWorldTypeOption("Large Biomes:", "Large Biomes", null, false);
         Beta181.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
-        WorldType Alpha120 = new WorldType(Alpha120ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("alpha_1.2.0"), "Alpha 1.2.0", "/assets/betterworldoptions/gui/alpha_1.2.0.png", new String[]{"Start the world with Alpha 1.2.0", "generation"});
+        WorldType Alpha120 = new WorldType(Alpha120ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("alpha_1.2.0"), "Alpha 1.2.0", "Alpha 1.2.0", "/assets/betterworldoptions/gui/alpha_1.2.0.png", new String[]{"Start the world with Alpha 1.2.0", "generation"});
+        Alpha120.setLegacyId("Alpha 1.2.0");
 
-        WorldType Alpha112 = new WorldType(Alpha112ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("alpha_1.1.2_01"), "Alpha 1.1.2_01", "/assets/betterworldoptions/gui/alpha_1.1.2_01.png", new String[]{"Start the world with Alpha 1.1.2_01", "generation"});
+        WorldType Alpha112 = new WorldType(Alpha112ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("alpha_1.1.2_01"), "Alpha 1.1.2_01", "Alpha 1.1.2_01", "/assets/betterworldoptions/gui/alpha_1.1.2_01.png", new String[]{"Start the world with Alpha 1.1.2_01", "generation"});
+        Alpha112.setLegacyId("Alpha 1.1.2_01");
 
-        WorldType Infdev611 = new WorldType(Infdev611ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100611"), "Infdev 611", "/assets/betterworldoptions/gui/infdev_20100611.png", new String[]{"Start the world with Infdev 611", "generation"});
+        WorldType Infdev611 = new WorldType(Infdev611ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100611"), "Infdev 20100611", "Infdev 611", "/assets/betterworldoptions/gui/infdev_20100611.png", new String[]{"Start the world with Infdev 611", "generation"});
+        Infdev611.setLegacyId("Infdev 611");
 
-        WorldType Infdev420 = new WorldType(Infdev420ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100420"), "Infdev 420", "/assets/betterworldoptions/gui/infdev_20100420.png", new String[]{"Start the world with Infdev 420", "generation"});
+        WorldType Infdev420 = new WorldType(Infdev420ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100420"), "Infdev 20100420", "Infdev 420", "/assets/betterworldoptions/gui/infdev_20100420.png", new String[]{"Start the world with Infdev 420", "generation"});
         Infdev420.setSpawnPoint(InfdevSpawnPoint.class);
+        Infdev420.setLegacyId("Infdev 420");
 
-        WorldType Infdev415 = new WorldType(Infdev415ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100415"), "Infdev 415", "/assets/betterworldoptions/gui/infdev_20100415.png", new String[]{"Start the world with Infdev 415", "generation"});
+        WorldType Infdev415 = new WorldType(Infdev415ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100415"), "Infdev 20100415", "Infdev 415", "/assets/betterworldoptions/gui/infdev_20100415.png", new String[]{"Start the world with Infdev 415", "generation"});
         Infdev415.setSpawnPoint(InfdevSpawnPoint.class);
+        Infdev415.setLegacyId("Infdev 415");
 
-        WorldType Infdev327 = new WorldType(Infdev327ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100327"), "Infdev 327", null, new String[]{"Start the world with Infdev 327", "generation"});
+        WorldType Infdev327 = new WorldType(Infdev327ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100327"), "Infdev 20100327", "Infdev 327", null, new String[]{"Start the world with Infdev 327", "generation"});
         Infdev327.setSpawnPoint(InfdevSpawnPoint.class);
         Infdev327.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
-        WorldType Infdev325 = new WorldType(Infdev325ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100325"), "Infdev 325", null, new String[]{"Start the world with Infdev 325", "generation"});
+        WorldType Infdev325 = new WorldType(Infdev325ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100325"), "Infdev 20100325", "Infdev 325", null, new String[]{"Start the world with Infdev 325", "generation"});
         Infdev325.setSpawnPoint(InfdevSpawnPoint.class);
         Infdev325.setSeaLevel(65);
         Infdev325.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
-        WorldType Infdev227 = new WorldType(Infdev227ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100227"), "Infdev 227", "/assets/betterworldoptions/gui/early_infdev.png", new String[]{"Start the world with Infdev 227", "generation"});
+        WorldType Infdev227 = new WorldType(Infdev227ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100227"), "Infdev 20100227", "Infdev 227", "/assets/betterworldoptions/gui/early_infdev.png", new String[]{"Start the world with Infdev 227", "generation"});
         Infdev227.setSpawnPoint(InfdevSpawnPoint.class);
         Infdev227.setSeaLevel(65);
         Infdev227.addBooleanWorldTypeOption("Better Decoration:", "BetterDecoration", null, false);
         Infdev227.setBlockToSpawn(Block.GRASS_BLOCK.id);
+        Infdev227.setLegacyId("Early Infdev");
 
-        WorldType Indev223 = new WorldType(Indev223ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("indev_20100223"), "Indev 223", "/assets/betterworldoptions/gui/indev_20100223.png", new String[]{"Start the world with Indev 223", "generation"});
+        WorldType Indev223 = new WorldType(Indev223ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("indev_20100223"), "Indev 20100223", "Indev 223", "/assets/betterworldoptions/gui/indev_20100223.png", new String[]{"Start the world with Indev 223", "generation"});
         Indev223.setSpawnPoint(IndevSpawnPoint.class);
         Indev223.setPregenerateFiniteWorld(true);
         Indev223.addStringWorldTypeOption("bwoMoreOptions.indevWorldType", "IndevWorldType", null, new ArrayList<>(Arrays.asList("Island", "Floating", "Flat", "Inland")), 0);
         Indev223.setBlockToSpawn(Block.GRASS_BLOCK.id);
+        Indev223.setLegacyId("Indev 223");
 
-        WorldType MCPE = new WorldType(MCPEChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("mcpe"), "MCPE", "/assets/betterworldoptions/gui/mcpe.png", new String[]{"Start the world with MCPE 0.1.0-0.8.1", "generation"});
+        WorldType MCPE = new WorldType(MCPEChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("mcpe"), "Pocket Edition", "MCPE", "/assets/betterworldoptions/gui/mcpe.png", new String[]{"Start the world with MCPE 0.1.0-0.8.1", "generation"});
         MCPE.setSpawnPoint(MCPESpawnPoint.class);
         MCPE.setBiomeSource(MCPEBiomeSource.class);
+        MCPE.setLegacyId("MCPE");
 
-        addDimensionWorldTypeInfo(Identifier.of(Namespace.of("aether"), "the_aether"), "Aether", "/assets/betterworldoptions/gui/aether.png", new String[]{"Start the world in a hostile paradise"});
+        addDimensionWorldTypeInfo(Identifier.of(Namespace.of("aether"), "the_aether"), "Aether", "Aether", "/assets/betterworldoptions/gui/aether.png", new String[]{"Start the world in a hostile paradise"}, "Aether");
     }
 }

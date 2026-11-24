@@ -1,5 +1,6 @@
 package com.itselix99.betterworldoptions.mixin.world;
 
+import com.itselix99.betterworldoptions.BetterWorldOptions;
 import com.itselix99.betterworldoptions.api.BiomeProperties;
 import com.itselix99.betterworldoptions.api.theme.Theme;
 import com.itselix99.betterworldoptions.api.worldtype.OldFeaturesProperties;
@@ -58,6 +59,20 @@ public abstract class WorldMixin implements BWOWorld, StationFlatteningWorld {
     @Shadow public abstract Chunk getChunkFromPos(int x, int z);
     @Shadow public abstract BiomeSource method_1781();
     @Shadow public abstract long getSeed();
+
+    @Inject(
+            method = {
+                    "<init>(Lnet/minecraft/world/World;Lnet/minecraft/world/dimension/Dimension;)V",
+                    "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;Lnet/minecraft/world/dimension/Dimension;J)V",
+                    "<init>(Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;JLnet/minecraft/world/dimension/Dimension;)V"
+            },
+            at = @At(
+                    value = "HEAD"
+            )
+    )
+    private static void bwo_initDimensionWorldTypes(CallbackInfo ci) {
+        BetterWorldOptions.initDimensionWorldTypes();
+    }
 
     @Inject(
             method = {

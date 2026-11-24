@@ -42,6 +42,7 @@ import java.util.Map;
 public class BetterWorldOptions implements ModInitializer {
     @Entrypoint.Namespace
     public static Namespace NAMESPACE = Null.get();
+    private static boolean initDimensionWorldTypes = false;
 
     public static Logger LOGGER = LogManager.getLogger("Better World Options");
 
@@ -84,7 +85,6 @@ public class BetterWorldOptions implements ModInitializer {
 
     @EventListener
     public void initFinished(InitFinishedEvent event) {
-        this.initDimensionWorldTypes();
         this.initOldTextures();
     }
 
@@ -127,22 +127,27 @@ public class BetterWorldOptions implements ModInitializer {
         EXTREME_HILLS_EDGE = BiomeBuilder.start("Extreme Hills Edge").hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).passiveEntity(SheepEntity.class, 12).passiveEntity(PigEntity.class, 10).passiveEntity(ChickenEntity.class, 10).passiveEntity(CowEntity.class, 8).waterEntity(SquidEntity.class, 10).build();
     }
 
-    private void initDimensionWorldTypes() {
-        for (DimensionContainer<?> dimensionContainer : DimensionRegistry.INSTANCE.serialView.values()) {
-            if (dimensionContainer.getLegacyID() > 1) {
-                String modName = DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString();
-                if (modName.startsWith("mod_")) modName = modName.substring(4);
+    public static void initDimensionWorldTypes() {
+        if (!initDimensionWorldTypes) {
+            initDimensionWorldTypes = true;
 
-                Map<String, String[]>[] dimensionWorldTypeInfo = WorldType.getDimensionWorldTypeInfo();
-                String[] info = dimensionWorldTypeInfo[0].getOrDefault(modName, new String[]{modName, modName, null});
-                String[] desc = dimensionWorldTypeInfo[1].getOrDefault(modName, null);
+            for (DimensionContainer<?> dimensionContainer : DimensionRegistry.INSTANCE.serialView.values()) {
+                if (dimensionContainer.getLegacyID() > 1) {
+                    String modName = DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString();
+                    if (modName.startsWith("mod_")) modName = modName.substring(4);
 
-                WorldType worldType = new WorldType(Identifier.of(Namespace.of(DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString()), info[0]), info[1], info[2], desc);
-                worldType.setIsDimension(true);
-                worldType.setDimensionId(dimensionContainer.getLegacyID());
+                    Map<String, String[]>[] dimensionWorldTypeInfo = WorldType.getDimensionWorldTypeInfo();
+                    String[] info = dimensionWorldTypeInfo[0].getOrDefault(modName, new String[]{modName, modName, modName, null, null});
+                    String[] desc = dimensionWorldTypeInfo[1].getOrDefault(modName, null);
 
-                for (Structure structure : Structure.getStructuresList()) {
-                    structure.addIncompatibleWorldType(Identifier.of(Namespace.of(DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString()), info[0]));
+                    WorldType worldType = new WorldType(Identifier.of(Namespace.of(DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString()), info[0]), info[1], info[2], info[3], desc);
+                    worldType.setIsDimension(true);
+                    worldType.setDimensionId(dimensionContainer.getLegacyID());
+                    worldType.setLegacyId(info[4]);
+
+                    for (Structure structure : Structure.getStructuresList()) {
+                        structure.addIncompatibleWorldType(Identifier.of(Namespace.of(DimensionRegistry.INSTANCE.getIdByLegacyId(dimensionContainer.getLegacyID()).get().getNamespace().toString()), info[0]));
+                    }
                 }
             }
         }
