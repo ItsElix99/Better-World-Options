@@ -313,10 +313,16 @@ public class WorldType {
         Infdev327.setSpawnPoint(InfdevSpawnPoint.class);
         Infdev327.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
-        WorldType EarlyInfdev = new WorldType(EarlyInfdevChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("early_infdev"), "Early Infdev", "/assets/betterworldoptions/gui/early_infdev.png", new String[]{"Start the world with Infdev 227-325", "generation"});
-        EarlyInfdev.setSpawnPoint(InfdevSpawnPoint.class);
-        EarlyInfdev.setSeaLevel(65);
-        EarlyInfdev.setBlockToSpawn(Block.GRASS_BLOCK.id);
+        WorldType Infdev325 = new WorldType(Infdev325ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100325"), "Infdev 325", null, new String[]{"Start the world with Infdev 325", "generation"});
+        Infdev325.setSpawnPoint(InfdevSpawnPoint.class);
+        Infdev325.setSeaLevel(65);
+        Infdev325.setBlockToSpawn(Block.GRASS_BLOCK.id);
+
+        WorldType Infdev227 = new WorldType(Infdev227ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("infdev_20100227"), "Infdev 227", "/assets/betterworldoptions/gui/early_infdev.png", new String[]{"Start the world with Infdev 227", "generation"});
+        Infdev227.setSpawnPoint(InfdevSpawnPoint.class);
+        Infdev227.setSeaLevel(65);
+        Infdev227.addBooleanWorldTypeOption("Better Decoration:", "BetterDecoration", null, false);
+        Infdev227.setBlockToSpawn(Block.GRASS_BLOCK.id);
 
         WorldType Indev223 = new WorldType(Indev223ChunkGenerator.class, BetterWorldOptions.NAMESPACE.id("indev_20100223"), "Indev 223", "/assets/betterworldoptions/gui/indev_20100223.png", new String[]{"Start the world with Indev 223", "generation"});
         Indev223.setSpawnPoint(IndevSpawnPoint.class);

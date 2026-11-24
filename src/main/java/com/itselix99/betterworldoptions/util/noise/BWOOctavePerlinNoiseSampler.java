@@ -9,6 +9,10 @@ public class BWOOctavePerlinNoiseSampler extends NoiseSampler {
     private final BWOPerlinNoiseSampler[] octaveSamplers;
     private final int octaves;
 
+    public BWOOctavePerlinNoiseSampler(int octaves, boolean useOffset) {
+        this(new Random(), octaves, useOffset);
+    }
+
     public BWOOctavePerlinNoiseSampler(Random random, int octaves, boolean useOffset) {
         this.octaves = octaves;
         this.octaveSamplers = new BWOPerlinNoiseSampler[octaves];

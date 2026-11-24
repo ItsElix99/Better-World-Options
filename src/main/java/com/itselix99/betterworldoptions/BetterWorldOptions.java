@@ -102,7 +102,7 @@ public class BetterWorldOptions implements ModInitializer {
     public void registerBiomes(BiomeRegisterEvent event) {
         Alpha = BiomeBuilder.start("Alpha").fogColor(12638463).grassAndLeavesColor(16777215).hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).passiveEntity(SheepEntity.class, 12).passiveEntity(PigEntity.class, 10).passiveEntity(ChickenEntity.class, 10).passiveEntity(CowEntity.class, 8).passiveEntity(WolfEntity.class, 2).waterEntity(SquidEntity.class, 10).build();
         Infdev = BiomeBuilder.start("Infdev").fogColor(11587839).grassAndLeavesColor(16777215).hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).passiveEntity(SheepEntity.class, 12).passiveEntity(PigEntity.class, 10).passiveEntity(ChickenEntity.class, 10).passiveEntity(CowEntity.class, 8).passiveEntity(WolfEntity.class, 2).waterEntity(SquidEntity.class, 10).build();
-        EarlyInfdev = BiomeBuilder.start("Early Infdev").fogColor(11842815).grassAndLeavesColor(16777215).hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).passiveEntity(SheepEntity.class, 12).passiveEntity(PigEntity.class, 10).passiveEntity(ChickenEntity.class, 10).passiveEntity(CowEntity.class, 8).passiveEntity(WolfEntity.class, 2).waterEntity(SquidEntity.class, 10).build();
+        EarlyInfdev = BiomeBuilder.start("Early Infdev").fogColor(11842814).grassAndLeavesColor(16777215).hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).passiveEntity(SheepEntity.class, 12).passiveEntity(PigEntity.class, 10).passiveEntity(ChickenEntity.class, 10).passiveEntity(CowEntity.class, 8).passiveEntity(WolfEntity.class, 2).waterEntity(SquidEntity.class, 10).build();
         Indev = BiomeBuilder.start("Indev").fogColor(16777215).grassAndLeavesColor(16777215).hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).passiveEntity(SheepEntity.class, 12).passiveEntity(PigEntity.class, 10).passiveEntity(ChickenEntity.class, 10).passiveEntity(CowEntity.class, 8).passiveEntity(WolfEntity.class, 2).waterEntity(SquidEntity.class, 10).build();
 
         OCEAN = BiomeBuilder.start("Ocean").hostileEntity(SpiderEntity.class, 10).hostileEntity(ZombieEntity.class, 10).hostileEntity(SkeletonEntity.class, 10).hostileEntity(CreeperEntity.class, 10).hostileEntity(SlimeEntity.class, 10).waterEntity(SquidEntity.class, 10).build();
@@ -167,8 +167,11 @@ public class BetterWorldOptions implements ModInitializer {
         WorldType Infdev327 = WorldType.getWorldTypeById(NAMESPACE.id("infdev_20100327"));
         Infdev327.setOldFeaturesProperties(Infdev, false, 10079487, true, false);
 
-        WorldType EarlyInfdev = WorldType.getWorldTypeById(NAMESPACE.id("early_infdev"));
-        EarlyInfdev.setOldFeaturesProperties(BetterWorldOptions.EarlyInfdev, false, 200, true, false);
+        WorldType Infdev325 = WorldType.getWorldTypeById(NAMESPACE.id("infdev_20100325"));
+        Infdev325.setOldFeaturesProperties(Infdev, false, 10079487, true, false);
+
+        WorldType Infdev227 = WorldType.getWorldTypeById(NAMESPACE.id("infdev_20100227"));
+        Infdev227.setOldFeaturesProperties(EarlyInfdev, false, 255, true, false);
 
         WorldType Indev223 = WorldType.getWorldTypeById(NAMESPACE.id("indev_20100223"));
         Indev223.setOldFeaturesProperties(Indev, false, 10079487, true, false);
@@ -213,8 +216,11 @@ public class BetterWorldOptions implements ModInitializer {
         WorldType Infdev327 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100327"));
         addOldTexturesForInfdevAndIndev(Infdev327);
 
-        WorldType EarlyInfdev = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("early_infdev"));
-        addOldTexturesForInfdevAndIndev(EarlyInfdev);
+        WorldType Infdev325 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100325"));
+        addOldTexturesForInfdevAndIndev(Infdev325);
+
+        WorldType Infdev227 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("infdev_20100227"));
+        addOldTexturesForInfdevAndIndev(Infdev227);
 
         WorldType Indev223 = WorldType.getWorldTypeById(BetterWorldOptions.NAMESPACE.id("indev_20100223"));
         addOldTexturesForInfdevAndIndev(Indev223);

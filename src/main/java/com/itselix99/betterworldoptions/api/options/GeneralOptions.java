@@ -48,7 +48,8 @@ public class GeneralOptions {
         OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100420"));
         OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100415"));
         OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100327"));
-        OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("early_infdev"));
+        OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100325"));
+        OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100227"));
         OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("indev_20100223"));
         OldFeatures.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("mcpe"));
         OldFeatures.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("alpha_1.2.0"), true);
@@ -64,7 +65,8 @@ public class GeneralOptions {
         FiniteWorldType.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("flat"), new ArrayList<>(List.of("MCPE")));
         FiniteWorldType.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100415"), new ArrayList<>(List.of("MCPE")));
         FiniteWorldType.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100327"), new ArrayList<>(List.of("MCPE")));
-        FiniteWorldType.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("early_infdev"), new ArrayList<>(List.of("MCPE")));
+        FiniteWorldType.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100325"), new ArrayList<>(List.of("MCPE")));
+        FiniteWorldType.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100227"), new ArrayList<>(List.of("MCPE")));
         FiniteWorldType.addValuesForWorldType(BetterWorldOptions.NAMESPACE.id("indev_20100223"), new ArrayList<>(Arrays.asList("MCPE", "Custom")));
         addDependentOption(FiniteWorld, FiniteWorldType);
 
@@ -103,7 +105,8 @@ public class GeneralOptions {
         Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100420"));
         Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100415"));
         Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100327"));
-        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("early_infdev"));
+        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100325"));
+        Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100227"));
         Farlands.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("mcpe"));
 
         StringOption FarlandsShape = new StringOption("bwoMoreOptions.farlandsShape", "FarlandsShape", null, OptionType.GENERAL_OPTION, new ArrayList<>(Arrays.asList("Linear", "Square")), 0);
@@ -117,7 +120,8 @@ public class GeneralOptions {
         FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100420"));
         FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100415"));
         FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100327"));
-        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("early_infdev"));
+        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100325"));
+        FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100227"));
         FarlandsShape.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("mcpe"));
         addDependentOption(Farlands, FarlandsShape);
 
@@ -132,7 +136,8 @@ public class GeneralOptions {
         FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100420"));
         FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100415"));
         FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100327"));
-        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("early_infdev"));
+        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100325"));
+        FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("infdev_20100227"));
         FarlandsDistance.addCompatibleWorldType(BetterWorldOptions.NAMESPACE.id("mcpe"));
         FarlandsDistance.setStep(2);
         addDependentOption(Farlands, FarlandsDistance);
